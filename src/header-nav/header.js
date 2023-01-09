@@ -25,7 +25,7 @@ export function Header() {
       }
     }  
   );
-  }, [window.location.pathname] );
+  }, [] );
 
     return (
 <Disclosure as="nav" className="bg-gray-800">
