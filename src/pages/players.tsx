@@ -77,6 +77,7 @@ export function Players( { request }: Props) {
                 options={[{ id: 1, value: "A-Z"}, { id: 2, value:"Rating"}]}
                 onChange={ ( e ) => setOrderBy( "" ) }
             />
+            {orderBy}
         </div>
         <div className="pt-4">
             {filters.map( filter => 

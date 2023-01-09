@@ -19,6 +19,7 @@ export const DataBootStrap = () => {
     React.useEffect( () => {
         fetchCombinePlayerData();
         setRuns( prev => prev + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [window.combinePlayerRequest.data.length === 0 || !window.combinePlayerRequest.isLoading]);
     console.info(`Runs ${runs}`);
 

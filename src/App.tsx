@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { logo } from './logo';
 import "./index.css"
 import { router } from "./Router";
 import { DataBootStrap } from './data-bootstrap';
