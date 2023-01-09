@@ -8,6 +8,7 @@ import {
   import { Header } from './header-nav/header';
   import { Players } from './pages/players';
   import { Player } from './pages/player';
+import { LeaderBoards } from './pages/leaderboards';
 
 const rootRoute = createRouteConfig({
     component: () =>
@@ -22,7 +23,7 @@ const rootRoute = createRouteConfig({
     { path: `/teams`, component: () => <Container><div>Teams</div></Container> },
     { path: `/players`, component: () => <Players request={window.combinePlayerRequest} /> },
     { path: `/player`, component: () => <Player request={window.combinePlayerRequest} /> },
-    { path: `/leaderboards`, component: () => <Container><div>LeaderBoards</div></Container> },
+    { path: `/leaderboards`, component: () => <LeaderBoards request={window.combinePlayerRequest}/> },
     { path: `/about`, component: () => <Container><div>About</div></Container> },
   ]
   

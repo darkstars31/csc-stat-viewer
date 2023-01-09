@@ -15,9 +15,12 @@ window.combinePlayerRequest = {
 };
 
 export const DataBootStrap = () => {
+    const [ runs, setRuns ] = React.useState(0);
     React.useEffect( () => {
         fetchCombinePlayerData();
-    }, [] );
+        setRuns( prev => prev + 1);
+    }, [window.combinePlayerRequest.data.length === 0 || !window.combinePlayerRequest.isLoading]);
+    console.info(`Runs ${runs}`);
 
     return null;
 }

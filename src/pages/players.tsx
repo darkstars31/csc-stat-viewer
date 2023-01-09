@@ -6,6 +6,7 @@ import { Input } from "../common/input";
 import { Pill } from "../common/pill";
 import { Link } from "@tanstack/react-router";
 import { PlayerMappings } from "./player-utils";
+import { Select } from "../common/select";
 
 type Props = {
     request: {
@@ -18,6 +19,7 @@ export function Players( { request }: Props) {
     const playerData = request.data;
     const [ searchValue, setSearchValue ] = React.useState("");
     const [ filters, setFilters ] = React.useState<string[]>([]);
+    const [ orderBy, setOrderBy ] = React.useState<string>();
 
     const filteredPlayerData = filters.length > 0
         ? playerData.filter( player => { 
@@ -31,7 +33,8 @@ export function Players( { request }: Props) {
         ...playerData.filter( player =>
             filters.some( f => {
                 const metaFilter = Object.entries(player ?? []).map( ( [key,value] ) => `${key}:${value} ${PlayerMappings[key]}:${value}`).join(" ");
-                return metaFilter.toLowerCase().includes(f.toLowerCase());
+                return metaFilter.toLowerCase().includes(f.toLowerCase()) // Adds a Meta String Filter for advanced search
+                    && filteredPlayerData.every( fp => fp.Name !== player.Name && fp.Tier !== player.Tier); // Removes items matching Name & Tier
             }
         ) 
         ),
@@ -55,20 +58,25 @@ export function Players( { request }: Props) {
         Showing {filteredPlayerData.length} of {playerData.length} Players
       </p>
       <div className="flex flex-box h-12 mx-auto">
-        <Input
-            className="basis-1/2 grow"
-            label="Filter"
-            placeHolder="Player Name"
-            type="text"
-            onChange={ ( e ) => setSearchValue(e.currentTarget.value)}
-            value={searchValue}
-        />
-        <button
-            className="basis-1/6 ml-4 inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
-            onClick={() => { setSearchValue(""); setFilters( [ ...filters, searchValue ].filter(Boolean) ) } }
-            >
-                +Filter
+            <Input
+                className="basis-1/2 grow"
+                label="Filter"
+                placeHolder="Player Name"
+                type="text"
+                onChange={ ( e ) => setSearchValue(e.currentTarget.value)}
+                value={searchValue}
+            />
+            <button
+                className="basis-1/6 ml-4 inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
+                onClick={() => { setSearchValue(""); setFilters( [ ...filters, searchValue ].filter(Boolean) ) } }
+                >
+                    +Filter
             </button>
+            <Select
+                label="Order By"
+                options={[{ id: 1, value: "A-Z"}, { id: 2, value:"Rating"}]}
+                onChange={ ( e ) => setOrderBy( "" ) }
+            />
         </div>
         <div className="pt-4">
             {filters.map( filter => 

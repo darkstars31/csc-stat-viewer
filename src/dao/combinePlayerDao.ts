@@ -11,7 +11,6 @@ export function fetchCombinePlayerData() {
         .then( response => response.text()
             .then( text => {
                     const playerJson = papa.parse<Player>(text, { header: true}).data;
-
                     window.combinePlayerRequest = {
                         data: playerJson,
                         isLoading: false,
