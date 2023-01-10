@@ -8,7 +8,7 @@ const navigation = [
   { name: 'Team', href: '/teams', current: false },
   { name: 'Players', href: '/players', current: false },
   { name: 'Leaderboards', href: '/leaderboards', current: false },
-  { name: 'About', href: '/about', current: false },
+  // { name: 'About', href: '/about', current: false },
 ]
 
 function classNames(...classes) {

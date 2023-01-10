@@ -2,7 +2,7 @@ import * as React from "react";
 import { Container } from "../common/container";
 import { Pill } from "../common/pill";
 import { type Player as PlayerType } from "../models";
-import { PlayerMappings, TotalPlayerAverages } from "./player-utils";
+import { PlayerMappings, TotalPlayerAverages, teamNameTranslator, tierColorClassNames } from "./player-utils";
 import { getSteamApiPlayerSummeries } from "../dao/steamApiDao";
 import { Tooltip } from "../common/tooltip";
 
@@ -52,9 +52,9 @@ export function Player( { request }: Props ) {
     return (
         <Container>
             <Stat value={ Name ?? "n/a"}>
-                <Pill label={Tier} color="bg-yellow-300" />
+                <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
                 <Pill label={ppR} color="bg-red-300" />
-                <Pill label={Team} color="bg-blue-300" />
+                <Pill label={teamNameTranslator(Team)} color="bg-blue-300" />
                 <Tooltip content={
                     <>
                         <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>

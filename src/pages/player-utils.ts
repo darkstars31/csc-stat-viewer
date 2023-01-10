@@ -68,6 +68,23 @@ export const PlayerMappings: Record<string,string> = {
     "Tier": "Tier",
 }
 
+export const tierColorClassNames = {
+    "Premier": "purple",
+    "Elite": "blue",
+    "Challenger": "green",
+    "Contender": "yellow",
+    "Prospect": "orange",
+}
+
+export const teamNameTranslator = ( name: string ) => {
+    switch( name.toUpperCase() ){
+        case "DE": return "Draft Eligible";
+        case "PFA": return "Perm Free Agent";
+        case "FA": return "Free Agent";
+        default: return name;
+    }
+}
+
 export const TotalPlayerAverages = () => {
     const players = window.combinePlayerRequest.data;
 
