@@ -2,16 +2,15 @@ import * as React from "react";
 
 type Props = {
     label: string,
-    options: { id: number, value: string}[],
-    onChange: ( e:React.FormEvent<HTMLSelectElement>) => void
+    options: { id: number | string, value: string}[],
+    onChange: ( value: React.FormEvent<HTMLSelectElement>) => void,
+    value: string,
 }
 
-export function Select( { label, options, onChange}: Props ){
-    const [ selectedIndex, setSelectedIndex ] = React.useState( 0 );
-
+export function Select( { label, value, options, onChange}: Props ){
     return (
-            <div>
-                <legend className="block text-sm font-medium text-gray-400">
+            <div className="flex flex-box">
+                <legend className="block mt-1 pr-2 text-sm font-medium text-gray-400">
                 {label}
                 </legend>
 
@@ -22,11 +21,11 @@ export function Select( { label, options, onChange}: Props ){
                     <select
                         id={label.toLowerCase()}
                         className="relative w-full bg-inherit border-gray-200 rounded-md focus:z-10 sm:text-sm"
-                        onChange={( e ) => { setSelectedIndex(Number(e.currentTarget.value)); onChange(e)}}
-                        value={selectedIndex}
+                        onChange={onChange}
+                        value={value}
                         >
                         {
-                            options.map( (option) => <option key={option.id} value={option.id}>{option.value}</option>)
+                            options.map( (option) => <option key={option?.id ?? option} value={option?.id ?? option}>{option?.value ?? option}</option>)
                         }
                     </select>
                 </div>

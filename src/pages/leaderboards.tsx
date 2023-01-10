@@ -39,6 +39,8 @@ export function LeaderBoards( { request }: Props ) {
                 See who's at the top (or bottom, we won't judge). Requirement of 3 games played before stats are included on the leaderboards.
                 </p>
             </div>
+            <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
+
             <div className="grid grid-cols-2">
                 <div className="m-4">
                     Games Played
