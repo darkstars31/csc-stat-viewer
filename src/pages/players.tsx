@@ -72,12 +72,6 @@ export function Players( { request }: Props) {
                 >
                     +Filter
             </button>
-            <Select
-                label="Order By"
-                options={[{ id: 1, value: "A-Z"}, { id: 2, value:"Rating"}]}
-                onChange={ ( e ) => setOrderBy( "" ) }
-            />
-            {orderBy}
         </div>
         <div className="pt-4">
             {filters.map( filter => 
@@ -86,6 +80,16 @@ export function Players( { request }: Props) {
             }
         </div>
     </div>
+    <div className="flex flex-box h-12 mx-auto justify-end">
+        <div className="basis-1/6">
+            <Select
+                label="Order By"
+                options={[{ id: 1, value: "A-Z"}, { id: 2, value:"Rating"}]}
+                onChange={ ( e ) => setOrderBy( e.currentTarget.value ) }
+            />
+        </div>
+    </div>
+    <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-800" />
 
     { request.isLoading && <div className="mx-auto text-center">
         <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

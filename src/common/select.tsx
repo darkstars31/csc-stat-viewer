@@ -10,27 +10,27 @@ export function Select( { label, options, onChange}: Props ){
     const [ selectedIndex, setSelectedIndex ] = React.useState( 0 );
 
     return (
-        <>
-            <legend className="block text-sm font-medium text-gray-700">
-              {label}
-            </legend>
+            <div>
+                <legend className="block text-sm font-medium text-gray-400">
+                {label}
+                </legend>
 
-            <div className="mt-1 -space-y-px bg-white rounded-md shadow-sm">
-              <div>
-                <label htmlFor={label.toLowerCase()} className="sr-only">Country</label>
+                <div className="mt-1 -space-y-px bg-inherit rounded-md shadow-sm">
+                <div>
+                    <label htmlFor={label.toLowerCase()} className="sr-only">{label}</label>
 
-                <select
-                  id={label.toLowerCase()}
-                  className="relative w-full border-gray-200 rounded-t-md focus:z-10 sm:text-sm"
-                  onChange={( e ) => { console.info(e.currentTarget.value); setSelectedIndex(1); onChange(e)}}
-                  value={options.find( option => option.id === selectedIndex)?.id}
-                >
-                    {
-                        options.map( (option) => <option key={option.id} value={option.id}>{option.value}</option>)
-                    }
-                </select>
-              </div>
+                    <select
+                        id={label.toLowerCase()}
+                        className="relative w-full bg-inherit border-gray-200 rounded-md focus:z-10 sm:text-sm"
+                        onChange={( e ) => { setSelectedIndex(Number(e.currentTarget.value)); onChange(e)}}
+                        value={selectedIndex}
+                        >
+                        {
+                            options.map( (option) => <option key={option.id} value={option.id}>{option.value}</option>)
+                        }
+                    </select>
+                </div>
             </div>
-        </>
+        </div>
     );
 }
