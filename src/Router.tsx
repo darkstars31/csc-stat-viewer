@@ -6,6 +6,7 @@ import {
   } from '@tanstack/react-router'
   import { Container } from './common/container';
   import { Header } from './header-nav/header';
+  import { Teams } from './pages/teams';
   import { Players } from './pages/players';
   import { Player } from './pages/player';
 import { LeaderBoards } from './pages/leaderboards';
@@ -20,7 +21,7 @@ const rootRoute = createRouteConfig({
   
   const routes = [
     { path: `/`, component: () => <Container><div>Home</div></Container> },
-    { path: `/teams`, component: () => <Container><div>Teams</div></Container> },
+    { path: `/teams`, component: () => <Teams request={window.combinePlayerRequest} /> },
     { path: `/players`, component: () => <Players request={window.combinePlayerRequest} /> },
     { path: `/player`, component: () => <Player request={window.combinePlayerRequest} /> },
     { path: `/leaderboards`, component: () => <LeaderBoards request={window.combinePlayerRequest}/> },

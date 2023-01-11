@@ -25,7 +25,8 @@ export function Header() {
       }
     }  
   );
-  }, [] );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Location.pathname] );
 
     return (
 <Disclosure as="nav" className="bg-gray-800">
