@@ -2,7 +2,7 @@
   "name": "csc-stat-viewer",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://<githubusername>.github.io/<app>",
+  "homepage": "https://darkstars31.github.io/csc-stat-viewer",
   "dependencies": {
     "@headlessui/react": "^1.7.7",
     "@heroicons/react": "^2.0.13",
