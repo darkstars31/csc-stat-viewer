@@ -2,7 +2,7 @@
   "name": "csc-stat-viewer",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://darkstars31.github.io/csc-stat-viewer",
+  "homepage": "https://darkstars31.github.io/csc-stat-viewer/",
   "dependencies": {
     "@headlessui/react": "^1.7.7",
     "@heroicons/react": "^2.0.13",
@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start --jsx",
-    "build": "react-scripts build",
+    "build": "react-scripts build ",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
