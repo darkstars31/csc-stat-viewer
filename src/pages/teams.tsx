@@ -32,7 +32,7 @@ export function Teams( { request }: Props ) {
             <div className="mx-auto max-w-lg text-center">
                 <h2 className="text-3xl font-bold sm:text-4xl">Teams</h2>
                 <p className="mt-4 text-gray-300">
-                    blah blah place holder blah
+                    blah blah place holder blah blah
                 </p>
             </div>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
