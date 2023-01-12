@@ -11,6 +11,8 @@ import {
   import { Player } from './pages/player';
 import { LeaderBoards } from './pages/leaderboards';
 
+const BASE_ROUTE = window.location.href.includes("github") ? "/csc-stat-viewer" : "";
+
 const rootRoute = createRouteConfig({
     component: () =>
     <>
@@ -20,12 +22,12 @@ const rootRoute = createRouteConfig({
   })
   
   const routes = [
-    { path: `/`, component: () => <Container><div>Home</div></Container> },
-    { path: `/teams`, component: () => <Teams request={window.combinePlayerRequest} /> },
-    { path: `/players`, component: () => <Players request={window.combinePlayerRequest} /> },
-    { path: `/player`, component: () => <Player request={window.combinePlayerRequest} /> },
-    { path: `/leaderboards`, component: () => <LeaderBoards request={window.combinePlayerRequest}/> },
-    { path: `/about`, component: () => <Container><div>About</div></Container> },
+    { path: `${BASE_ROUTE}/`, component: () => <Container><div>Home</div></Container> },
+    { path: `${BASE_ROUTE}/teams`, component: () => <Teams request={window.combinePlayerRequest} /> },
+    { path: `${BASE_ROUTE}/players`, component: () => <Players request={window.combinePlayerRequest} /> },
+    { path: `${BASE_ROUTE}/player`, component: () => <Player request={window.combinePlayerRequest} /> },
+    { path: `${BASE_ROUTE}/leaderboards`, component: () => <LeaderBoards request={window.combinePlayerRequest}/> },
+    { path: `${BASE_ROUTE}/about`, component: () => <Container><div>About</div></Container> },
   ]
   
   const routeConfig = rootRoute.addChildren(routes.map( route => rootRoute.createRoute( route )));
