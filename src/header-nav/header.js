@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Link, useLocation } from 'wouter';
+// import { Link, useLocation } from 'wouter';
+import { Link } from 'wouter';
 
 const navigation = [
   { name: 'Dashboard', href: '/', current: false },
@@ -16,15 +17,15 @@ function classNames(...classes) {
 }
 
 export function Header() {
-  const [location] = useLocation();
-  React.useEffect( () => {
-    navigation.forEach( (_, index) => {
-      navigation[index].current = false;
-      }  
-    );
-    const activeElement = navigation.find( nav => location === (nav.href.toLowerCase()));
-    activeElement.current = true;
-  }, [ location ] );
+  // const [location] = useLocation();
+  // React.useEffect( () => {
+  //   navigation.forEach( (_, index) => {
+  //     navigation[index].current = false;
+  //     }  
+  //   );
+  //   const activeElement = navigation.find( nav => location === (nav.href.toLowerCase()));
+  //   activeElement.current = true;
+  // }, [ location ] );
 
     return (
 <Disclosure as="nav" className="bg-gray-800">
