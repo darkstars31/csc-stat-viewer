@@ -1,14 +1,9 @@
 import * as React from "react";
-import { Container } from "../common/container";
-import { Table } from "../common/table";
+import { Container } from "../common/components/container";
+import { Loading } from "../common/components/loading";
+import { Table } from "../common/components/table";
+import { useDataContext } from "../DataContext";
 import { Player } from "../models";
-
-type Props = {
-    request: {
-        data: Player[],
-        isLoading: boolean,
-    }
-}
 
 function _sort<T, K extends keyof T>( items: T[], property: K, n: number  ) {
     return items.sort( (a,b) => a[property] < b[property] ? 1 : -1).slice(0,n);
@@ -18,8 +13,10 @@ function buildTableRow( player: Player, columnName: string, property: keyof Play
     return { "Player": player.Name, "Tier": player.Tier, [columnName]: player[property]};
 }
 
-export function LeaderBoards( { request }: Props ) {
-    const playerData = request.data.filter( f => f.GP >= 3);
+export function LeaderBoards() {
+    const { season10CombinePlayers, isLoading } = useDataContext();
+
+    const playerData = season10CombinePlayers.filter( f => f.GP >= 3);
     const gamesPlayed = _sort(playerData, "GP", 5).map( p => buildTableRow(p, "Games Played", "GP"));
     const kills = _sort(playerData, "Kills", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Kills": p.Kills}));
     const killDeathRatio = playerData.sort( (a,b) => (a.Kills/a.Deaths) < (b.Kills/b.Deaths) ? 1 : -1).slice(0,5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "K/D Ratio": (p.Kills/p.Deaths).toFixed(2)}));
@@ -40,6 +37,8 @@ export function LeaderBoards( { request }: Props ) {
                 </p>
             </div>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
+
+            { isLoading && <Loading /> }
 
             <div className="grid grid-cols-2">
                 <div className="m-4">

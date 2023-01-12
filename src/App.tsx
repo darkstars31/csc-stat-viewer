@@ -1,16 +1,24 @@
 import * as React from 'react';
 import "./index.css"
 import { Router } from "./Router";
-import { DataBootStrap } from './data-bootstrap';
+import { DataContextProvider } from './DataContext';
 import { Header } from './header-nav/header';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <>
-        {/* <img src={`data:image/svg+xml;utf-8,${logo}`} className="App-logo" alt="logo" /> */}
       <Header />
-      <DataBootStrap />
-      <Router />
+      <QueryClientProvider client={queryClient}>
+        <DataContextProvider >
+          <Router />
+        </DataContextProvider>
+      </QueryClientProvider>
     </>
   );
 }

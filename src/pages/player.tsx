@@ -1,18 +1,12 @@
 import * as React from "react";
-import { Container } from "../common/container";
-import { Pill } from "../common/pill";
-import { type Player as PlayerType } from "../models";
+import { Container } from "../common/components/container";
+import { Pill } from "../common/components/pill";
 import { PlayerMappings, TotalPlayerAverages, teamNameTranslator, tierColorClassNames } from "./player-utils";
 import { getSteamApiPlayerSummeries } from "../dao/steamApiDao";
-import { Tooltip } from "../common/tooltip";
+import { Tooltip } from "../common/components/tooltip";
 import { useRoute } from "wouter";
-
-type Props = {
-    request: {
-        data: PlayerType[],
-        isLoading: boolean,
-    }
-}
+import { useDataContext } from "../DataContext";
+import { Loading } from "../common/components/loading";
 
 function Stat( { title, value, children }: { title?:string, value: string|number, children?: React.ReactNode | React.ReactNode[] } ) {
     return (
@@ -28,13 +22,11 @@ function Stat( { title, value, children }: { title?:string, value: string|number
     );
 }
 
-export function Player( { request }: Props ) {
-    const [, params] = useRoute("/players/player/:tier/:id");
-    console.info( params );
-    
-    const player = request.data.find( player => player.Steam === params?.id && player.Tier === params?.tier);
-    const averages = TotalPlayerAverages();
-    console.info(averages);
+export function Player() {
+    const { season10CombinePlayers, isLoading } = useDataContext();
+    const [, params] = useRoute("/players/:tier/:id");
+    const player = season10CombinePlayers.find( player => player.Steam === params?.id && player.Tier === params?.tier);
+    const averages = TotalPlayerAverages( season10CombinePlayers );
     if( player?.Steam ) {
         getSteamApiPlayerSummeries( [ player.Steam ] ).then( data => console.info( "player", data ));
     }
@@ -48,11 +40,10 @@ export function Player( { request }: Props ) {
         Peak, Pit, Form, "CONCY": ratingConsistency,
         ...playerRest 
     } = player!;
-    // const indexOfName = Object.keys(player!).find( (p, i) => p === "Name" ? i : false);
-    // delete stats![indexOfName];
-    console.info( player );
+
     return (
         <Container>
+            { isLoading && <Loading /> }
             <Stat value={ Name ?? "n/a"}>
                 <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
                 <Pill label={ppR} color="bg-red-300" />
@@ -60,7 +51,7 @@ export function Player( { request }: Props ) {
                 <Tooltip content={
                     <>
                         <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>
-                        <div>Consistency(SD): {ratingConsistency}σ ({ratingConsistency < averages.avgRatingConsistency ? "Better" : "Worse"} than average)</div>
+                        <div>Consistency: {ratingConsistency}σ ({ratingConsistency < averages.avgRatingConsistency ? "More" : "Less"} than avg)</div>
                         <div>Peak {Peak} / Bottom {Pit}</div>
                         <div>CT: {ctRating} / T: {tRating}</div>
                     </>

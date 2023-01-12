@@ -1,22 +1,15 @@
 import papa from "papaparse";
 import { Player } from "../models";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
-export function fetchCombinePlayerData() {
+const cscSeason10CombineStatsGoogleSheetsId = "1IatVycM30WHbxHCHvtb2rk49impu7TAlMNgxReQb4Qo";
 
-    const cscSeason10CombineStatsGoogleSheetsId = "1IatVycM30WHbxHCHvtb2rk49impu7TAlMNgxReQb4Qo";
-    window.combinePlayerRequest.isLoading = true;
-    fetch(`https://docs.google.com/spreadsheets/d/${cscSeason10CombineStatsGoogleSheetsId}/gviz/tq?tqx=out:csv&tq`,
-        { method: "GET", headers: { 'content-type': 'text/csv;charset=UTF-8'
-        }})
-        .then( response => response.text()
-            .then( text => {
-                    const playerJson = papa.parse<Player>(text, { header: true}).data;
-                    window.combinePlayerRequest = {
-                        data: playerJson,
-                        isLoading: false,
-                    }
-                }
-            ) 
-        )
-        .catch( err => console.info( err ))
+const x = async () => await fetch(`https://docs.google.com/spreadsheets/d/${cscSeason10CombineStatsGoogleSheetsId}/gviz/tq?tqx=out:csv&tq`,
+    { method: "GET", headers: { 'content-type': 'text/csv;charset=UTF-8'}})
+    .then( async response => {
+        return papa.parse<Player>( await response.text(), { header: true}).data;
+    } );
+
+export function useFetchCombinePlayerData(): UseQueryResult<Player[]> {
+    return useQuery({ queryKey: ["combine-stats", 10], queryFn: x, staleTime: 10000});
 }

@@ -85,8 +85,8 @@ export const teamNameTranslator = ( name: string ) => {
     }
 }
 
-export const TotalPlayerAverages = () => {
-    const players = window.combinePlayerRequest.data;
+export const TotalPlayerAverages = ( combinePlayerData: Player[] ) => {
+    const players = combinePlayerData;
 
     return {
         avgRating: calculateAverage(players, "Rating"),

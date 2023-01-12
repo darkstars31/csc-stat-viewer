@@ -1,27 +1,24 @@
 import * as React from "react";
 import { type Player } from "../models";
 import { rifler, awper, lurker, support, entry, fragger } from "../svgs"
-import { Container } from "../common/container";
-import { Input } from "../common/input";
-import { Pill } from "../common/pill";
+import { Container } from "../common/components/container";
+import { Input } from "../common/components/input";
+import { Pill } from "../common/components/pill";
 import { Link } from "wouter";
 import { PlayerMappings, teamNameTranslator, tierColorClassNames } from "./player-utils";
-import { Select } from "../common/select";
-
-type Props = {
-    request: {
-        data: Player[],
-        isLoading: boolean,
-    }
-}
+import { Select } from "../common/components/select";
+import { Loading } from "../common/components/loading";
+import { useDataContext } from "../DataContext";
 
 // const playerRatingGradient = ( rating: number ) => {
 //     const color = rating > 1 ? "green" : "red";
 //     const intensity = ((rating * 100) - 100)
 // }
 
-export function Players( { request }: Props) {
-    const playerData = request.data;
+export function Players() {
+    const { season10CombinePlayers, isLoading } = useDataContext();
+
+    const playerData = season10CombinePlayers;
     const [ searchValue, setSearchValue ] = React.useState("");
     const [ filters, setFilters ] = React.useState<string[]>([]);
     const [ orderBy, setOrderBy ] = React.useState<string>("Name");
@@ -110,24 +107,17 @@ export function Players( { request }: Props) {
     </div>
     <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
 
-    { request.isLoading && <div className="mx-auto text-center">
-        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-      Loading...
-    </div> 
-    }
+    { isLoading && <Loading /> }
 
     <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
     { filteredPlayerData?.map( (player: Player, index: number) => 
       <Link
         key={`player-${index}`}
-        to={`/players/player/${player.Tier}/${player.Steam}`}
+        to={`/players/${player.Tier}/${player.Steam}`}
         className="block rounded-xl border border-gray-800 p-6 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10"
       >
         <h2 className="mt-2 text-xl font-bold text-white text-center">{player.Name}</h2>
-        <p className="mt-1 text-sm text-gray-300 grid grid-cols-2 gap-1">
+        <div className="mt-1 text-sm text-gray-300 grid grid-cols-2 gap-1">
             <div>
                 {/* <div>SteamID: {player.Steam}</div> */}
                 <div className={`text-${(tierColorClassNames as any)[player.Tier]}-400`}>{player.Tier}</div>
@@ -146,7 +136,7 @@ export function Players( { request }: Props) {
                     {player.ppR.toLowerCase() === "fragger" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${fragger}`} alt="Fragger"/>}
                 </div>
             </div>
-        </p>
+        </div>
       </Link>
       )}
     </div>

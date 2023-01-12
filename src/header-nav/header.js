@@ -1,34 +1,34 @@
 import React, { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
-// import { Link, useLocation } from 'wouter';
 import { Link } from 'wouter';
-
-const navigation = [
-  { name: 'Dashboard', href: '/', current: false },
-  { name: 'Team', href: '/teams', current: false },
-  { name: 'Players', href: '/players', current: false },
-  { name: 'Leaderboards', href: '/leaderboards', current: false },
-  // { name: 'About', href: '/about', current: false },
-]
+import { useWindowLocation } from '../common/hooks/window';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export function Header() {
-  // const [location] = useLocation();
-  // React.useEffect( () => {
-  //   navigation.forEach( (_, index) => {
-  //     navigation[index].current = false;
-  //     }  
-  //   );
-  //   const activeElement = navigation.find( nav => location === (nav.href.toLowerCase()));
-  //   activeElement.current = true;
-  // }, [ location ] );
+  const windowLocation = useWindowLocation();
 
-    return (
-<Disclosure as="nav" className="bg-gray-800">
+  const navigation = [
+    { name: 'Dashboard', href: '/', current: false },
+    { name: 'Team', href: '/teams', current: false },
+    { name: 'Players', href: '/players', current: false },
+    { name: 'Leaderboards', href: '/leaderboards', current: false },
+    // { name: 'About', href: '/about', current: false },
+  ];
+
+  React.useEffect( () => {
+    navigation.forEach( (nav, index) => {
+      navigation[index].current = windowLocation.href === nav.href.toLowerCase();
+      }  
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ windowLocation.href ] );
+
+  return (
+    <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
