@@ -1,18 +1,16 @@
 import * as React from 'react';
 import "./index.css"
-import { router } from "./Router";
+import { Router } from "./Router";
 import { DataBootStrap } from './data-bootstrap';
-
-import {
-  RouterProvider,
-} from '@tanstack/react-router'
+import { Header } from './header-nav/header';
 
 function App() {
   return (
     <>
         {/* <img src={`data:image/svg+xml;utf-8,${logo}`} className="App-logo" alt="logo" /> */}
+      <Header />
       <DataBootStrap />
-      <RouterProvider router={router} />
+      <Router />
     </>
   );
 }

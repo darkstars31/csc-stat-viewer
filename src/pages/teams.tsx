@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from 'wouter';
 import * as React from "react";
 import { Container } from "../common/container";
 import { Player } from "../models";

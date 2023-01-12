@@ -4,7 +4,7 @@ import { rifler, awper, lurker, support, entry, fragger } from "../svgs"
 import { Container } from "../common/container";
 import { Input } from "../common/input";
 import { Pill } from "../common/pill";
-import { Link } from "@tanstack/react-router";
+import { Link } from "wouter";
 import { PlayerMappings, teamNameTranslator, tierColorClassNames } from "./player-utils";
 import { Select } from "../common/select";
 
@@ -123,7 +123,7 @@ export function Players( { request }: Props) {
     { filteredPlayerData?.map( (player: Player, index: number) => 
       <Link
         key={`player-${index}`}
-        to={`/player/${player.Steam}`}
+        to={`/players/player/${player.Tier}/${player.Steam}`}
         className="block rounded-xl border border-gray-800 p-6 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10"
       >
         <h2 className="mt-2 text-xl font-bold text-white text-center">{player.Name}</h2>

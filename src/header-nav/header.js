@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Link } from '@tanstack/react-router'
+import React, { Fragment } from 'react';
+import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Link, useLocation } from 'wouter';
 
 const navigation = [
   { name: 'Dashboard', href: '/', current: false },
@@ -16,17 +16,14 @@ function classNames(...classes) {
 }
 
 export function Header() {
+  const [location] = useLocation();
   React.useEffect( () => {
     navigation.forEach( (navItem, index) => {
-      if (window.location.pathname ===  navItem.href.toLowerCase() ) { 
-        navigation[index].current = true;
-      } else {
-        navigation[index].current = false;
-      }
-    }  
-  );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Location.pathname] );
+      navigation[index].current = false;
+      }  
+    );
+    navigation.find( nav => location.includes(nav.name.toLowerCase())).current = true;
+  }, [ location ] );
 
     return (
 <Disclosure as="nav" className="bg-gray-800">

@@ -64,5 +64,5 @@ export type Player = {
         "K/ctr": number,
         "lurks/tR": number,
         "wlp/L": number,
-        "Tier": number,
+        "Tier": string,
 }

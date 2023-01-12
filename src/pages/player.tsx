@@ -5,6 +5,7 @@ import { type Player as PlayerType } from "../models";
 import { PlayerMappings, TotalPlayerAverages, teamNameTranslator, tierColorClassNames } from "./player-utils";
 import { getSteamApiPlayerSummeries } from "../dao/steamApiDao";
 import { Tooltip } from "../common/tooltip";
+import { useRoute } from "wouter";
 
 type Props = {
     request: {
@@ -28,9 +29,10 @@ function Stat( { title, value, children }: { title?:string, value: string|number
 }
 
 export function Player( { request }: Props ) {
-    const params = window.location.pathname.split("/");
-    const id = params.at(-1);
-    const player = request.data.find( player => player.Steam === id);
+    const [, params] = useRoute("/players/player/:tier/:id");
+    console.info( params );
+    
+    const player = request.data.find( player => player.Steam === params?.id && player.Tier === params?.tier);
     const averages = TotalPlayerAverages();
     console.info(averages);
     if( player?.Steam ) {
