@@ -18,11 +18,12 @@ function classNames(...classes) {
 export function Header() {
   const [location] = useLocation();
   React.useEffect( () => {
-    navigation.forEach( (navItem, index) => {
+    navigation.forEach( (_, index) => {
       navigation[index].current = false;
       }  
     );
-    navigation.find( nav => location.includes(nav.name.toLowerCase())).current = true;
+    const activeElement = navigation.find( nav => location === (nav.href.toLowerCase()));
+    activeElement.current = true;
   }, [ location ] );
 
     return (
