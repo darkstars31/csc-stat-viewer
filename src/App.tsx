@@ -2,7 +2,6 @@ import * as React from 'react';
 import "./index.css"
 import { Router } from "./Router";
 import { DataContextProvider } from './DataContext';
-import { Header } from './header-nav/header';
 import {
   QueryClient,
   QueryClientProvider,
@@ -16,7 +15,6 @@ console.info( env );
 function App() {
   return (
     <>
-      <Header />
       <QueryClientProvider client={queryClient}>
         <DataContextProvider >
           <Router />

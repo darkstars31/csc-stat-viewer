@@ -6,6 +6,7 @@ import { Teams } from './pages/teams';
 import { Players } from './pages/players';
 import { Player } from './pages/player';
 import { LeaderBoards } from './pages/leaderboards';
+import { Header } from './header-nav/header';
   
 const routes = [
   { path: `/`, component: () => <Dashboard /> },
@@ -22,6 +23,7 @@ export function Router(){
 
   return (
     <Wouter base={BASE_ROUTE}>
+      <Header />
       { routes.map( route => <Route key={`route${route.path}`} { ...route} /> ) }
     </Wouter>
   );
