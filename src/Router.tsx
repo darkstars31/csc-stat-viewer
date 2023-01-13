@@ -6,7 +6,6 @@ import { Teams } from './pages/teams';
 import { Players } from './pages/players';
 import { Player } from './pages/player';
 import { LeaderBoards } from './pages/leaderboards';
-import { useWindowLocation } from './common/hooks/window';
   
 const routes = [
   { path: `/`, component: () => <Dashboard /> },
@@ -18,8 +17,8 @@ const routes = [
 ];
 
 export function Router(){
-  const windowLocation = useWindowLocation();
-  const BASE_ROUTE = windowLocation.href.includes("github.io") ? "/csc-stat-viewer" : "";
+  const env : string = process.env.NODE_ENV!;
+  const BASE_ROUTE = env.includes("production") ? "/csc-stat-viewer" : "";
 
   return (
     <Wouter base={BASE_ROUTE}>
