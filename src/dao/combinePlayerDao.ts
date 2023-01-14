@@ -11,5 +11,5 @@ const x = async () => await fetch(`https://docs.google.com/spreadsheets/d/${cscS
     } );
 
 export function useFetchCombinePlayerData(): UseQueryResult<Player[]> {
-    return useQuery({ queryKey: ["combine-stats", 10], queryFn: x, staleTime: 10000});
+    return useQuery({ queryKey: ["combine-stats", 10], queryFn: x, staleTime: 1000 * 60 * 60}); // 1 second * 60 * 60 = 1 hour
 }

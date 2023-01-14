@@ -113,7 +113,7 @@ export function Players() {
     { filteredPlayerData?.map( (player: Player, index: number) => 
       <Link
         key={`player-${index}`}
-        to={`/players/${player.Tier}/${player.Steam}`}
+        to={`/players/${player.Tier}/${player.Name}`}
         className="block rounded-xl border border-gray-800 p-6 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10"
       >
         <h2 className="mt-2 text-xl font-bold text-white text-center">{player.Name}</h2>

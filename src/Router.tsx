@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Router as Wouter, Route } from 'wouter';
+import { Router as Wouter, Route, Switch } from 'wouter';
 import { Container } from './common/components/container';
 import { Dashboard } from './pages/dashboard';
 import { Teams } from './pages/teams';
@@ -15,6 +15,7 @@ const routes = [
   { path: `/players/:tier/:id`, component: () => <Player /> },
   { path: `/leaderboards`, component: () => <LeaderBoards /> },
   { path: `/about`, component: () => <Container><div>About</div></Container> },
+  { path: `/playground`, component: () => <Container><div>Play Ground</div></Container> },
 ];
 
 export function Router(){
@@ -24,7 +25,10 @@ export function Router(){
   return (
     <Wouter base={BASE_ROUTE}>
       <Header />
-      { routes.map( route => <Route key={`route${route.path}`} { ...route} /> ) }
+      <Switch>
+        { routes.map( route => <Route key={`route${route.path}`} { ...route} /> ) }
+        <Route key="404, Page not found." component={ () => <Container><h1>404</h1></Container>} />
+      </Switch>
     </Wouter>
   );
 }

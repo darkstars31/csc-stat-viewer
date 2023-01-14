@@ -3,54 +3,69 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import { useDataContext } from '../DataContext';
 import { Loading } from '../common/components/loading';
+import { Player } from '../models';
 
 export function Teams() {
     const { season10CombinePlayers, isLoading } = useDataContext();
     const playerData = season10CombinePlayers;
+    console.info( playerData );
     const teams = playerData.filter( p => !["DE","FA","PFA"].includes(p.Team))
-        .filter( ( p, index, self) => 
-            index === self.findIndex( t => t.Tier === p.Tier && t.Team === p.Team))
-        .map( p => ({ Team: p.Team, Tier: String(p.Tier) } ) );
+        .reduce<Player[]>( (uniqueTeams, team) => {
+       if( !uniqueTeams.some( i => i.Tier === team.Tier && i.Team === team.Team) ){
+        uniqueTeams.push(team);
+       }
+       return uniqueTeams;
+    }, [])
+    .map( team => ({ Tier: team.Tier, Team: team.Team}));
+       
+
+    console.info( teams );
     
     const teamsByTier = {
         premierTeams: teams.filter( team => team.Tier.includes("Premier")),
         eliteTeams: teams.filter( team => team.Tier.includes("Elite")),
         challengerTeams: teams.filter( team => team.Tier.includes("Challenger")),
         ContenderTeams: teams.filter( team => team.Tier.includes("Contender")),
-        prospectTeams: teams.filter( team => team.Tier.includes("Prospects")),
+        prospectTeams: teams.filter( team => team.Tier.includes("Prospect")),
     }
 
-    const tiers = ["Premier", "Elite", "Challenger", "Contender", "Prospects"];
+    const tiers = ["Premier", "Elite", "Challenger", "Contender", "Prospect"];
 
     return (
         <Container>
             <div className="mx-auto max-w-lg text-center">
                 <h2 className="text-3xl font-bold sm:text-4xl">Teams</h2>
                 <p className="mt-4 text-gray-300">
-                    blah blah place holder blah blah
+                    Current Teams and players on those teams + roles. Please note that some teams show up in multiple tiers because those Teams have players in both tiers during combines.
                 </p>
             </div>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
             { isLoading && <Loading /> }
             { Object.values(teamsByTier).map( (teams, index) =>
-                        <div className="pt-8">
+                        <div key={`tier-${tiers[index]}`} className="pt-8">
                             <div className="mx-auto max-w-lg text-center">
                                 <h2 className="text-3xl font-bold sm:text-4xl">{tiers[index]} <span className="text-gray-500">({teams.length})</span></h2>
                             </div>
                             <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                                 { teams.map( team => 
-                                        <Link
-                                            key={`team-${index}-${team.Team}`}
-                                            to={`/team/${team.Team}`}
-                                            className="block rounded-xl border border-gray-800 p-6 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10"
+                                        <div className="block rounded-xl border border-gray-800 p-6 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10">
+                                            <Link key={`team-${index}-${team.Team}`}
+                                                to={`/team/${team.Team}`}
                                             >
-                                            <h2 className="mt-2 text-xl font-bold text-white text-center">{team.Team} ({(playerData.filter( p => p.Team === team.Team).map( p => p.Rating).reduce((cum,cur) => Number(cum) + Number(cur))/playerData.filter( p => p.Team === team.Team).length).toFixed(2)})</h2>
+                                                <h2 className="mt-2 text-xl font-bold text-white text-center">{team.Team}</h2>
+                                            </Link>
+                                            <h4 className="mt-1 text-s font-bold text-gray-500 text-center">({(playerData.filter( p => p.Team === team.Team && p.Tier === tiers[index]).map( p => p.Rating).reduce((cum,cur) => Number(cum) + Number(cur))/playerData.filter( p => p.Team === team.Team && p.Tier === tiers[index]).length).toFixed(2)})</h4>
                                             <div className="mt-1 text-sm text-gray-300 grid grid-cols-1 gap-1">
-                                                {   playerData.filter( p => p.Team === team.Team).map( p => 
-                                                        <div>{p.Name} - {p.ppR}</div>
+                                                {   playerData.filter( p => p.Team === team.Team && p.Tier === tiers[index]).map( p => 
+                                                    <Link className="grid grid-cols-2 gap-1" key={`${tiers[index]}-${team.Team}-${p.Name}`}
+                                                    to={`/players/${p.Tier}/${p.Name}`}
+                                                    >
+                                                        <div>{p.Name}</div>
+                                                        <div>{p.ppR}</div>
+                                                    </Link>
                                                 )}
                                             </div>
-                                        </Link> 
+                                        </div> 
                                     )
                                 }
                             </div>

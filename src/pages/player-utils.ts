@@ -49,7 +49,7 @@ export const PlayerMappings: Record<string,string> = {
     "Kills": "Total Kills",
     "Assists": "Total Assists",
     "Deaths": "Total Deaths",
-    "MIP/r": "IWR(???)",
+    "MIP/r": "MIP/r(?)",
     "IWR": "Impact on Rounds Won Ratio",
     "KPA": "Avg Kill Impact",
     "RWK": "Rounds with at least 1 Kill",
@@ -72,7 +72,7 @@ export const tierColorClassNames = {
     "Premier": "purple",
     "Elite": "blue",
     "Challenger": "green",
-    "Contender": "yellow",
+    "Contender": "slate",
     "Prospect": "orange",
 }
 
@@ -85,8 +85,8 @@ export const teamNameTranslator = ( name: string ) => {
     }
 }
 
-export const TotalPlayerAverages = ( combinePlayerData: Player[] ) => {
-    const players = combinePlayerData;
+export const TotalPlayerAverages = ( combinePlayerData: Player[], options?: Record<string,unknown> ) => {
+    const players = options?.tier ? combinePlayerData.filter( p => p.Tier === options?.tier) : combinePlayerData;
 
     return {
         avgRating: calculateAverage(players, "Rating"),
