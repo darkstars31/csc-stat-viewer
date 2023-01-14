@@ -17,9 +17,6 @@ export function Teams() {
        return uniqueTeams;
     }, [])
     .map( team => ({ Tier: team.Tier, Team: team.Team}));
-       
-
-    console.info( teams );
     
     const teamsByTier = {
         premierTeams: teams.filter( team => team.Tier.includes("Premier")),
@@ -42,7 +39,7 @@ export function Teams() {
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
             { isLoading && <Loading /> }
             { Object.values(teamsByTier).map( (teams, index) =>
-                        <div key={`tier-${tiers[index]}`} className="pt-8">
+                        <div key={`tier-${tiers[index]}`} className="pt-12">
                             <div className="mx-auto max-w-lg text-center">
                                 <h2 className="text-3xl font-bold sm:text-4xl">{tiers[index]} <span className="text-gray-500">({teams.length})</span></h2>
                             </div>
