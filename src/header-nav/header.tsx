@@ -1,31 +1,22 @@
 import React, { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'; //BellIcon,
-import { Link } from 'wouter';
-import { useWindowLocation } from '../common/hooks/window';
+import { Link, useLocation } from 'wouter';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
 export function Header() {
-  const windowLocation = useWindowLocation();
+  const [ location ] = useLocation();
 
   const navigation = [
-    { name: 'Dashboard', href: '/', current: false },
-    { name: 'Team', href: '/teams', current: false },
-    { name: 'Players', href: '/players', current: false },
-    { name: 'Leaderboards', href: '/leaderboards', current: false },
+    { name: 'Dashboard', href: '/', current: location.endsWith("/") },
+    { name: 'Team', href: '/teams', current: location.includes("teams") },
+    { name: 'Players', href: '/players', current: location.includes("players") },
+    { name: 'Leaderboards', href: '/leaderboards', current: location.includes("leaderboards") },
     // { name: 'About', href: '/about', current: false },
   ];
-
-  React.useEffect( () => {
-    navigation.forEach( (nav, index) => {
-      navigation[index].current = windowLocation.href === nav.href.toLowerCase();
-      }  
-    );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ windowLocation.href ] );
 
   return (
     <Disclosure as="nav" className="bg-gray-800 z-10">

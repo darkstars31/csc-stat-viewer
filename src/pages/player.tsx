@@ -2,7 +2,6 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import { Pill } from "../common/components/pill";
 import { PlayerMappings, TotalPlayerAverages, teamNameTranslator, tierColorClassNames } from "./player-utils";
-import { getSteamApiPlayerSummeries } from "../dao/steamApiDao";
 import { Tooltip } from "../common/components/tooltip";
 import { useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
@@ -30,9 +29,10 @@ export function Player() {
     const player = season10CombinePlayers.find( player => player.Name === params?.id && player.Tier === params?.tier);
     //const allPlayerAverages = TotalPlayerAverages( season10CombinePlayers );
     const tierPlayerAverages = TotalPlayerAverages( season10CombinePlayers, { tier: player?.Tier} );
-    if( player?.Steam ) {
-        getSteamApiPlayerSummeries( [ player.Steam ] ).then( data => console.info( "player", data ));
-    }
+    // TODO: Fetch Steam Profile Data
+    // if( player?.Steam ) {
+    //     getSteamApiPlayerSummeries( [ player.Steam ] ).then( data => console.info( "player", data ));
+    // }
 
     if( isLoading ){
         return <Container>
@@ -54,6 +54,9 @@ export function Player() {
         "X/nade": nadeDmgPerFrag, Util: utilThrownPerMatch,
         ODR: openDuelPercentage, "oda/R": openDuelsPerRound, "entries/R": TsidedEntryFragsPerRound, "ea/R": avgRoundsOpenDuelOnTside,
         ADP, ctADP, tADP,
+        SRate,
+        TRatio,
+        ATD,
         ...playerRest 
     } = player!;
 
@@ -63,6 +66,7 @@ export function Player() {
                 <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
                 <Pill label={ppR} color="bg-red-300" />
                 <Pill label={teamNameTranslator(Team)} color="bg-blue-300" />
+                <Pill data-popover-target="popover-default" label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300" data-tooltip-target="rating-tooltip" data-tooltip-placement="top"/>
                 <Tooltip content={
                     <>
                         <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>
@@ -71,18 +75,20 @@ export function Player() {
                         <div>CT: {ctRating} / T: {tRating}</div>
                     </>
                 }>
-                    <Pill label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300" data-tooltip-target="rating-tooltip" data-tooltip-placement="top"/>
                 </Tooltip>
                 <Pill label={`Games Played ${GP}`} color="bg-orange-300" />
             </Stat>
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
                 <Stat title={"K / A / D"} value={ `${Kills} / ${Assists} / ${Deaths}` } />
                 <Stat title={"K/D Ratio"} value={ `${(Kills/Deaths).toFixed(2)}` } />
-                <Stat title={"Headshots"} value={ `${HS}% (${((HS/tierPlayerAverages.avgHeadShotPercentage)*100-100).toFixed(2)})` } />
+                <Stat title={"Headshots"} value={ `${HS}% (${((HS/tierPlayerAverages.avgHeadShotPercentage)*100-100).toFixed(2)}%)` } />
                 <Stat title={"2k / 3k / 4k"} value={ `${twoKills} / ${threeKills} / ${fourKills}` } />
                 <Stat title={"Aces"} value={ `${aces}` } />
                 <Stat title={"Damage / Kills per Round"} value={`${ADR} / ${avgKillsPerRound}`} />
                 <Stat title={"Kill Assist Traded or Survived"} value={`${(KAST*100).toFixed(2)}%`} />
+                <Stat title={"Survival Rate"} value={`${(SRate*100).toFixed(2)}%`} />
+                <Stat title={"Deaths Traded Out"} value={`${(TRatio*100).toFixed(2)}%`} />
+                <Stat title={"Average Alive Time"} value={`${ATD}s`} />
             </dl>
                 {/* <Stat title={"Enemies Flashed per Flash / Blind Time Average / Nade Damage per Nade"} value={`${enemiesFlashedPerFlash} / ${enemyBlindTime} secs / ${nadeDmgPerFrag}`}/> */}
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
@@ -96,6 +102,7 @@ export function Player() {
                 {/* <Stat title={"Rating Peak / Bottom"} value={ `${Peak} / ${Pit}` } /> */}
 
                 <Stat title={"1v2/3/4/5 Clutch Rounds"} value={ `${clutch1v2} / ${clutch1v3} / ${clutch1v4} / ${clutch1v5}` } />
+                <Stat title={"Opening Duel / Open Duels per Round / Entry Frags on T per Round"} value={ `${openDuelPercentage*100}% / ${openDuelsPerRound} / ${TsidedEntryFragsPerRound} / ${avgRoundsOpenDuelOnTside}` } />
                 <Stat title={"Average Death Placement"} value={ `${Math.round(ADP)} (CT ${Math.round(ctADP)}  T ${Math.round(tADP)})` } />
                 <Stat title={"Flashed per Match / per Flash / Blind Time Average / Assists Per Match"} value={`${EF} / ${enemiesFlashedPerFlash} / ${enemyBlindTime} / ${F_Assists}` } />
 

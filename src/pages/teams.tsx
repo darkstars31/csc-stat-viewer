@@ -4,6 +4,7 @@ import { Container } from "../common/components/container";
 import { useDataContext } from '../DataContext';
 import { Loading } from '../common/components/loading';
 import { Player } from '../models';
+import { tiers } from './player-utils';
 
 export function Teams() {
     const { season10CombinePlayers, isLoading } = useDataContext();
@@ -25,9 +26,7 @@ export function Teams() {
         ContenderTeams: teams.filter( team => team.Tier.includes("Contender")),
         prospectTeams: teams.filter( team => team.Tier.includes("Prospect")),
     }
-
-    const tiers = ["Premier", "Elite", "Challenger", "Contender", "Prospect"];
-
+    
     return (
         <Container>
             <div className="mx-auto max-w-lg text-center">

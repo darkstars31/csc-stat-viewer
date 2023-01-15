@@ -4,6 +4,7 @@ import { Loading } from "../common/components/loading";
 import { Table } from "../common/components/table";
 import { useDataContext } from "../DataContext";
 import { Player } from "../models";
+//import { tiers } from "./player-utils";
 
 function _sort<T, K extends keyof T>( items: T[], property: K, n: number  ) {
     return items.sort( (a,b) => a[property] < b[property] ? 1 : -1).slice(0,n);
@@ -14,6 +15,7 @@ function buildTableRow( player: Player, columnName: string, property: keyof Play
 }
 
 export function LeaderBoards() {
+    //const [ selectedTier, setSelectedTier ] = React.useState("");
     const { season10CombinePlayers, isLoading } = useDataContext();
 
     const playerData = season10CombinePlayers.filter( f => f.GP >= 3);
@@ -28,19 +30,30 @@ export function LeaderBoards() {
     const ctRating = _sort(playerData, "ctADP", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Rating": p.ctADP}));
     const tRating = _sort(playerData, "tADP", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Rating": p.tADP}));
 
+    if( isLoading ) {
+        return <Container><Loading /></Container>;
+    }
+
     return (
         <Container>
             <div className="mx-auto max-w-lg text-center">
                 <h2 className="text-3xl font-bold sm:text-4xl">Leaderboards</h2>
                 <p className="mt-4 text-gray-300">
-                See who's at the top (or bottom, we won't judge). Requirement of 3 games played before stats are included on the leaderboards.
+                    See who's at the top (or bottom, we won't judge). Requirement of 3 games played before stats are included on the leaderboards.
                 </p>
+                {/* <ul className="grid md:grid-cols-5">
+                    {tiers.map( tier => 
+                        <li key={`tier-${tier}`}>
+                        <input type="radio" id="tier-picker" name="tier-picker" value={tier} className="hidden peer" required onChange={ ( e ) => setSelectedTier( e.currentTarget.value ) }/>
+                        <label htmlFor="tier-picker" className="inline-flex w-full items-center p-2 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-500 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-blue-800">
+                            <div className="text-xs font-semibold text-center">{tier}</div>
+                        </label>
+                    </li>
+                    )}
+                </ul> */}
             </div>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
-
-            { isLoading && <Loading /> }
-
-            <div className="grid grid-cols-2">
+            <div className="grid md:grid-cols-2 sm:grid-cols-1">
                 <div className="m-4">
                     Games Played
                     <Table rows={gamesPlayed}/>
@@ -50,7 +63,7 @@ export function LeaderBoards() {
                     <Table rows={kills}/>
                 </div>
             </div>
-            <div className="grid grid-cols-2">
+            <div className="grid md:grid-cols-2 sm:grid-cols-1">
                 <div className="m-4">
                     Highest Kill / Death Ratio
                     <Table rows={killDeathRatio}/>
@@ -60,7 +73,7 @@ export function LeaderBoards() {
                     <Table rows={aces}/>
                 </div>
             </div>
-            <div className="grid grid-cols-2">
+            <div className="grid md:grid-cols-2 sm:grid-cols-1">
                 <div className="m-4">
                     Damager Per Round
                     <Table rows={damagePerRound}/>
@@ -70,7 +83,7 @@ export function LeaderBoards() {
                     <Table rows={timeToDeath}/>
                 </div>
             </div>
-            <div className="grid grid-cols-2">
+            <div className="grid md:grid-cols-2 sm:grid-cols-1">
                 <div className="m-4">
                     Awp Kills per Round
                     <Table rows={awpKillsPerRound}/>
@@ -80,7 +93,7 @@ export function LeaderBoards() {
                     <Table rows={utilDamagePerMatch}/>
                 </div>
             </div>
-            <div className="grid grid-cols-2">
+            <div className="grid md:grid-cols-2 sm:grid-cols-1">
                 <div className="m-4">
                     CT-Side Rating
                     <Table rows={ctRating}/>
