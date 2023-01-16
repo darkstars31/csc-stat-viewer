@@ -11,7 +11,6 @@ const queryClient = new QueryClient();
 const env : string = process.env.NODE_ENV!;
 console.info( env );
 
-
 function App() {
   return (
     <>

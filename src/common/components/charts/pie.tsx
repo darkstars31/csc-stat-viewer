@@ -1,14 +1,11 @@
 import { EChartsOption } from "echarts";
 import * as React from "react";
-import useEcharts from "react-hooks-echarts";
+import ReactECharts from "echarts-for-react";
 
 
 export function PieChart( options: EChartsOption) {
-    const [chartRef, ref ] = useEcharts();
 
-    React.useEffect(() => {
-        const chart = chartRef.current;
-        chart?.setOption({
+        const defaultOptions = {
             tooltip: {
               trigger: 'item'
             },
@@ -38,7 +35,7 @@ export function PieChart( options: EChartsOption) {
                     fontWeight: 'bold'
                   }
                 },
-                labelLine: {
+                labelLine: { 
                   show: false
                 },
                 data: [
@@ -47,11 +44,10 @@ export function PieChart( options: EChartsOption) {
                 ]
               }
             ],
-            //...options
-          });
-    });
+            ...options
+          };
 
     return (
-        <div ref={ref} className="chart" style={{ height: 300}} ></div>
+        <ReactECharts option={defaultOptions} />
     )
 }

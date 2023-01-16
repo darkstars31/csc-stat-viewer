@@ -1,16 +1,13 @@
 import { EChartsOption } from "echarts";
 import * as React from "react";
-import useEcharts from "react-hooks-echarts";
+import ReactECharts from "echarts-for-react";
+
 
 type Props = {
     options: EChartsOption
 }
 
 export function PlayerRadar( { options }: Props) {
-    const [chartRef, ref ] = useEcharts();
-
-    React.useEffect(() => {
-        const chart = chartRef.current;
         const defaultOptions = {
             radar:{
                 indicator: [
@@ -25,13 +22,11 @@ export function PlayerRadar( { options }: Props) {
                 type: "radar"
               }
             ],
-            //...options
+            ...options
           };
-          chart?.setOption( { ...defaultOptions } );
 
-    }, [ chartRef, options ] );
 
     return (
-        <div ref={ref} className="chart" style={{ height: 300}}></div>
+        <ReactECharts option={defaultOptions} />
     )
 }

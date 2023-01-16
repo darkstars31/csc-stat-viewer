@@ -6,8 +6,8 @@ import { Tooltip } from "../common/components/tooltip";
 import { useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
-//import { PlayerRadar } from "../common/components/charts/radar";
-// import { PieChart } from "../common/components/charts/pie";
+import { PieChart } from "../common/components/charts/pie";
+import { RoleRadar } from "../common/components/roleRadar";
 
 function Stat( { title, value, children }: { title?:string, value?: string|number, children?: React.ReactNode | React.ReactNode[] } ) {
     return (
@@ -43,8 +43,6 @@ export function Player() {
     const playerTeammates = getPlayerTeammates( player!, season10CombinePlayers);
     const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player!, season10CombinePlayers );
     const playerRatingIndex = getPlayerRatingIndex( player!, season10CombinePlayers );
-
-    console.info( playerTeammates, playerInTierOrderedByRating, playerRatingIndex);
 
     const { 
         Name, Tier, Team, Rating, Steam, ppR, GP, "": _,
@@ -88,6 +86,12 @@ export function Player() {
                 <Pill label={`Tier  ${playerRatingIndex} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />
             </Stat>
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
+                <Stat title={"Roles"} >
+                    <RoleRadar player={player!}/>
+                </Stat>
+                <Stat title={"Side"} >
+                    <PieChart />
+                </Stat>
                 <Stat title={"K / A / D"} value={ `${Kills} / ${Assists} / ${Deaths}` } />
                 <Stat title={"K/D Ratio"} value={ `${(Kills/Deaths).toFixed(2)}` } />
                 <Stat title={"Headshots"} value={ `${HS}%` }>
@@ -108,12 +112,6 @@ export function Player() {
             </dl>
                 {/* <Stat title={"Enemies Flashed per Flash / Blind Time Average / Nade Damage per Nade"} value={`${enemiesFlashedPerFlash} / ${enemyBlindTime} secs / ${nadeDmgPerFrag}`}/> */}
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
-                {/* <Stat title={"Roles"} >
-                    <PlayerRadar options={{}}/>
-                </Stat> */}
-                {/* <Stat title={"Side"} >
-                    <PieChart />
-                </Stat> */}
                 {/* <Stat title={"CT-side / T-side Rating"} value={ `${ctRating} / ${tRating}` } /> */}
                 {/* <Stat title={"Rating Peak / Bottom"} value={ `${Peak} / ${Pit}` } /> */}
                 <Stat title={"Impact / on Rounds Won / Kills "} value={ `${Impact} / ${IWR} / ${KPA}` } />

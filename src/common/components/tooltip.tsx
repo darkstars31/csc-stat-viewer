@@ -18,7 +18,7 @@ export function Tooltip( {title, content, children }: Props ){
               <h3 className="font-semibold text-gray-900 dark:text-white">{title}</h3>
           </div> }
           { content && <div className="px-3 py-2">
-              <p>{content}</p>
+              <div>{content}</div>
           </div> }
           { children }
           <div data-popper-arrow></div>
