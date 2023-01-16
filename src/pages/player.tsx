@@ -3,7 +3,7 @@ import { Container } from "../common/components/container";
 import { Pill } from "../common/components/pill";
 import { PlayerMappings, TotalPlayerAverages, teamNameTranslator, tierColorClassNames, getPlayerTeammates, getPlayersInTierOrderedByRating, getPlayerRatingIndex } from "./player-utils";
 import { Tooltip } from "../common/components/tooltip";
-import { useRoute } from "wouter";
+import { Link, useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
 import { PieChart } from "../common/components/charts/pie";
@@ -68,29 +68,49 @@ export function Player() {
 
     return (
         <Container>
-            <Stat value={ Name ?? "n/a"}>
-                <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
-                <Pill label={ppR} color="bg-red-300" />
-                <Pill label={teamNameTranslator(Team)} color="bg-blue-300" />
-                <Pill data-popover-target="popover-default" label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300" data-tooltip-target="rating-tooltip" data-tooltip-placement="top"/>
-                <Tooltip content={
-                    <>
-                        <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>
-                        <div>Consistency: {ratingConsistency}σ ({ratingConsistency < tierPlayerAverages.avgRatingConsistency ? "More" : "Less"} than avg in Tier)</div>
-                        <div>Peak {Peak} / Bottom {Pit}</div>
-                        <div>CT: {ctRating} / T: {tRating}</div>
-                    </>
-                }>
-                </Tooltip>
-                <Pill label={`Games Played ${GP}`} color="bg-orange-300" />
-                <Pill label={`Tier  ${playerRatingIndex} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />
+            <Stat>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <div>
+                        <div className="text-2xl font-extrabold text-blue-600 md:text-4xl">{ Name ?? "n/a"}</div>
+                        <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
+                        <Pill label={ppR} color="bg-red-300" />
+                        <Pill label={teamNameTranslator(Team)} color="bg-blue-300" />
+                        <Pill data-popover-target="popover-default" label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300" data-tooltip-target="rating-tooltip" data-tooltip-placement="top"/>
+                        <Tooltip content={
+                            <>
+                                <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>
+                                <div>Consistency: {ratingConsistency}σ ({ratingConsistency < tierPlayerAverages.avgRatingConsistency ? "More" : "Less"} than avg in Tier)</div>
+                                <div>Peak {Peak} / Bottom {Pit}</div>
+                                <div>CT: {ctRating} / T: {tRating}</div>
+                            </>
+                        }>
+                        </Tooltip>
+                        <Pill label={`Games Played ${GP}`} color="bg-orange-300" />
+                        <Pill label={`Tier  ${playerRatingIndex} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />
+                    </div>
+                    <div>
+                        <RoleRadar player={player!}/>
+                    </div>
+                </div>
             </Stat>
+            <div className="grid grid-cols-2 gap-2">
+				<div className="text-left">
+						<strong>Headshot</strong>
+				</div>
+				<div className="text-right">
+						12
+				</div>
+
+			</div>
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
-                <Stat title={"Roles"} >
-                    <RoleRadar player={player!}/>
-                </Stat>
                 <Stat title={"Side"} >
-                    <PieChart />
+                    <PieChart options={
+                        { series: [ 
+                            { data: [ 
+                                { name: "CT Rating", value: ctRating },{ name: "T Rating", value: tRating }
+                            ]} 
+                        ]
+                        }}/>
                 </Stat>
                 <Stat title={"K / A / D"} value={ `${Kills} / ${Assists} / ${Deaths}` } />
                 <Stat title={"K/D Ratio"} value={ `${(Kills/Deaths).toFixed(2)}` } />
@@ -100,7 +120,7 @@ export function Player() {
                 <Stat title={"2k / 3k / 4k"} value={ `${twoKills} / ${threeKills} / ${fourKills}` } />
                 { playerTeammates.length > 0 && 
                     <Stat title={`Team ${Team}`}>
-                        { playerTeammates.map( teammate => <div>{teammate.Name}</div>)}
+                        { playerTeammates.map( teammate => <div><Link to={`/players/${teammate.Tier}/${teammate.Name}`}>{teammate.Name}</Link></div>)}
                     </Stat> 
                 }
                 <Stat title={"Aces"} value={ `${aces}` } />

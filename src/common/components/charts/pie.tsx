@@ -2,10 +2,13 @@ import { EChartsOption } from "echarts";
 import * as React from "react";
 import ReactECharts from "echarts-for-react";
 
+type Props = {
+    options: EChartsOption,
+}
 
-export function PieChart( options: EChartsOption) {
+export function PieChart( { options }: Props) {
 
-        const defaultOptions = {
+        const defaultOptions: EChartsOption = {
             tooltip: {
               trigger: 'item'
             },
@@ -17,7 +20,7 @@ export function PieChart( options: EChartsOption) {
               {
                 name: 'Access From',
                 type: 'pie',
-                radius: ['40%', '70%'],
+                radius: ['0%', '70%'],
                 avoidLabelOverlap: false,
                 itemStyle: {
                   borderRadius: 10,
@@ -36,16 +39,17 @@ export function PieChart( options: EChartsOption) {
                   }
                 },
                 labelLine: { 
-                  show: false
+                  show: true
                 },
                 data: [
-                  { value: 1048, name: 'CT' },
-                  { value: 735, name: 'T' },
+                  { value: 3.14, name: 'CT' },
+                  { value: 7, name: 'T' },
                 ]
               }
             ],
             ...options
           };
+          console.info( defaultOptions.series );
 
     return (
         <ReactECharts option={defaultOptions} />

@@ -69,7 +69,7 @@ export function Players() {
       <p className="mt-4 text-gray-300">
         Showing {filteredPlayerData.length} of {playerData.length} Players
       </p>
-      <div className="flex flex-box h-12 mx-auto">
+        <form className="flex flex-box h-12 mx-auto" action="#">
             <Input
                 className="basis-1/2 grow"
                 label="Filter"
@@ -79,12 +79,13 @@ export function Players() {
                 value={searchValue}
             />
             <button
+                type="submit"
                 className="basis-1/6 ml-4 inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
                 onClick={() => { setSearchValue(""); setFilters( [ ...filters, searchValue ].filter(Boolean) ) } }
                 >
-                    +Filter
+                +Filter
             </button>
-        </div>
+        </form>
         <div className="pt-4">
             {filters.map( filter => 
                 <Pill key={filter} label={filter} onClick={() => removeFilter(filter)}/>

@@ -1,4 +1,4 @@
-import { EChartsOption } from "echarts";
+import { EChartsOption, graphic } from "echarts";
 import * as React from "react";
 import { Player } from "../../models";
 import { PlayerRadar } from "./charts/radar";
@@ -11,13 +11,14 @@ export function RoleRadar( { player }: Props ){
     const options: EChartsOption = {
             //legend: { data: ["Role"] },
             radar:{
+                //shape: "circle",
                 indicator: [
-                    { name: "Awper", max: 1 },
+                    { name: "Awper", max: .5 },
                     { name: "Entry", max: 1 },
-                    { name: "Fragger", max: 2 },
-                    { name: "Rifler", max: 100 },
-                    { name: "Support", max: 1 },
-                    { name: "Lurker", max: 2 },
+                    { name: "Fragger", max: 1 },
+                    { name: "Rifler", max: 250 },
+                    { name: "Support", max: 2 },
+                    { name: "Lurker", max: 4 },
                 ]
             },
             series: [ 
@@ -27,9 +28,18 @@ export function RoleRadar( { player }: Props ){
                 data: [
                     { 
                         name: "Role", 
-                        value: [ player["awp/R"], player.ODR, player["multi/R"], player.ADR, player.SuppR,player["wlp/L"]],
+                        value: [ player["awp/R"], // Awper
+                                player.ODR*(player["oda/R"]*2), // Entry
+                                player["multi/R"], // Fragger
+                                player.ADR, // Rifler
+                                player.SuppR, // Support
+                                player["wlp/L"] // Lurker
+                            ],
                         areaStyle: {
-                            color: 'rgba(255, 228, 52, 1)'
+                            color: new graphic.RadialGradient(0.1, 0.6, 1, [
+                                { color: 'rgba(255, 145, 124, 0.5)', offset: 0 },
+                                { color: 'rgba(255, 145, 124, 1)', offset: 1 }
+                              ])
                           }
                     },
                      ] 

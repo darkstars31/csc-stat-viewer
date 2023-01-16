@@ -16,7 +16,7 @@ export function Playground() {
         <Container>
             <RoleRadar player={season10CombinePlayers.at(1)!} />
             <hr />
-            <PieChart />
+            <PieChart options={{}} />
         </Container>
     );
 }
