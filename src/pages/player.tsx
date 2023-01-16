@@ -6,19 +6,19 @@ import { Tooltip } from "../common/components/tooltip";
 import { Link, useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
-import { PieChart } from "../common/components/charts/pie";
+// import { PieChart } from "../common/components/charts/pie";
 import { RoleRadar } from "../common/components/roleRadar";
 
 function Stat( { title, value, children }: { title?:string, value?: string|number, children?: React.ReactNode | React.ReactNode[] } ) {
     return (
-        <div className="mb-4 flex flex-col rounded-lg border border-gray-100 px-4 py-8 text-center dark:border-gray-800">
-          { title && <dt className="order-last text-m font-medium text-gray-500 dark:text-gray-400">
+        <div className="mb-2 flex flex-col rounded-lg border border-gray-100 px-2 py-4 text-center dark:border-gray-800">
+          { title && <dt className="order-last text-s font-medium text-gray-500 dark:text-gray-400">
             {title}
           </dt> }
-          { value && <dd className="text-2xl font-extrabold text-blue-600 md:text-4xl">
+          { value && <dd className="text-l font-extrabold text-blue-600 md:text-2xl">
             {value}
           </dd> }
-          <div className="pt-4"> {children} </div>
+          <div className="pt-2"> {children} </div>
         </div>
     );
 }
@@ -93,7 +93,7 @@ export function Player() {
                     </div>
                 </div>
             </Stat>
-            <div className="grid grid-cols-2 gap-2">
+            {/* <div className="grid grid-cols-2 gap-2">
 				<div className="text-left">
 						<strong>Headshot</strong>
 				</div>
@@ -101,9 +101,9 @@ export function Player() {
 						12
 				</div>
 
-			</div>
+			</div> */}
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
-                <Stat title={"Side"} >
+                {/* <Stat title={"Side"} >
                     <PieChart options={
                         { series: [ 
                             { data: [ 
@@ -111,7 +111,7 @@ export function Player() {
                             ]} 
                         ]
                         }}/>
-                </Stat>
+                </Stat> */}
                 <Stat title={"K / A / D"} value={ `${Kills} / ${Assists} / ${Deaths}` } />
                 <Stat title={"K/D Ratio"} value={ `${(Kills/Deaths).toFixed(2)}` } />
                 <Stat title={"Headshots"} value={ `${HS}%` }>
@@ -119,7 +119,7 @@ export function Player() {
                 </Stat>
                 <Stat title={"2k / 3k / 4k"} value={ `${twoKills} / ${threeKills} / ${fourKills}` } />
                 { playerTeammates.length > 0 && 
-                    <Stat title={`Team ${Team}`}>
+                    <Stat title={`Teammates - ${Team}`}>
                         { playerTeammates.map( teammate => <div><Link to={`/players/${teammate.Tier}/${teammate.Name}`}>{teammate.Name}</Link></div>)}
                     </Stat> 
                 }
@@ -136,7 +136,8 @@ export function Player() {
                 {/* <Stat title={"Rating Peak / Bottom"} value={ `${Peak} / ${Pit}` } /> */}
                 <Stat title={"Impact / on Rounds Won / Kills "} value={ `${Impact} / ${IWR} / ${KPA}` } />
                 <Stat title={"1v2/3/4/5 Clutch Rounds"} value={ `${clutch1v2} / ${clutch1v3} / ${clutch1v4} / ${clutch1v5}` } />
-                <Stat title={"Opening Duel / Open Duels per Round / Entry Frags on T per Round"} value={ `${(openDuelPercentage*100).toFixed(0)}% / ${openDuelsPerRound} / ${TsidedEntryFragsPerRound} / ${avgRoundsOpenDuelOnTside}` } />
+                <Stat title={"Opening Duel / Open Duels per Round"} value={ `${(openDuelPercentage*100).toFixed(0)}% / ${openDuelsPerRound}` } />
+                <Stat title={"Entry Frags T-side per Round / Avg Opening Duel T-side"} value={`${TsidedEntryFragsPerRound} / ${avgRoundsOpenDuelOnTside}`} />
                 <Stat title={"Average Death Placement"} value={ `${Math.round(ADP)}` }>
                     <div className="text-gray-500 text-m">CT: {Math.round(ctADP)}  T: {Math.round(tADP)}</div>
                 </Stat>

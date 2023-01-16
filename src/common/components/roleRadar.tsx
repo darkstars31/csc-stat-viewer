@@ -27,6 +27,7 @@ export function RoleRadar( { player }: Props ){
                 type: 'radar',
                 data: [
                     { 
+                        symbol: "none",
                         name: "Role", 
                         value: [ player["awp/R"], // Awper
                                 player.ODR*(player["oda/R"]*2), // Entry
