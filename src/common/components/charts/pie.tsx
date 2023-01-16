@@ -1,4 +1,4 @@
-import { use as eChartUse, init as echartInit, EChartsOption } from "echarts";
+import { EChartsOption } from "echarts";
 import * as React from "react";
 import useEcharts from "react-hooks-echarts";
 
