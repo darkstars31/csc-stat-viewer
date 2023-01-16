@@ -87,6 +87,19 @@ export const teamNameTranslator = ( name: string ) => {
     }
 }
 
+
+export const getPlayersInTier = ( player: Player, allPlayers: Player[] ) => allPlayers.filter( ap => ap.Tier === player.Tier);
+export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Player[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => a.Rating < b.Rating ? 1 : -1);
+export const getPlayerRatingIndex = ( player: Player, allPlayers: Player[] ) => {
+    const playersInTierSortedByRating = getPlayersInTierOrderedByRating(player, allPlayers);
+    return playersInTierSortedByRating.findIndex( p => p.Name === player.Name );
+}
+export const getPlayerTeammates = ( player: Player, allPlayers: Player[] ) => {
+    return allPlayers
+        .filter( allPlayers => !["DE","FA","PFA"].includes(allPlayers.Team))
+        .filter( allPlayers => allPlayers.Tier === player.Tier && allPlayers.Team === player.Team && allPlayers.Name !== player.Name);
+}
+
 export const TotalPlayerAverages = ( combinePlayerData: Player[], options?: Record<string,unknown> ) => {
     const players = options?.tier ? combinePlayerData.filter( p => p.Tier === options?.tier) : combinePlayerData;
 

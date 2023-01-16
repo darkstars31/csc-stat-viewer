@@ -8,6 +8,7 @@ import { Player } from './pages/player';
 import { LeaderBoards } from './pages/leaderboards';
 import { Header } from './header-nav/header';
 import { PlayerCompare } from './pages/compare';
+import { Playground } from './pages/playground';
   
 const routes = [
   { path: `/`, component: () => <Dashboard /> },
@@ -17,7 +18,7 @@ const routes = [
   { path: `/players/compare`, component: () => <PlayerCompare /> },
   { path: `/leaderboards`, component: () => <LeaderBoards /> },
   { path: `/about`, component: () => <Container><div>About</div></Container> },
-  { path: `/playground`, component: () => <Container><div>Play Ground</div></Container> },
+  { path: `/playground`, component: () => <Playground /> },
 ];
 
 export function Router(){

@@ -1,6 +1,7 @@
-import { EChartsOption } from "echarts";
+import { use as eChartUse, init as echartInit, EChartsOption } from "echarts";
 import * as React from "react";
 import useEcharts from "react-hooks-echarts";
+
 
 export function PieChart( options: EChartsOption) {
     const [chartRef, ref ] = useEcharts();
@@ -45,7 +46,8 @@ export function PieChart( options: EChartsOption) {
                   { value: 735, name: 'T' },
                 ]
               }
-            ]
+            ],
+            //...options
           });
     });
 

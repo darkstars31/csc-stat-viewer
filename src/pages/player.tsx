@@ -1,13 +1,13 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
 import { Pill } from "../common/components/pill";
-import { PlayerMappings, TotalPlayerAverages, teamNameTranslator, tierColorClassNames } from "./player-utils";
+import { PlayerMappings, TotalPlayerAverages, teamNameTranslator, tierColorClassNames, getPlayerTeammates, getPlayersInTierOrderedByRating, getPlayerRatingIndex } from "./player-utils";
 import { Tooltip } from "../common/components/tooltip";
 import { useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
 //import { PlayerRadar } from "../common/components/charts/radar";
-//import { PieChart } from "../common/components/charts/pie";
+// import { PieChart } from "../common/components/charts/pie";
 
 function Stat( { title, value, children }: { title?:string, value?: string|number, children?: React.ReactNode | React.ReactNode[] } ) {
     return (
@@ -39,6 +39,12 @@ export function Player() {
                 <Loading />
             </Container>;
     }
+
+    const playerTeammates = getPlayerTeammates( player!, season10CombinePlayers);
+    const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player!, season10CombinePlayers );
+    const playerRatingIndex = getPlayerRatingIndex( player!, season10CombinePlayers );
+
+    console.info( playerTeammates, playerInTierOrderedByRating, playerRatingIndex);
 
     const { 
         Name, Tier, Team, Rating, Steam, ppR, GP, "": _,
@@ -79,6 +85,7 @@ export function Player() {
                 }>
                 </Tooltip>
                 <Pill label={`Games Played ${GP}`} color="bg-orange-300" />
+                <Pill label={`Tier  ${playerRatingIndex} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />
             </Stat>
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
                 <Stat title={"K / A / D"} value={ `${Kills} / ${Assists} / ${Deaths}` } />
@@ -87,6 +94,11 @@ export function Player() {
                     <div className="text-gray-500 text-m">({((HS/tierPlayerAverages.avgHeadShotPercentage)*100-100).toFixed(2)}% of avg in tier)</div>
                 </Stat>
                 <Stat title={"2k / 3k / 4k"} value={ `${twoKills} / ${threeKills} / ${fourKills}` } />
+                { playerTeammates.length > 0 && 
+                    <Stat title={`Team ${Team}`}>
+                        { playerTeammates.map( teammate => <div>{teammate.Name}</div>)}
+                    </Stat> 
+                }
                 <Stat title={"Aces"} value={ `${aces}` } />
                 <Stat title={"Damage / Kills per Round"} value={`${ADR} / ${avgKillsPerRound}`} />
                 <Stat title={"Kill Assist Traded or Survived"} value={`${(KAST*100).toFixed(0)}%`} />
@@ -97,9 +109,9 @@ export function Player() {
                 {/* <Stat title={"Enemies Flashed per Flash / Blind Time Average / Nade Damage per Nade"} value={`${enemiesFlashedPerFlash} / ${enemyBlindTime} secs / ${nadeDmgPerFrag}`}/> */}
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
                 {/* <Stat title={"Roles"} >
-                    <PlayerRadar />
-                </Stat>
-                <Stat title={"Side"} >
+                    <PlayerRadar options={{}}/>
+                </Stat> */}
+                {/* <Stat title={"Side"} >
                     <PieChart />
                 </Stat> */}
                 {/* <Stat title={"CT-side / T-side Rating"} value={ `${ctRating} / ${tRating}` } /> */}
