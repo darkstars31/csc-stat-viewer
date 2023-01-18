@@ -69,7 +69,7 @@ export function Players() {
       <p className="mt-4 text-gray-300">
         Showing {filteredPlayerData.length} of {playerData.length} Players
       </p>
-        <form className="flex flex-box h-12 mx-auto" action="#">
+        <form className="flex flex-box h-12 mx-auto" onSubmit={(e)=>{e.preventDefault()}}>
             <Input
                 className="basis-1/2 grow"
                 label="Filter"

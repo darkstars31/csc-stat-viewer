@@ -8,6 +8,7 @@ import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
 // import { PieChart } from "../common/components/charts/pie";
 import { RoleRadar } from "../common/components/roleRadar";
+import { PlayerGauge } from "../common/components/playerGauge";
 
 function Stat( { title, value, children }: { title?:string, value?: string|number, children?: React.ReactNode | React.ReactNode[] } ) {
     return (
@@ -34,7 +35,7 @@ export function Player() {
     //     getSteamApiPlayerSummeries( [ player.Steam ] ).then( data => console.info( "player", data ));
     // }
 
-    if( isLoading ){
+    if( isLoading || !player ){
         return <Container>
                 <Loading />
             </Container>;
@@ -73,8 +74,8 @@ export function Player() {
                     <div>
                         <div className="text-2xl font-extrabold text-blue-600 md:text-4xl">{ Name ?? "n/a"}</div>
                         <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
-                        <Pill label={ppR} color="bg-red-300" />
                         <Pill label={teamNameTranslator(Team)} color="bg-blue-300" />
+                        <Pill label={ppR} color="bg-red-300" />
                         <Pill data-popover-target="popover-default" label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300" data-tooltip-target="rating-tooltip" data-tooltip-placement="top"/>
                         <Tooltip content={
                             <>
@@ -87,6 +88,7 @@ export function Player() {
                         </Tooltip>
                         <Pill label={`Games Played ${GP}`} color="bg-orange-300" />
                         <Pill label={`Tier  ${playerRatingIndex} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />
+                        <PlayerGauge player={player} />
                     </div>
                     <div>
                         <RoleRadar player={player!}/>
@@ -119,8 +121,8 @@ export function Player() {
                 </Stat>
                 <Stat title={"2k / 3k / 4k"} value={ `${twoKills} / ${threeKills} / ${fourKills}` } />
                 { playerTeammates.length > 0 && 
-                    <Stat title={`Teammates - ${Team}`}>
-                        { playerTeammates.map( teammate => <div><Link to={`/players/${teammate.Tier}/${teammate.Name}`}>{teammate.Name}</Link></div>)}
+                    <Stat  title={`Teammates - ${Team}`}>
+                        { playerTeammates.map( teammate => <div><Link key={`teammate-${teammate.Name}`} to={`/players/${teammate.Tier}/${teammate.Name}`}>{teammate.Name}</Link></div>)}
                     </Stat> 
                 }
                 <Stat title={"Aces"} value={ `${aces}` } />

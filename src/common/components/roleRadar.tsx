@@ -10,6 +10,7 @@ type Props = {
 export function RoleRadar( { player }: Props ){
     const options: EChartsOption = {
             //legend: { data: ["Role"] },
+            darkMode: true,
             radar:{
                 //shape: "circle",
                 indicator: [

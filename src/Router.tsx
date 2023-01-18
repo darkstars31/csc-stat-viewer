@@ -7,7 +7,7 @@ import { Players } from './pages/players';
 import { Player } from './pages/player';
 import { LeaderBoards } from './pages/leaderboards';
 import { Header } from './header-nav/header';
-import { PlayerCompare } from './pages/compare';
+import { TeamBuilder } from './pages/teamBuilder';
 import { Playground } from './pages/playground';
   
 const routes = [
@@ -15,7 +15,7 @@ const routes = [
   { path: `/teams`, component: () => <Teams /> },
   { path: `/players`, component: () => <Players /> },
   { path: `/players/:tier/:id`, component: () => <Player /> },
-  { path: `/players/compare`, component: () => <PlayerCompare /> },
+  { path: `/teambuilder`, component: () => <TeamBuilder /> },
   { path: `/leaderboards`, component: () => <LeaderBoards /> },
   { path: `/about`, component: () => <Container><div>About</div></Container> },
   { path: `/playground`, component: () => <Playground /> },

@@ -13,13 +13,13 @@ console.info( env );
 
 function App() {
   return (
-    <>
+    <div className="bg-gray-700 text-white h-screen">
       <QueryClientProvider client={queryClient}>
         <DataContextProvider >
           <Router />
         </DataContextProvider>
       </QueryClientProvider>
-    </>
+    </div>
   );
 }
 
