@@ -2,7 +2,7 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import { Pill } from "../common/components/pill";
 import { PlayerMappings, TotalPlayerAverages, teamNameTranslator, tierColorClassNames, getPlayerTeammates, getPlayersInTierOrderedByRating, getPlayerRatingIndex } from "./player-utils";
-import { Tooltip } from "../common/components/tooltip";
+// import { Tooltip } from "../common/components/tooltip";
 import { Link, useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
@@ -23,6 +23,17 @@ function Stat( { title, value, children }: { title?:string, value?: string|numbe
         </div>
     );
 }
+
+// function tooltipContent( player){
+//     return (
+//                             <>
+//                                 <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>
+//                                 <div>Consistency: {ratingConsistency}σ ({ratingConsistency < tierPlayerAverages.avgRatingConsistency ? "More" : "Less"} than avg in Tier)</div>
+//                                 <div>Peak {Peak} / Bottom {Pit}</div>
+//                                 <div>CT: {ctRating} / T: {tRating}</div>
+//                             </>
+//     );
+// }
 
 export function Player() {
     const { season10CombinePlayers = [], isLoading } = useDataContext();
@@ -76,16 +87,16 @@ export function Player() {
                         <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
                         <Pill label={teamNameTranslator(Team)} color="bg-blue-300" />
                         <Pill label={ppR} color="bg-red-300" />
-                        <Pill data-popover-target="popover-default" label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300" data-tooltip-target="rating-tooltip" data-tooltip-placement="top"/>
-                        <Tooltip content={
+                        <div className="tooltip tooltip__dang" data-tip={`${
                             <>
                                 <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>
                                 <div>Consistency: {ratingConsistency}σ ({ratingConsistency < tierPlayerAverages.avgRatingConsistency ? "More" : "Less"} than avg in Tier)</div>
                                 <div>Peak {Peak} / Bottom {Pit}</div>
                                 <div>CT: {ctRating} / T: {tRating}</div>
                             </>
-                        }>
-                        </Tooltip>
+                        }`}>
+                        <Pill data-tooltip="test" label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300" data-tooltip-target="rating-tooltip" data-tooltip-placement="top"/>
+                        </div>
                         <Pill label={`Games Played ${GP}`} color="bg-orange-300" />
                         <Pill label={`Tier  ${playerRatingIndex} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />
                         <PlayerGauge player={player} />
