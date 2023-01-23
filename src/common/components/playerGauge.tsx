@@ -9,9 +9,9 @@ type Props = {
 export function PlayerGauge( { player }: Props ) {
     const gaugeData = [
         { name: "Pit", value: player?.Pit },
-        { value: (Number(player?.Rating ?? 0) - Number(player?.CONCY ?? 0)).toFixed(2) },
+        { value: (player?.Rating ?? 0 - player?.CONCY ?? 0).toFixed(2) },
         { name: "Rating", value: player?.Rating },
-        { value: (Number(player?.Rating ?? 0) + Number(player?.CONCY ?? 0)).toFixed(2) },
+        { value: (player?.Rating ?? 0 + player?.CONCY ?? 0).toFixed(2) },
         { name: "Peak", value: player?.Peak },
     ].map( (item,index) => (
         {   ...item,

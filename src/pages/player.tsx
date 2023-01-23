@@ -24,6 +24,19 @@ function Stat( { title, value, children }: { title?:string, value?: string|numbe
     );
 }
 
+function GridStat( { name, value, rowIndex }: { name: string, value: string | number | React.ReactNode, rowIndex: number }){
+    return (
+        <div className={`grid grid-cols-2 ${ rowIndex % 2 ? "" : "bg-slate-600"}`}>
+			<div className={`text-left`}>
+				{name}
+			</div>
+			<div className={`text-right`}>
+				<strong>{value}</strong>
+			</div>
+        </div>
+    );
+}
+
 // function tooltipContent( player){
 //     return (
 //                             <>
@@ -39,17 +52,10 @@ export function Player() {
     const { season10CombinePlayers = [], isLoading } = useDataContext();
     const [, params] = useRoute("/players/:tier/:id");
     const player = season10CombinePlayers.find( player => player.Name === params?.id && player.Tier === params?.tier);
-    //const allPlayerAverages = TotalPlayerAverages( season10CombinePlayers );
     const tierPlayerAverages = TotalPlayerAverages( season10CombinePlayers, { tier: player?.Tier} );
-    // TODO: Fetch Steam Profile Data
-    // if( player?.Steam ) {
-    //     getSteamApiPlayerSummeries( [ player.Steam ] ).then( data => console.info( "player", data ));
-    // }
 
     if( isLoading || !player ){
-        return <Container>
-                <Loading />
-            </Container>;
+        return <Container><Loading /></Container>;
     }
 
     const playerTeammates = getPlayerTeammates( player!, season10CombinePlayers);
@@ -71,6 +77,8 @@ export function Player() {
         ODR: openDuelPercentage, "oda/R": openDuelsPerRound, "entries/R": TsidedEntryFragsPerRound, "ea/R": avgRoundsOpenDuelOnTside,
         ADP, ctADP, tADP,
         Impact, IWR, KPA,
+		"multi/R": multiKillRound, "clutch/R": clutchPerRound,
+		SuppR, SuppXr,
         SRate,
         TRatio,
         ATD,
@@ -106,50 +114,64 @@ export function Player() {
                     </div>
                 </div>
             </Stat>
-            {/* <div className="grid grid-cols-2 gap-2">
-				<div className="text-left">
-						<strong>Headshot</strong>
-				</div>
-				<div className="text-right">
-						12
-				</div>
 
-			</div> */}
+            <div className="grid grid-cols-2 gap-2 p-2 m-2">
+                <div className="grid grid-cols-1 gap-2 p-2">
+					<GridStat name={"Kills  /  Assists  /  Deaths"} value={`${Kills} / ${Assists} / ${Deaths}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["HS"]} value={`${HS}%`} rowIndex={1}/>
+					<GridStat name="K/D Ratio" value={(Kills/Deaths).toFixed(2)} rowIndex={0}/>
+					<GridStat name={PlayerMappings["ADR"]} value={`${ADR}`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["KPA"]} value={`${KPA}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["KAST"]} value={`${(KAST*100).toFixed(2).replace(/[.,]00$/, "")}%`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["X/nade"]} value={`${nadeDmgPerFrag}`} rowIndex={0}/>
+				</div>
+				<div className="grid grid-cols-1 gap-2 p-2">
+					<GridStat name={PlayerMappings["K/R"]} value={`${avgKillsPerRound}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["TRatio"]} value={`${TRatio*100}%`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["SRate"]} value={(SRate*100).toFixed(0)} rowIndex={0}/>
+					<GridStat name={PlayerMappings["ATD"]} value={`${ATD}s`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["multi/R"]} value={`${multiKillRound}`} rowIndex={0}/>
+                    <GridStat name={PlayerMappings["clutch/R"]} value={`${clutchPerRound}`} rowIndex={1}/>
+					<GridStat name={"2k  /  3k  /  4k  /  Ace"} value={`${twoKills}  /  ${threeKills}  /  ${fourKills}  /  ${aces}`} rowIndex={0}/>
+				</div>
+            </div>
+			<div className="grid grid-cols-2 gap-2 p-2 m-2">
+                <div className="grid grid-cols-1 gap-2 p-2">
+					<GridStat name={PlayerMappings["ODR"]} value={`${(openDuelPercentage*100).toFixed(0)}%`} rowIndex={0}/>
+					<GridStat name={"Entry Frags T-side per Round"} value={`${TsidedEntryFragsPerRound}`} rowIndex={1}/>
+				</div>
+				<div className="grid grid-cols-1 gap-2 p-2">
+					<GridStat name={PlayerMappings["oda/R"]} value={`${openDuelsPerRound}`} rowIndex={0}/>
+					<GridStat name={"Average Opening Duel T-side"} value={`${avgRoundsOpenDuelOnTside}`} rowIndex={1}/>
+				</div>
+            </div>
+			<div className="grid grid-cols-2 gap-2 p-2 m-2">
+                <div className="grid grid-cols-1 gap-2 p-2">
+					<GridStat name={PlayerMappings["SuppR"]} value={`${SuppR}`} rowIndex={0}/>
+				</div>
+				<div className="grid grid-cols-1 gap-2 p-2">
+					<GridStat name={PlayerMappings["SuppXr"]} value={`${SuppXr}`} rowIndex={0}/>
+				</div>
+            </div>
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
-                {/* <Stat title={"Side"} >
-                    <PieChart options={
-                        { series: [ 
-                            { data: [ 
-                                { name: "CT Rating", value: ctRating },{ name: "T Rating", value: tRating }
-                            ]} 
-                        ]
-                        }}/>
+                {/* <Stat title={"K / A / D"} value={ `${Kills} / ${Assists} / ${Deaths}` } /> */}
+                {/* <Stat title={"Headshots"} value={ `${HS}%` }>
+                    <div className="text-gray-500 text-m">({((HS/Number(tierPlayerAverages.avgHeadShotPercentage))*100-100).toFixed(2)}% of avg in tier)</div>
                 </Stat> */}
-                <Stat title={"K / A / D"} value={ `${Kills} / ${Assists} / ${Deaths}` } />
-                <Stat title={"K/D Ratio"} value={ `${(Kills/Deaths).toFixed(2)}` } />
-                <Stat title={"Headshots"} value={ `${HS}%` }>
-                    <div className="text-gray-500 text-m">({((HS/tierPlayerAverages.avgHeadShotPercentage)*100-100).toFixed(2)}% of avg in tier)</div>
-                </Stat>
-                <Stat title={"2k / 3k / 4k"} value={ `${twoKills} / ${threeKills} / ${fourKills}` } />
+                {/* <Stat title={"2k / 3k / 4k"} value={ `${twoKills} / ${threeKills} / ${fourKills}` } /> */}
                 { playerTeammates.length > 0 && 
                     <Stat  title={`Teammates - ${Team}`}>
                         { playerTeammates.map( teammate => <div><Link key={`teammate-${teammate.Name}`} to={`/players/${teammate.Tier}/${teammate.Name}`}>{teammate.Name}</Link></div>)}
                     </Stat> 
                 }
-                <Stat title={"Aces"} value={ `${aces}` } />
-                <Stat title={"Damage / Kills per Round"} value={`${ADR} / ${avgKillsPerRound}`} />
-                <Stat title={"Kill Assist Traded or Survived"} value={`${(KAST*100).toFixed(0)}%`} />
-                <Stat title={"Survival Rate"} value={`${(SRate*100).toFixed(0)}%`} />
-                <Stat title={"Deaths Traded Out"} value={`${(TRatio*100).toFixed(0)}%`} />
-                <Stat title={"Average Alive Time"} value={`${ATD}s`} />
+                {/* <Stat title={"Aces"} value={ `${aces}` } /> */}
             </dl>
-                {/* <Stat title={"Enemies Flashed per Flash / Blind Time Average / Nade Damage per Nade"} value={`${enemiesFlashedPerFlash} / ${enemyBlindTime} secs / ${nadeDmgPerFrag}`}/> */}
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
                 {/* <Stat title={"CT-side / T-side Rating"} value={ `${ctRating} / ${tRating}` } /> */}
                 {/* <Stat title={"Rating Peak / Bottom"} value={ `${Peak} / ${Pit}` } /> */}
-                <Stat title={"Impact / on Rounds Won / Kills "} value={ `${Impact} / ${IWR} / ${KPA}` } />
+                <Stat title={"Impact / on Rounds Won"} value={ `${Impact} / ${IWR}` } />
                 <Stat title={"1v2/3/4/5 Clutch Rounds"} value={ `${clutch1v2} / ${clutch1v3} / ${clutch1v4} / ${clutch1v5}` } />
-                <Stat title={"Opening Duel / Open Duels per Round"} value={ `${(openDuelPercentage*100).toFixed(0)}% / ${openDuelsPerRound}` } />
+                {/* <Stat title={"Opening Duel / Open Duels per Round"} value={ `${(openDuelPercentage*100).toFixed(0)}% / ${openDuelsPerRound}` } /> */}
                 <Stat title={"Entry Frags T-side per Round / Avg Opening Duel T-side"} value={`${TsidedEntryFragsPerRound} / ${avgRoundsOpenDuelOnTside}`} />
                 <Stat title={"Average Death Placement"} value={ `${Math.round(ADP)}` }>
                     <div className="text-gray-500 text-m">CT: {Math.round(ctADP)}  T: {Math.round(tADP)}</div>

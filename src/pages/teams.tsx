@@ -50,7 +50,7 @@ export function Teams() {
                                             >
                                                 <h2 className="mt-2 text-xl font-bold text-white text-center">{team.Team}</h2>
                                             </Link>
-                                            <h4 className="mt-1 text-s font-bold text-gray-500 text-center">({(playerData.filter( p => p.Team === team.Team && p.Tier === tiers[index]).map( p => p.Rating).reduce((cum,cur) => Number(cum) + Number(cur))/playerData.filter( p => p.Team === team.Team && p.Tier === tiers[index]).length).toFixed(2)})</h4>
+                                            <h4 className="mt-1 text-s font-bold text-gray-500 text-center">({(playerData.filter( p => p.Team === team.Team && p.Tier === tiers[index]).map( p => p.Rating).reduce((cum,cur) => cum + cur)/playerData.filter( p => p.Team === team.Team && p.Tier === tiers[index]).length).toFixed(2)})</h4>
                                             <div className="mt-1 text-sm text-gray-300 grid grid-cols-1 gap-1">
                                                 {   playerData.filter( p => p.Team === team.Team && p.Tier === tiers[index]).map( p => 
                                                     <Link className="grid grid-cols-2 gap-1" key={`${tiers[index]}-${team.Team}-${p.Name}`}

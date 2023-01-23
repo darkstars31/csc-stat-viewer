@@ -7,7 +7,7 @@ const cscSeason10CombineStatsGoogleSheetsId = "1IatVycM30WHbxHCHvtb2rk49impu7TAl
 const x = async () => await fetch(`https://docs.google.com/spreadsheets/d/${cscSeason10CombineStatsGoogleSheetsId}/gviz/tq?tqx=out:csv&tq`,
     { method: "GET", headers: { 'content-type': 'text/csv;charset=UTF-8'}})
     .then( async response => {
-        return papa.parse<Player>( await response.text(), { header: true}).data;
+        return papa.parse<Player>( await response.text(), { header: true, dynamicTyping: true}).data;
     } );
 
 export function useFetchCombinePlayerData(): UseQueryResult<Player[]> {
