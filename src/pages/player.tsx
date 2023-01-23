@@ -11,7 +11,10 @@ import { RoleRadar } from "../common/components/roleRadar";
 import { PlayerGauge } from "../common/components/playerGauge";
 
 function Stat( { title, value, children }: { title?:string, value?: string|number, children?: React.ReactNode | React.ReactNode[] } ) {
-    return (
+    if(!title && !value && !children ){
+		return null;
+	}
+	return (
         <div className="mb-2 flex flex-col rounded-lg border border-gray-100 px-2 py-4 text-center dark:border-gray-800">
           { title && <dt className="order-last text-s font-medium text-gray-500 dark:text-gray-400">
             {title}
@@ -26,7 +29,7 @@ function Stat( { title, value, children }: { title?:string, value?: string|numbe
 
 function GridStat( { name, value, rowIndex }: { name: string, value: string | number | React.ReactNode, rowIndex: number }){
     return (
-        <div className={`grid grid-cols-2 ${ rowIndex % 2 ? "" : "bg-slate-600"}`}>
+        <div className={`grid grid-cols-2 ${ rowIndex % 2 ? "bg-gray-600" : ""}`}>
 			<div className={`text-left`}>
 				{name}
 			</div>
@@ -36,6 +39,9 @@ function GridStat( { name, value, rowIndex }: { name: string, value: string | nu
         </div>
     );
 }
+
+const GridContainer = ( { children }: { children: React.ReactNode | React.ReactNode[]} ) => 
+	<div className="grid grid-cols-2 gap-2 p-2 m-2">{children}</div>;
 
 // function tooltipContent( player){
 //     return (
@@ -51,7 +57,7 @@ function GridStat( { name, value, rowIndex }: { name: string, value: string | nu
 export function Player() {
     const { season10CombinePlayers = [], isLoading } = useDataContext();
     const [, params] = useRoute("/players/:tier/:id");
-    const player = season10CombinePlayers.find( player => player.Name === params?.id && player.Tier === params?.tier);
+    const player = season10CombinePlayers.find( player => player.Name === decodeURIComponent(params?.id ?? "") && player.Tier === params?.tier);
     const tierPlayerAverages = TotalPlayerAverages( season10CombinePlayers, { tier: player?.Tier} );
 
     if( isLoading || !player ){
@@ -63,7 +69,7 @@ export function Player() {
     const playerRatingIndex = getPlayerRatingIndex( player!, season10CombinePlayers );
 
     const { 
-        Name, Tier, Team, Rating, Steam, ppR, GP, "": _,
+        Name, Tier, Team, Rating, Steam, ppR, GP,
         Kills, Assists, Deaths,
         "2k": twoKills, "3k": threeKills, "4k": fourKills, "5k": aces,
         HS,
@@ -72,9 +78,10 @@ export function Player() {
         "CT #": ctRating, "T #": tRating,
         "1v1": clutch1v1, "1v2": clutch1v2, "1v3": clutch1v3, "1v4": clutch1v4, "1v5": clutch1v5,
         Peak, Pit, Form, "CONCY": ratingConsistency,
-        EF, "EF/F": enemiesFlashedPerFlash, "Blind/EF": enemyBlindTime, F_Assists,
+        EF, "EF/F": enemiesFlashedPerFlash, "Blind/EF": enemyBlindTime, F_Assists, UD,
         "X/nade": nadeDmgPerFrag, Util: utilThrownPerMatch,
         ODR: openDuelPercentage, "oda/R": openDuelsPerRound, "entries/R": TsidedEntryFragsPerRound, "ea/R": avgRoundsOpenDuelOnTside,
+		"trades/R": tradesPerRound, "saves/R": savesPerRound, RWK,
         ADP, ctADP, tADP,
         Impact, IWR, KPA,
 		"multi/R": multiKillRound, "clutch/R": clutchPerRound,
@@ -82,7 +89,9 @@ export function Player() {
         SRate,
         TRatio,
         ATD,
-        Xdiff, // Hidden Stats
+		"lurks/tR": lurksPerTsideRound, "wlp/L": lurkPointsEarned, "AWP/ctr": awpKillsCTside,
+		Rounds, "MIP/r": mvpRounds, "K/ctr": killsCTside,
+        Xdiff, "awp/R": awpKillsPerRound,
         ...playerRest 
     } = player!;
 
@@ -94,7 +103,7 @@ export function Player() {
                         <div className="text-2xl font-extrabold text-blue-600 md:text-4xl">{ Name ?? "n/a"}</div>
                         <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
                         <Pill label={teamNameTranslator(Team)} color="bg-blue-300" />
-                        <Pill label={ppR} color="bg-red-300" />
+                        { ppR !== "-" && <Pill label={ppR} color="bg-red-300" /> }
                         <div className="tooltip tooltip__dang" data-tip={`${
                             <>
                                 <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>
@@ -115,7 +124,7 @@ export function Player() {
                 </div>
             </Stat>
 
-            <div className="grid grid-cols-2 gap-2 p-2 m-2">
+            <GridContainer>
                 <div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={"Kills  /  Assists  /  Deaths"} value={`${Kills} / ${Assists} / ${Deaths}`} rowIndex={0}/>
 					<GridStat name={PlayerMappings["HS"]} value={`${HS}%`} rowIndex={1}/>
@@ -123,63 +132,91 @@ export function Player() {
 					<GridStat name={PlayerMappings["ADR"]} value={`${ADR}`} rowIndex={1}/>
 					<GridStat name={PlayerMappings["KPA"]} value={`${KPA}`} rowIndex={0}/>
 					<GridStat name={PlayerMappings["KAST"]} value={`${(KAST*100).toFixed(2).replace(/[.,]00$/, "")}%`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["X/nade"]} value={`${nadeDmgPerFrag}`} rowIndex={0}/>
 				</div>
 				<div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={PlayerMappings["K/R"]} value={`${avgKillsPerRound}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["TRatio"]} value={`${TRatio*100}%`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["SRate"]} value={(SRate*100).toFixed(0)} rowIndex={0}/>
-					<GridStat name={PlayerMappings["ATD"]} value={`${ATD}s`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["multi/R"]} value={`${multiKillRound}`} rowIndex={0}/>
-                    <GridStat name={PlayerMappings["clutch/R"]} value={`${clutchPerRound}`} rowIndex={1}/>
-					<GridStat name={"2k  /  3k  /  4k  /  Ace"} value={`${twoKills}  /  ${threeKills}  /  ${fourKills}  /  ${aces}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["SRate"]} value={`${(SRate*100).toFixed(0)}%`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["ATD"]} value={`${ATD}s`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["multi/R"]} value={`${multiKillRound}`} rowIndex={1}/>
+                    <GridStat name={PlayerMappings["clutch/R"]} value={`${clutchPerRound}`} rowIndex={0}/>
+					<GridStat name={"2k  /  3k  /  4k  /  Ace"} value={`${twoKills}  /  ${threeKills}  /  ${fourKills}  /  ${aces}`} rowIndex={1}/>
 				</div>
-            </div>
-			<div className="grid grid-cols-2 gap-2 p-2 m-2">
+            </GridContainer>
+			<GridContainer>
                 <div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={PlayerMappings["ODR"]} value={`${(openDuelPercentage*100).toFixed(0)}%`} rowIndex={0}/>
 					<GridStat name={"Entry Frags T-side per Round"} value={`${TsidedEntryFragsPerRound}`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["TRatio"]} value={`${TRatio*100}%`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["saves/R"]} value={`${savesPerRound}`} rowIndex={1}/>
 				</div>
 				<div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={PlayerMappings["oda/R"]} value={`${openDuelsPerRound}`} rowIndex={0}/>
 					<GridStat name={"Average Opening Duel T-side"} value={`${avgRoundsOpenDuelOnTside}`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["trades/R"]} value={`${tradesPerRound}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["RWK"]} value={`${(RWK*100).toFixed(0)}%`} rowIndex={1}/>
 				</div>
-            </div>
-			<div className="grid grid-cols-2 gap-2 p-2 m-2">
+            </GridContainer>
+			<GridContainer>
+                <div className="grid grid-cols-1 gap-2 p-2">
+					<GridStat name={PlayerMappings["Util"]} value={`${utilThrownPerMatch}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["EF/F"]} value={`${enemiesFlashedPerFlash}`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["F_Assists"]} value={`${F_Assists}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["X/nade"]} value={`${nadeDmgPerFrag}`} rowIndex={1}/>
+				</div>
+				<div className="grid grid-cols-1 gap-2 p-2">
+					<GridStat name={PlayerMappings["EF"]} value={`${EF}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["Blind/EF"]} value={`${enemyBlindTime}s`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["UD"]} value={`${UD}`} rowIndex={0}/>
+					<GridStat name="" value="" rowIndex={1}/>
+				</div>
+            </GridContainer>
+			<GridContainer>
                 <div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={PlayerMappings["SuppR"]} value={`${SuppR}`} rowIndex={0}/>
 				</div>
 				<div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={PlayerMappings["SuppXr"]} value={`${SuppXr}`} rowIndex={0}/>
 				</div>
-            </div>
+            </GridContainer>
+			<GridContainer>
+                <div className="grid grid-cols-1 gap-2 p-2">
+					<GridStat name={PlayerMappings["lurks/tR"]} value={`${lurksPerTsideRound}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["AWP/ctr"]} value={`${awpKillsCTside}`} rowIndex={1}/>
+				</div>
+				<div className="grid grid-cols-1 gap-2 p-2">
+					<GridStat name={PlayerMappings["wlp/L"]} value={`${lurkPointsEarned}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["AWP/ctr"]} value={`${awpKillsCTside}`} rowIndex={1}/>
+				</div>
+            </GridContainer>
+			<GridContainer>
+                <div className="grid grid-cols-1 gap-2 p-2">
+					<GridStat name={PlayerMappings["Rounds"]} value={`${Rounds}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["ADP"]} value={`${ADP}`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["ctADP"]} value={`${ctADP}`} rowIndex={0}/>
+					<GridStat name={"1v1/2/3/4/5 Clutch Rounds"} value={`${clutch1v1} / ${clutch1v2} / ${clutch1v3} / ${clutch1v4} / ${clutch1v5}`} rowIndex={1}/>
+				</div>
+				<div className="grid grid-cols-1 gap-2 p-2">
+					<GridStat name={PlayerMappings["MIP/r"]} value={`${mvpRounds}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["K/ctr"]} value={`${killsCTside}`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["tADP"]} value={`${tADP}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["Xdiff"]} value={`${Xdiff}`} rowIndex={1}/>
+				</div>
+            </GridContainer>
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
-                {/* <Stat title={"K / A / D"} value={ `${Kills} / ${Assists} / ${Deaths}` } /> */}
                 {/* <Stat title={"Headshots"} value={ `${HS}%` }>
                     <div className="text-gray-500 text-m">({((HS/Number(tierPlayerAverages.avgHeadShotPercentage))*100-100).toFixed(2)}% of avg in tier)</div>
                 </Stat> */}
-                {/* <Stat title={"2k / 3k / 4k"} value={ `${twoKills} / ${threeKills} / ${fourKills}` } /> */}
                 { playerTeammates.length > 0 && 
                     <Stat  title={`Teammates - ${Team}`}>
                         { playerTeammates.map( teammate => <div><Link key={`teammate-${teammate.Name}`} to={`/players/${teammate.Tier}/${teammate.Name}`}>{teammate.Name}</Link></div>)}
                     </Stat> 
                 }
-                {/* <Stat title={"Aces"} value={ `${aces}` } /> */}
             </dl>
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
-                {/* <Stat title={"CT-side / T-side Rating"} value={ `${ctRating} / ${tRating}` } /> */}
-                {/* <Stat title={"Rating Peak / Bottom"} value={ `${Peak} / ${Pit}` } /> */}
-                <Stat title={"Impact / on Rounds Won"} value={ `${Impact} / ${IWR}` } />
-                <Stat title={"1v2/3/4/5 Clutch Rounds"} value={ `${clutch1v2} / ${clutch1v3} / ${clutch1v4} / ${clutch1v5}` } />
-                {/* <Stat title={"Opening Duel / Open Duels per Round"} value={ `${(openDuelPercentage*100).toFixed(0)}% / ${openDuelsPerRound}` } /> */}
-                <Stat title={"Entry Frags T-side per Round / Avg Opening Duel T-side"} value={`${TsidedEntryFragsPerRound} / ${avgRoundsOpenDuelOnTside}`} />
-                <Stat title={"Average Death Placement"} value={ `${Math.round(ADP)}` }>
-                    <div className="text-gray-500 text-m">CT: {Math.round(ctADP)}  T: {Math.round(tADP)}</div>
-                </Stat>
-                <Stat title={"Flashed per Match / per Flash / Blind Time Average / Assists Per Match"} value={`${EF} / ${enemiesFlashedPerFlash} / ${enemyBlindTime} / ${F_Assists}` } />
+                {/* <Stat title={"Impact / on Rounds Won"} value={ `${Impact} / ${IWR}` } /> */}
 
                 { Object.entries(playerRest ?? []).map( ( [key, value] ) => 
-                    <Stat key={`${key}${value}`} title={PlayerMappings[key]} value={ value ?? "n/a"} />
+                    <Stat key={`${key}${value}`} title={PlayerMappings[key]} value={ value! } />
                 )}
             </dl>
         </Container>
