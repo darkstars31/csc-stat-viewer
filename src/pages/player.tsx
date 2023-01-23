@@ -30,10 +30,10 @@ function Stat( { title, value, children }: { title?:string, value?: string|numbe
 function GridStat( { name, value, rowIndex }: { name: string, value: string | number | React.ReactNode, rowIndex: number }){
     return (
         <div className={`grid grid-cols-2 ${ rowIndex % 2 ? "bg-gray-600" : ""}`}>
-			<div className={`text-left`}>
+			<div className={`text-left pl-2`}>
 				{name}
 			</div>
-			<div className={`text-right`}>
+			<div className={`text-right pr-2`}>
 				<strong>{value}</strong>
 			</div>
         </div>
@@ -72,9 +72,7 @@ export function Player() {
         Name, Tier, Team, Rating, Steam, ppR, GP,
         Kills, Assists, Deaths,
         "2k": twoKills, "3k": threeKills, "4k": fourKills, "5k": aces,
-        HS,
-        KAST,
-        ADR, "K/R": avgKillsPerRound,
+        HS, KAST, ADR, "K/R": avgKillsPerRound,
         "CT #": ctRating, "T #": tRating,
         "1v1": clutch1v1, "1v2": clutch1v2, "1v3": clutch1v3, "1v4": clutch1v4, "1v5": clutch1v5,
         Peak, Pit, Form, "CONCY": ratingConsistency,
@@ -85,9 +83,7 @@ export function Player() {
         ADP, ctADP, tADP,
         Impact, IWR, KPA,
 		"multi/R": multiKillRound, "clutch/R": clutchPerRound,
-		SuppR, SuppXr,
-        SRate,
-        TRatio,
+		SuppR, SuppXr, SRate, TRatio,
         ATD,
 		"lurks/tR": lurksPerTsideRound, "wlp/L": lurkPointsEarned, "AWP/ctr": awpKillsCTside,
 		Rounds, "MIP/r": mvpRounds, "K/ctr": killsCTside,
@@ -142,6 +138,7 @@ export function Player() {
 					<GridStat name={"2k  /  3k  /  4k  /  Ace"} value={`${twoKills}  /  ${threeKills}  /  ${fourKills}  /  ${aces}`} rowIndex={1}/>
 				</div>
             </GridContainer>
+			<hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
 			<GridContainer>
                 <div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={PlayerMappings["ODR"]} value={`${(openDuelPercentage*100).toFixed(0)}%`} rowIndex={0}/>
@@ -156,6 +153,7 @@ export function Player() {
 					<GridStat name={PlayerMappings["RWK"]} value={`${(RWK*100).toFixed(0)}%`} rowIndex={1}/>
 				</div>
             </GridContainer>
+			<hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
 			<GridContainer>
                 <div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={PlayerMappings["Util"]} value={`${utilThrownPerMatch}`} rowIndex={0}/>
@@ -167,9 +165,10 @@ export function Player() {
 					<GridStat name={PlayerMappings["EF"]} value={`${EF}`} rowIndex={0}/>
 					<GridStat name={PlayerMappings["Blind/EF"]} value={`${enemyBlindTime}s`} rowIndex={1}/>
 					<GridStat name={PlayerMappings["UD"]} value={`${UD}`} rowIndex={0}/>
-					<GridStat name="" value="" rowIndex={1}/>
+					<GridStat name="" value="" rowIndex={0}/>
 				</div>
             </GridContainer>
+			<hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
 			<GridContainer>
                 <div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={PlayerMappings["SuppR"]} value={`${SuppR}`} rowIndex={0}/>
@@ -178,6 +177,7 @@ export function Player() {
 					<GridStat name={PlayerMappings["SuppXr"]} value={`${SuppXr}`} rowIndex={0}/>
 				</div>
             </GridContainer>
+			<hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
 			<GridContainer>
                 <div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={PlayerMappings["lurks/tR"]} value={`${lurksPerTsideRound}`} rowIndex={0}/>
@@ -188,6 +188,7 @@ export function Player() {
 					<GridStat name={PlayerMappings["AWP/ctr"]} value={`${awpKillsCTside}`} rowIndex={1}/>
 				</div>
             </GridContainer>
+			<hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
 			<GridContainer>
                 <div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={PlayerMappings["Rounds"]} value={`${Rounds}`} rowIndex={0}/>

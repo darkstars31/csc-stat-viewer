@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-    background-color: darkgray;
+    background-color: rgba(55,65,81,1);
 }
 
 .icon-box {
