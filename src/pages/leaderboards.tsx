@@ -3,12 +3,9 @@ import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
 import { Table } from "../common/components/table";
 import { useDataContext } from "../DataContext";
+import { _sort } from "./player-utils";
 import { Player } from "../models";
 //import { tiers } from "./player-utils";
-
-function _sort<T, K extends keyof T>( items: T[], property: K, n: number  ) {
-    return items.sort( (a,b) => a[property] < b[property] ? 1 : -1).slice(0,n);
-}
 
 function buildTableRow( player: Player, columnName: string, property: keyof Player ){
     return { "Player": player.Name, "Tier": player.Tier, [columnName]: player[property]};

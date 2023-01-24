@@ -118,7 +118,19 @@ export function Player() {
                         <RoleRadar player={player!}/>
                     </div>
                 </div>
+				{/* <div>
+					IWR {IWR} - tier Avg IWR {tierPlayerAverages.avgImpactOnWonRounds} - IWR/avg { ((IWR/tierPlayerAverages.avgImpactOnWonRounds)-1)*100}
+				</div>
+				<div>
+				{((IWR/tierPlayerAverages.highest.impactOnRoundsWon[0].IWR)-1)*100}
+				</div> */}
             </Stat>
+
+			{ player.GP < 3 && 
+			<div className="m-2 p-2 bg-yellow-700 rounded">
+				Minimum games played threshold has not been met. Statistics shown may not provide an accurate picture of player skill or consistency.
+			</div> 
+			}
 
             <GridContainer>
                 <div className="grid grid-cols-1 gap-2 p-2">
@@ -143,7 +155,7 @@ export function Player() {
                 <div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={PlayerMappings["ODR"]} value={`${(openDuelPercentage*100).toFixed(0)}%`} rowIndex={0}/>
 					<GridStat name={"Entry Frags T-side per Round"} value={`${TsidedEntryFragsPerRound}`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["TRatio"]} value={`${TRatio*100}%`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["TRatio"]} value={`${(TRatio*100).toFixed(0)}%`} rowIndex={0}/>
 					<GridStat name={PlayerMappings["saves/R"]} value={`${savesPerRound}`} rowIndex={1}/>
 				</div>
 				<div className="grid grid-cols-1 gap-2 p-2">
@@ -172,20 +184,13 @@ export function Player() {
 			<GridContainer>
                 <div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={PlayerMappings["SuppR"]} value={`${SuppR}`} rowIndex={0}/>
+					<GridStat name={PlayerMappings["lurks/tR"]} value={`${lurksPerTsideRound}`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["AWP/ctr"]} value={`${awpKillsCTside}`} rowIndex={0}/>
 				</div>
 				<div className="grid grid-cols-1 gap-2 p-2">
 					<GridStat name={PlayerMappings["SuppXr"]} value={`${SuppXr}`} rowIndex={0}/>
-				</div>
-            </GridContainer>
-			<hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
-			<GridContainer>
-                <div className="grid grid-cols-1 gap-2 p-2">
-					<GridStat name={PlayerMappings["lurks/tR"]} value={`${lurksPerTsideRound}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["AWP/ctr"]} value={`${awpKillsCTside}`} rowIndex={1}/>
-				</div>
-				<div className="grid grid-cols-1 gap-2 p-2">
-					<GridStat name={PlayerMappings["wlp/L"]} value={`${lurkPointsEarned}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["AWP/ctr"]} value={`${awpKillsCTside}`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["wlp/L"]} value={`${lurkPointsEarned}`} rowIndex={1}/>
+					<GridStat name={PlayerMappings["AWP/ctr"]} value={`${awpKillsCTside}`} rowIndex={0}/>
 				</div>
             </GridContainer>
 			<hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />

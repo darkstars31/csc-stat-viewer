@@ -4,6 +4,9 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
   content: ["./src/**/*.{jsx,tsx,js,ts}"],
+  safelist: [
+    { pattern: /grid-cols-./ },
+  ],
   theme: {
     extend: {
       fontFamily: {

@@ -20,6 +20,19 @@ export function TeamBuilder() {
     //     //players.find( p => )
     //  }
 
+    const playerProps = Object.keys(PlayerMappings);
+    const gridData = [];
+    for( let i = 0; i < Object.keys(PlayerMappings).length; i++){
+        const prop = playerProps[i];
+        const stat = squad.map( member => member[prop as keyof Player]);  
+        gridData.push( {prop: prop, data: [...stat]})
+    }
+
+    const gridClassName = `grid grid-cols-${squad.length+1} gap-2`
+    const statExclusionList = ["","Name","Steam","GP","Xdiff","1v1","Rounds"];
+
+    console.info( "gridData",gridData );
+
     if( isLoading ){
         return <Container><Loading /></Container>
     }
@@ -55,34 +68,27 @@ export function TeamBuilder() {
                         )
                 }
             </div>
-            <hr />
-                <div>
-                    Picked: 
-                    {
-                        squad?.map( p => 
-                            <span> {p.Name} </span>
-                            )
-                    }
-                </div>
-                <div>
-                   <div className={`grid grid-cols-${squad.length+1} gap-4`}>
-                        <div>Stat</div>
-                        { squad.map( (p, squadIndex) => 
+            <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
+            <div className="pt-16">
+                <div className={`${gridClassName}`}>
+                        { gridData.filter( i => ["Name"].includes(i.prop)).map( (row) =>
                             <>
-                                <div>{p.Name}</div>
-                                {Object.keys(p).map( (key, playerIndex) => 
-                                     <div>{PlayerMappings[key]}</div>               
+                                <div key={row.prop}>{row.prop}</div>
+                                { row.data.map( (value, index) =>
+                                     <div key={`val-${index}`} className="-rotate-45 -translate-y-20 -translate-x-4">{value ?? "n/a"}</div>
                                 )}
-
-{/* { new Array<number>().fill(squad.length).map( index => 
-                                        <div>{squad[index][key]}</div>} */}
-                                        )  
-                                
-                                {/* {Object.keys(p).map( key => <div>{squad[squadIndex][key as keyof Player]}</div>)} */}
                             </>
                         )}
-                    </div>
+                        { gridData.filter( i => !statExclusionList.includes(i.prop)).map( (row, rowIndex) =>
+                            <>
+                                <div key={row.prop} className={`${rowIndex % 2 ? "bg-slate-800" : ""} p-2`}>{PlayerMappings[row.prop]}</div>
+                                { row.data.map( (value, index) =>
+                                     <div key={`val-${index}`} className={`${rowIndex % 2 ? "bg-slate-800" : ""} p-2`}>{value ?? "n/a"}</div>
+                                )}
+                            </>
+                        )}
                 </div>
+            </div>
         </Container>
     );
 }

@@ -8,8 +8,8 @@ export const PlayerMappings: Record<string,string> = {
     "ppR": "Role",
     "GP": "Games Played",
     "Rating": "Rating",
-    "K/R": "Kills per Round",
-    "ADR": "Average Damage per Round",
+    "K/R": "Kills / Round",
+    "ADR": "Damage / Round",
     "KAST": "Kill Assist Traded Survived (%)",
     "ODR": "Opening Duel (%)",
     "Impact": "Impact",
@@ -21,16 +21,16 @@ export const PlayerMappings: Record<string,string> = {
     "F_Assists": "Flash Assists per Match",
     "Util": "Utility Thrown per Match",
     "HS": "Headshot (%)",
-    "awp/R": "Awp Kills per Round",
-    "multi/R": "Multi Kills per Round", // points based on difficulty/remaining players
+    "awp/R": "Awp Kills / Round",
+    "multi/R": "Multi Kills / Round", // points based on difficulty/remaining players
     "clutch/R": "Clutch-ability", // points based on difficulty/remaining players
     "SuppR": "Support Rounds",
-    "SuppXr": "Support Damage per Round",
-    "oda/R": "Open Duel Attempts per Round",
-    "entries/R": "First Kill on T-side per Round",
-    "trades/R": "Trade Kills per Round",
+    "SuppXr": "Support Damage / Round",
+    "oda/R": "Open Duel Attempts / Round",
+    "entries/R": "First Kill on T-side / Round",
+    "trades/R": "Trade Kills / Round",
     "TRatio": "Deaths Traded Out (%)",
-    "saves/R": "Saves Per Round",
+    "saves/R": "Saves / Round",
     "SRate": "Rounds Survived (%)",
     "2k": "2k Rounds",
     "3k": "3k Rounds",
@@ -49,21 +49,21 @@ export const PlayerMappings: Record<string,string> = {
     "Kills": "Total Kills",
     "Assists": "Total Assists",
     "Deaths": "Total Deaths",
-    "MIP/r": "Most Impactful Player per Round",
+    "MIP/r": "Most Impactful Player / Round",
     "IWR": "Impact on Rounds Won Ratio",
     "KPA": "Average Kill Impact",
     "RWK": "Rounds with at least 1 Kill",
     "Xdiff": "Damage given vs. taken",
-    "ea/R": "Average Rounds with Opening Duel on T-side",
-    "ATD": "Average Time to Death",
-    "ctADP": "Average Death Placement on CT-side",
-    "tADP": "Average Death Placement on T-side",
-    "EF/F": "Enemies Flashed per Thrown Flash",
-    "Blind/EF": "Enemy Blind time per Thrown Flash",
+    "ea/R": "Rounds with Opening Duel on T-side",
+    "ATD": "Time to Death",
+    "ctADP": "Death Placement on CT-side",
+    "tADP": "Death Placement on T-side",
+    "EF/F": "Enemies Flashed / Flash",
+    "Blind/EF": "Enemy Blind time / Flash",
     "X/nade": "Damage per Frag thrown",
-    "AWP/ctr": "CT-sided Awp Kills per Round",
-    "K/ctr": "CT-sided Kills",
-    "lurks/tR": "Lurks on T-side per Round",
+    "AWP/ctr": "CT-side Awp Kills / Round",
+    "K/ctr": "CT-side Kills",
+    "lurks/tR": "Lurks on T-side / Round",
     "wlp/L": "Lurk Round Points won",
     "Tier": "Tier",
 }
@@ -87,6 +87,10 @@ export const teamNameTranslator = ( name: string ) => {
     }
 }
 
+export function _sort<T, K extends keyof T>( items: T[], property: K, n?: number ) {
+    const sorted = items.sort( (a,b) => a[property] < b[property] ? 1 : -1).slice(0,n);
+    return n ? sorted.slice(0,n) : sorted;
+}
 
 export const getPlayersInTier = ( player: Player, allPlayers: Player[] ) => allPlayers.filter( ap => ap.Tier === player.Tier);
 export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Player[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => a.Rating < b.Rating ? 1 : -1);
@@ -115,12 +119,18 @@ export const TotalPlayerAverages = ( combinePlayerData: Player[], options?: Reco
         avgImpactOnWonRounds: calculateAverage(players, "IWR"),
         avgNadeDamagePerNade: calculateAverage(players, "X/nade"),
         avgEnemiesFlashedPerFlash: calculateAverage(players, "EF/F"),
-
+        highest: {
+            impactOnRoundsWon: calculateHighest(players,"IWR"),
+        }
     }
 }
 
 function calculateAverage(players: Player[], prop: string){
     return Number((players.reduce(( cumulative, player ) => cumulative + Number(player[prop as keyof Player]), 0 ) / players.length).toFixed(2));
+}
+
+function calculateHighest(players: Player[], prop: keyof Player){
+    return _sort(players, prop);
 }
 
 export const isPositive = ( value: number ) => value > 0;
