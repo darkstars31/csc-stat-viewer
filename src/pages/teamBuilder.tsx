@@ -20,16 +20,27 @@ export function TeamBuilder() {
     //     //players.find( p => )
     //  }
 
-    const playerProps = Object.keys(PlayerMappings);
-    const gridData = [];
-    for( let i = 0; i < Object.keys(PlayerMappings).length; i++){
-        const prop = playerProps[i];
-        const stat = squad.map( member => member[prop as keyof Player]);  
-        gridData.push( {prop: prop, data: [...stat]})
+    function remove( index: number){
+        const newSquad = squad;
+        delete squad[index];
+        console.info(index, newSquad);
+        setSquad( newSquad.filter(Boolean) );
     }
 
-    const gridClassName = `grid grid-cols-${squad.length+1} gap-2`
-    const statExclusionList = ["","Name","Steam","GP","Xdiff","1v1","Rounds"];
+    const gridData: { prop: string, data: (string | number | null)[]}[] = React.useMemo( () => {
+        const gd = [];
+        const playerProps = Object.keys(PlayerMappings);
+        for( let i = 0; i < Object.keys(PlayerMappings).length; i++){
+            const prop = playerProps[i];
+            const stat = squad.map( member => member[prop as keyof Player]);  
+            gd.push( {prop: prop, data: [...stat]})
+        }
+        return gd;
+    }, [ squad ]);
+
+    const gridClassName = `grid grid-cols-${squad.length+1} gap-2`;
+    //const statFirst = []
+    const statExclusionList = ["","Name","Steam","GP","ADP","ctADP","tADP","Xdiff","1v1","Rounds"];
 
     console.info( "gridData",gridData );
 
@@ -69,13 +80,13 @@ export function TeamBuilder() {
                 }
             </div>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
-            <div className="pt-16">
+            <div className="pt-24 sticky z-1">
                 <div className={`${gridClassName}`}>
                         { gridData.filter( i => ["Name"].includes(i.prop)).map( (row) =>
                             <>
                                 <div key={row.prop}>{row.prop}</div>
                                 { row.data.map( (value, index) =>
-                                     <div key={`val-${index}`} className="-rotate-45 -translate-y-20 -translate-x-4">{value ?? "n/a"}</div>
+                                     <div key={`val-${index}`} className={` -rotate-45 -translate-y-20 -translate-x-4 m-2 `}><button onClick={() => remove(index)}>{value ?? "n/a"}</button></div>
                                 )}
                             </>
                         )}
