@@ -14,6 +14,7 @@ export function Header() {
     { name: 'Dashboard', href: '/', current: location.endsWith("/") },
     { name: 'Team', href: '/teams', current: location.includes("teams") },
     { name: 'Players', href: '/players', current: location.includes("players") },
+    { name: 'Team Builder', href: '/team-builder', current: location.includes("team-builder") },
     { name: 'Leaderboards', href: '/leaderboards', current: location.includes("leaderboards") },
     // { name: 'About', href: '/about', current: false },
   ];

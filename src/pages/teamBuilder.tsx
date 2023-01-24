@@ -23,7 +23,6 @@ export function TeamBuilder() {
     function remove( index: number){
         const newSquad = squad;
         delete squad[index];
-        console.info(index, newSquad);
         setSquad( newSquad.filter(Boolean) );
     }
 
@@ -40,7 +39,7 @@ export function TeamBuilder() {
 
     const gridClassName = `grid grid-cols-${squad.length+1} gap-2`;
     //const statFirst = []
-    const statExclusionList = ["","Name","Steam","GP","ADP","ctADP","tADP","Xdiff","1v1","Rounds"];
+    const statExclusionList = ["","Name","Steam","GP","ADP","ctADP","tADP","Xdiff","1v1","1v2","1v3","1v4","1v5","Rounds","Tier"];
 
     console.info( "gridData",gridData );
 
@@ -52,7 +51,7 @@ export function TeamBuilder() {
         <Container>
             <h2 className="text-3xl font-bold sm:text-4xl">Team Builder</h2>
             <p className="mt-4 text-gray-300">
-            Find players, view stats, see how you stack up against your peers.
+                Find players, view stats, see how you stack up against your peers.
             </p>
             <div>
 
@@ -72,9 +71,15 @@ export function TeamBuilder() {
             </div>
             <div>
                 {
-                    players.filter( p => p.Name.toLowerCase().includes(searchValue.toLowerCase()) && searchValue !== "").slice(0,8).map( p =>
-                        <button key={`player-${p.Name}`} className="m-1 p-2" onClick={() => setSquad( (prev: Player[]) => [...prev!, p])}>
-                            {p.Name}
+                    players.filter( p => !squad.some( s => s.Name === p.Name && s.Tier === p.Tier))
+                    .filter( p => p.Name.toLowerCase().includes(searchValue.toLowerCase()) && searchValue !== "").slice(0,8)
+                    .map( p =>
+                        <button 
+                            key={`player-${p.Tier}-${p.Name}`} 
+                            className="m-1 p-2" 
+                            onClick={() => setSquad( (prev: Player[]) => [...prev!, p])}
+                        >
+                            {p.Name}:{p.Tier}
                         </button>
                         )
                 }
@@ -86,7 +91,17 @@ export function TeamBuilder() {
                             <>
                                 <div key={row.prop}>{row.prop}</div>
                                 { row.data.map( (value, index) =>
-                                     <div key={`val-${index}`} className={` -rotate-45 -translate-y-20 -translate-x-4 m-2 `}><button onClick={() => remove(index)}>{value ?? "n/a"}</button></div>
+                                     <div key={`val-${index}`} className={` -rotate-45 -translate-y-32 -translate-x-4 m-2 hover:text-red-600`}>
+                                        <button onClick={() => remove(index)}>{value ?? "n/a"}</button>
+                                        </div>
+                                )}
+                            </>
+                        )}
+                        { gridData.filter( i => ["Tier","GP"].includes(i.prop)).map( (row, rowIndex) =>
+                            <>
+                                <div key={row.prop} className={`${rowIndex % 2 ? "bg-slate-800" : ""} p-2`}>{PlayerMappings[row.prop]}</div>
+                                { row.data.map( (value, index) =>
+                                     <div key={`val-${index}`} className={`${rowIndex % 2 ? "bg-slate-800" : ""} p-2`}>{value ?? "n/a"}</div>
                                 )}
                             </>
                         )}
