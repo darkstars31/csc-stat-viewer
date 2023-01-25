@@ -25,7 +25,7 @@ export function Select( { label, value, options, onChange}: Props ){
                         value={value}
                         >
                         {
-                            options.map( (option) => <option key={option?.id ?? option} value={option?.id ?? option}>{option?.value ?? option}</option>)
+                            options.map( (option) => <option className="bg-slate-600 text-slate-300" key={option?.id ?? option} value={option?.id ?? option}>{option?.value ?? option}</option>)
                         }
                     </select>
                 </div>

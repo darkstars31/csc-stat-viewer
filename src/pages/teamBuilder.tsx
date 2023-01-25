@@ -2,13 +2,15 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import { Input } from "../common/components/input";
 import { useDataContext } from "../DataContext";
-import { PlayerMappings } from "./player-utils";
+import { PlayerMappings, tiers } from "./player-utils";
 import { Player } from "../models";
 import { Loading } from "../common/components/loading";
+import { Select } from "../common/components/select";
 
 export function TeamBuilder() {
     const [ searchValue, setSearchValue ] = React.useState<string>("");
     const [ squad, setSquad ] = React.useState<Player[]>([]);
+    const [ filterBy, setFilterBy ] = React.useState<string>("")
     const { season10CombinePlayers = [], isLoading } = useDataContext();
     const players = season10CombinePlayers;
     const searchParams = new URLSearchParams(window.location.search);
@@ -51,11 +53,21 @@ export function TeamBuilder() {
         <Container>
             <h2 className="text-3xl font-bold sm:text-4xl">Team Builder</h2>
             <p className="mt-4 text-gray-300">
-                Find players, view stats, see how you stack up against your peers.
+                Compare players, build your team.
             </p>
-            <div>
-
+            <p>
+                Search for the Player by name and select the appropriate tier. To remove Player, click on their name.
+            </p>
+            <div className="flex flex-box h-12 mx-auto justify-end">
+            <div className="basis-1/6">
+                <Select
+                    label="Tier"
+                    options={tiers.map( tier => ({ id: tier, value: tier}))}
+                    onChange={ ( e ) => setFilterBy( e.currentTarget.value )}
+                    value={filterBy}
+                />
             </div>
+        </div>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
             <div>
                 <form className="flex flex-box h-12 mx-auto" onSubmit={(e)=>{e.preventDefault()}}>
@@ -72,14 +84,14 @@ export function TeamBuilder() {
             <div>
                 {
                     players.filter( p => !squad.some( s => s.Name === p.Name && s.Tier === p.Tier))
-                    .filter( p => p.Name.toLowerCase().includes(searchValue.toLowerCase()) && searchValue !== "").slice(0,8)
+                    .filter( p => p.Name.toLowerCase().includes(searchValue.toLowerCase()) && searchValue !== "" && filterBy === p.Tier).slice(0,8)
                     .map( p =>
                         <button 
                             key={`player-${p.Tier}-${p.Name}`} 
                             className="m-1 p-2" 
                             onClick={() => setSquad( (prev: Player[]) => [...prev!, p])}
                         >
-                            {p.Name}:{p.Tier}
+                            {p.Name}
                         </button>
                         )
                 }
