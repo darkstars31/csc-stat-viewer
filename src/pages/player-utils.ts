@@ -79,7 +79,7 @@ export const tierColorClassNames = {
 }
 
 export const teamNameTranslator = ( name: string ) => {
-    switch( name.toUpperCase() ){
+    switch( name?.toUpperCase() ){
         case "DE": return "Draft Eligible";
         case "PFA": return "Perm Free Agent";
         case "FA": return "Free Agent";

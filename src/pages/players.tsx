@@ -16,9 +16,9 @@ import { useDataContext } from "../DataContext";
 // }
 
 export function Players() {
-    const { season10CombinePlayers, isLoading } = useDataContext();
+    const { playerStats, isLoading } = useDataContext();
 
-    const playerData = season10CombinePlayers;
+    const playerData = playerStats;
     const [ searchValue, setSearchValue ] = React.useState("");
     const [ filters, setFilters ] = React.useState<string[]>([]);
     const [ orderBy, setOrderBy ] = React.useState<string>("Name");

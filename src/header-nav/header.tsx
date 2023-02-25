@@ -2,12 +2,16 @@ import React, { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'; //BellIcon,
 import { Link, useLocation } from 'wouter';
+import { Select } from '../common/components/select';
+import { useDataContext } from '../DataContext';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
 export function Header() {
+  const { selectedData, setSelectedData } = useDataContext();
+
   const [ location ] = useLocation();
 
   const navigation = [
@@ -21,7 +25,7 @@ export function Header() {
 
   return (
     <Disclosure as="nav" className="bg-gray-800 z-1000">
-      {({ open }) => (
+      {({ open, close }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
@@ -79,6 +83,19 @@ export function Header() {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
+                    <div className="flex flex-box h-12 mx-auto justify-start">
+                      <div className="overflow-auto">
+                          <Select
+                              label="Stats"
+                              options={[
+                                          { id: "season10", value: "Season 10"}, 
+                                          { id: "season10Combine", value: "Season 10 Combines"}
+                                      ]}
+                              onChange={ ( e ) => setSelectedData( e.currentTarget.value )}
+                              value={selectedData}
+                          />
+                      </div>
+                  </div>
                     {/* <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="sr-only">Open user menu</span>
                       <img
@@ -141,7 +158,7 @@ export function Header() {
           <Disclosure.Panel className="sm:hidden">
             <div className="space-y-1 px-2 pt-2 pb-3">
               {navigation.map((item) => (
-                <Link key={`header-${item}`} to={item.href}>
+                <Link key={`header-${item.name}`} to={item.href} onClick={ () => close()}>
                   <Disclosure.Button
                     key={item.name}
                     as="a"

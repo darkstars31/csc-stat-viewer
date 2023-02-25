@@ -55,18 +55,18 @@ const GridContainer = ( { children }: { children: React.ReactNode | React.ReactN
 // }
 
 export function Player() {
-    const { season10CombinePlayers = [], isLoading } = useDataContext();
+    const { playerStats = [], isLoading } = useDataContext();
     const [, params] = useRoute("/players/:tier/:id");
-    const player = season10CombinePlayers.find( player => player.Name === decodeURIComponent(params?.id ?? "") && player.Tier === params?.tier);
-    const tierPlayerAverages = TotalPlayerAverages( season10CombinePlayers, { tier: player?.Tier} );
+    const player = playerStats.find( player => player.Name === decodeURIComponent(params?.id ?? "") && player.Tier === params?.tier);
+    const tierPlayerAverages = TotalPlayerAverages( playerStats, { tier: player?.Tier} );
 
     if( isLoading || !player ){
         return <Container><Loading /></Container>;
     }
 
-    const playerTeammates = getPlayerTeammates( player!, season10CombinePlayers);
-    const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player!, season10CombinePlayers );
-    const playerRatingIndex = getPlayerRatingIndex( player!, season10CombinePlayers );
+    const playerTeammates = getPlayerTeammates( player!, playerStats);
+    const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player!, playerStats );
+    const playerRatingIndex = getPlayerRatingIndex( player!, playerStats );
 
     const { 
         Name, Tier, Team, Rating, Steam, ppR, GP,

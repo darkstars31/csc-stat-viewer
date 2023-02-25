@@ -6,21 +6,33 @@ import { PlayerMappings, tiers } from "./player-utils";
 import { Player } from "../models";
 import { Loading } from "../common/components/loading";
 import { Select } from "../common/components/select";
+import { useLocation } from "wouter";
 
 export function TeamBuilder() {
+    const [location, setLocation] = useLocation();
     const [ searchValue, setSearchValue ] = React.useState<string>("");
     const [ squad, setSquad ] = React.useState<Player[]>([]);
     const [ filterBy, setFilterBy ] = React.useState<string>("")
-    const { season10CombinePlayers = [], isLoading } = useDataContext();
-    const players = season10CombinePlayers;
-    const searchParams = new URLSearchParams(window.location.search);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const result = searchParams.get("players");
+    const { playerStats = [], isLoading } = useDataContext();
+    const players = playerStats;
 
-    // for (const [key, value] of searchParams.entries()) {
-    //     console.log(`${key}, ${value}`);
-    //     //players.find( p => )
-    //  }
+    const squadQueryParams = squad.map( member => (`${member.Tier}|${member.Name}`)).join(",");
+
+    if(squad.length) {
+        setLocation(location.concat(`?players=${squadQueryParams}`));
+    }
+
+    React.useEffect(() => {
+        const searchParams = new URLSearchParams(window.location.search);
+        const queryPlayers = searchParams.get("players");
+        if( queryPlayers ){
+            const playersFromQuery = queryPlayers?.split(",").map( string => ({ Tier: string.split("|")[0], Name: string.split("|")[1]}));
+            console.info(playersFromQuery)
+            console.info(players.filter( player => playersFromQuery?.some( p => p.Tier === player.Tier && p.Name === player.Name)))
+            setSquad( players.filter( player => playersFromQuery?.some( p => p.Tier === player.Tier && p.Name === player.Name)) );
+        }
+    }, [ squad, players]);
+    
 
     function remove( index: number){
         const newSquad = squad;
@@ -29,21 +41,19 @@ export function TeamBuilder() {
     }
 
     const gridData: { prop: string, data: (string | number | null)[]}[] = React.useMemo( () => {
-        const gd = [];
+        const gridData = [];
         const playerProps = Object.keys(PlayerMappings);
         for( let i = 0; i < Object.keys(PlayerMappings).length; i++){
             const prop = playerProps[i];
             const stat = squad.map( member => member[prop as keyof Player]);  
-            gd.push( {prop: prop, data: [...stat]})
+            gridData.push( {prop: prop, data: [...stat]})
         }
-        return gd;
+        return gridData;
     }, [ squad ]);
 
     const gridClassName = `grid grid-cols-${squad.length+1} gap-2`;
     //const statFirst = []
     const statExclusionList = ["","Name","Steam","GP","ADP","ctADP","tADP","Xdiff","1v1","1v2","1v3","1v4","1v5","Rounds","Tier"];
-
-    console.info( "gridData",gridData );
 
     if( isLoading ){
         return <Container><Loading /></Container>
@@ -56,7 +66,7 @@ export function TeamBuilder() {
                 Compare players, build your team.
             </p>
             <p>
-                Search for the Player by name and select the appropriate tier. To remove Player, click on their name.
+                Search for players by name and select the appropriate tier. To remove Player, click on their name.
             </p>
             <div className="flex flex-box h-12 mx-auto justify-end">
             <div className="basis-1/6">

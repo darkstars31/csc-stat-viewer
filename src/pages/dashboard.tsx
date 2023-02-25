@@ -9,6 +9,9 @@ export function Dashboard(){
                 <p className="mt-4 text-gray-300">
                     Unofficial stats and analysis tools for CS:Confederation Draft Leagues
                 </p>
+                <p className="mt-4 text-gray-300">
+                    Season 10 Stats now available! Use the dropdown menu in the header to select the data source you're interested in.
+                </p>
                 <div className="mt-4 text-gray-300">
                     This project was created by <a href="https://github.com/darkstars31/">Camps</a> and is open source on<br />
                     <a href="https://github.com/darkstars31/csc-stat-viewer" target="_blank" rel="noreferrer">GitHub</a>

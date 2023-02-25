@@ -6,7 +6,7 @@ import { RoleRadar } from "../common/components/roleRadar";
 import { useDataContext } from "../DataContext";
 
 export function Playground() {
-    const { season10CombinePlayers, isLoading } = useDataContext();
+    const { playerStats, isLoading } = useDataContext();
 
     if( isLoading ){
         return <Container><Loading /></Container>
@@ -14,7 +14,7 @@ export function Playground() {
 
     return (
         <Container>
-            <RoleRadar player={season10CombinePlayers.at(1)!} />
+            <RoleRadar player={playerStats.at(1)!} />
             <hr />
             <PieChart options={{}} />
         </Container>

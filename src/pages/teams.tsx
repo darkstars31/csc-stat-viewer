@@ -7,8 +7,8 @@ import { Player } from '../models';
 import { tiers } from './player-utils';
 
 export function Teams() {
-    const { season10CombinePlayers, isLoading } = useDataContext();
-    const playerData = season10CombinePlayers;
+    const { playerStats, isLoading } = useDataContext();
+    const playerData = playerStats;
     console.info( playerData );
     const teams = playerData.filter( p => !["DE","FA","PFA"].includes(p.Team))
         .reduce<Player[]>( (uniqueTeams, team) => {

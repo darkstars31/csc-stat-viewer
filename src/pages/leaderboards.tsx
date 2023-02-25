@@ -13,9 +13,9 @@ function buildTableRow( player: Player, columnName: string, property: keyof Play
 
 export function LeaderBoards() {
     //const [ selectedTier, setSelectedTier ] = React.useState("");
-    const { season10CombinePlayers, isLoading } = useDataContext();
+    const { playerStats, isLoading } = useDataContext();
 
-    const playerData = season10CombinePlayers.filter( f => f.GP >= 3);
+    const playerData = playerStats.filter( f => f.GP >= 3);
     const gamesPlayed = _sort(playerData, "GP", 5).map( p => buildTableRow(p, "Games Played", "GP"));
     const kills = _sort(playerData, "Kills", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Kills": p.Kills}));
     const killDeathRatio = playerData.sort( (a,b) => (a.Kills/a.Deaths) < (b.Kills/b.Deaths) ? 1 : -1).slice(0,5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "K/D Ratio": (p.Kills/p.Deaths).toFixed(2)}));

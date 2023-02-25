@@ -1,16 +1,20 @@
 import * as React from "react";
 // import { Player } from "./models";
 import { useFetchCombinePlayerData } from "./dao/combinePlayerDao";
+import { useFetchSeason10PlayerData } from "./dao/seasonPlayerStatsDao";
 
 const useDataContextProvider = () => {
-	const { data: season10CombinePlayers = [], isLoading } = useFetchCombinePlayerData();
+	const [ selectedData, setSelectedData ] = React.useState("season10");
+	const { data: season10CombinePlayers = [], isLoading: isLoadingS10CombineStats } = useFetchCombinePlayerData();
+	const { data: season10PlayerStats = [], isLoading: isLoadingS10PlayerStats } = useFetchSeason10PlayerData();
 
 	React.useEffect( () => {
-	}, [season10CombinePlayers] );
+	}, [selectedData] );
 
     return {
-        season10CombinePlayers,
-		isLoading,
+        playerStats: selectedData === "season10" ? season10PlayerStats : season10CombinePlayers,
+		isLoading: isLoadingS10CombineStats && isLoadingS10PlayerStats,
+		selectedData, setSelectedData
     };
 }
 
