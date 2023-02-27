@@ -9,7 +9,7 @@ import { Select } from "../common/components/select";
 import { useLocation } from "wouter";
 
 export function TeamBuilder() {
-    const [location, setLocation] = useLocation();
+    const [ location, setLocation ] = useLocation();
     const [ searchValue, setSearchValue ] = React.useState<string>("");
     const [ squad, setSquad ] = React.useState<Player[]>([]);
     const [ filterBy, setFilterBy ] = React.useState<string>("")
@@ -27,17 +27,16 @@ export function TeamBuilder() {
         const queryPlayers = searchParams.get("players");
         if( queryPlayers ){
             const playersFromQuery = queryPlayers?.split(",").map( string => ({ Tier: string.split("|")[0], Name: string.split("|")[1]}));
-            console.info(playersFromQuery)
-            console.info(players.filter( player => playersFromQuery?.some( p => p.Tier === player.Tier && p.Name === player.Name)))
             setSquad( players.filter( player => playersFromQuery?.some( p => p.Tier === player.Tier && p.Name === player.Name)) );
         }
-    }, [ squad, players]);
+    }, [ players ]);
     
 
     function remove( index: number){
         const newSquad = squad;
         delete squad[index];
         setSquad( newSquad.filter(Boolean) );
+        setLocation(location.concat(`?players=${squadQueryParams}`));
     }
 
     const gridData: { prop: string, data: (string | number | null)[]}[] = React.useMemo( () => {
@@ -69,15 +68,15 @@ export function TeamBuilder() {
                 Search for players by name and select the appropriate tier. To remove Player, click on their name.
             </p>
             <div className="flex flex-box h-12 mx-auto justify-end">
-            <div className="basis-1/6">
-                <Select
-                    label="Tier"
-                    options={tiers.map( tier => ({ id: tier, value: tier}))}
-                    onChange={ ( e ) => setFilterBy( e.currentTarget.value )}
-                    value={filterBy}
-                />
+                <div className="basis-1/6">
+                    <Select
+                        label="Tier"
+                        options={tiers.map( tier => ({ id: tier, value: tier}))}
+                        onChange={ ( e ) => setFilterBy( e.currentTarget.value )}
+                        value={filterBy}
+                    />
+                </div>
             </div>
-        </div>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
             <div>
                 <form className="flex flex-box h-12 mx-auto" onSubmit={(e)=>{e.preventDefault()}}>

@@ -3,8 +3,9 @@ import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
 import { Table } from "../common/components/table";
 import { useDataContext } from "../DataContext";
-import { _sort } from "./player-utils";
+import { tiers, _sort } from "./player-utils";
 import { Player } from "../models";
+import { Select } from "../common/components/select";
 //import { tiers } from "./player-utils";
 
 function buildTableRow( player: Player, columnName: string, property: keyof Player ){
@@ -12,10 +13,10 @@ function buildTableRow( player: Player, columnName: string, property: keyof Play
 }
 
 export function LeaderBoards() {
-    //const [ selectedTier, setSelectedTier ] = React.useState("");
     const { playerStats, isLoading } = useDataContext();
+    const [ filterBy, setFilterBy ] = React.useState<string>("All");
 
-    const playerData = playerStats.filter( f => f.GP >= 3);
+    const playerData = filterBy.includes("All") ? playerStats.filter( f => f.GP >= 3) : playerStats.filter( f => f.GP >= 3 && f.Tier === filterBy);
     const gamesPlayed = _sort(playerData, "GP", 5).map( p => buildTableRow(p, "Games Played", "GP"));
     const kills = _sort(playerData, "Kills", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Kills": p.Kills}));
     const killDeathRatio = playerData.sort( (a,b) => (a.Kills/a.Deaths) < (b.Kills/b.Deaths) ? 1 : -1).slice(0,5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "K/D Ratio": (p.Kills/p.Deaths).toFixed(2)}));
@@ -38,18 +39,18 @@ export function LeaderBoards() {
                 <p className="mt-4 text-gray-300">
                     See who's at the top (or bottom, we won't judge). Requirement of 3 games played before stats are included on the leaderboards.
                 </p>
-                {/* <ul className="grid md:grid-cols-5">
-                    {tiers.map( tier => 
-                        <li key={`tier-${tier}`}>
-                        <input type="radio" id="tier-picker" name="tier-picker" value={tier} className="hidden peer" required onChange={ ( e ) => setSelectedTier( e.currentTarget.value ) }/>
-                        <label htmlFor="tier-picker" className="inline-flex w-full items-center p-2 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-500 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-blue-800">
-                            <div className="text-xs font-semibold text-center">{tier}</div>
-                        </label>
-                    </li>
-                    )}
-                </ul> */}
             </div>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
+            <div className="flex flex-box h-12 mx-auto justify-end">
+                    <div className="basis-1/6">
+                        <Select
+                            label="Tier"
+                            options={["All", ...tiers].map( tier => ({ id: tier, value: tier}))}
+                            onChange={ ( e ) => setFilterBy( e.currentTarget.value )}
+                            value={filterBy}
+                        />
+                </div>
+            </div>
             <div className="grid md:grid-cols-2 sm:grid-cols-1">
                 <div className="m-4">
                     Games Played
