@@ -1,12 +1,16 @@
 import * as React from "react";
 // import { Player } from "./models";
 import { useFetchCombinePlayerData } from "./dao/combinePlayerDao";
+import { useFetchContractGraph } from "./dao/contracts";
 import { useFetchSeason10PlayerData } from "./dao/seasonPlayerStatsDao";
 
 const useDataContextProvider = () => {
 	const [ selectedData, setSelectedData ] = React.useState("season10");
+	const { data: contracts, isLoading: isLoadingContracts } = useFetchContractGraph();
 	const { data: season10CombinePlayers = [], isLoading: isLoadingS10CombineStats } = useFetchCombinePlayerData();
 	const { data: season10PlayerStats = [], isLoading: isLoadingS10PlayerStats } = useFetchSeason10PlayerData();
+
+	console.info( contracts );
 
 	React.useEffect( () => {
 	}, [selectedData] );

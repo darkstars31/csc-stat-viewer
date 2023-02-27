@@ -12,7 +12,7 @@ export function TeamBuilder() {
     const [ location, setLocation ] = useLocation();
     const [ searchValue, setSearchValue ] = React.useState<string>("");
     const [ squad, setSquad ] = React.useState<Player[]>([]);
-    const [ filterBy, setFilterBy ] = React.useState<string>("")
+    const [ filterBy, setFilterBy ] = React.useState<string>("All")
     const { playerStats = [], isLoading } = useDataContext();
     const players = playerStats;
 
@@ -68,10 +68,10 @@ export function TeamBuilder() {
                 Search for players by name and select the appropriate tier. To remove Player, click on their name.
             </p>
             <div className="flex flex-box h-12 mx-auto justify-end">
-                <div className="basis-1/6">
+                <div>
                     <Select
                         label="Tier"
-                        options={tiers.map( tier => ({ id: tier, value: tier}))}
+                        options={["All", ...tiers].map( tier => ({ id: tier, value: tier}))}
                         onChange={ ( e ) => setFilterBy( e.currentTarget.value )}
                         value={filterBy}
                     />
@@ -93,7 +93,7 @@ export function TeamBuilder() {
             <div>
                 {
                     players.filter( p => !squad.some( s => s.Name === p.Name && s.Tier === p.Tier))
-                    .filter( p => p.Name.toLowerCase().includes(searchValue.toLowerCase()) && searchValue !== "" && filterBy === p.Tier).slice(0,8)
+                    .filter( p => p.Name.toLowerCase().includes(searchValue.toLowerCase()) && searchValue !== "" && (filterBy === p.Tier || filterBy === "All")).slice(0,8)
                     .map( p =>
                         <button 
                             key={`player-${p.Tier}-${p.Name}`} 
@@ -106,13 +106,13 @@ export function TeamBuilder() {
                 }
             </div>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
-            <div className="pt-24 sticky z-1">
-                <div className={`${gridClassName}`}>
+            <div className="pt-24 sticky z-1 text-sm">
+                <div className={`${gridClassName} justify-start`}>
                         { gridData.filter( i => ["Name"].includes(i.prop)).map( (row) =>
                             <>
                                 <div key={row.prop}>{row.prop}</div>
                                 { row.data.map( (value, index) =>
-                                     <div key={`val-${index}`} className={` -rotate-45 -translate-y-32 -translate-x-4 m-2 hover:text-red-600`}>
+                                     <div key={`val-${index}`} className={` -rotate-45 -translate-y-20 -translate-x-2 m-2 hover:text-red-600`}>
                                         <button onClick={() => remove(index)}>{value ?? "n/a"}</button>
                                         </div>
                                 )}
@@ -120,17 +120,18 @@ export function TeamBuilder() {
                         )}
                         { gridData.filter( i => ["Tier","GP"].includes(i.prop)).map( (row, rowIndex) =>
                             <>
-                                <div key={row.prop} className={`${rowIndex % 2 ? "bg-slate-800" : ""} p-2`}>{PlayerMappings[row.prop]}</div>
+                                <div key={row.prop} className={`${rowIndex % 2 ? "bg-slate-800" : ""} pl-1`}>{PlayerMappings[row.prop]}</div>
                                 { row.data.map( (value, index) =>
-                                     <div key={`val-${index}`} className={`${rowIndex % 2 ? "bg-slate-800" : ""} p-2`}>{value ?? "n/a"}</div>
+                                     <div key={`val-${index}`} className={`${rowIndex % 2 ? "bg-slate-800" : ""} pl-1`}>{value ?? "n/a"}</div>
                                 )}
                             </>
                         )}
                         { gridData.filter( i => !statExclusionList.includes(i.prop)).map( (row, rowIndex) =>
                             <>
-                                <div key={row.prop} className={`${rowIndex % 2 ? "bg-slate-800" : ""} p-2`}>{PlayerMappings[row.prop]}</div>
-                                { row.data.map( (value, index) =>
-                                     <div key={`val-${index}`} className={`${rowIndex % 2 ? "bg-slate-800" : ""} p-2`}>{value ?? "n/a"}</div>
+                                <div key={row.prop} className={`${rowIndex % 2 ? "bg-slate-800" : ""} pl-1`}>{PlayerMappings[row.prop]}</div>
+                                { row.data.map( (value, index) => {
+                                     return <div key={`val-${index}`} className={`${rowIndex % 2 ? "bg-slate-800" : ""} pl-1`}>{value ?? "n/a"}</div>
+                                }
                                 )}
                             </>
                         )}
