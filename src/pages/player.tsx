@@ -1,7 +1,15 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
 import { Pill } from "../common/components/pill";
-import { PlayerMappings, TotalPlayerAverages, teamNameTranslator, tierColorClassNames, getPlayerTeammates, getPlayersInTierOrderedByRating, getPlayerRatingIndex } from "./player-utils";
+import { PlayerMappings, 
+    TotalPlayerAverages, 
+    teamNameTranslator, 
+    tierColorClassNames, 
+    getPlayerTeammates, 
+    getPlayersInTierOrderedByRating, 
+    getPlayerRatingIndex,
+    getPlayersAroundSelectedPlayer,
+} from "./player-utils";
 // import { Tooltip } from "../common/components/tooltip";
 import { Link, useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
@@ -15,7 +23,7 @@ function Stat( { title, value, children }: { title?:string, value?: string|numbe
 		return null;
 	}
 	return (
-        <div className="mb-2 flex flex-col rounded-lg border border-gray-100 px-2 py-4 text-center dark:border-gray-800">
+        <div className="mb-2 flex flex-col rounded-lg border border-gray-100 p-4 dark:border-gray-800">
           { title && <dt className="order-last text-s font-medium text-gray-500 dark:text-gray-400">
             {title}
           </dt> }
@@ -67,6 +75,7 @@ export function Player() {
     const playerTeammates = getPlayerTeammates( player!, playerStats);
     const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player!, playerStats );
     const playerRatingIndex = getPlayerRatingIndex( player!, playerStats );
+    const playersAroundTarget = getPlayersAroundSelectedPlayer( playerInTierOrderedByRating, playerRatingIndex);
 
     const { 
         Name, Tier, Team, Rating, Steam, ppR, GP,
@@ -111,7 +120,7 @@ export function Player() {
                         <Pill data-tooltip="test" label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300" data-tooltip-target="rating-tooltip" data-tooltip-placement="top"/>
                         </div>
                         <Pill label={`Games Played ${GP}`} color="bg-orange-300" />
-                        <Pill label={`Tier  ${playerRatingIndex} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />
+                        <Pill label={`Tier  ${playerRatingIndex+1} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />
                         <PlayerGauge player={player} />
                     </div>
                     <div>
@@ -209,14 +218,18 @@ export function Player() {
 				</div>
             </GridContainer>
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
-                {/* <Stat title={"Headshots"} value={ `${HS}%` }>
-                    <div className="text-gray-500 text-m">({((HS/Number(tierPlayerAverages.avgHeadShotPercentage))*100-100).toFixed(2)}% of avg in tier)</div>
-                </Stat> */}
                 { playerTeammates.length > 0 && 
                     <Stat  title={`Teammates - ${Team}`}>
                         { playerTeammates.map( teammate => <div><Link key={`teammate-${teammate.Name}`} to={`/players/${teammate.Tier}/${teammate.Name}`}>{teammate.Name}</Link></div>)}
                     </Stat> 
                 }
+                
+                <Stat  title={`Players close by`}>
+                    { playersAroundTarget.playersAhead.map( (player, index) => <div>{playerRatingIndex-1+index}. <Link key={`closeby-${player.Name}`} to={`/players/${player.Tier}/${player.Name}`}>{player.Name}</Link></div>)}
+                    <div>{playerRatingIndex+1}. <Link to={`/players/${player.Tier}/${player.Name}`}>{player.Name}</Link></div>
+                    { playersAroundTarget.playersBehind.map( (player, index) => <div>{playerRatingIndex+2+index}. <Link key={`closeby-${player.Name}`} to={`/players/${player.Tier}/${player.Name}`}>{player.Name}</Link></div>)}
+                </Stat> 
+                
             </dl>
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
                 {/* <Stat title={"Impact / on Rounds Won"} value={ `${Impact} / ${IWR}` } /> */}

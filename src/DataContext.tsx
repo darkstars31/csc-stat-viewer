@@ -16,6 +16,7 @@ const useDataContextProvider = () => {
 	}, [selectedData] );
 
     return {
+		//tiers: contracts.tiers,
         playerStats: selectedData === "season10" ? season10PlayerStats : season10CombinePlayers,
 		isLoading: isLoadingS10CombineStats && isLoadingS10PlayerStats,
 		selectedData, setSelectedData

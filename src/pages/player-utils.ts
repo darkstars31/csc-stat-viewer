@@ -56,8 +56,8 @@ export const PlayerMappings: Record<string,string> = {
     "Xdiff": "Damage given vs. taken",
     "ea/R": "Rounds with Opening Duel on T-side",
     "ATD": "Time to Death",
-    "ctADP": "Death Placement on CT-side",
-    "tADP": "Death Placement on T-side",
+    "ctADP": "Death Placement CT-side",
+    "tADP": "Death Placement T-side",
     "EF/F": "Enemies Flashed / Flash",
     "Blind/EF": "Enemy Blind time / Flash",
     "X/nade": "Damage per Frag thrown",
@@ -102,6 +102,13 @@ export const getPlayerTeammates = ( player: Player, allPlayers: Player[] ) => {
     return allPlayers
         .filter( allPlayers => !["DE","FA","PFA"].includes(allPlayers.Team))
         .filter( allPlayers => allPlayers.Tier === player.Tier && allPlayers.Team === player.Team && allPlayers.Name !== player.Name);
+}
+
+export const getPlayersAroundSelectedPlayer = ( players: Player[], index: number ) => {
+    const playersAhead = [...players.slice(index-2+( index === 1 ? 1 : 0),index)];
+    const playersBehind = [...players.slice(index+1, index+3+(2 - playersAhead.length))];
+    console.info( playersAhead )
+    return {playersAhead, playersBehind};
 }
 
 export const TotalPlayerAverages = ( combinePlayerData: Player[], options?: Record<string,unknown> ) => {

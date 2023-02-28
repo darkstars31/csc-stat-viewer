@@ -9,8 +9,7 @@ const fetchContractsGraph = async () => await fetch(`https://core.csconfederatio
         })
     })
     .then( async response => {
-        console.info( response );
-        return response;
+        return response.json();
     } );
 
 export function useFetchContractGraph(): UseQueryResult<unknown> {
