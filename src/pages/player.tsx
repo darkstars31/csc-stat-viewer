@@ -78,7 +78,7 @@ export function Player() {
     const playersAroundTarget = getPlayersAroundSelectedPlayer( playerInTierOrderedByRating, playerRatingIndex);
 
     const { 
-        Name, Tier, Team, Rating, Steam, ppR, GP,
+        Name, Tier, Team, Rating, Steam, ppR, GP, mmr,
         Kills, Assists, Deaths,
         "2k": twoKills, "3k": threeKills, "4k": fourKills, "5k": aces,
         HS, KAST, ADR, "K/R": avgKillsPerRound,
@@ -121,6 +121,7 @@ export function Player() {
                         </div>
                         <Pill label={`Games Played ${GP}`} color="bg-orange-300" />
                         <Pill label={`Tier  ${playerRatingIndex+1} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />
+                        {/* <Pill label={`MMR  ${mmr}`} color="bg-slate-300" /> */}
                         <PlayerGauge player={player} />
                     </div>
                     <div>

@@ -7,6 +7,7 @@ export type Player = {
         "ppR": string,
         "GP": number,
         "Rating": number,
+        "mmr": number | null,
         "K/R": number,
         "ADR": number,
         "KAST": number,

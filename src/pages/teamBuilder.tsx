@@ -118,7 +118,7 @@ export function TeamBuilder() {
                                 )}
                             </>
                         )}
-                        { gridData.filter( i => ["Tier","GP"].includes(i.prop)).map( (row, rowIndex) =>
+                        { gridData.filter( i => ["Tier","GP","mmr"].includes(i.prop)).map( (row, rowIndex) =>
                             <>
                                 <div key={row.prop} className={`${rowIndex % 2 ? "bg-slate-800" : ""} pl-1`}>{PlayerMappings[row.prop]}</div>
                                 { row.data.map( (value, index) =>

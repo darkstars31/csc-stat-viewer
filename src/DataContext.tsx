@@ -9,14 +9,15 @@ const useDataContextProvider = () => {
 	const { data: season10CombinePlayers = [], isLoading: isLoadingS10CombineStats } = useFetchCombinePlayerData();
 	const { data: season10PlayerStats = [], isLoading: isLoadingS10PlayerStats } = useFetchSeason10PlayerData();
 
-	console.info( contracts );
+	// TODO: Find a better place for this
+	const season10PlayerStatsEnhanced = season10PlayerStats.map( player => ({...player, mmr: contracts?.data.fas.find( (fa: { name: string, mmr: number}) => fa.name === player.Name)?.mmr}))
 
 	React.useEffect( () => {
 	}, [selectedData] );
 
     return {
 		//tiers: contracts.tiers,
-        playerStats: selectedData === "season10" ? season10PlayerStats : season10CombinePlayers,
+        playerStats: selectedData === "season10" ? season10PlayerStatsEnhanced : season10CombinePlayers,
 		isLoading: isLoadingS10CombineStats && isLoadingS10PlayerStats && isLoadingContracts,
 		selectedData, setSelectedData
     };

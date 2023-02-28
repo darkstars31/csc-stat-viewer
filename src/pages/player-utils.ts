@@ -8,6 +8,7 @@ export const PlayerMappings: Record<string,string> = {
     "ppR": "Role",
     "GP": "Games Played",
     "Rating": "Rating",
+    "mmr": "MMR",
     "K/R": "Kills / Round",
     "ADR": "Damage / Round",
     "KAST": "Kill Assist Traded Survived (%)",
