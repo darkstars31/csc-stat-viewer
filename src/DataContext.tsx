@@ -1,5 +1,4 @@
 import * as React from "react";
-// import { Player } from "./models";
 import { useFetchCombinePlayerData } from "./dao/combinePlayerDao";
 import { useFetchContractGraph } from "./dao/contracts";
 import { useFetchSeason10PlayerData } from "./dao/seasonPlayerStatsDao";
@@ -18,7 +17,7 @@ const useDataContextProvider = () => {
     return {
 		//tiers: contracts.tiers,
         playerStats: selectedData === "season10" ? season10PlayerStats : season10CombinePlayers,
-		isLoading: isLoadingS10CombineStats && isLoadingS10PlayerStats,
+		isLoading: isLoadingS10CombineStats && isLoadingS10PlayerStats && isLoadingContracts,
 		selectedData, setSelectedData
     };
 }
