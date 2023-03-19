@@ -1,4 +1,5 @@
 import { Player } from "../models";
+import { ContractsQuery } from "../models/contract-types";
 
 export const PlayerMappings: Record<string,string> = {
     "": "",
@@ -108,27 +109,47 @@ export const getPlayerTeammates = ( player: Player, allPlayers: Player[] ) => {
 export const getPlayersAroundSelectedPlayer = ( players: Player[], index: number ) => {
     const playersAhead = [...players.slice(index-2+( index === 1 ? 1 : 0),index)];
     const playersBehind = [...players.slice(index+1, index+3+(2 - playersAhead.length))];
-    console.info( playersAhead )
     return {playersAhead, playersBehind};
+}
+
+export const findPlayerMMR = ( player: Player, contracts: ContractsQuery ) => {
+    if( player.Tier.includes("FA")){
+        return contracts?.data.fas.find( (fa: { name: string, mmr: number}) => fa.name === player.Name)?.mmr;
+    } else {
+        const franchise = contracts.data.franchises.find( franchise => franchise.teams.find( team => team.players.find( p => p.name === player.Name)));
+        
+    }
 }
 
 export const TotalPlayerAverages = ( combinePlayerData: Player[], options?: Record<string,unknown> ) => {
     const players = options?.tier ? combinePlayerData.filter( p => p.Tier === options?.tier) : combinePlayerData;
 
     return {
-        avgRating: calculateAverage(players, "Rating"),
-        avgRatingConsistency: calculateAverage(players, "CONCY"),
-        avgHeadShotPercentage: calculateAverage(players, "HS"),
-        avgDamagePerRound: calculateAverage(players, "ADR"),
-        avgGamesPlayed: calculateAverage(players, "GP"),
-        avgRoundsPlayed: calculateAverage(players, "Rounds"),
-        avgUtilThrownPerMatch: calculateAverage(players, "Util"),
-        avgTimeTilDeath: calculateAverage(players, "ATD"),
-        avgImpactOnWonRounds: calculateAverage(players, "IWR"),
-        avgNadeDamagePerNade: calculateAverage(players, "X/nade"),
-        avgEnemiesFlashedPerFlash: calculateAverage(players, "EF/F"),
+        average: {
+            rating: calculateAverage(players, "Rating"),
+            ratingConsistency: calculateAverage(players, "CONCY"),
+            headShotPercentage: calculateAverage(players, "HS"),
+            damagePerRound: calculateAverage(players, "ADR"),
+            gamesPlayed: calculateAverage(players, "GP"),
+            roundsPlayed: calculateAverage(players, "Rounds"),
+            utilThrownPerMatch: calculateAverage(players, "Util"),
+            timeTilDeath: calculateAverage(players, "ATD"),
+            impactOnWonRounds: calculateAverage(players, "IWR"),
+            nadeDamagePerNade: calculateAverage(players, "X/nade"),
+            enemiesFlashedPerFlash: calculateAverage(players, "EF/F"),
+        },
         highest: {
-            impactOnRoundsWon: calculateHighest(players,"IWR"),
+            rating: calculateHighest(players, "Rating"),
+            ratingConsistency: calculateHighest(players, "CONCY"),
+            headShotPercentage: calculateHighest(players, "HS"),
+            damagePerRound: calculateHighest(players, "ADR"),
+            gamesPlayed: calculateHighest(players, "GP"),
+            roundsPlayed: calculateHighest(players, "Rounds"),
+            utilThrownPerMatch: calculateHighest(players, "Util"),
+            timeTilDeath: calculateHighest(players, "ATD"),
+            impactOnWonRounds: calculateHighest(players, "IWR"),
+            nadeDamagePerNade: calculateHighest(players, "X/nade"),
+            enemiesFlashedPerFlash: calculateHighest(players, "EF/F"),
         }
     }
 }

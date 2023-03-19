@@ -127,7 +127,7 @@ export function Players() {
                 <div className={`text-${ player.Rating > 1 ? "green" : "orange" }-400`}>Rating: {player.Rating}</div>
             </div>
             <div>
-                <div className="text-center">{player.ppR}</div>
+                <div className="text-center">{player?.ppR}</div>
                 <div className="flex justify-center">
                     {player.ppR.toLowerCase() === "rifler" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${rifler}`} alt="Rifler"/>}
                     {player.ppR.toLowerCase() === "awper" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${awper}`} alt="Awper"/>}

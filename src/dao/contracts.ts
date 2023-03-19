@@ -1,4 +1,5 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { ContractsQuery } from "../models/contract-types";
 
 const fetchContractsGraph = async () => await fetch(`https://core.csconfederation.com/graphql`,
     { method: "POST", 
@@ -73,7 +74,7 @@ const fetchContractsGraph = async () => await fetch(`https://core.csconfederatio
         return response.json();
     } );
 
-export function useFetchContractGraph(): UseQueryResult<{ data: { fas: any[]}}> {
+export function useFetchContractGraph(): UseQueryResult<ContractsQuery> {
     return useQuery({ queryKey: ["contracts-graph"], queryFn: fetchContractsGraph, staleTime: 1000 * 60 * 60}); // 1 second * 60 * 60 = 1 hour
 }
 

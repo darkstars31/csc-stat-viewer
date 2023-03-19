@@ -112,7 +112,7 @@ export function Player() {
                         <div className="tooltip tooltip__dang" data-tip={`${
                             <>
                                 <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>
-                                <div>Consistency: {ratingConsistency}σ ({ratingConsistency < tierPlayerAverages.avgRatingConsistency ? "More" : "Less"} than avg in Tier)</div>
+                                <div>Consistency: {ratingConsistency}σ ({ratingConsistency < tierPlayerAverages.average.ratingConsistency ? "More" : "Less"} than avg in Tier)</div>
                                 <div>Peak {Peak} / Bottom {Pit}</div>
                                 <div>CT: {ctRating} / T: {tRating}</div>
                             </>

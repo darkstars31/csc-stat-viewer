@@ -4,13 +4,14 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'; //BellIcon,
 import { Link, useLocation } from 'wouter';
 import { Select } from '../common/components/select';
 import { useDataContext } from '../DataContext';
+import { dataConfiguration } from "../dataConfig";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
 export function Header() {
-  const { selectedData, setSelectedData } = useDataContext();
+  const { selectedDataOption, setSelectedDataOption } = useDataContext();
 
   const [ location ] = useLocation();
 
@@ -87,12 +88,9 @@ export function Header() {
                       <div className="overflow-auto">
                           <Select
                               label="Stats"
-                              options={[
-                                          { id: "season10", value: "Season 10"}, 
-                                          { id: "season10Combine", value: "Season 10 Combines"}
-                                      ]}
-                              onChange={ ( e ) => setSelectedData( e.currentTarget.value )}
-                              value={selectedData}
+                              options={ dataConfiguration.map( item => ({ id: item.name, value: item.name}))}
+                              onChange={ ( e ) => setSelectedDataOption( e.currentTarget.value )}
+                              value={selectedDataOption}
                           />
                       </div>
                   </div>

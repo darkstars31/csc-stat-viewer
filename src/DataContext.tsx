@@ -1,25 +1,27 @@
 import * as React from "react";
-import { useFetchCombinePlayerData } from "./dao/combinePlayerDao";
 import { useFetchContractGraph } from "./dao/contracts";
-import { useFetchSeason10PlayerData } from "./dao/seasonPlayerStatsDao";
+import { useFetchSeasonData } from "./dao/seasonPlayerStatsDao";
+import { dataConfiguration, type DataConfiguration } from "./dataConfig";
 
 const useDataContextProvider = () => {
-	const [ selectedData, setSelectedData ] = React.useState("season10");
+	const [ selectedDataOption, setSelectedDataOption ] = React.useState<string>(dataConfiguration[0].name);
+	const dataConfig = dataConfiguration.find( item => selectedDataOption === item.name);
+
 	const { data: contracts, isLoading: isLoadingContracts } = useFetchContractGraph();
-	const { data: season10CombinePlayers = [], isLoading: isLoadingS10CombineStats } = useFetchCombinePlayerData();
-	const { data: season10PlayerStats = [], isLoading: isLoadingS10PlayerStats } = useFetchSeason10PlayerData();
+	const { data: playerStats = [], isLoading: isLoadingPlayerStats } = useFetchSeasonData(dataConfig!);
 
 	// TODO: Find a better place for this
-	const season10PlayerStatsEnhanced = season10PlayerStats.map( player => ({...player, mmr: contracts?.data.fas.find( (fa: { name: string, mmr: number}) => fa.name === player.Name)?.mmr}))
+	//const playerMmrList = season10PlayerStats.map( player => ({...player, mmr: contracts?.data.fas.find( (fa: { name: string, mmr: number}) => fa.name === player.Name)}))
+	//console.info(playerMmrList)
 
 	React.useEffect( () => {
-	}, [selectedData] );
+	}, [selectedDataOption] );
 
     return {
 		//tiers: contracts.tiers,
-        playerStats: selectedData === "season10" ? season10PlayerStatsEnhanced : season10CombinePlayers,
-		isLoading: isLoadingS10CombineStats && isLoadingS10PlayerStats && isLoadingContracts,
-		selectedData, setSelectedData
+        playerStats: playerStats,
+		isLoading: isLoadingPlayerStats,
+		selectedDataOption, setSelectedDataOption
     };
 }
 
