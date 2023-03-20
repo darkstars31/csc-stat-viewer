@@ -80,6 +80,15 @@ export const tierColorClassNames = {
     "Prospect": "orange",
 }
 
+export const roleColors = {
+	"AWPER": "blue",
+	"ENTRY": "orange",
+	"FRAGGER": "red",
+	"SUPPORT": "green",
+	"LURKER": "purple",
+	"RIFLER": "black",
+}
+
 export const teamNameTranslator = ( name: string ) => {
     switch( name?.toUpperCase() ){
         case "DE": return "Draft Eligible";
