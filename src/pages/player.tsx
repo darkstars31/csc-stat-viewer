@@ -63,14 +63,18 @@ const GridContainer = ( { children }: { children: React.ReactNode | React.ReactN
 // }
 
 export function Player() {
-    const { playerStats = [], isLoading } = useDataContext();
+    const { playerStats = [], isLoading, selectedDataOption } = useDataContext();
     const [, params] = useRoute("/players/:tier/:id");
     const player = playerStats.find( player => player.Name === decodeURIComponent(params?.id ?? "") && player.Tier === params?.tier);
     const tierPlayerAverages = TotalPlayerAverages( playerStats, { tier: player?.Tier} );
 
-    if( isLoading || !player ){
+    if( isLoading ){
         return <Container><Loading /></Container>;
-    }
+    } else if ( !player ){
+		return <Container>
+			No {selectedDataOption} stats found for {params?.id ?? "null"} 
+		</Container>
+	}
 
     const playerTeammates = getPlayerTeammates( player!, playerStats);
     const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player!, playerStats );

@@ -80,6 +80,15 @@ export const tierColorClassNames = {
     "Prospect": "orange",
 }
 
+export const roleColors = {
+	"AWPER": "blue",
+	"ENTRY": "orange",
+	"FRAGGER": "red",
+	"SUPPORT": "green",
+	"LURKER": "purple",
+	"RIFLER": "black",
+}
+
 export const teamNameTranslator = ( name: string ) => {
     switch( name?.toUpperCase() ){
         case "DE": return "Draft Eligible";
@@ -116,6 +125,7 @@ export const findPlayerMMR = ( player: Player, contracts: ContractsQuery ) => {
     if( player.Tier.includes("FA")){
         return contracts?.data.fas.find( (fa: { name: string, mmr: number}) => fa.name === player.Name)?.mmr;
     } else {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const franchise = contracts.data.franchises.find( franchise => franchise.teams.find( team => team.players.find( p => p.name === player.Name)));
         
     }

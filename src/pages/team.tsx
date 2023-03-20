@@ -3,5 +3,10 @@ import { useDataContext } from "../DataContext";
 
 
 export function Team(){
-    const { playerStats, isLoading } = useDataContext();
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { playerStats, isLoading } = useDataContext();
+
+	return (
+		<div>team page</div>
+		);
 }

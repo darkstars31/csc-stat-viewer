@@ -1,12 +1,13 @@
 import * as React from "react";
 import { useFetchContractGraph } from "./dao/contracts";
 import { useFetchSeasonData } from "./dao/seasonPlayerStatsDao";
-import { dataConfiguration, type DataConfiguration } from "./dataConfig";
+import { dataConfiguration } from "./dataConfig";
 
 const useDataContextProvider = () => {
 	const [ selectedDataOption, setSelectedDataOption ] = React.useState<string>(dataConfiguration[0].name);
 	const dataConfig = dataConfiguration.find( item => selectedDataOption === item.name);
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: contracts, isLoading: isLoadingContracts } = useFetchContractGraph();
 	const { data: playerStats = [], isLoading: isLoadingPlayerStats } = useFetchSeasonData(dataConfig!);
 
