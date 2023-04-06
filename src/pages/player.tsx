@@ -9,7 +9,7 @@ import { PlayerMappings,
     getPlayersInTierOrderedByRating, 
     getPlayerRatingIndex,
     getPlayersAroundSelectedPlayer,
-} from "./player-utils";
+} from "../common/utils/player-utils";
 // import { Tooltip } from "../common/components/tooltip";
 import { Link, useRoute } from "wouter";
 import { useDataContext } from "../DataContext";

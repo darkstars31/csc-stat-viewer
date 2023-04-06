@@ -5,7 +5,7 @@ import { Container } from "../common/components/container";
 import { Input } from "../common/components/input";
 import { Pill } from "../common/components/pill";
 import { Link } from "wouter";
-import { PlayerMappings, teamNameTranslator, tierColorClassNames } from "./player-utils";
+import { PlayerMappings, teamNameTranslator, tierColorClassNames } from "../common/utils/player-utils";
 import { Select } from "../common/components/select";
 import { Loading } from "../common/components/loading";
 import { useDataContext } from "../DataContext";

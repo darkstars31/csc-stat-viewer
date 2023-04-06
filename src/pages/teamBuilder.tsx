@@ -2,7 +2,7 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import { Input } from "../common/components/input";
 import { useDataContext } from "../DataContext";
-import { PlayerMappings, tiers } from "./player-utils";
+import { PlayerMappings, tiers } from "../common/utils/player-utils";
 import { Player } from "../models";
 import { Loading } from "../common/components/loading";
 import { Select } from "../common/components/select";

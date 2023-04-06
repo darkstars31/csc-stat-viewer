@@ -1,5 +1,5 @@
-import { Player } from "../models";
-import { ContractsQuery } from "../models/contract-types";
+import { Player } from "../../models";
+import { ContractsQuery } from "../../models/contract-types";
 
 export const PlayerMappings: Record<string,string> = {
     "": "",
@@ -119,16 +119,6 @@ export const getPlayersAroundSelectedPlayer = ( players: Player[], index: number
     const playersAhead = [...players.slice(index-2+( index === 1 ? 1 : 0),index)];
     const playersBehind = [...players.slice(index+1, index+3+(2 - playersAhead.length))];
     return {playersAhead, playersBehind};
-}
-
-export const findPlayerMMR = ( player: Player, contracts: ContractsQuery ) => {
-    if( player.Tier.includes("FA")){
-        return contracts?.data.fas.find( (fa: { name: string, mmr: number}) => fa.name === player.Name)?.mmr;
-    } else {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const franchise = contracts.data.franchises.find( franchise => franchise.teams.find( team => team.players.find( p => p.name === player.Name)));
-        
-    }
 }
 
 export const TotalPlayerAverages = ( combinePlayerData: Player[], options?: Record<string,unknown> ) => {

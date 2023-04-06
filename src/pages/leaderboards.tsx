@@ -3,7 +3,7 @@ import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
 import { Table } from "../common/components/table";
 import { useDataContext } from "../DataContext";
-import { tiers, _sort } from "./player-utils";
+import { tiers, _sort } from "../common/utils/player-utils";
 import { Player } from "../models";
 import { Select } from "../common/components/select";
 //import { tiers } from "./player-utils";
@@ -27,6 +27,15 @@ export function LeaderBoards() {
     const timeToDeath = _sort(playerData, "ATD", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Time til Death (seconds)": p.ATD}));
     const ctRating = _sort(playerData, "ctADP", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Rating": p.ctADP}));
     const tRating = _sort(playerData, "tADP", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Rating": p.tADP}));
+    const kastPercentage = _sort(playerData, "KAST", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "KAST%": p.KAST}));
+    const utilThrownPerMatchX = _sort(playerData, "Util");
+    const utilThrownPerMatch = utilThrownPerMatchX.map( p => ({ "Player": p.Name, "Tier": p.Tier, "Util/Match": p.Util})).splice(0,5);
+    const leastUtilThrownPerMatch = utilThrownPerMatchX.reverse().map( p => ({ "Player": p.Name, "Tier": p.Tier, "Least Util/Match": p.Util })).splice(0,15);
+    const headshotPercentage = _sort(playerData, "HS", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "HeadShot %": p.HS}));
+    const clutchAbility = _sort(playerData, "clutch/R", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Clutch Points per Match": p['clutch/R']}));
+    const mostConsistent = _sort(playerData, "CONCY", 5).reverse().map( p => ({ "Player": p.Name, "Tier": p.Tier, "Most Consistent Rating": p['CONCY']}));
+
+
 
     if( isLoading ) {
         return <Container><Loading /></Container>;
@@ -101,6 +110,38 @@ export function LeaderBoards() {
                     <Table rows={tRating}/>
                 </div>
             </div>
+
+            <div className="grid md:grid-cols-2 sm:grid-cols-1">
+                <div className="m-4">
+                    Kill/Asset/Survived/Traded
+                    <Table rows={kastPercentage}/>
+                </div>
+                <div className="m-4">
+                    Utility Thrown Per Match
+                    <Table rows={utilThrownPerMatch}/>
+                </div>
+            </div>
+            <div className="grid md:grid-cols-2 sm:grid-cols-1">
+                <div className="m-4">
+                    Least Utility Thrown Per Match
+                    <Table rows={leastUtilThrownPerMatch}/>
+                </div>
+                <div className="m-4">
+                    Highest Headshot Percentage
+                    <Table rows={headshotPercentage}/>
+                </div>
+            </div>
+            <div className="grid md:grid-cols-2 sm:grid-cols-1">
+                <div className="m-4">
+                    Clutch Points Average per Match
+                    <Table rows={clutchAbility}/>
+                </div>
+                <div className="m-4">
+                    Most Consistent Rating
+                    <Table rows={mostConsistent}/>
+                </div>
+            </div>
+          
         </Container>
     );
 }

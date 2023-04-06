@@ -2,6 +2,7 @@ import * as React from "react";
 import { useFetchContractGraph } from "./dao/contracts";
 import { useFetchSeasonData } from "./dao/seasonPlayerStatsDao";
 import { dataConfiguration } from "./dataConfig";
+import { findPlayerMMR } from "./common/utils/contract-utils";
 
 const useDataContextProvider = () => {
 	const [ selectedDataOption, setSelectedDataOption ] = React.useState<string>(dataConfiguration[0].name);
@@ -12,14 +13,14 @@ const useDataContextProvider = () => {
 	const { data: playerStats = [], isLoading: isLoadingPlayerStats } = useFetchSeasonData(dataConfig!);
 
 	// TODO: Find a better place for this
-	//const playerMmrList = season10PlayerStats.map( player => ({...player, mmr: contracts?.data.fas.find( (fa: { name: string, mmr: number}) => fa.name === player.Name)}))
-	//console.info(playerMmrList)
+	const playerMmrList = playerStats.map( player => ({ name: player.Name, team: player.Team, mmr:findPlayerMMR(player, contracts)}));
+	console.info(playerMmrList);
 
 	React.useEffect( () => {
 	}, [selectedDataOption] );
 
     return {
-		//tiers: contracts.tiers,
+		currentSeasonContracts: contracts,
         playerStats: playerStats,
 		isLoading: isLoadingPlayerStats,
 		selectedDataOption, setSelectedDataOption

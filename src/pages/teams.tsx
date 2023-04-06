@@ -4,7 +4,7 @@ import { Container } from "../common/components/container";
 import { useDataContext } from '../DataContext';
 import { Loading } from '../common/components/loading';
 import { Player } from '../models';
-import { tiers, roleColors } from './player-utils';
+import { tiers, roleColors } from '../common/utils/player-utils';
 
 export function Teams() {
     const { playerStats, isLoading } = useDataContext();
