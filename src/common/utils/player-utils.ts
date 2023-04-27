@@ -1,5 +1,4 @@
 import { Player } from "../../models";
-import { ContractsQuery } from "../../models/contract-types";
 
 export const PlayerMappings: Record<string,string> = {
     "": "",

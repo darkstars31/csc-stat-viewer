@@ -1,0 +1,15 @@
+query contracts {
+	players {
+		name
+		faceitName
+		mmr
+		avatarUrl
+		contractDuration
+		tier {
+			name
+		}
+		team {
+			name
+		}
+	}
+}

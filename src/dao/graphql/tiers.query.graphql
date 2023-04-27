@@ -1,0 +1,6 @@
+query Tiers {
+	tiers {
+        id,
+        name
+    }
+}
