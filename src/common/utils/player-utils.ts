@@ -1,4 +1,4 @@
-import { Player } from "../../models";
+import { PlayerStats } from "../../models";
 
 export const PlayerMappings: Record<string,string> = {
     "": "",
@@ -102,25 +102,25 @@ export function _sort<T, K extends keyof T>( items: T[], property: K, n?: number
     return n ? sorted.slice(0,n) : sorted;
 }
 
-export const getPlayersInTier = ( player: Player, allPlayers: Player[] ) => allPlayers.filter( ap => ap.Tier === player.Tier);
-export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Player[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => a.Rating < b.Rating ? 1 : -1);
-export const getPlayerRatingIndex = ( player: Player, allPlayers: Player[] ) => {
+export const getPlayersInTier = ( player: PlayerStats, allPlayers: PlayerStats[] ) => allPlayers.filter( ap => ap.Tier === player.Tier);
+export const getPlayersInTierOrderedByRating = ( player: PlayerStats, allPlayers: PlayerStats[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => a.Rating < b.Rating ? 1 : -1);
+export const getPlayerRatingIndex = ( player: PlayerStats, allPlayers: PlayerStats[] ) => {
     const playersInTierSortedByRating = getPlayersInTierOrderedByRating(player, allPlayers);
     return playersInTierSortedByRating.findIndex( p => p.Name === player.Name );
 }
-export const getPlayerTeammates = ( player: Player, allPlayers: Player[] ) => {
+export const getPlayerTeammates = ( player: PlayerStats, allPlayers: PlayerStats[] ) => {
     return allPlayers
         .filter( allPlayers => !["DE","FA","PFA"].includes(allPlayers.Team))
         .filter( allPlayers => allPlayers.Tier === player.Tier && allPlayers.Team === player.Team && allPlayers.Name !== player.Name);
 }
 
-export const getPlayersAroundSelectedPlayer = ( players: Player[], index: number ) => {
+export const getPlayersAroundSelectedPlayer = ( players: PlayerStats[], index: number ) => {
     const playersAhead = [...players.slice(index-2+( index === 1 ? 1 : 0),index)];
     const playersBehind = [...players.slice(index+1, index+3+(2 - playersAhead.length))];
     return {playersAhead, playersBehind};
 }
 
-export const TotalPlayerAverages = ( combinePlayerData: Player[], options?: Record<string,unknown> ) => {
+export const TotalPlayerAverages = ( combinePlayerData: PlayerStats[], options?: Record<string,unknown> ) => {
     const players = options?.tier ? combinePlayerData.filter( p => p.Tier === options?.tier) : combinePlayerData;
 
     return {
@@ -153,11 +153,11 @@ export const TotalPlayerAverages = ( combinePlayerData: Player[], options?: Reco
     }
 }
 
-function calculateAverage(players: Player[], prop: string){
-    return Number((players.reduce(( cumulative, player ) => cumulative + Number(player[prop as keyof Player]), 0 ) / players.length).toFixed(2));
+function calculateAverage(players: PlayerStats[], prop: string){
+    return Number((players.reduce(( cumulative, player ) => cumulative + Number(player[prop as keyof PlayerStats]), 0 ) / players.length).toFixed(2));
 }
 
-function calculateHighest(players: Player[], prop: keyof Player){
+function calculateHighest(players: PlayerStats[], prop: keyof PlayerStats){
     return _sort(players, prop);
 }
 

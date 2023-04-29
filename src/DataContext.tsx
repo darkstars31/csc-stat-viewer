@@ -1,28 +1,31 @@
 import * as React from "react";
-import { useFetchContractGraph } from "./dao/contracts";
+import { useCscPlayersGraph } from "./dao/cscPlayerGraphQLDao";
 import { useFetchSeasonData } from "./dao/seasonPlayerStatsDao";
 import { dataConfiguration } from "./dataConfig";
-import { findPlayerMMR } from "./common/utils/contract-utils";
+import { Player } from "./models/player";
+
+
 
 const useDataContextProvider = () => {
 	const [ selectedDataOption, setSelectedDataOption ] = React.useState<string>(dataConfiguration[0].name);
 	const dataConfig = dataConfiguration.find( item => selectedDataOption === item.name);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { data: contracts, isLoading: isLoadingContracts } = useFetchContractGraph();
+	const { data: cscPlayersReponse = null, isLoading: isLoadingCscPlayers } = useCscPlayersGraph();
 	const { data: playerStats = [], isLoading: isLoadingPlayerStats } = useFetchSeasonData(dataConfig!);
 
-	// TODO: Find a better place for this
-	const playerMmrList = playerStats.map( player => ({ name: player.Name, team: player.Team, mmr:findPlayerMMR(player, contracts)}));
-	console.info(playerMmrList);
+	console.info( isLoadingCscPlayers , isLoadingPlayerStats  );
+
+	const cscPlayers = cscPlayersReponse?.data?.players ?? [];
+	const players: Player[] = cscPlayers?.map( cscPlayer => ({ ...cscPlayer, stats: playerStats.find( ps => ps.Steam === "sid".concat(cscPlayer.steam64Id)) ?? null}));
+	console.info( players );
 
 	React.useEffect( () => {
 	}, [selectedDataOption] );
 
     return {
-		currentSeasonContracts: contracts,
-        playerStats: playerStats,
-		isLoading: isLoadingPlayerStats,
+        players: players,
+		isLoading: isLoadingCscPlayers || isLoadingPlayerStats,
 		selectedDataOption, setSelectedDataOption
     };
 }

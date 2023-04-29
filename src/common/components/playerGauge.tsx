@@ -1,9 +1,9 @@
 import * as React from "react";
-import { Player } from "../../models";
+import { PlayerStats } from "../../models";
 import { Gauge } from "./charts/gauge";
 
 type Props = {
-    player: Player
+    player: PlayerStats
 }
 
 export function PlayerGauge( { player }: Props ) {

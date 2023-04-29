@@ -3,7 +3,7 @@ import { Container } from "../common/components/container";
 import { Input } from "../common/components/input";
 import { useDataContext } from "../DataContext";
 import { PlayerMappings, tiers } from "../common/utils/player-utils";
-import { Player } from "../models";
+import { PlayerStats } from "../models";
 import { Loading } from "../common/components/loading";
 import { Select } from "../common/components/select";
 import { useLocation } from "wouter";
@@ -11,10 +11,11 @@ import { useLocation } from "wouter";
 export function TeamBuilder() {
     const [ location, setLocation ] = useLocation();
     const [ searchValue, setSearchValue ] = React.useState<string>("");
-    const [ squad, setSquad ] = React.useState<Player[]>([]);
+    const [ squad, setSquad ] = React.useState<PlayerStats[]>([]);
     const [ filterBy, setFilterBy ] = React.useState<string>("All")
-    const { playerStats = [], isLoading } = useDataContext();
-    const players = playerStats;
+    const { players = [], isLoading } = useDataContext();
+    const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
+    const playersxxx = playerStats;
 
     const squadQueryParams = squad.map( member => (`${member.Tier}|${member.Name}`)).join(",");
 
@@ -27,9 +28,9 @@ export function TeamBuilder() {
         const queryPlayers = searchParams.get("players");
         if( queryPlayers ){
             const playersFromQuery = queryPlayers?.split(",").map( string => ({ Tier: string.split("|")[0], Name: string.split("|")[1]}));
-            setSquad( players.filter( player => playersFromQuery?.some( p => p.Tier === player.Tier && p.Name === player.Name)) );
+            setSquad( playersxxx.filter( player => playersFromQuery?.some( p => p.Tier === player.Tier && p.Name === player.Name)) );
         }
-    }, [ players ]);
+    }, [ playersxxx ]);
     
 
     function remove( index: number){
@@ -44,7 +45,7 @@ export function TeamBuilder() {
         const playerProps = Object.keys(PlayerMappings);
         for( let i = 0; i < Object.keys(PlayerMappings).length; i++){
             const prop = playerProps[i];
-            const stat = squad.map( member => member[prop as keyof Player]);  
+            const stat = squad.map( member => member[prop as keyof PlayerStats]);  
             gridData.push( {prop: prop, data: [...stat]})
         }
         return gridData;
@@ -92,13 +93,13 @@ export function TeamBuilder() {
             </div>
             <div>
                 {
-                    players.filter( p => !squad.some( s => s.Name === p.Name && s.Tier === p.Tier))
+                    playersxxx.filter( p => !squad.some( s => s.Name === p.Name && s.Tier === p.Tier))
                     .filter( p => p.Name.toLowerCase().includes(searchValue.toLowerCase()) && searchValue !== "" && (filterBy === p.Tier || filterBy === "All")).slice(0,8)
                     .map( p =>
                         <button 
                             key={`player-${p.Tier}-${p.Name}`} 
                             className="m-1 p-2" 
-                            onClick={() => setSquad( (prev: Player[]) => [...prev!, p])}
+                            onClick={() => setSquad( (prev: PlayerStats[]) => [...prev!, p])}
                         >
                             {p.Name}
                         </button>

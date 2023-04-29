@@ -4,19 +4,22 @@ import { Loading } from "../common/components/loading";
 import { Table } from "../common/components/table";
 import { useDataContext } from "../DataContext";
 import { tiers, _sort } from "../common/utils/player-utils";
-import { Player } from "../models";
+import { PlayerStats } from "../models";
 import { Select } from "../common/components/select";
 //import { tiers } from "./player-utils";
 
-function buildTableRow( player: Player, columnName: string, property: keyof Player ){
+function buildTableRow( player: PlayerStats, columnName: string, property: keyof PlayerStats ){
     return { "Player": player.Name, "Tier": player.Tier, [columnName]: player[property]};
 }
 
 export function LeaderBoards() {
-    const { playerStats, isLoading } = useDataContext();
+    const { players = [], isLoading } = useDataContext();
     const [ filterBy, setFilterBy ] = React.useState<string>("All");
 
+    const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
+
     const playerData = filterBy.includes("All") ? playerStats.filter( f => f.GP >= 3) : playerStats.filter( f => f.GP >= 3 && f.Tier === filterBy);
+    
     const gamesPlayed = _sort(playerData, "GP", 5).map( p => buildTableRow(p, "Games Played", "GP"));
     const kills = _sort(playerData, "Kills", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Kills": p.Kills}));
     const killDeathRatio = playerData.sort( (a,b) => (a.Kills/a.Deaths) < (b.Kills/b.Deaths) ? 1 : -1).slice(0,5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "K/D Ratio": (p.Kills/p.Deaths).toFixed(2)}));
@@ -30,7 +33,7 @@ export function LeaderBoards() {
     const kastPercentage = _sort(playerData, "KAST", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "KAST%": p.KAST}));
     const utilThrownPerMatchX = _sort(playerData, "Util");
     const utilThrownPerMatch = utilThrownPerMatchX.map( p => ({ "Player": p.Name, "Tier": p.Tier, "Util/Match": p.Util})).splice(0,5);
-    const leastUtilThrownPerMatch = utilThrownPerMatchX.reverse().map( p => ({ "Player": p.Name, "Tier": p.Tier, "Least Util/Match": p.Util })).splice(0,15);
+    const leastUtilThrownPerMatch = utilThrownPerMatchX.reverse().map( p => ({ "Player": p.Name, "Tier": p.Tier, "Least Util/Match": p.Util })).splice(0,5);
     const headshotPercentage = _sort(playerData, "HS", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "HeadShot %": p.HS}));
     const clutchAbility = _sort(playerData, "clutch/R", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Clutch Points per Match": p['clutch/R']}));
     const mostConsistent = _sort(playerData, "CONCY", 5).reverse().map( p => ({ "Player": p.Name, "Tier": p.Tier, "Most Consistent Rating": p['CONCY']}));

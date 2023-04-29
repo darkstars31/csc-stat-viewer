@@ -1,10 +1,10 @@
 import { EChartsOption, graphic } from "echarts";
 import * as React from "react";
-import { Player } from "../../models";
+import { PlayerStats } from "../../models";
 import { PlayerRadar } from "./charts/radar";
 
 type Props = {
-    player: Player,
+    player: PlayerStats,
 }
 
 export function RoleRadar( { player }: Props ){

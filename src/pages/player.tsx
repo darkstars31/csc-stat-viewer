@@ -10,13 +10,13 @@ import { PlayerMappings,
     getPlayerRatingIndex,
     getPlayersAroundSelectedPlayer,
 } from "../common/utils/player-utils";
-// import { Tooltip } from "../common/components/tooltip";
 import { Link, useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
 // import { PieChart } from "../common/components/charts/pie";
 import { RoleRadar } from "../common/components/roleRadar";
 import { PlayerGauge } from "../common/components/playerGauge";
+import { PlayerStats } from "../models";
 
 function Stat( { title, value, children }: { title?:string, value?: string|number, children?: React.ReactNode | React.ReactNode[] } ) {
     if(!title && !value && !children ){
@@ -63,7 +63,8 @@ const GridContainer = ( { children }: { children: React.ReactNode | React.ReactN
 // }
 
 export function Player() {
-    const { playerStats = [], isLoading, selectedDataOption } = useDataContext();
+    const { players = [], isLoading, selectedDataOption } = useDataContext();
+    const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const [, params] = useRoute("/players/:tier/:id");
     const player = playerStats.find( player => player.Name === decodeURIComponent(params?.id ?? "") && player.Tier === params?.tier);
     const tierPlayerAverages = TotalPlayerAverages( playerStats, { tier: player?.Tier} );

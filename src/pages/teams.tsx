@@ -3,14 +3,15 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import { useDataContext } from '../DataContext';
 import { Loading } from '../common/components/loading';
-import { Player } from '../models';
+import { PlayerStats } from '../models';
 import { tiers, roleColors } from '../common/utils/player-utils';
 
 export function Teams() {
-    const { playerStats, isLoading } = useDataContext();
+    const { players = [], isLoading } = useDataContext();
+    const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const playerData = playerStats;
     const teams = playerData.filter( p => !["DE","FA","PFA","-"].includes(p.Team))
-        .reduce<Player[]>( (uniqueTeams, team) => {
+        .reduce<PlayerStats[]>( (uniqueTeams, team) => {
        if( !uniqueTeams.some( i => i.Tier === team.Tier && i.Team === team.Team) ){
         uniqueTeams.push(team);
        }

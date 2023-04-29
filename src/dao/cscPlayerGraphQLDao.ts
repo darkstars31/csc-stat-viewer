@@ -1,12 +1,13 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { ContractsQuery } from "../models/contract-types";
+import { CscPlayersQuery } from "../models";
 
-const fetchContractsGraph = async () => await fetch(`https://core.csconfederation.com/graphql`,
+const fetchGraph = async () => await fetch(`https://core.csconfederation.com/graphql`,
     { method: "POST", 
         body: JSON.stringify({
             "operationName": "",
-            "query": `query contracts {
+            "query": `query CscPlayers {
                 players {
+                    steam64Id
                     name
                     faceitName
                     mmr
@@ -17,7 +18,11 @@ const fetchContractsGraph = async () => await fetch(`https://core.csconfederatio
                     }
                     team {
                         name
+                        franchise {
+                            name
+                        }
                     }
+                    type
                 }
             }`
             ,
@@ -28,8 +33,6 @@ const fetchContractsGraph = async () => await fetch(`https://core.csconfederatio
         return response.json();
     } );
 
-type CscPlayerData = {};
-
-export function useFetchContractGraph(): UseQueryResult<CscPlayerData> {
-    return useQuery({ queryKey: ["contracts-graph"], queryFn: fetchContractsGraph, staleTime: 1000 * 60 * 60}); // 1 second * 60 * 60 = 1 hour
+export function useCscPlayersGraph(): UseQueryResult<CscPlayersQuery> {
+    return useQuery({ queryKey: ["cscplayers-graph"], queryFn: fetchGraph, staleTime: 1000 * 60 * 60}); // 1 second * 60 * 60 = 1 hour
 }

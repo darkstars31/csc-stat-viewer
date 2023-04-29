@@ -1,15 +1,15 @@
 import papa from "papaparse";
-import { Player } from "../models";
+import { PlayerStats } from "../models";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { type DataConfiguration } from "../dataConfig";
 
 const getData = async ( seasonConfig: DataConfiguration ) => await fetch(`${seasonConfig.spreadsheetUrl}`,
     { method: "GET", headers: { 'content-type': 'text/csv;charset=UTF-8'}})
     .then( async response => {
-        return papa.parse<Player>( await response.text(), { header: true, dynamicTyping: true}).data;
+        return papa.parse<PlayerStats>( await response.text(), { header: true, dynamicTyping: true}).data;
     } );
 
-export function useFetchSeasonData( seasonConfig: DataConfiguration ): UseQueryResult<Player[]> {
+export function useFetchSeasonData( seasonConfig: DataConfiguration ): UseQueryResult<PlayerStats[]> {
     return useQuery(
         ["season", seasonConfig.name], 
         () => getData( seasonConfig ), 
