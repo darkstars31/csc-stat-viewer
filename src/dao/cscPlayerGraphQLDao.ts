@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { CscPlayersQuery } from "../models";
+import { cscPlayerGraphSnapShot } from "./snapshots/cscPlayerGraph";
 
 const fetchGraph = async () => await fetch(`https://core.csconfederation.com/graphql`,
     { method: "POST", 
@@ -34,5 +35,10 @@ const fetchGraph = async () => await fetch(`https://core.csconfederation.com/gra
     } );
 
 export function useCscPlayersGraph(): UseQueryResult<CscPlayersQuery> {
-    return useQuery({ queryKey: ["cscplayers-graph"], queryFn: fetchGraph, staleTime: 1000 * 60 * 60}); // 1 second * 60 * 60 = 1 hour
+    return useQuery({ 
+        queryKey: ["cscplayers-graph"], 
+        queryFn: fetchGraph, 
+        staleTime: 1000 * 60 * 60,
+        placeholderData: cscPlayerGraphSnapShot,
+    }); // 1 second * 60 * 60 = 1 hour
 }

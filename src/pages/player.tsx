@@ -17,6 +17,7 @@ import { Loading } from "../common/components/loading";
 import { RoleRadar } from "../common/components/roleRadar";
 import { PlayerGauge } from "../common/components/playerGauge";
 import { PlayerStats } from "../models";
+import { PlayerNagivator } from "./player/player-navigator";
 
 function Stat( { title, value, children }: { title?:string, value?: string|number, children?: React.ReactNode | React.ReactNode[] } ) {
     if(!title && !value && !children ){
@@ -67,7 +68,10 @@ export function Player() {
     const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const [, params] = useRoute("/players/:tier/:id");
     const player = playerStats.find( player => player.Name === decodeURIComponent(params?.id ?? "") && player.Tier === params?.tier);
+    const px = players.find( p => p.name === decodeURIComponent(params?.id ?? "") && p.tier.name === params?.tier);
+    console.info(px);
     const tierPlayerAverages = TotalPlayerAverages( playerStats, { tier: player?.Tier} );
+     
 
     if( isLoading ){
         return <Container><Loading /></Container>;
@@ -80,7 +84,6 @@ export function Player() {
     const playerTeammates = getPlayerTeammates( player!, playerStats);
     const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player!, playerStats );
     const playerRatingIndex = getPlayerRatingIndex( player!, playerStats );
-    const playersAroundTarget = getPlayersAroundSelectedPlayer( playerInTierOrderedByRating, playerRatingIndex);
 
     const { 
         Name, Tier, Team, Rating, Steam, ppR, GP, mmr,
@@ -107,27 +110,24 @@ export function Player() {
 
     return (
         <Container>
+            <PlayerNagivator player={player} playerIndex={playerRatingIndex} />
             <Stat>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <div>
                         <div className="text-2xl font-extrabold text-blue-600 md:text-4xl">{ Name ?? "n/a"}</div>
                         <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
                         <Pill label={teamNameTranslator(Team)} color="bg-blue-300" />
+                        {/* <Pill label={`MMR: ${px?.mmr}`} /> */}
                         { ppR !== "-" && <Pill label={ppR} color="bg-red-300" /> }
-                        <div className="tooltip tooltip__dang" data-tip={`${
-                            <>
-                                <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>
-                                <div>Consistency: {ratingConsistency}σ ({ratingConsistency < tierPlayerAverages.average.ratingConsistency ? "More" : "Less"} than avg in Tier)</div>
-                                <div>Peak {Peak} / Bottom {Pit}</div>
-                                <div>CT: {ctRating} / T: {tRating}</div>
-                            </>
-                        }`}>
-                        <Pill data-tooltip="test" label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300" data-tooltip-target="rating-tooltip" data-tooltip-placement="top"/>
-                        </div>
+                        <Pill label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300"/>                    
                         <Pill label={`Games Played ${GP}`} color="bg-orange-300" />
                         <Pill label={`Tier  ${playerRatingIndex+1} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />
-                        {/* <Pill label={`MMR  ${mmr}`} color="bg-slate-300" /> */}
-                        <PlayerGauge player={player} />
+                        {/* <PlayerGauge player={player} /> */}
+                        <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>
+                        <div>Consistency: {ratingConsistency}σ ({ratingConsistency < tierPlayerAverages.average.ratingConsistency ? "Better" : "Worse"} than the {tierPlayerAverages.average.ratingConsistency} avg in Tier)</div>
+                        <div>Peak {Peak} / Pit {Pit}</div>
+                        <div>CT: {ctRating} / T: {tRating}</div>
+                        
                     </div>
                     <div>
                         <RoleRadar player={player!}/>
@@ -229,12 +229,6 @@ export function Player() {
                         { playerTeammates.map( teammate => <div><Link key={`teammate-${teammate.Name}`} to={`/players/${teammate.Tier}/${teammate.Name}`}>{teammate.Name}</Link></div>)}
                     </Stat> 
                 }
-                
-                <Stat  title={`Players close by`}>
-                    { playersAroundTarget.playersAhead.map( (player, index) => <div>{playerRatingIndex-1+index}. <Link key={`closeby-${player.Name}`} to={`/players/${player.Tier}/${player.Name}`}>{player.Name}</Link></div>)}
-                    <div>{playerRatingIndex+1}. <Link to={`/players/${player.Tier}/${player.Name}`}>{player.Name}</Link></div>
-                    { playersAroundTarget.playersBehind.map( (player, index) => <div>{playerRatingIndex+2+index}. <Link key={`closeby-${player.Name}`} to={`/players/${player.Tier}/${player.Name}`}>{player.Name}</Link></div>)}
-                </Stat> 
                 
             </dl>
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">

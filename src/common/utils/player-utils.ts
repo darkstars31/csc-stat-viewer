@@ -115,8 +115,8 @@ export const getPlayerTeammates = ( player: PlayerStats, allPlayers: PlayerStats
 }
 
 export const getPlayersAroundSelectedPlayer = ( players: PlayerStats[], index: number ) => {
-    const playersAhead = [...players.slice(index-2+( index === 1 ? 1 : 0),index)];
-    const playersBehind = [...players.slice(index+1, index+3+(2 - playersAhead.length))];
+    const playersAhead = [...players.slice(0, index)];
+    const playersBehind = [...players.slice(index+1, players.length)];
     return {playersAhead, playersBehind};
 }
 

@@ -10,7 +10,7 @@ export function Pill( { label, color, onClick }: Props) {
     const pillBgColor = color ? color : "bg-purple-100";
     return (
         <span
-            className={`mx-1 inline-flex items-center justify-center rounded-full ${pillBgColor} px-2.5 py-0.5 text-purple-700`}
+            className={`m-1 inline-flex items-center justify-center rounded-full ${pillBgColor} px-2.5 py-0.5 text-purple-700`}
         >
         <p className="text-sm whitespace-nowrap">{label}</p>
 

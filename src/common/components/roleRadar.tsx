@@ -17,9 +17,9 @@ export function RoleRadar( { player }: Props ){
                     { name: "Awper", max: .5 },
                     { name: "Entry", max: 1 },
                     { name: "Fragger", max: 1 },
-                    { name: "Rifler", max: 250 },
+                    { name: "Rifler", max: 200 },
                     { name: "Support", max: 50 },
-                    { name: "Lurker", max: 3 },
+                    { name: "Lurker", max: 4 },
                 ]
             },
             series: [ 
@@ -31,8 +31,8 @@ export function RoleRadar( { player }: Props ){
                         symbol: "none",
                         name: "Role", 
                         value: [ player["awp/R"], // Awper
-                                player.ODR*(player["oda/R"]*4), // Entry
-                                player["multi/R"], // Fragger
+                                player.ODR*(player["oda/R"]*2), // Entry
+                                player["multi/R"]+player["entries/R"]*4, // Fragger
                                 player.ADR, // Rifler
                                 (player.SuppR*10)+player.SuppXr, // Support
                                 player["wlp/L"] // Lurker
