@@ -1,5 +1,6 @@
 query contracts {
 	players {
+		steam64Id
 		name
 		faceitName
 		mmr
@@ -10,6 +11,11 @@ query contracts {
 		}
 		team {
 			name
+			franchise {
+				name,
+				prefix
+			}
 		}
+		type
 	}
 }

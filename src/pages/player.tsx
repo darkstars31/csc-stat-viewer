@@ -8,14 +8,13 @@ import { PlayerMappings,
     getPlayerTeammates, 
     getPlayersInTierOrderedByRating, 
     getPlayerRatingIndex,
-    getPlayersAroundSelectedPlayer,
 } from "../common/utils/player-utils";
 import { Link, useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
 // import { PieChart } from "../common/components/charts/pie";
 import { RoleRadar } from "../common/components/roleRadar";
-import { PlayerGauge } from "../common/components/playerGauge";
+//import { PlayerGauge } from "../common/components/playerGauge";
 import { PlayerStats } from "../models";
 import { PlayerNagivator } from "./player/player-navigator";
 
@@ -71,6 +70,7 @@ export function Player() {
     const px = players.find( p => p.name === decodeURIComponent(params?.id ?? "") && p.tier.name === params?.tier);
     console.info(px);
     const tierPlayerAverages = TotalPlayerAverages( playerStats, { tier: player?.Tier} );
+    console.info(tierPlayerAverages);
      
 
     if( isLoading ){
@@ -108,6 +108,10 @@ export function Player() {
         ...playerRest 
     } = player!;
 
+
+    const teamAndFranchise = px?.team?.franchise ? `${px?.team?.franchise.name} (${px?.team?.franchise.prefix}) > ${px?.team?.name}` : teamNameTranslator(Team);
+    
+
     return (
         <Container>
             <PlayerNagivator player={player} playerIndex={playerRatingIndex} />
@@ -115,8 +119,8 @@ export function Player() {
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <div>
                         <div className="text-2xl font-extrabold text-blue-600 md:text-4xl">{ Name ?? "n/a"}</div>
+                        <Pill label={teamAndFranchise} color="bg-blue-300" />
                         <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
-                        <Pill label={teamNameTranslator(Team)} color="bg-blue-300" />
                         {/* <Pill label={`MMR: ${px?.mmr}`} /> */}
                         { ppR !== "-" && <Pill label={ppR} color="bg-red-300" /> }
                         <Pill label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300"/>                    
@@ -124,7 +128,7 @@ export function Player() {
                         <Pill label={`Tier  ${playerRatingIndex+1} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />
                         {/* <PlayerGauge player={player} /> */}
                         <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>
-                        <div>Consistency: {ratingConsistency}σ ({ratingConsistency < tierPlayerAverages.average.ratingConsistency ? "Better" : "Worse"} than the {tierPlayerAverages.average.ratingConsistency} avg in Tier)</div>
+                        <div>Consistency: {ratingConsistency}σ ({ratingConsistency < tierPlayerAverages.average.ratingConsistency ? "Better" : "Worse"} than {tierPlayerAverages.average.ratingConsistency} avg in Tier)</div>
                         <div>Peak {Peak} / Pit {Pit}</div>
                         <div>CT: {ctRating} / T: {tRating}</div>
                         
@@ -133,12 +137,9 @@ export function Player() {
                         <RoleRadar player={player!}/>
                     </div>
                 </div>
-				{/* <div>
-					IWR {IWR} - tier Avg IWR {tierPlayerAverages.avgImpactOnWonRounds} - IWR/avg { ((IWR/tierPlayerAverages.avgImpactOnWonRounds)-1)*100}
-				</div>
 				<div>
-				{((IWR/tierPlayerAverages.highest.impactOnRoundsWon[0].IWR)-1)*100}
-				</div> */}
+					Impact On Rounds Won {IWR} (tier average {tierPlayerAverages.average.impactOnWonRounds}) - IWR/avg { ((IWR/tierPlayerAverages.average.impactOnWonRounds)-1)*100}
+				</div>
             </Stat>
 
 			{ player.GP < 3 && 

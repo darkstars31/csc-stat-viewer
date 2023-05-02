@@ -20,7 +20,8 @@ const fetchGraph = async () => await fetch(`https://core.csconfederation.com/gra
                     team {
                         name
                         franchise {
-                            name
+                            name,
+                            prefix
                         }
                     }
                     type

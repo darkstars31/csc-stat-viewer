@@ -28,5 +28,6 @@ export type CscTeam = {
 }
 
 export type CscFranchise = {
-    name: string
+    name: string,
+    prefix: string,
 }

@@ -13,14 +13,13 @@ export function PlayerNagivator( { player, playerIndex }: Props ) {
     const pageSize = 8;
     const [ pageCurrent, setPageCurrent ] = React.useState( Math.floor(playerIndex/pageSize) );
 
-    const { players = [], isLoading } = useDataContext();
+    const { players = [] } = useDataContext();
     const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player!, playerStats );
 
     if( !player ){
         return null;
     }
-
 
     return (
         <div className="py-2">

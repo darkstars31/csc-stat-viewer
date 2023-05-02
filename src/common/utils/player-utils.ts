@@ -124,6 +124,19 @@ export const TotalPlayerAverages = ( combinePlayerData: PlayerStats[], options?:
     const players = options?.tier ? combinePlayerData.filter( p => p.Tier === options?.tier) : combinePlayerData;
 
     return {
+        standardDeviation:{
+            rating: calculateStandardDeviation(players, "Rating"),
+            ratingConsistency: calculateStandardDeviation(players, "CONCY"),
+            headShotPercentage: calculateStandardDeviation(players, "HS"),
+            damagePerRound: calculateStandardDeviation(players, "ADR"),
+            gamesPlayed: calculateStandardDeviation(players, "GP"),
+            roundsPlayed: calculateStandardDeviation(players, "Rounds"),
+            utilThrownPerMatch: calculateStandardDeviation(players, "Util"),
+            timeTilDeath: calculateStandardDeviation(players, "ATD"),
+            impactOnWonRounds: calculateStandardDeviation(players, "IWR"),
+            nadeDamagePerNade: calculateStandardDeviation(players, "X/nade"),
+            enemiesFlashedPerFlash: calculateStandardDeviation(players, "EF/F"),
+        },
         average: {
             rating: calculateAverage(players, "Rating"),
             ratingConsistency: calculateAverage(players, "CONCY"),
@@ -136,6 +149,19 @@ export const TotalPlayerAverages = ( combinePlayerData: PlayerStats[], options?:
             impactOnWonRounds: calculateAverage(players, "IWR"),
             nadeDamagePerNade: calculateAverage(players, "X/nade"),
             enemiesFlashedPerFlash: calculateAverage(players, "EF/F"),
+        },
+        lowest: {
+            rating: calculateLowest(players, "Rating"),
+            ratingConsistency: calculateLowest(players, "CONCY"),
+            headShotPercentage: calculateLowest(players, "HS"),
+            damagePerRound: calculateLowest(players, "ADR"),
+            gamesPlayed: calculateLowest(players, "GP"),
+            roundsPlayed: calculateLowest(players, "Rounds"),
+            utilThrownPerMatch: calculateLowest(players, "Util"),
+            timeTilDeath: calculateLowest(players, "ATD"),
+            impactOnWonRounds: calculateLowest(players, "IWR"),
+            nadeDamagePerNade: calculateLowest(players, "X/nade"),
+            enemiesFlashedPerFlash: calculateLowest(players, "EF/F"),
         },
         highest: {
             rating: calculateHighest(players, "Rating"),
@@ -153,12 +179,23 @@ export const TotalPlayerAverages = ( combinePlayerData: PlayerStats[], options?:
     }
 }
 
+function calculateStandardDeviation( players: PlayerStats[], prop: string) {
+    const mean = players.map( p => Number(p[prop as keyof PlayerStats])).reduce((a, b) => a + b) / players.length;
+    return Number(Math.sqrt(players.map(p => Math.pow(Number(p[prop as keyof PlayerStats]) - mean, 2)).reduce((a, b) => a + b) / players.length).toFixed(2));
+}
+
 function calculateAverage(players: PlayerStats[], prop: string){
     return Number((players.reduce(( cumulative, player ) => cumulative + Number(player[prop as keyof PlayerStats]), 0 ) / players.length).toFixed(2));
 }
 
 function calculateHighest(players: PlayerStats[], prop: keyof PlayerStats){
-    return _sort(players, prop);
+    const sortedPlayers = _sort(players, prop).at(0);
+    return sortedPlayers![prop as keyof PlayerStats];
+}
+
+function calculateLowest(players: PlayerStats[], prop: keyof PlayerStats){
+    const sortedPlayers = _sort(players, prop).reverse().at(0);
+    return sortedPlayers![prop as keyof PlayerStats];
 }
 
 export const isPositive = ( value: number ) => value > 0;
