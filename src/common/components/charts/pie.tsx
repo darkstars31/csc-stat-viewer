@@ -7,46 +7,50 @@ type Props = {
 }
 
 export function PieChart( { options }: Props) {
-
+        
         const defaultOptions: EChartsOption = {
+            color: ['#4169e1','#ff6347'],
             tooltip: {
               trigger: 'item'
             },
             legend: {
+              show: false,
               top: '0%',
               left: 'center'
             },
-            series: [
+            series:
               {
-                name: 'Access From',
+                name: '',
                 type: 'pie',
-                radius: ['0%', '70%'],
+                radius: ['0%', '50%'],
+                center: ['50%', '40%'],
+                startAngle: 230,
                 avoidLabelOverlap: false,
                 itemStyle: {
-                  borderRadius: 10,
+                  borderRadius: 6,
                   borderColor: '#fff',
                   borderWidth: 2
                 },
                 label: {
-                  show: false,
-                  position: 'center'
+                  show: true,
+                  formatter: ( item ) =>{
+                    return `${item.name} - ${item.value}`;
+                  },
+                  position: 'inner',
                 },
                 emphasis: {
                   label: {
                     show: true,
-                    fontSize: 40,
+                    fontSize: 30,
                     fontWeight: 'bold'
                   }
                 },
                 labelLine: { 
                   show: true
                 },
-                data: [
-                  { value: 3.14, name: 'CT' },
-                  { value: 7, name: 'T' },
-                ]
+                data: [],
               }
-            ],
+            ,
             ...options
           };
           console.info( defaultOptions.series );

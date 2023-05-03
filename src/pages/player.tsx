@@ -14,9 +14,10 @@ import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
 // import { PieChart } from "../common/components/charts/pie";
 import { RoleRadar } from "../common/components/roleRadar";
-//import { PlayerGauge } from "../common/components/playerGauge";
 import { PlayerStats } from "../models";
 import { PlayerNagivator } from "./player/player-navigator";
+import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
+import { PlayerRatings } from "./player/playerRatings";
 
 function Stat( { title, value, children }: { title?:string, value?: string|number, children?: React.ReactNode | React.ReactNode[] } ) {
     if(!title && !value && !children ){
@@ -48,30 +49,16 @@ function GridStat( { name, value, rowIndex }: { name: string, value: string | nu
     );
 }
 
-const GridContainer = ( { children }: { children: React.ReactNode | React.ReactNode[]} ) => 
-	<div className="grid grid-cols-2 gap-2 p-2 m-2">{children}</div>;
+const GridContainer = ( { children }: { children: React.ReactNode | React.ReactNode[]} ) => <div className="grid grid-cols-2 gap-2 p-2 m-2">{children}</div>;
 
-// function tooltipContent( player){
-//     return (
-//                             <>
-//                                 <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>
-//                                 <div>Consistency: {ratingConsistency}σ ({ratingConsistency < tierPlayerAverages.avgRatingConsistency ? "More" : "Less"} than avg in Tier)</div>
-//                                 <div>Peak {Peak} / Bottom {Pit}</div>
-//                                 <div>CT: {ctRating} / T: {tRating}</div>
-//                             </>
-//     );
-// }
 
 export function Player() {
-    const { players = [], isLoading, selectedDataOption } = useDataContext();
+    const { players = [], isLoading, selectedDataOption, featureFlags } = useDataContext();
     const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const [, params] = useRoute("/players/:tier/:id");
     const player = playerStats.find( player => player.Name === decodeURIComponent(params?.id ?? "") && player.Tier === params?.tier);
     const px = players.find( p => p.name === decodeURIComponent(params?.id ?? "") && p.tier.name === params?.tier);
     console.info(px);
-    const tierPlayerAverages = TotalPlayerAverages( playerStats, { tier: player?.Tier} );
-    console.info(tierPlayerAverages);
-     
 
     if( isLoading ){
         return <Container><Loading /></Container>;
@@ -81,6 +68,7 @@ export function Player() {
 		</Container>
 	}
 
+    const tierPlayerAverages = TotalPlayerAverages( playerStats, { tier: player?.Tier} );
     const playerTeammates = getPlayerTeammates( player!, playerStats);
     const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player!, playerStats );
     const playerRatingIndex = getPlayerRatingIndex( player!, playerStats );
@@ -118,19 +106,27 @@ export function Player() {
             <Stat>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <div>
-                        <div className="text-2xl font-extrabold text-blue-600 md:text-4xl">{ Name ?? "n/a"}</div>
-                        <Pill label={teamAndFranchise} color="bg-blue-300" />
-                        <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
-                        {/* <Pill label={`MMR: ${px?.mmr}`} /> */}
-                        { ppR !== "-" && <Pill label={ppR} color="bg-red-300" /> }
-                        <Pill label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300"/>                    
-                        <Pill label={`Games Played ${GP}`} color="bg-orange-300" />
-                        <Pill label={`Tier  ${playerRatingIndex+1} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />
-                        {/* <PlayerGauge player={player} /> */}
-                        <div>Trending {Form > Rating ? "Up" : "Down"} in last 3 games</div>
-                        <div>Consistency: {ratingConsistency}σ ({ratingConsistency < tierPlayerAverages.average.ratingConsistency ? "Better" : "Worse"} than {tierPlayerAverages.average.ratingConsistency} avg in Tier)</div>
-                        <div>Peak {Peak} / Pit {Pit}</div>
-                        <div>CT: {ctRating} / T: {tRating}</div>
+                        <div className="flex flex-row">
+                            <div className="p-2 m-4 min-w-[128px] min-h-[128px]">
+                                <img className="rounded-xl min-w-[128px] min-h-[128px]" src={px?.avatarUrl} alt="Missing Discord Profile"/>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-2xl font-extrabold text-blue-500 md:text-4xl pb-2">
+                                    { Name ?? "n/a"}
+                                </div>          
+                                <Pill label={teamAndFranchise} color="bg-blue-300" />
+                                <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
+                                { featureFlags.konami && <Pill label={`MMR ${px?.mmr}`} />}
+                                { ppR !== "-" && <Pill label={ppR} color="bg-red-300" /> }
+                                {/* <Pill label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300"/>                     */}
+                                <Pill label={`Games Played ${GP}`} color="bg-orange-300" />
+                                <Pill label={`Tier ${playerRatingIndex+1} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />                 
+                        </div>
+                    </div>
+                        <PlayerRatings player={player} />
+                        <div className="w-64 h-32">
+                            <TeamSideRatingPie player={player}/>
+                        </div>
                         
                     </div>
                     <div>

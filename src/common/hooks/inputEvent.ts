@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useEffect, useState } from "react";
 export const useInputEvent = () => {
   const [key, setKey] = useState(null);

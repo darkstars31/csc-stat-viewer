@@ -19,7 +19,7 @@ export const useKonamiCode = () => {
     if (count + 1 === konamiCode.length) {
       setSuccess(true);
     }
-  }, [key]);
+  }, [key, count]);
   
   return success;
 };

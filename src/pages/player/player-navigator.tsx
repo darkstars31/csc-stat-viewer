@@ -3,6 +3,7 @@ import { useDataContext } from "../../DataContext";
 import { Link } from "wouter";
 import { PlayerStats } from "../../models";
 import { getPlayersInTierOrderedByRating } from "../../common/utils/player-utils";
+import { ImArrowLeft, ImArrowRight } from "react-icons/im"
 
 type Props = {
     player: PlayerStats,
@@ -24,17 +25,17 @@ export function PlayerNagivator( { player, playerIndex }: Props ) {
     return (
         <div className="py-2">
                 <div className="flex flex-row px-4 overflow-auto justify-center">
-                    { pageCurrent > 0 && <button onClick={ () => setPageCurrent( pageCurrent-1 )}>Forward</button> }
-                    { playerInTierOrderedByRating.slice(pageCurrent*pageSize, pageCurrent*pageSize+pageSize).map( (player, index) => 
-                        <Link key={`closeby-${player.Name}`} to={`/players/${player.Tier}/${player.Name}`}>
-                            <div className={`flex flex-row text-xs cursor-pointer m-2 text-center border border-gray-100 rounded ${ playerIndex === pageCurrent*pageSize+index && Math.floor(playerIndex/pageSize) === pageCurrent ? "bg-yellow-600": ""}`}>
-                                <div className="p-2">{pageCurrent*pageSize+index+1}</div>
-                                <div className="p-2 text-ellipsis overflow-hidden"><p>{player.Name}</p></div>
-                            </div>
-                        </Link>
-                        )
-                    }
-                    { pageCurrent*pageSize <= playerInTierOrderedByRating.length && <button onClick={() => setPageCurrent( pageCurrent+1 )}>Backward</button> }
+                    { pageCurrent > 0 && <button className="grow-0" onClick={ () => setPageCurrent( pageCurrent-1 )}><ImArrowLeft /></button> }
+                        { playerInTierOrderedByRating.slice(pageCurrent*pageSize, pageCurrent*pageSize+pageSize).map( (player, index) => 
+                            <Link key={`closeby-${player.Name}`} to={`/players/${player.Tier}/${player.Name}`}>
+                                <div className={`flex flex-row grow text-xs cursor-pointer m-2 text-center border border-gray-800 rounded ${ playerIndex === pageCurrent*pageSize+index && Math.floor(playerIndex/pageSize) === pageCurrent ? "bg-amber-600": ""}`}>
+                                    <div className="p-2">{pageCurrent*pageSize+index+1}</div>
+                                    <div className="p-2 text-ellipsis overflow-hidden"><p>{player.Name}</p></div>
+                                </div>
+                            </Link>
+                            )
+                        }
+                    { pageCurrent*pageSize+pageSize < playerInTierOrderedByRating.length && <button className="grow-0" onClick={() => setPageCurrent( pageCurrent+1 )}><ImArrowRight /></button> }
                 </div>
             </div>
     );

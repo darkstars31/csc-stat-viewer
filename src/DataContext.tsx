@@ -3,10 +3,12 @@ import { useCscPlayersGraph } from "./dao/cscPlayerGraphQLDao";
 import { useFetchSeasonData } from "./dao/seasonPlayerStatsDao";
 import { dataConfiguration } from "./dataConfig";
 import { Player } from "./models/player";
+import { useKonamiCode } from "./common/hooks/konami";
 
 
 
 const useDataContextProvider = () => {
+	const konamiFeatureFlag = useKonamiCode();
 	const [ selectedDataOption, setSelectedDataOption ] = React.useState<string>(dataConfiguration[0].name);
 	const dataConfig = dataConfiguration.find( item => selectedDataOption === item.name);
 
@@ -23,7 +25,10 @@ const useDataContextProvider = () => {
     return {
         players: players,
 		isLoading: isLoadingCscPlayers || isLoadingPlayerStats,
-		selectedDataOption, setSelectedDataOption
+		selectedDataOption, setSelectedDataOption,
+		featureFlags:{
+			konami: konamiFeatureFlag,
+		},
     };
 }
 

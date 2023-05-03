@@ -3,7 +3,7 @@ import * as React from "react";
 import ReactECharts from "echarts-for-react";
 
 type Props = {
-    options: EChartsOption,
+    options?: EChartsOption,
 }
 
 export function BoxPlot( { options }: Props) {
