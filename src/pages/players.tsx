@@ -9,12 +9,12 @@ import { PlayerMappings, teamNameTranslator, tierColorClassNames } from "../comm
 import { Select } from "../common/components/select";
 import { Loading } from "../common/components/loading";
 import { useDataContext } from "../DataContext";
+import { Player } from "../models/player";
 
 
 export function Players() {
     const { players, isLoading } = useDataContext();
-    const playerStats = players.map( p => p.stats).filter( s => s !== null ) as PlayerStats[];
-    const playerData = playerStats;
+    const playersWithStats = players.filter( p => p.stats );
     const [ searchValue, setSearchValue ] = React.useState("");
     const [ filters, setFilters ] = React.useState<string[]>([]);
     const [ orderBy, setOrderBy ] = React.useState<string>("Name");
@@ -22,17 +22,19 @@ export function Players() {
     React.useEffect(() => {
     }, [orderBy])
 
-    let sortedPlayerData = playerData.sort( (a,b) => {
-        return a[orderBy as keyof PlayerStats]! < b[orderBy as keyof PlayerStats]!? 1 : -1
+    let sortedPlayerData = playersWithStats.sort( (a,b) => {
+        const itemA = a.stats![orderBy as keyof PlayerStats];
+        const itemB = b.stats![orderBy as keyof PlayerStats];
+        return itemA! < itemB! ? 1 : -1
     } );
 
     // eslint-disable-next-line
     sortedPlayerData = orderBy.includes("Name") ? sortedPlayerData.reverse() : sortedPlayerData;
 
-    const filteredPlayers = playerData.filter( player =>
+    const filteredPlayers = playersWithStats.filter( player =>
         filters.every( f => {
-            let metaFilter = Object.entries(player ?? []).map( ( [key,value] ) => `${key}:${value} ${PlayerMappings[key]}:${value}`).join(" ");
-                metaFilter = metaFilter.concat(" "+teamNameTranslator(player.Team));
+            let metaFilter = Object.entries(player.stats ?? []).map( ( [key,value] ) => `${key}:${value} ${PlayerMappings[key]}:${value}`).join(" ");
+                metaFilter = metaFilter.concat(" "+teamNameTranslator(player));
             return metaFilter.toLowerCase().includes(f.toLowerCase());
             }
         ) 
@@ -53,7 +55,7 @@ export function Players() {
         Find players, view stats, see how you stack up against your peers.
         </p>
         <p className="mt-4 text-gray-300">
-            Showing {filteredPlayers.length} of {playerData.length} Players
+            Showing {filteredPlayers.length} of {playersWithStats.length} Players
         </p>
             <form className="flex flex-box h-12 mx-auto" onSubmit={(e)=>{e.preventDefault()}}>
                 <Input
@@ -97,33 +99,33 @@ export function Players() {
         { isLoading && <Loading /> }
 
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        { filteredPlayers?.map( (player: PlayerStats, index: number) => 
+        { playersWithStats?.map( (player: Player, index: number) => 
         <Link
             key={`player-${index}`}
-            to={`/players/${player.Tier}/${encodeURIComponent(player.Name)}`}
+            to={`/players/${player.tier.name}/${encodeURIComponent(player.name)}`}
             className="block rounded-xl border border-gray-800 p-6 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10"
         >
-            <h2 className="mt-2 text-xl font-bold text-white text-center">{player.Name}</h2>
-            <div className="mt-1 text-sm text-gray-300 grid grid-cols-2 gap-1">
+            <h2 className="mt-2 text-xl font-bold text-white text-center">{player.name}</h2>
+            { player.stats && <div className="mt-1 text-sm text-gray-300 grid grid-cols-2 gap-1">
                 <div>
                     {/* <div>SteamID: {player.Steam}</div> */}
-                    <div className={`text-${(tierColorClassNames as any)[player.Tier]}-400`}>{player.Tier}</div>
-                    <div>{teamNameTranslator(player.Team)}</div>
+                    <div className={`text-${(tierColorClassNames as any)[player.tier.name]}-400`}>{player.tier.name}</div>
+                    <div>{teamNameTranslator(player)}</div>
                     {/* <div>Role: {player.ppR} <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${rifler}`} alt="rifler"/></div> */}
-                    <div className={`text-${ player.Rating > 1 ? "green" : "orange" }-400`}>Rating: {player.Rating}</div>
+                    <div className={`text-${ player.stats.Rating > 1 ? "green" : "orange" }-400`}>Rating: {player.stats.Rating}</div>
                 </div>
                 <div>
-                    <div className="text-center">{player?.ppR}</div>
+                    <div className="text-center">{player.stats!.ppR}</div>
                     <div className="flex justify-center">
-                        {player.ppR === "RIFLER" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${rifler}`} alt="Rifler"/>}
-                        {player.ppR === "AWPER" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${awper}`} alt="Awper"/>}
-                        {player.ppR === "LURKER" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${lurker}`} alt="Lurker"/>}
-                        {player.ppR === "SUPPORT" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${support}`} alt="Support"/>}
-                        {player.ppR === "ENTRY" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${entry}`} alt="Entry"/>}
-                        {player.ppR === "FRAGGER" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${fragger}`} alt="Fragger"/>}
+                        {player.stats.ppR === "RIFLER" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${rifler}`} alt="Rifler"/>}
+                        {player.stats.ppR === "AWPER" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${awper}`} alt="Awper"/>}
+                        {player.stats.ppR === "LURKER" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${lurker}`} alt="Lurker"/>}
+                        {player.stats.ppR === "SUPPORT" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${support}`} alt="Support"/>}
+                        {player.stats.ppR === "ENTRY" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${entry}`} alt="Entry"/>}
+                        {player.stats.ppR === "FRAGGER" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${fragger}`} alt="Fragger"/>}
                     </div>
                 </div>
-            </div>
+            </div> }
         </Link>
         )}
         </div>

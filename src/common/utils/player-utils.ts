@@ -1,4 +1,5 @@
 import { PlayerStats } from "../../models";
+import { Player } from "../../models/player";
 
 export const PlayerMappings: Record<string,string> = {
     "": "",
@@ -8,7 +9,6 @@ export const PlayerMappings: Record<string,string> = {
     "ppR": "Role",
     "GP": "Games Played",
     "Rating": "Rating",
-    "mmr": "MMR",
     "K/R": "Kills / Round",
     "ADR": "Damage / Round",
     "KAST": "Kill Assist Traded Survived (%)",
@@ -88,11 +88,13 @@ export const roleColors = {
 	"RIFLER": "black",
 }
 
-export const teamNameTranslator = ( name: string ) => {
+export const teamNameTranslator = ( player: Player ) => {
+    const name = player.team?.name ?? player.type ?? player.stats?.Team;
     switch( name?.toUpperCase() ){
-        case "DE": return "Draft Eligible";
-        case "PFA": return "Perm Free Agent";
-        case "FA": return "Free Agent";
+        case "DRAFT_ELIGIBLE": return "Draft Eligible";
+        case "PERMANENT_FREE_AGENT": return "Perm FA";
+        case "FREE_AGENT": return "Free Agent";
+        case "UNROSTERED_GM": return `GM`;
         default: return name;
     }
 }

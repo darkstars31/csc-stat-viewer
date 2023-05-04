@@ -56,25 +56,25 @@ export function Player() {
     const { players = [], isLoading, selectedDataOption, featureFlags } = useDataContext();
     const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const [, params] = useRoute("/players/:tier/:id");
-    const player = playerStats.find( player => player.Name === decodeURIComponent(params?.id ?? "") && player.Tier === params?.tier);
-    const px = players.find( p => p.name === decodeURIComponent(params?.id ?? "") && p.tier.name === params?.tier);
-    console.info(px);
+
+    const currentPlayer = players.find( p => p.name === decodeURIComponent(params?.id ?? "") && p.tier.name === params?.tier);
+    const currentPlayerStats = playerStats.find( player => player.Name === decodeURIComponent(params?.id ?? "") && player.Tier === params?.tier);
 
     if( isLoading ){
         return <Container><Loading /></Container>;
-    } else if ( !player ){
+    } else if ( !currentPlayerStats ){
 		return <Container>
 			No {selectedDataOption} stats found for {params?.id ?? "null"} 
 		</Container>
 	}
 
-    const tierPlayerAverages = TotalPlayerAverages( playerStats, { tier: player?.Tier} );
-    const playerTeammates = getPlayerTeammates( player!, playerStats);
-    const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player!, playerStats );
-    const playerRatingIndex = getPlayerRatingIndex( player!, playerStats );
+    const tierPlayerAverages = TotalPlayerAverages( playerStats, { tier: currentPlayerStats?.Tier} );
+    const playerTeammates = getPlayerTeammates( currentPlayerStats!, playerStats);
+    const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( currentPlayerStats!, playerStats );
+    const playerRatingIndex = getPlayerRatingIndex( currentPlayerStats!, playerStats );
 
     const { 
-        Name, Tier, Team, Rating, Steam, ppR, GP, mmr,
+        Name, Tier, Team, Rating, Steam, ppR, GP,
         Kills, Assists, Deaths,
         "2k": twoKills, "3k": threeKills, "4k": fourKills, "5k": aces,
         HS, KAST, ADR, "K/R": avgKillsPerRound,
@@ -94,21 +94,20 @@ export function Player() {
 		Rounds, "MIP/r": mvpRounds, "K/ctr": killsCTside,
         Xdiff, "awp/R": awpKillsPerRound,
         ...playerRest 
-    } = player!;
+    } = currentPlayerStats!;
 
-
-    const teamAndFranchise = px?.team?.franchise ? `${px?.team?.franchise.name} (${px?.team?.franchise.prefix}) > ${px?.team?.name}` : teamNameTranslator(Team);
-    
+    const teamAndFranchise = currentPlayer?.team?.franchise ? `${currentPlayer?.team?.franchise.name} (${currentPlayer?.team?.franchise.prefix}) > ${currentPlayer?.team?.name}` : teamNameTranslator(currentPlayer!);
 
     return (
         <Container>
-            <PlayerNagivator player={player} playerIndex={playerRatingIndex} />
+            <PlayerNagivator player={currentPlayerStats} playerIndex={playerRatingIndex} />
             <Stat>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <div>
                         <div className="flex flex-row">
                             <div className="p-2 m-4 min-w-[128px] min-h-[128px]">
-                                <img className="rounded-xl min-w-[128px] min-h-[128px]" src={px?.avatarUrl} alt="Missing Discord Profile"/>
+                                { currentPlayer?.avatarUrl && <img className="rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
+                                { !currentPlayer?.avatarUrl && <div className="rounded-xl min-w-[128px] min-h-[128px] border"></div>}
                             </div>
                             <div className="text-center">
                                 <div className="text-2xl font-extrabold text-blue-500 md:text-4xl pb-2">
@@ -116,29 +115,29 @@ export function Player() {
                                 </div>          
                                 <Pill label={teamAndFranchise} color="bg-blue-300" />
                                 <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
-                                { featureFlags.konami && <Pill label={`MMR ${px?.mmr}`} />}
+                                { featureFlags.konami && <Pill label={`MMR ${currentPlayer?.mmr}`} />}
                                 { ppR !== "-" && <Pill label={ppR} color="bg-red-300" /> }
                                 {/* <Pill label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300"/>                     */}
                                 <Pill label={`Games Played ${GP}`} color="bg-orange-300" />
                                 <Pill label={`Tier ${playerRatingIndex+1} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />                 
                         </div>
                     </div>
-                        <PlayerRatings player={player} />
+                        <PlayerRatings player={currentPlayerStats} />
                         <div className="w-64 h-32">
-                            <TeamSideRatingPie player={player}/>
+                            <TeamSideRatingPie player={currentPlayerStats}/>
                         </div>
                         
                     </div>
                     <div>
-                        <RoleRadar player={player!}/>
+                        <RoleRadar player={currentPlayerStats!}/>
                     </div>
                 </div>
 				<div>
-					Impact On Rounds Won {IWR} (tier average {tierPlayerAverages.average.impactOnWonRounds}) - IWR/avg { ((IWR/tierPlayerAverages.average.impactOnWonRounds)-1)*100}
+					Impact On Rounds Won {IWR} (tier average {tierPlayerAverages.average.impactOnWonRounds}) - IWR/avg { (((IWR/tierPlayerAverages.average.impactOnWonRounds)-1)*100).toFixed(2)}%
 				</div>
             </Stat>
 
-			{ player.GP < 3 && 
+			{ currentPlayerStats.GP < 3 && 
 			<div className="m-2 p-2 bg-yellow-700 rounded">
 				Minimum games played threshold has not been met. Statistics shown may not provide an accurate picture of player skill or consistency.
 			</div> 
