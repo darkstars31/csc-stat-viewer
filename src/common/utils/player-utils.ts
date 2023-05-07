@@ -101,23 +101,22 @@ export function _sort<T, K extends keyof T>( items: T[], property: K, n?: number
     const sorted = items.sort( (a,b) => a[property] < b[property] ? 1 : -1).slice(0,n);
     return n ? sorted.slice(0,n) : sorted;
 }
-
 export const getPlayersInTier = ( player: PlayerStats, allPlayers: PlayerStats[] ) => allPlayers.filter( ap => ap.Tier === player.Tier);
 export const getPlayersInTierOrderedByRating = ( player: PlayerStats, allPlayers: PlayerStats[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => a.Rating < b.Rating ? 1 : -1);
+export const getPlayersInTierOrderedByHS = ( player: PlayerStats, allPlayers: PlayerStats[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => a.HS < b.HS ? 1 : -1);
+export const getPlayerHSIndex = ( player: PlayerStats, allPlayers: PlayerStats[] ) => {
+    const playersInTierSortedByHS = getPlayersInTierOrderedByHS(player, allPlayers);
+    return playersInTierSortedByHS.findIndex( p => p.Name === player.Name);
+}
 export const getPlayerRatingIndex = ( player: PlayerStats, allPlayers: PlayerStats[] ) => {
     const playersInTierSortedByRating = getPlayersInTierOrderedByRating(player, allPlayers);
-    return playersInTierSortedByRating.findIndex( p => p.Name === player.Name );
+    return playersInTierSortedByRating.findIndex( p => p.Name === player.Name);
 }
+
 export const getPlayerTeammates = ( player: PlayerStats, allPlayers: PlayerStats[] ) => {
     return allPlayers
         .filter( allPlayers => !["DE","FA","PFA"].includes(allPlayers.Team))
         .filter( allPlayers => allPlayers.Tier === player.Tier && allPlayers.Team === player.Team && allPlayers.Name !== player.Name);
-}
-
-export const getPlayersAroundSelectedPlayer = ( players: PlayerStats[], index: number ) => {
-    const playersAhead = [...players.slice(0, index)];
-    const playersBehind = [...players.slice(index+1, players.length)];
-    return {playersAhead, playersBehind};
 }
 
 export const TotalPlayerAverages = ( combinePlayerData: PlayerStats[], options?: Record<string,unknown> ) => {
@@ -138,6 +137,8 @@ export const TotalPlayerAverages = ( combinePlayerData: PlayerStats[], options?:
     };
 
     const average = {
+        peak: calculateAverage(players, "Peak"),
+        pit: calculateAverage(players, "Pit"),
         rating: calculateAverage(players, "Rating"),
         ratingConsistency: calculateAverage(players, "CONCY"),
         headShotPercentage: calculateAverage(players, "HS"),
@@ -206,4 +207,4 @@ function calculateLowest(players: PlayerStats[], prop: keyof PlayerStats){
     return sortedPlayers![prop as keyof PlayerStats];
 }
 
-export const isPositive = ( value: number ) => value > 0;
+

@@ -47,7 +47,7 @@ export function Teams() {
                             </div>
                             <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                                 { teams.map( team => 
-                                        <div className="block rounded-xl border border-gray-800 p-6 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10">
+                                        <div className="bg-midnight2 block rounded-xl border border-gray-800 p-6 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10">
                                             <Link key={`team-${index}-${team.Team}`}
                                                 to={`/team/${team.Team}`}
                                             >
