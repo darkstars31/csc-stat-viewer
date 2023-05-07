@@ -7,13 +7,12 @@ import { Pill } from "../common/components/pill";
 import { Link } from "wouter";
 import { teamNameTranslator, tierColorClassNames } from "../common/utils/player-utils";
 import { Select } from "../common/components/select";
-import { Loading } from "../common/components/loading";
 import { useDataContext } from "../DataContext";
 import { Player } from "../models/player";
 
 
 export function Players() {
-    const { players, isLoading } = useDataContext();
+    const { players } = useDataContext();
     const playersWithStats = players.filter( p => p.stats );
     const [ searchValue, setSearchValue ] = React.useState("");
     const [ filters, setFilters ] = React.useState<string[]>([]);
@@ -98,22 +97,20 @@ export function Players() {
                 />
             </div>
         </div>
-        <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
-
-        { isLoading && <Loading /> }
+        <hr className="h-px my-4 border-0 bg-gray-800" />
 
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         { filteredPlayers?.map( (player: Player, index: number) => 
         <Link
             key={`player-${index}`}
-            to={`/players/${player.tier.name}/${encodeURIComponent(player.name)}`}
+            to={`/players/${player.tier?.name ?? "loading..."}/${encodeURIComponent(player.name)}`}
             className="block rounded-xl border border-gray-800 p-6 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10"
         >
             <h2 className="mt-2 text-xl font-bold text-white text-center">{player.name}</h2>
             { player.stats && <div className="mt-1 text-sm text-gray-300 grid grid-cols-2 gap-1">
                 <div>
                     {/* <div>SteamID: {player.Steam}</div> */}
-                    <div className={`text-${(tierColorClassNames as any)[player.tier.name]}-400`}>{player.tier.name}</div>
+                    <div className={`text-${(tierColorClassNames as any)[player.tier?.name ?? ""]}-400`}>{player.tier?.name ?? 'loading...'}</div>
                     <div>{teamNameTranslator(player)}</div>
                     {/* <div>Role: {player.ppR} <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${rifler}`} alt="rifler"/></div> */}
                     <div className={`text-${ player.stats.Rating > 1 ? "green" : "orange" }-400`}>Rating: {player.stats.Rating}</div>
@@ -130,6 +127,9 @@ export function Players() {
                     </div>
                 </div>
             </div> }
+            { !player.stats &&
+                <div>loading...</div>
+            }
         </Link>
         )}
         </div>

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCscPlayersGraph } from "./dao/cscPlayerGraphQLDao";
+import { useCscNameAndAvatar, useCscPlayersGraph } from "./dao/cscPlayerGraphQLDao";
 import { useFetchSeasonData } from "./dao/seasonPlayerStatsDao";
 import { dataConfiguration } from "./dataConfig";
 import { Player } from "./models/player";
@@ -13,18 +13,23 @@ const useDataContextProvider = () => {
 	const dataConfig = dataConfiguration.find( item => selectedDataOption === item.name);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { data: cscPlayersReponse = null, isLoading: isLoadingCscPlayers } = useCscPlayersGraph();
+	const { data: cscNameAndAvatar, isLoading: isLoadingCscNameAndAvatar } = useCscNameAndAvatar();
+	const { data: cscPlayersResponse = null, isLoading: isLoadingCscPlayers } = useCscPlayersGraph(cscNameAndAvatar);
 	const { data: playerStats = [], isLoading: isLoadingPlayerStats } = useFetchSeasonData(dataConfig!);
 
-	const cscPlayers = cscPlayersReponse?.data?.players ?? [];
-	const players: Player[] = cscPlayers?.map( cscPlayer => ({ ...cscPlayer, stats: playerStats.find( ps => (ps.Steam === "sid".concat(cscPlayer.steam64Id) && ps.Tier === cscPlayer.tier.name)) ?? null}));
+	const cscPlayers = (cscPlayersResponse ?? cscNameAndAvatar)?.data?.players ?? [];
+	const players: Player[] = cscPlayers?.map( cscPlayer => ({ ...cscPlayer, stats: playerStats.find( ps => (ps.Steam === "sid".concat(cscPlayer?.steam64Id ?? 0) && ps.Tier === cscPlayer.tier?.name)) ?? null}));
 
 	React.useEffect( () => {
 	}, [selectedDataOption] );
 
     return {
         players: players,
-		isLoading: isLoadingCscPlayers || isLoadingPlayerStats,
+		isLoading: isLoadingCscNameAndAvatar || isLoadingPlayerStats,
+		loading: {
+			isLoadingCscPlayers,
+			isLoadingPlayerStats,
+		},
 		selectedDataOption, setSelectedDataOption,
 		featureFlags:{
 			konami: konamiFeatureFlag,

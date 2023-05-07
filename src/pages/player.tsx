@@ -57,7 +57,7 @@ export function Player() {
     const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const [, params] = useRoute("/players/:tier/:id");
 
-    const currentPlayer = players.find( p => p.name === decodeURIComponent(params?.id ?? "") && p.tier.name === params?.tier);
+    const currentPlayer = players.find( p => p.name === decodeURIComponent(params?.id ?? "") && p.tier?.name === params?.tier);
     const currentPlayerStats = playerStats.find( player => player.Name === decodeURIComponent(params?.id ?? "") && player.Tier === params?.tier);
 
     if( isLoading ){
@@ -113,7 +113,7 @@ export function Player() {
                                 <div className="text-2xl font-extrabold text-blue-500 md:text-4xl pb-2">
                                     { Name ?? "n/a"}
                                 </div>          
-                                <Pill label={teamAndFranchise} color="bg-blue-300" />
+                                <Pill label={teamAndFranchise ?? "loading..."} color="bg-blue-300" />
                                 <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
                                 { featureFlags.konami && <Pill label={`MMR ${currentPlayer?.mmr}`} />}
                                 { ppR !== "-" && <Pill label={ppR} color="bg-red-300" /> }
