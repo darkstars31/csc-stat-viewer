@@ -5,7 +5,7 @@ import { Container } from "../common/components/container";
 import { Input } from "../common/components/input";
 import { Pill } from "../common/components/pill";
 import { Link } from "wouter";
-import { PlayerMappings, teamNameTranslator, tierColorClassNames } from "../common/utils/player-utils";
+import { teamNameTranslator, tierColorClassNames } from "../common/utils/player-utils";
 import { Select } from "../common/components/select";
 import { Loading } from "../common/components/loading";
 import { useDataContext } from "../DataContext";
@@ -31,14 +31,18 @@ export function Players() {
     // eslint-disable-next-line
     sortedPlayerData = orderBy.includes("Name") ? sortedPlayerData.reverse() : sortedPlayerData;
 
-    const filteredPlayers = playersWithStats.filter( player =>
-        filters.every( f => {
-            let metaFilter = Object.entries(player.stats ?? []).map( ( [key,value] ) => `${key}:${value} ${PlayerMappings[key]}:${value}`).join(" ");
-                metaFilter = metaFilter.concat(" "+teamNameTranslator(player));
-            return metaFilter.toLowerCase().includes(f.toLowerCase());
-            }
-        ) 
-    );
+    const filteredPlayers = filters.length > 0 ? playersWithStats.filter( player => {
+        return filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ) );
+    } ) : playersWithStats;
+
+    // const filteredPlayers = playersWithStats.filter( player =>
+    //     filters.every( f => {
+    //         let metaFilter = Object.entries(player.stats ?? []).map( ( [key,value] ) => `${key}:${value} ${PlayerMappings[key]}:${value}`).join(" ");
+    //             metaFilter = metaFilter.concat(" "+teamNameTranslator(player));
+    //         return metaFilter.toLowerCase().includes(f.toLowerCase());
+    //         }
+    //     ) 
+    // );
 
     const removeFilter = ( label: string ) => {
         const newFilters = filters;
@@ -99,7 +103,7 @@ export function Players() {
         { isLoading && <Loading /> }
 
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        { playersWithStats?.map( (player: Player, index: number) => 
+        { filteredPlayers?.map( (player: Player, index: number) => 
         <Link
             key={`player-${index}`}
             to={`/players/${player.tier.name}/${encodeURIComponent(player.name)}`}
