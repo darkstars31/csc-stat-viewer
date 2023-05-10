@@ -9,6 +9,8 @@ import { LeaderBoards } from './pages/leaderboards';
 import { Header } from './header-nav/header';
 import { TeamBuilder } from './pages/teamBuilder';
 import { Playground } from './pages/playground';
+import { useDataContext } from './DataContext';
+import { ProgressBar } from './common/components/progress';
   
 const routes = [
   { path: `/`, component: () => <Dashboard /> },
@@ -22,6 +24,7 @@ const routes = [
 ];
 
 export function Router(){
+  const { loading } = useDataContext();
   const env : string = process.env.NODE_ENV!;
   const BASE_ROUTE = env.includes("production") ? "/csc-stat-viewer" : "";
 
@@ -29,6 +32,7 @@ export function Router(){
     <Wouter base={BASE_ROUTE}>
       <div className="sticky top-0">
         <Header />
+        { loading.isLoadingCscPlayers && <ProgressBar />}
       </div>
       <div className="overflow-auto">
         <Switch>

@@ -14,30 +14,24 @@ export function TeamBuilder() {
     const [ squad, setSquad ] = React.useState<PlayerStats[]>([]);
     const [ filterBy, setFilterBy ] = React.useState<string>("All")
     const { players = [], isLoading } = useDataContext();
-    const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
-    const playersxxx = playerStats;
-
-    const squadQueryParams = squad.map( member => (`${member.Tier}|${member.Name}`)).join(",");
-
-    if(squad.length) {
-        setLocation(location.concat(`?players=${squadQueryParams}`));
-    }
+    const playerStats: PlayerStats[] = players.filter( p => p.stats ).map( p => p.stats) as PlayerStats[];
 
     React.useEffect(() => {
         const searchParams = new URLSearchParams(window.location.search);
         const queryPlayers = searchParams.get("players");
         if( queryPlayers ){
             const playersFromQuery = queryPlayers?.split(",").map( string => ({ Tier: string.split("|")[0], Name: string.split("|")[1]}));
-            setSquad( playersxxx.filter( player => playersFromQuery?.some( p => p.Tier === player.Tier && p.Name === player.Name)) );
+            setSquad( playerStats.filter( player => playersFromQuery?.some( p => p.Tier === player.Tier && p.Name === player.Name)) );
         }
-    }, [ playersxxx ]);
-    
+    }, [ playerStats, squad ]);
 
-    function remove( index: number){
-        const newSquad = squad;
-        delete squad[index];
+    const setSquadQueryParams = ( squad: PlayerStats[] ) => squad.map( member => (`${member.Tier}|${encodeURIComponent(member.Name)}`)).join(",");
+
+    function remove( index: number ){
+        const newSquad = [...squad];
+        delete newSquad[index];
         setSquad( newSquad.filter(Boolean) );
-        setLocation(location.concat(`?players=${squadQueryParams}`));
+        setLocation(location.concat(`?players=${setSquadQueryParams(newSquad)}`));
     }
 
     const gridData: { prop: string, data: (string | number | null)[]}[] = React.useMemo( () => {
@@ -93,13 +87,13 @@ export function TeamBuilder() {
             </div>
             <div>
                 {
-                    playersxxx.filter( p => !squad.some( s => s.Name === p.Name && s.Tier === p.Tier))
+                    playerStats.filter( p => !squad.some( s => s.Name === p.Name && s.Tier === p.Tier))
                     .filter( p => p.Name.toLowerCase().includes(searchValue.toLowerCase()) && searchValue !== "" && (filterBy === p.Tier || filterBy === "All")).slice(0,8)
                     .map( p =>
                         <button 
                             key={`player-${p.Tier}-${p.Name}`} 
                             className="m-1 p-2" 
-                            onClick={() => setSquad( (prev: PlayerStats[]) => [...prev!, p])}
+                            onClick={() => { setSquad( (prev: PlayerStats[]) => [...prev!, p]); setSquadQueryParams(squad);}}
                         >
                             {p.Name}
                         </button>
@@ -119,7 +113,7 @@ export function TeamBuilder() {
                                 )}
                             </>
                         )}
-                        { gridData.filter( i => ["Tier","GP","mmr"].includes(i.prop)).map( (row, rowIndex) =>
+                        { gridData.filter( i => ["Tier","GP"].includes(i.prop)).map( (row, rowIndex) =>
                             <>
                                 <div key={row.prop} className={`${rowIndex % 2 ? "bg-slate-800" : ""} pl-1`}>{PlayerMappings[row.prop]}</div>
                                 { row.data.map( (value, index) =>

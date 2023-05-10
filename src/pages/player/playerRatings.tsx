@@ -109,6 +109,7 @@ export function PlayerRatings({ player }: Props) {
                     <div className="h-1 bg-yellow-500 rounded-lg" style={{width: ((((tierPlayerAverages.average.ratingConsistency/player.CONCY)-1)*100)+25)>100?"100%":((((tierPlayerAverages.average.ratingConsistency/player.CONCY)-1)*100)+25).toString().concat("%"), top: "0", bottom: "0"}}/>
                     <ToolTipRatings message={"Tier Average: " + String(tierPlayerAverages.average.ratingConsistency)} pos={"25%"}/>
                 </div>
+
             </div>
             {player.GP<3?
                     <div className="h-5 mb-6 w-full rounded-lg  pb-12 pt-2">

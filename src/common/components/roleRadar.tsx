@@ -14,7 +14,7 @@ export function RoleRadar( { player }: Props ){
             radar:{
                 //shape: "circle",
                 indicator: [
-                    { name: "Awper", max: .5 },
+                    { name: "Awper", max: .55 },
                     { name: "Entry", max: 1 },
                     { name: "Fragger", max: 1 },
                     { name: "Rifler", max: 200 },

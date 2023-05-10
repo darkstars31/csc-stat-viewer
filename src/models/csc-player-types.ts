@@ -8,14 +8,14 @@ export type Data = {
 
 export type CscPlayer = {
     name: string,
-    steam64Id: string,
-    faceitName: string,
-    mmr: number,
     avatarUrl: string,
-    contractDuration: number,
+    steam64Id: string,
+    faceitName?: string,
+    mmr?: number,
+    contractDuration?: number,
     tier: CscTier,
-    team: CscTeam,
-    type: string,
+    team?: CscTeam,
+    type?: string,
 }
 
 export type CscTier = {
