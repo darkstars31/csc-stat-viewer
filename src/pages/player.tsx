@@ -6,6 +6,7 @@ import {
     teamNameTranslator,
     getPlayerTeammates,
     getPlayerRatingIndex,
+    //getPlayersInTierOrderedByRating,
     getPlayerHSIndex,
 } from "../common/utils/player-utils";
 import { Link, useRoute } from "wouter";
@@ -69,7 +70,7 @@ export function Player() {
 
     const tierPlayerAverages = TotalPlayerAverages( playerStats, { tier: currentPlayerStats?.Tier} );
     const playerTeammates = getPlayerTeammates( currentPlayerStats!, playerStats);
-    const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( currentPlayerStats!, playerStats );
+    //const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( currentPlayerStats!, playerStats );
     const playerRatingIndex = getPlayerRatingIndex( currentPlayerStats!, playerStats );
 
     const { 
@@ -103,7 +104,7 @@ export function Player() {
   
     return (
         <Container>
-            <PlayerNagivator player={currentPlayerStats} playerIndex={playerRatingIndex} />
+            <PlayerNavigator player={currentPlayerStats} playerIndex={playerRatingIndex} />
 
             <Stat>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -118,7 +119,7 @@ export function Player() {
                                     { Name ?? "n/a"}
                                 </div>
                                 <div className={"text-[1.1rem pb-5"}>
-                                    <i><b>{ppR.includes('-')?'RIFLER':ppR}</b>{' — '}{teamAndFranchise.split("(").pop()?.replace(')', '').replace('>', '')}</i>
+                                    <i><b>{ppR.includes('-')?'RIFLER':ppR}</b>{' — '}{teamAndFranchise?.split("(").pop()?.replace(')', '').replace('>', '')}</i>
                                 </div>
                                 <ul className="text-[0.8rem]">
                                     <li>{String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in {Tier}</li>
@@ -134,7 +135,7 @@ export function Player() {
                                     :""
                                 }
                                 {
-                                    (Number(playerHSIndex+1))<10 && HS !== tierPlayerAverages.highest.headShotPercentage?
+                                    (Number(getPlayerHSIndex( currentPlayerStats, playerStats)+1))<10 && HS !== tierPlayerAverages.highest.headShotPercentage?
                                         <div className="overflow-auto w-fit space-x-4 place-items-center flex h-6 whitespace-nowrap rounded-[0.27rem] bg-success-100 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none text-success-700">
                                             HS% Top 10
                                         </div>
@@ -152,16 +153,16 @@ export function Player() {
                         <RoleRadar player={currentPlayerStats!}/>
                     </div>
                 </div>
-				<div>
+				<div className="text-xs">
 					Impact On Rounds Won {IWR} (tier average {tierPlayerAverages.average.impactOnWonRounds}) - IWR/avg { (((IWR/tierPlayerAverages.average.impactOnWonRounds)-1)*100).toFixed(2)}%
 				</div>
             </Stat>
 
-			{ currentPlayerStats.GP < 3 && 
+			{/* { currentPlayerStats.GP < 3 && 
 			<div className="m-2 p-2 bg-yellow-700 rounded">
 				Minimum games played threshold has not been met. Statistics shown may not provide an accurate picture of player skill or consistency.
 			</div> 
-			}
+			} */}
 
             <GridContainer>
                 <div className="grid grid-cols-1 gap-2 p-2">

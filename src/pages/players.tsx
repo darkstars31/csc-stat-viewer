@@ -104,7 +104,7 @@ export function Players() {
         <Link
             key={`player-${index}`}
             to={`/players/${player.tier?.name ?? "loading..."}/${encodeURIComponent(player.name)}`}
-            className="block rounded-xl border border-gray-800 p-6 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10"
+            className="block bg-midnight2 rounded-xl border border-gray-800 p-6 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10"
         >
             <h2 className="mt-2 text-xl font-bold text-white text-center">{player.name}</h2>
             { player.stats && <div className="mt-1 text-sm text-gray-300 grid grid-cols-2 gap-1">
