@@ -137,6 +137,7 @@ export const TotalPlayerAverages = ( combinePlayerData: PlayerStats[], options?:
     };
 
     const average = {
+        form: calculateAverage(players, "Form"),
         peak: calculateAverage(players, "Peak"),
         pit: calculateAverage(players, "Pit"),
         rating: calculateAverage(players, "Rating"),
