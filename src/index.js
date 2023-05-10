@@ -2,6 +2,14 @@ import * as React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 //import reportWebVitals from './reportWebVitals';
+import {
+    Carousel,
+    Chip,
+    Ripple,
+    initTE,
+} from "tw-elements";
+
+initTE({ Carousel, Chip, Ripple });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

@@ -1,30 +1,29 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
-import { Pill } from "../common/components/pill";
-import { PlayerMappings, 
-    TotalPlayerAverages, 
-    teamNameTranslator, 
-    tierColorClassNames, 
-    getPlayerTeammates, 
-    getPlayersInTierOrderedByRating, 
+import {
+    PlayerMappings,
+    TotalPlayerAverages,
+    teamNameTranslator,
+    getPlayerTeammates,
     getPlayerRatingIndex,
+    getPlayerHSIndex,
 } from "../common/utils/player-utils";
 import { Link, useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
-// import { PieChart } from "../common/components/charts/pie";
 import { RoleRadar } from "../common/components/roleRadar";
 import { PlayerStats } from "../models";
-import { PlayerNagivator } from "./player/player-navigator";
+import { PlayerNavigator } from "./player/player-navigator";
 import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
 import { PlayerRatings } from "./player/playerRatings";
+import {tiertopincategory} from "../svgs";
 
 function Stat( { title, value, children }: { title?:string, value?: string|number, children?: React.ReactNode | React.ReactNode[] } ) {
     if(!title && !value && !children ){
 		return null;
 	}
 	return (
-        <div className="mb-2 flex flex-col rounded-lg border border-gray-100 p-4 dark:border-gray-800">
+        <div className="bg-midnight2 mb-2 flex flex-col rounded-lg border border-gray-100 p-4 dark:border-gray-800">
           { title && <dt className="order-last text-s font-medium text-gray-500 dark:text-gray-400">
             {title}
           </dt> }
@@ -53,7 +52,7 @@ const GridContainer = ( { children }: { children: React.ReactNode | React.ReactN
 
 
 export function Player() {
-    const { players = [], isLoading, selectedDataOption, featureFlags } = useDataContext();
+    const { players = [], isLoading, selectedDataOption} = useDataContext();
     const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const [, params] = useRoute("/players/:tier/:id");
 
@@ -96,11 +95,16 @@ export function Player() {
         ...playerRest 
     } = currentPlayerStats!;
 
-    const teamAndFranchise = currentPlayer?.team?.franchise ? `${currentPlayer?.team?.franchise.name} (${currentPlayer?.team?.franchise.prefix}) > ${currentPlayer?.team?.name}` : teamNameTranslator(currentPlayer!);
 
+    const teamAndFranchise = currentPlayer?.team?.franchise ? `${currentPlayer?.team?.franchise.name} (${currentPlayer?.team?.franchise.prefix}) > ${currentPlayer?.team?.name}` : teamNameTranslator(currentPlayer!);
+    const nth = (n: string | number) => {
+        return ["st", "nd", "rd"][((Number(n) + 90) % 100 - 10) % 10 - 1] || "th";
+    };
+  
     return (
         <Container>
             <PlayerNagivator player={currentPlayerStats} playerIndex={playerRatingIndex} />
+
             <Stat>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <div>
@@ -109,18 +113,34 @@ export function Player() {
                                 { currentPlayer?.avatarUrl && <img className="rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
                                 { !currentPlayer?.avatarUrl && <div className="rounded-xl min-w-[128px] min-h-[128px] border"></div>}
                             </div>
-                            <div className="text-center">
-                                <div className="text-2xl font-extrabold text-blue-500 md:text-4xl pb-2">
+                            <div className="text-left p-2 m-2">
+                                <div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
                                     { Name ?? "n/a"}
-                                </div>          
-                                <Pill label={teamAndFranchise ?? "loading..."} color="bg-blue-300" />
-                                <Pill label={Tier} color={`bg-${(tierColorClassNames as any)[Tier]}-300`} />
-                                { featureFlags.konami && <Pill label={`MMR ${currentPlayer?.mmr}`} />}
-                                { ppR !== "-" && <Pill label={ppR} color="bg-red-300" /> }
-                                {/* <Pill label={`Rating ${Rating} ${Form > Rating ? "↑" : "↓"}`} color="bg-green-300"/>                     */}
-                                <Pill label={`Games Played ${GP}`} color="bg-orange-300" />
-                                <Pill label={`Tier ${playerRatingIndex+1} of ${playerInTierOrderedByRating.length}`} color="bg-slate-300" />                 
-                        </div>
+                                </div>
+                                <div className={"text-[1.1rem pb-5"}>
+                                    <i><b>{ppR.includes('-')?'RIFLER':ppR}</b>{' — '}{teamAndFranchise.split("(").pop()?.replace(')', '').replace('>', '')}</i>
+                                </div>
+                                <ul className="text-[0.8rem]">
+                                    <li>{String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in {Tier}</li>
+                                </ul>
+                            </div>
+                            {/* AWARDS SECTION */}
+                            <div className="grid grid-cols-2 gap-3 content-start pt-6 pl-6">
+                                {
+                                    HS === tierPlayerAverages.highest.headShotPercentage?
+                                    <div className="space-x-4 place-items-center flex h-fit w-fit whitespace-nowrap rounded-[0.27rem] bg-yellow-400 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none text-neutral-700">
+                                        HS% <img className="h-fit w-fit max-w-[30px] pl-1 fill-neutral-700" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/>
+                                    </div>
+                                    :""
+                                }
+                                {
+                                    (Number(playerHSIndex+1))<10 && HS !== tierPlayerAverages.highest.headShotPercentage?
+                                        <div className="overflow-auto w-fit space-x-4 place-items-center flex h-6 whitespace-nowrap rounded-[0.27rem] bg-success-100 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none text-success-700">
+                                            HS% Top 10
+                                        </div>
+                                        :""
+                                }
+                            </div>
                     </div>
                         <PlayerRatings player={currentPlayerStats} />
                         <div className="w-64 h-32">
@@ -228,8 +248,6 @@ export function Player() {
                 
             </dl>
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
-                {/* <Stat title={"Impact / on Rounds Won"} value={ `${Impact} / ${IWR}` } /> */}
-
                 { Object.entries(playerRest ?? []).map( ( [key, value] ) => 
                     <Stat key={`${key}${value}`} title={PlayerMappings[key]} value={ value! } />
                 )}

@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    background-color: rgba(55,65,81,1);
-}
 
 .icon-box {
     display: flex;

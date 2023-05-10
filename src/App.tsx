@@ -13,7 +13,7 @@ console.info( env );
 
 function App() {
   return (
-    <div className="bg-gray-700 text-white h-screen overflow-hidden">
+    <div className="bg-midnight1 text-white h-screen overflow-hidden">
       <QueryClientProvider client={queryClient}>
         <DataContextProvider >
           <Router />
