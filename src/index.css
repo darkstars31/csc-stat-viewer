@@ -44,7 +44,6 @@
     position: absolute;
     width: auto;
     white-space: nowrap;
-    word-wrap: no-wrap;
     box-shadow: 1px 1px 20px #aaa;
     border-radius: 5px;
     background-color: #fff;
@@ -79,7 +78,7 @@
     transform: rotate(45deg) translateX(-50%) translateZ(-1px);
     background-color: #fff;
     left: 50%;
-    top: 0px;
+    top: 0;
     z-index: -1;
     box-shadow: -1px -1px 20px #aaa;
   }
