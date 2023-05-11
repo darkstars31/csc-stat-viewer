@@ -18,7 +18,12 @@ const useDataContextProvider = () => {
 	const { data: playerStats = [], isLoading: isLoadingPlayerStats } = useFetchSeasonData(dataConfig!);
 
 	const cscPlayers = (cscPlayersResponse ?? cscNameAndAvatar)?.data?.players ?? [];
-	const players: Player[] = cscPlayers?.map( cscPlayer => ({ ...cscPlayer, stats: playerStats.find( ps => (ps.Steam === "sid".concat(cscPlayer?.steam64Id ?? 0) && ps.Tier === cscPlayer.tier?.name)) ?? null}));
+	const players: Player[] = cscPlayers?.flatMap( cscPlayer => {
+		const foundStats = playerStats.filter( ps => (ps.Steam === "sid".concat(cscPlayer?.steam64Id ?? 0))) ?? null;
+		return foundStats.map( x => ({ ...cscPlayer, stats: x}));
+	});
+	
+	console.info( cscPlayers.length, playerStats.length, players.length);
 
 	React.useEffect( () => {
 	}, [selectedDataOption] );

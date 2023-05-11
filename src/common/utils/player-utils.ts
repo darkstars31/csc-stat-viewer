@@ -69,14 +69,16 @@ export const PlayerMappings: Record<string,string> = {
     "Tier": "Tier",
 }
 
-export const tiers = ["Premier", "Elite", "Challenger", "Contender", "Prospect"];
+export const tiers = ["Premier", "EliPrem", "Elite", "Challenger", "Contender", "Prospect", "New Tier"];
 
 export const tierColorClassNames = {
     "Premier": "purple",
+    "EliPrem": "purple",
     "Elite": "blue",
     "Challenger": "green",
     "Contender": "slate",
     "Prospect": "orange",
+    "New Tier": "red"
 }
 
 export const roleColors = {

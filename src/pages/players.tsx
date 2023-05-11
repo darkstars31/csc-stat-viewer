@@ -110,7 +110,7 @@ export function Players() {
             { player.stats && <div className="mt-1 text-sm text-gray-300 grid grid-cols-2 gap-1">
                 <div>
                     {/* <div>SteamID: {player.Steam}</div> */}
-                    <div className={`text-${(tierColorClassNames as any)[player.tier?.name ?? ""]}-400`}>{player.tier?.name ?? 'loading...'}</div>
+                    <div className={`text-${(tierColorClassNames as any)[player.tier?.name ?? ""]}-400`}>{player.stats.Tier}</div>
                     <div>{teamNameTranslator(player)}</div>
                     {/* <div>Role: {player.ppR} <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${rifler}`} alt="rifler"/></div> */}
                     <div className={`text-${ player.stats.Rating > 1 ? "green" : "orange" }-400`}>Rating: {player.stats.Rating}</div>

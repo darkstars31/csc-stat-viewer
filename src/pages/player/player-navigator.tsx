@@ -5,13 +5,17 @@ import {PlayerStats} from "../../models";
 import { getPlayersInTierOrderedByRating } from "../../common/utils/player-utils";
 import { ImArrowLeft, ImArrowRight } from "react-icons/im";
 import {Chip, Ripple, initTE} from "tw-elements";
+import { useWindowDimensions } from "../../common/hooks/window";
 initTE({ Chip, Ripple });
+
 type Props = {
     player: PlayerStats,
     playerIndex: number,
 }
+
 export function PlayerNavigator( { player, playerIndex }: Props ) {
-    const pageSize = 8;
+    const windowDimensions = useWindowDimensions();
+    const pageSize = windowDimensions.width < 600 ? 3 : windowDimensions.width < 1000 ? 5 : 8; // LOL don't do this
     const [ pageCurrent, setPageCurrent ] = React.useState( Math.floor(playerIndex/pageSize) );
     const { players = [] } = useDataContext();
         const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
@@ -21,7 +25,7 @@ export function PlayerNavigator( { player, playerIndex }: Props ) {
         return null;
     }
     return (
-        <div className="py-2">
+        <div className="py-2 w-full">
                 <div className="flex flex-row px-4 overflow-hidden" style={{width: "100%", justifyContent:"space-between"}}>
                     { pageCurrent > 0 && <button className="grow-0" onClick={ () => setPageCurrent( pageCurrent-1 )}><ImArrowLeft /></button> }
                         { playerInTierOrderedByRating.slice(pageCurrent*pageSize, pageCurrent*pageSize+pageSize).map(

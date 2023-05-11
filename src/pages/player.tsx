@@ -56,15 +56,23 @@ export function Player() {
     const { players = [], isLoading, selectedDataOption} = useDataContext();
     const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const [, params] = useRoute("/players/:tier/:id");
-
-    const currentPlayer = players.find( p => p.name === decodeURIComponent(params?.id ?? "") && p.tier?.name === params?.tier);
-    const currentPlayerStats = playerStats.find( player => player.Name === decodeURIComponent(params?.id ?? "") && player.Tier === params?.tier);
+    const tierParam = decodeURIComponent(params?.tier ?? "");
+    const nameParam = decodeURIComponent(params?.id ?? "");
+    const currentPlayer = players.find( p => p.name === nameParam);
+    const currentPlayerStats = playerStats.find( player => player.Name === nameParam && player.Tier === tierParam);
+    const statsInDifferentTier = playerStats.filter( player => player.Name === nameParam && player.Tier !== tierParam);
+    const linksToDifferentTier = statsInDifferentTier.map( s => { 
+        return <Link className="text-blue-400" to={`/players/${s.Tier}/${nameParam}`}>{s.Tier}</Link>;
+    });
 
     if( isLoading ){
         return <Container><Loading /></Container>;
     } else if ( !currentPlayerStats ){
 		return <Container>
-			No {selectedDataOption} stats found for {params?.id ?? "null"} 
+			No {selectedDataOption} stats found for {nameParam} in {tierParam}
+            <div className="text-xs mt-4 pl-4">
+                This player has stats in a different tier. {linksToDifferentTier}
+            </div>
 		</Container>
 	}
 
@@ -124,6 +132,11 @@ export function Player() {
                                 </div>
                                 <ul className="text-[0.8rem]">
                                     <li>{String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in {Tier}</li>
+                                    { statsInDifferentTier.length > 0 && <li> <div className="text-xs">
+                                        This player also has stats in {linksToDifferentTier}
+                                        </div>
+                                    </li>
+}
                                 </ul>
                             </div>
                             {/* AWARDS SECTION */}
@@ -145,16 +158,15 @@ export function Player() {
                             </div>
                     </div>
                         <PlayerRatings player={currentPlayerStats} />
-                        <div className="w-64 h-32">
-                            <TeamSideRatingPie player={currentPlayerStats}/>
-                        </div>
-                        
                     </div>
                     <div>
                         <RoleRadar player={currentPlayerStats!}/>
+                        <div className="w-64 h-32">
+                            <TeamSideRatingPie player={currentPlayerStats}/>
+                        </div>
                     </div>
                 </div>
-				<div className="text-xs">
+				<div className="text-xs mt-4">
 					Impact On Rounds Won {IWR} (tier average {tierPlayerAverages.average.impactOnWonRounds}) - IWR/avg { (((IWR/tierPlayerAverages.average.impactOnWonRounds)-1)*100).toFixed(2)}%
 				</div>
             </Stat>

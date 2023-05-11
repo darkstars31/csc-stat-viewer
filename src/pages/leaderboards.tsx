@@ -6,7 +6,6 @@ import { useDataContext } from "../DataContext";
 import { tiers, _sort } from "../common/utils/player-utils";
 import { PlayerStats } from "../models";
 import { Select } from "../common/components/select";
-//import { tiers } from "./player-utils";
 
 function buildTableRow( player: PlayerStats, columnName: string, property: keyof PlayerStats ){
     return { "Player": player.Name, "Tier": player.Tier, [columnName]: player[property]};
@@ -16,9 +15,14 @@ export function LeaderBoards() {
     const { players = [], isLoading } = useDataContext();
     const [ filterBy, setFilterBy ] = React.useState<string>("All");
 
-    const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
+    const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats ) as PlayerStats[];
 
-    const playerData = filterBy.includes("All") ? playerStats.filter( f => f.GP >= 3) : playerStats.filter( f => f.GP >= 3 && f.Tier === filterBy);
+    const playerData = filterBy.includes("All") ? playerStats.filter( f => f.GP >= 3) : playerStats.filter( f => f.GP >= 3 && f.Tier.toLowerCase() === filterBy.toLowerCase());
+
+    // Debugging why leaderboard is broken for new tier and premier only
+    // console.info( 'x',players.filter( p => p.stats?.Tier.includes("New")) );
+    // console.info( filterBy );
+    // console.info( playerData );
     
     const gamesPlayed = _sort(playerData, "GP", 5).map( p => buildTableRow(p, "Games Played", "GP"));
     const kills = _sort(playerData, "Kills", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Kills": p.Kills}));
@@ -42,6 +46,10 @@ export function LeaderBoards() {
 
     if( isLoading ) {
         return <Container><Loading /></Container>;
+    }
+
+    if( playerData.length < 1 ) {
+        return <Container>Whoops! Something when wrong.</Container>;
     }
 
     return (
