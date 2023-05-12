@@ -31,7 +31,7 @@ function Stat( { title, value, children }: { title?:string, value?: string|numbe
           { value && <dd className="text-l font-extrabold text-blue-600 md:text-2xl">
             {value}
           </dd> }
-          <div className="pt-2"> {children} </div>
+          <div> {children} </div>
         </div>
     );
 }
@@ -127,13 +127,13 @@ export function Player() {
 
             <Stat>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    <div>
-                        <div className="flex flex-row">
-                            <div className="p-2 m-4 min-w-[128px] min-h-[128px]">
-                                { currentPlayer?.avatarUrl && <img className="rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
-                                { !currentPlayer?.avatarUrl && <div className="rounded-xl min-w-[128px] min-h-[128px] border"></div>}
+                    <div className="p-[2.5%] space-y-4">
+                        <div className="flex space-x-4 pb-[2.5%]">
+                            <div className="object-contain">
+                                { currentPlayer?.avatarUrl && <img className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
+                                { !currentPlayer?.avatarUrl && <div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border"/>}
                             </div>
-                            <div className="text-left p-2 m-2">
+                            <div className="text-left">
                                 <div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
                                     { Name ?? "n/a"}
                                 </div>

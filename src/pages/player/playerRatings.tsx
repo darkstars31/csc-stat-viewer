@@ -16,7 +16,7 @@ type Props = {
 }
 function ToolTipRatings({message, pos}: {message: string, pos:string}): JSX.Element { //Tooltips for the player profile stat bars
     return(
-        <span className="top-5 h-3 absolute border-l-2 border-neutral-300 z-50 rounded-lg" data-te-toggle="tooltip" title={message} style={{left: pos}}>
+        <span className="top-5 h-3 absolute border-l-2 border-neutral-300 rounded-lg" data-te-toggle="tooltip" title={message} style={{left: pos}}>
             <button type="button" className="bg-midnight1 text-sm pointer-events-none transition duration-150 ease-in-out inline-block" disabled/>
         </span>
     )
@@ -24,7 +24,7 @@ function ToolTipRatings({message, pos}: {message: string, pos:string}): JSX.Elem
 function ToolTipIcons({message, stat1, stat2, range}: {message: string, stat1: number, stat2: number, range: number}): JSX.Element { //Tooltips for the svg icons
     return(
         <div className="float-right text-sm">
-            <img className="h-3 w-3 transition inline-block ease-in-out select-none z-50" // shows an svg based on inRange()
+            <img className="h-3 w-3 transition inline-block ease-in-out select-none" // shows an svg based on inRange()
                  src={
                      inRange(
                          stat1, stat2, range)?
@@ -58,7 +58,7 @@ export function PlayerRatings({ player }: Props) {
     return (
         /* Games Played*/
         <div className="m-4 w-full m-auto relative flex flex-col bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
-            <div className="p-[5%]  space-y-4">
+            <div className="p-[5%] space-y-4">
                 <div className="relative text-neutral-700 text-sm text-left italic font-bold">
                     {gamesPlayedCaption}
                 </div>
