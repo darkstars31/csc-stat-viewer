@@ -62,7 +62,7 @@ export function Player() {
     const currentPlayerStats = playerStats.find( player => player.Name === nameParam && player.Tier === tierParam);
     const statsInDifferentTier = playerStats.filter( player => player.Name === nameParam && player.Tier !== tierParam);
     const linksToDifferentTier = statsInDifferentTier.map( s => { 
-        return <Link className="text-blue-400" to={`/players/${s.Tier}/${nameParam}`}>{s.Tier}</Link>;
+        return <><br /><Link className="text-blue-400" to={`/players/${s.Tier}/${nameParam}`}>{s.Tier}</Link></>;
     });
 
     if( isLoading ){

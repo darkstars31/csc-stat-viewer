@@ -15,7 +15,7 @@ function App() {
   return (
     <div className="bg-midnight1 text-white h-screen overflow-hidden">
       <QueryClientProvider client={queryClient}>
-        <DataContextProvider >
+        <DataContextProvider>
           <Router />
         </DataContextProvider>
       </QueryClientProvider>

@@ -15,8 +15,9 @@ type Props = {
 
 export function PlayerNavigator( { player, playerIndex }: Props ) {
     const windowDimensions = useWindowDimensions();
-    const pageSize = windowDimensions.width < 600 ? 3 : windowDimensions.width < 1000 ? 5 : 8; // LOL don't do this
-    const [ pageCurrent, setPageCurrent ] = React.useState( Math.floor(playerIndex/pageSize) );
+    const pageSize = windowDimensions.width < 600 ? 2 : windowDimensions.width < 1000 ? 4 : 7; // LOL don't do this
+    const [ pageCurrent, setPageCurrent ] = React.useState( Math.floor(playerIndex/pageSize));
+    console.info(pageCurrent, playerIndex, pageSize, Math.floor(playerIndex/pageSize));
     const { players = [] } = useDataContext();
         const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
         const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player!, playerStats );

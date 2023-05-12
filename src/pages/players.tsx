@@ -1,14 +1,12 @@
 import * as React from "react";
 import { type PlayerStats } from "../models";
-import { rifler, awper, lurker, support, entry, fragger } from "../svgs"
 import { Container } from "../common/components/container";
 import { Input } from "../common/components/input";
 import { Pill } from "../common/components/pill";
-import { Link } from "wouter";
-import { teamNameTranslator, tierColorClassNames } from "../common/utils/player-utils";
 import { Select } from "../common/components/select";
 import { useDataContext } from "../DataContext";
 import { Player } from "../models/player";
+import { PlayerCard } from "./players/player-cards";
 
 
 export function Players() {
@@ -17,9 +15,6 @@ export function Players() {
     const [ searchValue, setSearchValue ] = React.useState("");
     const [ filters, setFilters ] = React.useState<string[]>([]);
     const [ orderBy, setOrderBy ] = React.useState<string>("Name");
-
-    React.useEffect(() => {
-    }, [orderBy])
 
     let sortedPlayerData = playersWithStats.sort( (a,b) => {
         const itemA = a.stats![orderBy as keyof PlayerStats];
@@ -34,6 +29,9 @@ export function Players() {
         return filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ) );
     } ) : playersWithStats;
 
+    const playerCards = filteredPlayers?.map( (player: Player, index: number) => <PlayerCard player={player} index={index} />);
+
+    // TODO: Re-implement or Delete this
     // const filteredPlayers = playersWithStats.filter( player =>
     //     filters.every( f => {
     //         let metaFilter = Object.entries(player.stats ?? []).map( ( [key,value] ) => `${key}:${value} ${PlayerMappings[key]}:${value}`).join(" ");
@@ -100,38 +98,7 @@ export function Players() {
         <hr className="h-px my-4 border-0 bg-gray-800" />
 
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        { filteredPlayers?.map( (player: Player, index: number) => 
-        <Link
-            key={`player-${index}`}
-            to={`/players/${player.tier?.name ?? "loading..."}/${encodeURIComponent(player.name)}`}
-            className="block bg-midnight2 rounded-xl border border-gray-800 p-6 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10"
-        >
-            <h2 className="mt-2 text-xl font-bold text-white text-center">{player.name}</h2>
-            { player.stats && <div className="mt-1 text-sm text-gray-300 grid grid-cols-2 gap-1">
-                <div>
-                    {/* <div>SteamID: {player.Steam}</div> */}
-                    <div className={`text-${(tierColorClassNames as any)[player.tier?.name ?? ""]}-400`}>{player.stats.Tier}</div>
-                    <div>{teamNameTranslator(player)}</div>
-                    {/* <div>Role: {player.ppR} <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${rifler}`} alt="rifler"/></div> */}
-                    <div className={`text-${ player.stats.Rating > 1 ? "green" : "orange" }-400`}>Rating: {player.stats.Rating}</div>
-                </div>
-                <div>
-                    <div className="text-center">{player.stats!.ppR}</div>
-                    <div className="flex justify-center">
-                        {player.stats.ppR === "RIFLER" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${rifler}`} alt="Rifler"/>}
-                        {player.stats.ppR === "AWPER" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${awper}`} alt="Awper"/>}
-                        {player.stats.ppR === "LURKER" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${lurker}`} alt="Lurker"/>}
-                        {player.stats.ppR === "SUPPORT" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${support}`} alt="Support"/>}
-                        {player.stats.ppR === "ENTRY" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${entry}`} alt="Entry"/>}
-                        {player.stats.ppR === "FRAGGER" && <img className="h-12 w-12" src={`data:image/svg+xml;utf-8,${fragger}`} alt="Fragger"/>}
-                    </div>
-                </div>
-            </div> }
-            { !player.stats &&
-                <div>loading...</div>
-            }
-        </Link>
-        )}
+            { playerCards }
         </div>
     </Container>
     );

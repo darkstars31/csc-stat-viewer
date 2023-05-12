@@ -1,0 +1,21 @@
+query franchises {
+	franchises(active: true) {
+		name
+		prefix
+		logo {
+			name
+		}
+		gm {
+			name
+		}
+		agm {
+			name
+		}
+		teams {
+			name
+			players {
+				name
+			}
+		}
+	}
+}

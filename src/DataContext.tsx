@@ -3,41 +3,42 @@ import { useCscNameAndAvatar, useCscPlayersGraph } from "./dao/cscPlayerGraphQLD
 import { useFetchSeasonData } from "./dao/seasonPlayerStatsDao";
 import { dataConfiguration } from "./dataConfig";
 import { Player } from "./models/player";
-import { useKonamiCode } from "./common/hooks/konami";
-
-
+import { useFetchFranchisesGraph } from "./dao/franchisesGraphQlDao";
 
 const useDataContextProvider = () => {
-	const konamiFeatureFlag = useKonamiCode();
 	const [ selectedDataOption, setSelectedDataOption ] = React.useState<string>(dataConfiguration[0].name);
+	const [ players, setPlayers ] = React.useState<Player[]>([]);
 	const dataConfig = dataConfiguration.find( item => selectedDataOption === item.name);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: cscNameAndAvatar, isLoading: isLoadingCscNameAndAvatar } = useCscNameAndAvatar();
 	const { data: cscPlayersResponse = null, isLoading: isLoadingCscPlayers } = useCscPlayersGraph(cscNameAndAvatar);
+	const { data: cscFranchises, isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
 	const { data: playerStats = [], isLoading: isLoadingPlayerStats } = useFetchSeasonData(dataConfig!);
 
-	const cscPlayers = (cscPlayersResponse ?? cscNameAndAvatar)?.data?.players ?? [];
-	const players: Player[] = cscPlayers?.flatMap( cscPlayer => {
-		const foundStats = playerStats.filter( ps => (ps.Steam === "sid".concat(cscPlayer?.steam64Id ?? 0))) ?? null;
-		return foundStats.map( x => ({ ...cscPlayer, stats: x}));
-	});
-	
-	console.info( cscPlayers.length, playerStats.length, players.length);
+	const cscPlayers = React.useMemo( () => (cscPlayersResponse ?? cscNameAndAvatar)?.data?.players ?? [], [cscPlayersResponse, cscNameAndAvatar]);
 
 	React.useEffect( () => {
-	}, [selectedDataOption] );
+		const players: Player[] = cscPlayers?.flatMap( cscPlayer => {
+			const foundStats = playerStats.filter( ps => (ps.Steam === "sid".concat(cscPlayer?.steam64Id ?? 0)));
+			return foundStats.map( stats => ({ ...cscPlayer, stats: stats}));
+		});
+		setPlayers( players );
+	}, [playerStats, cscPlayers] );
+	
+	//console.info( cscPlayers.length, playerStats.length, players.length);
 
     return {
         players: players,
+		franchises: cscFranchises?.data.franchises,
 		isLoading: isLoadingCscNameAndAvatar || isLoadingPlayerStats,
 		loading: {
 			isLoadingCscPlayers,
 			isLoadingPlayerStats,
+			isLoadingFranchises,
 		},
 		selectedDataOption, setSelectedDataOption,
 		featureFlags:{
-			konami: konamiFeatureFlag,
 		},
     };
 }
