@@ -30,13 +30,13 @@ export function Teams() {
                             <div className="text-center text-sm">
                                 GM - {franchise.gm.name} | AGM - {franchise.agm?.name}
                             </div>
-                            <div className="grid grid-cols-6 gap-4 md:grid-cols-2 lg:grid-cols-6 p-1 text-sm text-gray-300">
+                            <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-6 p-1 text-sm text-gray-300">
                                 { franchise.teams.map( team =>      
                                         <div>
                                                 <div className="border-b-[1px] border-slate-700 text-center">
                                                     <strong>{team.name}</strong>
                                                 </div>
-                                                <div>
+                                                <div className="px-2">
                                                 { team.players.map( player => 
                                                     <div>{player.name}</div>
                                                     )}

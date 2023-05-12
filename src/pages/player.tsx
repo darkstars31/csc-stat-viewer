@@ -53,6 +53,7 @@ const GridContainer = ( { children }: { children: React.ReactNode | React.ReactN
 
 
 export function Player() {
+    const divRef = React.useRef<HTMLDivElement>(null);
     const { players = [], isLoading, selectedDataOption} = useDataContext();
     const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const [, params] = useRoute("/players/:tier/:id");
@@ -64,6 +65,12 @@ export function Player() {
     const linksToDifferentTier = statsInDifferentTier.map( s => { 
         return <><br /><Link className="text-blue-400" to={`/players/${s.Tier}/${nameParam}`}>{s.Tier}</Link></>;
     });
+
+    React.useEffect(() => {
+        if (divRef.current) {
+          divRef.current.scrollIntoView();
+        }
+      }, []);
 
     if( isLoading ){
         return <Container><Loading /></Container>;
@@ -112,7 +119,10 @@ export function Player() {
     
   
     return (
+        <>
+        <div ref={divRef} />
         <Container>
+           
             <PlayerNavigator player={currentPlayerStats} playerIndex={playerRatingIndex} />
 
             <Stat>
@@ -267,5 +277,6 @@ export function Player() {
                 )}
             </dl>
         </Container>
+        </>
     );
 }
