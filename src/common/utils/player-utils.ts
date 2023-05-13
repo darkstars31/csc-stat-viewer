@@ -90,8 +90,8 @@ export const roleColors = {
 	"RIFLER": "black",
 }
 
-export const teamNameTranslator = ( player: Player ) => {
-    const name = player.team?.name ?? player.type ?? player.stats?.Team;
+export const teamNameTranslator = ( player?: Player ) => {
+    const name = player?.team?.name ?? player?.type ?? player?.stats?.Team ?? "";
     switch( name?.toUpperCase() ){
         case "DRAFT_ELIGIBLE": return "Draft Eligible";
         case "PERMANENT_FREE_AGENT": return "Perm FA";
