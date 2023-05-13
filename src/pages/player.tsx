@@ -7,7 +7,7 @@ import {
     getPlayerTeammates,
     getPlayerRatingIndex,
     //getPlayersInTierOrderedByRating,
-    getPlayerHSIndex,
+    getTop10PlayersInTier3GP,
 } from "../common/utils/player-utils";
 import { Link, useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
@@ -15,7 +15,7 @@ import { Loading } from "../common/components/loading";
 import { RoleRadar } from "../common/components/roleRadar";
 import { PlayerStats } from "../models";
 import { PlayerNavigator } from "./player/player-navigator";
-import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
+//import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
 import { PlayerRatings } from "./player/playerRatings";
 import {tiertopincategory} from "../svgs";
 
@@ -116,8 +116,74 @@ export function Player() {
     const nth = (n: string | number) => {
         return ["st", "nd", "rd"][((Number(n) + 90) % 100 - 10) % 10 - 1] || "th";
     };
-    
-  
+
+    /* AWARDS logic */
+    const isCurrentPlayerNumberOneForProperty = (
+        currentPlayer: PlayerStats,
+        allPlayers: PlayerStats[],
+        property: keyof PlayerStats
+    ): boolean => {
+        const top10Players = getTop10PlayersInTier3GP(currentPlayer, allPlayers, property);
+        const numberOnePlayer = top10Players[0];
+        return numberOnePlayer && numberOnePlayer.Name === currentPlayer.Name;
+    };
+    const isCurrentPlayerInTop10ForProperty = (
+        currentPlayer: PlayerStats,
+        allPlayers: PlayerStats[],
+        property: keyof PlayerStats
+    ): boolean => {
+        const top10Players = getTop10PlayersInTier3GP(currentPlayer, allPlayers, property);
+        return top10Players.some(p => p.Name === currentPlayer.Name);
+    };
+    const propertiesCurrentPlayerIsInTop10For = (
+        currentPlayer: PlayerStats,
+        allPlayers: PlayerStats[],
+        properties: (keyof PlayerStats)[]
+    ): (keyof PlayerStats)[] => {
+        return properties.filter((property) => isCurrentPlayerInTop10ForProperty(currentPlayer, allPlayers, property));
+    };
+
+    const propertiesCurrentPlayerIsNumberOneFor = (
+        currentPlayer: PlayerStats,
+        allPlayers: PlayerStats[],
+        properties: (keyof PlayerStats)[]
+    ): (keyof PlayerStats)[] => {
+        return properties.filter((property) => isCurrentPlayerNumberOneForProperty(currentPlayer, allPlayers, property));
+    };
+    const properties = [
+        'HS',
+        'EF',
+        'GP',
+        'Kills',
+        'Form',
+        '2k',
+        '3k',
+        '4k',
+        '5k',
+        '1v1',
+        '1v2',
+        '1v3',
+        '1v4',
+        '1v5',
+        'multi/R',
+        'Impact',
+        'Assists',
+        'ADR',
+        'F_Assists',
+        'X/nade',
+        'SuppR',
+        'SuppXr',
+        'KAST',
+        'UD',
+        'Util',
+        'clutch/R',
+        'entries/R',
+        'IWR',
+        'AWP/ctr',
+        'wlp/L'] as (keyof PlayerStats)[]; // add properties here
+    const numberOneProperties = propertiesCurrentPlayerIsNumberOneFor(currentPlayerStats, playerStats, properties);
+    const top10Properties = propertiesCurrentPlayerIsInTop10For(currentPlayerStats, playerStats, properties);
+
     return (
         <>
         <div ref={divRef} />
@@ -149,32 +215,41 @@ export function Player() {
 }
                                 </ul>
                             </div>
-                            {/* AWARDS SECTION */}
-                            <div className="grid grid-cols-2 gap-3 content-start pt-6 pl-6">
-                                {
-                                    HS === tierPlayerAverages.highest.headShotPercentage?
-                                    <div className="space-x-4 place-items-center flex h-fit w-fit whitespace-nowrap rounded-[0.27rem] bg-yellow-400 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none text-neutral-700">
-                                        HS% <img className="h-fit w-fit max-w-[30px] pl-1 fill-neutral-700" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/>
-                                    </div>
-                                    :""
-                                }
-                                {
-                                    (Number(getPlayerHSIndex( currentPlayerStats, playerStats)+1))<10 && HS !== tierPlayerAverages.highest.headShotPercentage?
-                                        <div className="overflow-auto w-fit space-x-4 place-items-center flex h-6 whitespace-nowrap rounded-[0.27rem] bg-success-100 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none text-success-700">
-                                            HS% Top 10
-                                        </div>
-                                        :""
-                                }
-                            </div>
                     </div>
                         <PlayerRatings player={currentPlayerStats} />
                     </div>
-                    <div>
-                        <RoleRadar player={currentPlayerStats!}/>
-                        <div className="w-64 h-32">
-                            <TeamSideRatingPie player={currentPlayerStats}/>
+                    {/* AWARDS SECTION */}
+                    <div className="p-[2.5%] space-y-4">
+                        <div className="flex place-content-evenly grid grid-cols-4 gap-4">
+                            {
+                                numberOneProperties.map((property) => (
+                                    <div key={property} className="place-items-center flex h-fit w-fit whitespace-nowrap rounded-[0.27rem] bg-yellow-400 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none text-neutral-700">
+                                        {property} <img className="h-fit w-fit max-w-[30px] pl-1 fill-neutral-700" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/>
+                                    </div>
+                                ))
+                            }
+
+                            {
+                                top10Properties
+                                    .filter((property) => !numberOneProperties.includes(property))
+                                    .map((property) => (
+                                        <div
+                                            key={property}
+                                            className="w-fit place-items-center flex whitespace-nowrap rounded-[0.27rem] bg-success-100 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none text-success-700"
+                                        >
+                                            {property} Top 10
+                                        </div>
+                                    ))
+                            }
                         </div>
+                        <div className="place-content-center">
+                            <RoleRadar player={currentPlayerStats!}/>
+                        </div>
+                        {/*<div className="w-64 h-32">
+                            <TeamSideRatingPie player={currentPlayerStats}/>
+                        </div> */}
                     </div>
+
                 </div>
 				<div className="text-xs mt-4">
 					Impact On Rounds Won {IWR} (tier average {tierPlayerAverages.average.impactOnWonRounds}) - IWR/avg { (((IWR/tierPlayerAverages.average.impactOnWonRounds)-1)*100).toFixed(2)}%

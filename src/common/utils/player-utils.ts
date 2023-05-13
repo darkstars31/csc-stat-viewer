@@ -106,12 +106,17 @@ export function _sort<T, K extends keyof T>( items: T[], property: K, n?: number
     return n ? sorted.slice(0,n) : sorted;
 }
 export const getPlayersInTier = ( player: PlayerStats, allPlayers: PlayerStats[] ) => allPlayers.filter( ap => ap.Tier === player.Tier);
+export const getPlayersInTier3GP = (player: PlayerStats, allPlayers: PlayerStats[]) => allPlayers.filter(ap => ap.Tier === player.Tier && ap.GP > 3);
 export const getPlayersInTierOrderedByRating = ( player: PlayerStats, allPlayers: PlayerStats[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => a.Rating < b.Rating ? 1 : -1);
-export const getPlayersInTierOrderedByHS = ( player: PlayerStats, allPlayers: PlayerStats[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => a.HS < b.HS ? 1 : -1);
-export const getPlayerHSIndex = ( player: PlayerStats, allPlayers: PlayerStats[] ) => {
-    const playersInTierSortedByHS = getPlayersInTierOrderedByHS(player, allPlayers);
-    return playersInTierSortedByHS.findIndex( p => p.Name === player.Name);
-}
+export const getTop10PlayersInTier3GP = (
+    player: PlayerStats,
+    allPlayers: PlayerStats[],
+    property: keyof PlayerStats
+) => {
+    const playersInTier3GP = getPlayersInTier3GP(player, allPlayers);
+    const sortedPlayers = playersInTier3GP.sort((a, b) => (b[property] as any) - (a[property] as any));
+    return sortedPlayers.slice(0, 10);
+};
 export const getPlayerRatingIndex = ( player: PlayerStats, allPlayers: PlayerStats[] ) => {
     const playersInTierSortedByRating = getPlayersInTierOrderedByRating(player, allPlayers);
     return playersInTierSortedByRating.findIndex( p => p.Name === player.Name);
