@@ -17,6 +17,11 @@ export const dataConfiguration = [
         spreadsheetUrl: googleSheetsUrl("16sdOBw-0fjwIZAvY7CT_r6O8Dji5mb6LpA7xcgwp1DI",334898684),
     },
     {
+        season: 11,
+        name: "Season 11 (Combines V2)",
+        spreadsheetUrl: googleSheetsUrl("16sdOBw-0fjwIZAvY7CT_r6O8Dji5mb6LpA7xcgwp1DI",302214624),
+    },
+    {
         season: 10,
         name: "Season 10",
         spreadsheetUrl: googleSheetsUrl("1AKmIPSLS1kcmvMvptWXSVRtCZXe6lLZwzxkR_DrKvMU", 334898684),
