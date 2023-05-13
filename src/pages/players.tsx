@@ -77,17 +77,32 @@ export function Players() {
         { label: `Perma FA`, value: "PERMANENT_FREE_AGENT"},
     ];
 
+    const selectClassNames = {
+        placeholder: () => "text-gray-400 bg-inherit",
+        container: () => "m-1 rounded bg-inherit",
+        control: () => "p-2 rounded-l bg-slate-700",
+        option: () => "p-2 hover:bg-slate-900",
+        input: () => "text-slate-200",
+        menu: () => "bg-slate-900",
+        menuList: () => "bg-slate-700",
+        multiValue: () => "bg-sky-700 p-1 mr-1 rounded",
+        multiValueLabel: () => "text-slate-200",
+        multiValueRemove: () => "text-slate-800 pl-1",
+        singleValue: () => "text-slate-200",
+        //valueContainer: () => "bg-slate-700",
+    };
+
     return (
     <Container>
         <div className="mx-auto max-w-lg text-center">
-        <h2 className="text-3xl font-bold sm:text-4xl">Players</h2>
+            <h2 className="text-3xl font-bold sm:text-4xl">Players</h2>
 
-        <p className="mt-4 text-gray-300">
-        Find players, view stats, see how you stack up against your peers.
-        </p>
-        <p className="mt-4 text-gray-300">
-            Showing {filteredPlayers.length} of {playersWithStats.length} Players
-        </p>
+            <p className="mt-4 text-gray-300">
+            Find players, view stats, see how you stack up against your peers.
+            </p>
+            <p className="mt-4 text-gray-300">
+                Showing {filteredPlayers.length} of {playersWithStats.length} Players
+            </p>
             <form className="flex flex-box h-12 mx-auto" onSubmit={(e)=>{e.preventDefault()}}>
                 <Input
                     className="basis-1/2 grow"
@@ -111,98 +126,69 @@ export function Players() {
                     )
                 }
             </div>
-            <div className="grid grid-cols-3 mid:grid-cols-5 text-sm">
+            {/* <div className="grid grid-cols-3 mid:grid-cols-5 text-sm">
             
-            </div>
+            </div> */}
         </div>
-        <div className="flex flex-box h-12 mx-auto justify-end">
-        <div className="basis-1/3">
-                <div className="flex flex-row text-xs m-2">
-                    <label title="Order By" className="p-1 leading-9">
-                        Player Type
-                    </label>
-                        <Select
-                            isMulti
-                            placeholder="All"
-                            isClearable={false}
-                            className="grow"
-                            unstyled
-                            isSearchable={false}
-                            classNames={{
-                                placeholder: () => "text-gray-400 bg-inherit",
-                                container: (state) => "m-1 rounded bg-inherit",
-                                control: () => "p-2 rounded-l bg-slate-700",
-                                option: (state) => "p-2 hover:bg-slate-900",
-                                input: () => "text-slate-200",
-                                menu: () => "bg-slate-900",
-                                menuList: () => "bg-slate-700",
-                                singleValue: () => "text-slate-200",
-                                //valueContainer: () => "bg-slate-700",
-                            }}
-                            options={viewPlayerTypeList}
-                            onChange={setViewPlayerTypeOptions}
-                        />
-                </div>
-            </div>
+        <div className="flex flex-col mt-36 md:flex-row md:mt-0 h-12 justify-end">
             <div className="basis-1/3">
-                <div className="flex flex-row text-xs m-2">
-                    <label title="Order By" className="p-1 leading-9">
-                        Tiers
-                    </label>
-                        <Select
-                            placeholder="All"
-                            isClearable={false}
-                            isMulti
-                            className="grow"
-                            unstyled
-                            isSearchable={false}
-                            classNames={{
-                                placeholder: () => "text-gray-400 bg-inherit",
-                                container: (state) => "m-1 rounded bg-inherit",
-                                control: () => "p-2 rounded-l bg-slate-700",
-                                option: (state) => "p-2 hover:bg-slate-900",
-                                input: () => "text-slate-200",
-                                menu: () => "bg-slate-900",
-                                menuList: () => "bg-slate-700",
-                                singleValue: () => "text-slate-200",
-                                //valueContainer: () => "bg-slate-700",
-                            }}
-                            options={viewTiersList}
-                            onChange={setViewTierOptions}
-                        />
+                    <div className="flex flex-row text-xs m-2">
+                        <label title="Player Type" className="p-1 leading-9">
+                            Player Type
+                        </label>
+                            <Select
+                                isMulti
+                                placeholder="All"
+                                isClearable={false}
+                                className="grow"
+                                unstyled
+                                isSearchable={false}
+                                classNames={selectClassNames}
+                                options={viewPlayerTypeList}
+                                onChange={setViewPlayerTypeOptions}
+                            />
+                    </div>
+                </div>
+                <div className="basis-1/3">
+                    <div className="flex flex-row text-xs m-2">
+                        <label title="Tiers" className="p-1 leading-9">
+                            Tiers
+                        </label>
+                            <Select
+                                placeholder="All"
+                                isClearable={false}
+                                isMulti
+                                className="grow"
+                                unstyled
+                                isSearchable={false}
+                                classNames={selectClassNames}
+                                options={viewTiersList}
+                                onChange={setViewTierOptions}
+                            />
+                    </div>
+                </div>
+                <div className="basis-1/5">
+                    <div className="flex flex-row text-sm m-2">
+                        <label title="Order By" className="p-1 leading-9">
+                            Order By
+                        </label>
+                            <Select
+                                className="grow"
+                                unstyled
+                                defaultValue={sortOptionsList[0]}
+                                isSearchable={false}
+                                classNames={selectClassNames}
+                                options={sortOptionsList}
+                                onChange={setOrderBy}
+                            />
+                    </div>
                 </div>
             </div>
-            <div className="basis-1/5">
-                <div className="flex flex-row text-sm m-2">
-                    <label title="Order By" className="p-1 leading-9">
-                        Order By
-                    </label>
-                        <Select
-                            className="grow"
-                            unstyled
-                            defaultValue={sortOptionsList[0]}
-                            isSearchable={false}
-                            classNames={{
-                                //placeholder: () => "text-yellow-400 bg-inherit",
-                                container: (state) => "m-1 rounded bg-inherit",
-                                control: () => "p-2 rounded-l bg-slate-700",
-                                option: (state) => "p-2 hover:bg-slate-900",
-                                input: () => "text-slate-200",
-                                menu: () => "bg-slate-900",
-                                menuList: () => "bg-slate-700",
-                                singleValue: () => "text-slate-200",
-                                //valueContainer: () => "bg-slate-700",
-                            }}
-                            options={sortOptionsList}
-                            onChange={setOrderBy}
-                        />
-                </div>
+        <div>
+            <hr className="h-px my-4 border-0 bg-gray-800" />
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                { playerCards }
             </div>
-        </div>
-        <hr className="h-px my-4 border-0 bg-gray-800" />
-
-        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-            { playerCards }
         </div>
     </Container>
     );
