@@ -30,7 +30,7 @@ export function Router(){
 
   return (
     <Wouter base={BASE_ROUTE}>
-      <div className="sticky top-0">
+      <div className="sticky top-0 z-10">
         <Header />
         { loading.isLoadingCscPlayers && <ProgressBar />}
       </div>
