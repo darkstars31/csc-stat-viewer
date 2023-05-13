@@ -20,28 +20,28 @@ export const PlayerMappings: Record<string,string> = {
     "UD": "Utility Damage per Match",
     "EF": "Enemies Flashed per Match",
     "F_Assists": "Flash Assists per Match",
-    "Util": "Utility Thrown per Match",
+    "Util": "Utility Thrown / Match",
     "HS": "Headshot (%)",
     "awp/R": "Awp Kills / Round",
-    "multi/R": "Multi Kills / Round", // points based on difficulty/remaining players
+    "multi/R": "Multi-Kills / Round", // points based on difficulty/remaining players
     "clutch/R": "Clutch-ability", // points based on difficulty/remaining players
     "SuppR": "Support Rounds",
     "SuppXr": "Support Damage / Round",
     "oda/R": "Open Duel Attempts / Round",
-    "entries/R": "First Kill on T-side / Round",
+    "entries/R": "Entry Kill on T-side / Round",
     "trades/R": "Trade Kills / Round",
     "TRatio": "Deaths Traded Out (%)",
     "saves/R": "Saves / Round",
     "SRate": "Rounds Survived (%)",
-    "2k": "2k Rounds",
-    "3k": "3k Rounds",
-    "4k": "4k Rounds",
+    "2k": "2K Rounds",
+    "3k": "3K Rounds",
+    "4k": "4K Rounds",
     "5k": "Ace Rounds",
-    "1v1": "1v1 Clutch Rounds",
-    "1v2": "1v2 Clutch Rounds",
-    "1v3": "1v3 Clutch Rounds",
-    "1v4": "1v4 Clutch Rounds",
-    "1v5": "Ace Clutch Rounds",
+    "1v1": "1v1 Clutches",
+    "1v2": "1v2 Clutches",
+    "1v3": "1v3 Clutches",
+    "1v4": "1v4 Clutches",
+    "1v5": "Ace Clutches",
     "Rounds": "Total Rounds Played",
     "Peak": "Single Match Rating Peak",
     "Pit": "Single Match Rating Pit",
@@ -106,12 +106,17 @@ export function _sort<T, K extends keyof T>( items: T[], property: K, n?: number
     return n ? sorted.slice(0,n) : sorted;
 }
 export const getPlayersInTier = ( player: PlayerStats, allPlayers: PlayerStats[] ) => allPlayers.filter( ap => ap.Tier === player.Tier);
+export const getPlayersInTier3GP = (player: PlayerStats, allPlayers: PlayerStats[]) => allPlayers.filter(ap => ap.Tier === player.Tier && ap.GP > 3);
 export const getPlayersInTierOrderedByRating = ( player: PlayerStats, allPlayers: PlayerStats[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => a.Rating < b.Rating ? 1 : -1);
-export const getPlayersInTierOrderedByHS = ( player: PlayerStats, allPlayers: PlayerStats[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => a.HS < b.HS ? 1 : -1);
-export const getPlayerHSIndex = ( player: PlayerStats, allPlayers: PlayerStats[] ) => {
-    const playersInTierSortedByHS = getPlayersInTierOrderedByHS(player, allPlayers);
-    return playersInTierSortedByHS.findIndex( p => p.Name === player.Name);
-}
+export const getTop10PlayersInTier3GP = (
+    player: PlayerStats,
+    allPlayers: PlayerStats[],
+    property: keyof PlayerStats
+) => {
+    const playersInTier3GP = getPlayersInTier3GP(player, allPlayers);
+    const sortedPlayers = playersInTier3GP.sort((a, b) => (b[property] as any) - (a[property] as any));
+    return sortedPlayers.slice(0, 10);
+};
 export const getPlayerRatingIndex = ( player: PlayerStats, allPlayers: PlayerStats[] ) => {
     const playersInTierSortedByRating = getPlayersInTierOrderedByRating(player, allPlayers);
     return playersInTierSortedByRating.findIndex( p => p.Name === player.Name);
