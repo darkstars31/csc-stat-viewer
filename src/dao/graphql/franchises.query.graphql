@@ -13,8 +13,13 @@ query franchises {
 		}
 		teams {
 			name
+			tier { 
+				name
+				mmrCap
+			}
 			players {
 				name
+				mmr
 			}
 		}
 	}

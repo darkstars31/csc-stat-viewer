@@ -10,6 +10,7 @@ export const useKonamiCode = () => {
   
   useEffect(() => {
     if (key == null) return;
+    console.info( key );
     if (key !== konamiCode[count]) {
       setCount(0);
       return;

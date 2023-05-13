@@ -2,16 +2,19 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import { useDataContext } from '../DataContext';
 import { Loading } from '../common/components/loading';
+import { Link } from "wouter";
+import { useKonamiCode } from "../common/hooks/konami";
 //import { PlayerStats } from '../models';
 
 export function Teams() {
+    const konami = useKonamiCode();
     const { franchises = [], isLoading } = useDataContext();
     //const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     
     return (
         <Container>
             <div className="mx-auto max-w-lg text-center">
-                <h2 className="text-3xl font-bold sm:text-4xl">Teams</h2>
+                <h2 className="text-3xl font-bold sm:text-4xl">Franchises & Teams</h2>
                 <p className="mt-4 text-gray-300">
                     Current Teams and players on those teams + roles.
                 </p>
@@ -30,18 +33,22 @@ export function Teams() {
                             <div className="text-center text-sm">
                                 GM - {franchise.gm.name} | AGM - {franchise.agm?.name}
                             </div>
-                            <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-6 p-1 text-sm text-gray-300">
+                            <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3 p-1 text-sm text-gray-300">
                                 { franchise.teams.map( team =>      
-                                        <div>
-                                                <div className="border-b-[1px] border-slate-700 text-center">
-                                                    <strong>{team.name}</strong>
-                                                </div>
-                                                <div className="px-2">
-                                                { team.players.map( player => 
-                                                    <div>{player.name}</div>
-                                                    )}
-                                                </div>
+                                    <div>
+                                        <div className="mx-4 border-b-[1px] border-slate-700 text-center">
+                                            <strong>{team.name}</strong> - <span className="text-gray-400"><i>{team.tier.name} { konami && <span className="text-xs">({team.players.reduce((cum,player) => cum + player.mmr, 0)}/{team.tier.mmrCap})</span>} </i></span>
                                         </div>
+                                        <div className="mx-4 px-2">
+                                        { team.players.map( player => 
+                                            <Link to={`/players/${team.tier.name}/${player.name}`}>                                          
+                                                <div className="m-1 hover:cursor-pointer">
+                                                    {player.name} { konami && <span className="text-xs text-gray-500">- {player.mmr} ({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span> }
+                                                </div>
+                                            </Link>
+                                            )}
+                                        </div>
+                                    </div>
                                     )
                                 }
                            </div>

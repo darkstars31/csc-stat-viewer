@@ -21,5 +21,16 @@ export type Gm = {
 
 export type Team = {
     name:    string;
-    players: Gm[];
+    tier: Tier;
+    players: Player[];
+}
+
+export type Player = {
+    name: string;
+    mmr: number;
+}
+
+export type Tier = {
+    name: string;
+    mmrCap: number;
 }

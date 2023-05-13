@@ -10,6 +10,8 @@ export function Team(){
 	const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
 
 	return (
-		<div>team page</div>
+		<div>
+			team page
+		</div>
 		);
 }

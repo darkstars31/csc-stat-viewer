@@ -111,13 +111,12 @@ export function PlayerRatings({ player }: Props) {
                     <ToolTipRatings message={"Tier Average: " + tierAvgConcy} pos={String((1 - (tierPlayerAverages.average.ratingConsistency/tierPlayerAverages.average.rating))*100).concat("%")}/>
                 </div>
                 {/* Warning Not Enough Data */}
-                {player.GP<3?
-                        <div className="relative">
-                            <div className="text-yellow-500 text-[0.8rem] text-center w-[90%] italic">
-                                Less than 3 matches played. Stats shown may not provide an accurate picture of player skill or consistency
-                            </div>
+                {player.GP<3 &&
+                    <div className="relative">
+                        <div className="text-yellow-500 text-[0.8rem] text-center w-[90%] italic">
+                            Less than 3 matches played. Stats shown may not provide an accurate picture of player skill or consistency
                         </div>
-                    :''
+                    </div>
                 }
             </div>
         </div>
