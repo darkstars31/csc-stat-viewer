@@ -153,9 +153,7 @@ export function Player() {
     const properties = [
         'HS',
         'EF',
-        'GP',
         'Kills',
-        'Form',
         '2k',
         '3k',
         '4k',
@@ -170,6 +168,7 @@ export function Player() {
         'Assists',
         'ADR',
         'F_Assists',
+        'trades/R',
         'X/nade',
         'SuppR',
         'SuppXr',
@@ -223,19 +222,20 @@ export function Player() {
                                     {
                                         numberOneProperties.map((property) => (
                                             <div key={property} className="place-items-center flex h-fit w-fit whitespace-nowrap rounded-[0.27rem] bg-yellow-400 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none text-neutral-700">
-                                                {property} <img className="h-fit w-fit max-w-[30px] pl-1 fill-neutral-700" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/>
+                                                {PlayerMappings[property]} <img className="h-fit w-fit max-w-[30px] pl-1 fill-neutral-700" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/>
                                             </div>
                                         ))
                                     }
                                     {
                                         top10Properties
                                             .filter((property) => !numberOneProperties.includes(property))
-                                            .map((property) => (
+                                            .map((property, index) => (
                                                 <div
                                                     key={property}
                                                     className="place-items-center flex h-fit w-fit whitespace-nowrap rounded-[0.27rem] bg-success-100 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none text-success-700"
                                                 >
-                                                    {property} Top 10
+                                                    {PlayerMappings[property]} Top 10
+                                                    {/* #{index+1} - {PlayerMappings[property]} */}
                                                 </div>
                                             ))
                                     }
