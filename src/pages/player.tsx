@@ -4,7 +4,7 @@ import {
     PlayerMappings,
     TotalPlayerAverages,
     teamNameTranslator,
-    getPlayerTeammates,
+    //getPlayerTeammates,
     getPlayerRatingIndex,
     //getPlayersInTierOrderedByRating,
     getTop10PlayersInTier3GP,
@@ -38,7 +38,7 @@ function Stat( { title, value, children }: { title?:string, value?: string|numbe
 
 function GridStat( { name, value, rowIndex }: { name: string, value: string | number | React.ReactNode, rowIndex: number }){
     return (
-        <div className={`grid grid-cols-2 ${ rowIndex % 2 ? "bg-gray-600" : ""}`}>
+        <div className={`grid grid-cols-2 ${ rowIndex % 2 ? "bg-midnight2" : ""}`}>
 			<div className={`text-left pl-2`}>
 				{name}
 			</div>
@@ -54,7 +54,7 @@ const GridContainer = ( { children }: { children: React.ReactNode | React.ReactN
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
-    const { players = [], isLoading, selectedDataOption} = useDataContext();
+    const { players = [], franchises = [], isLoading, selectedDataOption} = useDataContext();
     const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const [, params] = useRoute("/players/:tier/:id");
     const tierParam = decodeURIComponent(params?.tier ?? "");
@@ -67,10 +67,8 @@ export function Player() {
     });
 
     React.useEffect(() => {
-        if (divRef.current) {
-          divRef.current.scrollIntoView();
-        }
-      }, []);
+        divRef.current?.scrollIntoView();
+    }, []);
 
     if( isLoading ){
         return <Container><Loading /></Container>;
@@ -84,7 +82,7 @@ export function Player() {
 	}
 
     const tierPlayerAverages = TotalPlayerAverages( playerStats, { tier: currentPlayerStats?.Tier} );
-    const playerTeammates = getPlayerTeammates( currentPlayerStats!, playerStats);
+    //const playerTeammates = getPlayerTeammates( currentPlayerStats!, playerStats);
     //const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( currentPlayerStats!, playerStats );
     const playerRatingIndex = getPlayerRatingIndex( currentPlayerStats!, playerStats );
 
@@ -111,8 +109,13 @@ export function Player() {
         ...playerRest 
     } = currentPlayerStats!;
 
-
     const teamAndFranchise = currentPlayer?.team?.franchise ? `${currentPlayer?.team?.franchise.name} (${currentPlayer?.team?.franchise.prefix}) > ${currentPlayer?.team?.name}` : teamNameTranslator(currentPlayer);
+    const franchise = franchises.find( f => f.name === currentPlayer?.team?.franchise.name);
+    const team = franchise?.teams.find( t => t.name === currentPlayer?.team?.name);
+    const teamMates = players.filter( p => { 
+        return p.team?.name === currentPlayer?.team?.name && p.tier.name === team?.tier.name && p.name !== currentPlayer?.name;
+    });
+    
     const nth = (n: string | number) => {
         return ["st", "nd", "rd"][((Number(n) + 90) % 100 - 10) % 10 - 1] || "th";
     };
@@ -268,15 +271,27 @@ export function Player() {
 
                 </div>
 				<div className="text-xs mt-4">
-					Impact On Rounds Won {IWR} (tier average {tierPlayerAverages.average.impactOnWonRounds}) - IWR/avg { (((IWR/tierPlayerAverages.average.impactOnWonRounds)-1)*100).toFixed(2)}%
+					Impact On Rounds Won {IWR} (tier average {tierPlayerAverages.average.impactOnWonRounds}) - { (((IWR/tierPlayerAverages.average.impactOnWonRounds)-1)*100).toFixed(2)}%
 				</div>
             </Stat>
 
-			{/* { currentPlayerStats.GP < 3 && 
-			<div className="m-2 p-2 bg-yellow-700 rounded">
-				Minimum games played threshold has not been met. Statistics shown may not provide an accurate picture of player skill or consistency.
-			</div> 
-			} */}
+            { teamMates.length > 0 && false && // TODO: fix weird bug in logic that shows same teammate twice
+            <div>
+                Teammates - {teamAndFranchise}
+                <div className="grid grid-cols-1 md:grid-cols-5">
+                { teamMates.map( teamMate => 
+                        <Link key={`closeby-${teamMate.name}`} to={`/players/${teamMate.tier.name}/${teamMate.name}`}>
+                        <div
+                            style={{userSelect:'none', lineHeight: '95%' }}
+                            className="my-[5px] mr-4 flex h-[32px] cursor-pointer items-center rounded-[4px] bg-[#eceff1] px-[12px] py-0 text-[11px] font-normal normal-case leading-loose text-[#4f4f4f] shadow-none hover:!shadow-none active:bg-[#cacfd1] dark:bg-midnight2 dark:text-neutral-200">
+                            <img className="my-0 -ml-[12px] mr-[8px] h-[inherit] w-[inherit] rounded-[4px]" src={teamMate?.avatarUrl} alt=""/>
+                            {teamMate.name}
+                        </div>
+                    </Link>
+                    )
+                }
+                </div>
+            </div> }
 
             <GridContainer>
                 <div className="grid grid-cols-1 gap-2 p-2">
@@ -354,14 +369,6 @@ export function Player() {
 					<GridStat name={PlayerMappings["Xdiff"]} value={`${Xdiff}`} rowIndex={1}/>
 				</div>
             </GridContainer>
-            <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
-                { playerTeammates.length > 0 && 
-                    <Stat  title={`Teammates - ${Team}`}>
-                        { playerTeammates.map( teammate => <div><Link key={`teammate-${teammate.Name}`} to={`/players/${teammate.Tier}/${teammate.Name}`}>{teammate.Name}</Link></div>)}
-                    </Stat> 
-                }
-                
-            </dl>
             <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
                 { Object.entries(playerRest ?? []).map( ( [key, value] ) => 
                     <Stat key={`${key}${value}`} title={PlayerMappings[key]} value={ value! } />
