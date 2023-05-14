@@ -21,7 +21,7 @@ export function LeaderBoards() {
 
     const sumTierCount = Object.values(tierCounts ?? {}).reduce( (sum, num) => sum + num, 0);
 
-    const tierOptionsList = [
+    const tierOptionsList = React.useMemo( () => [
         { label: `All (${sumTierCount})`, value: "All"}, 
         { label: `Premier (${tierCounts.premier})`, value: "Premier", isDisabled: !tierCounts.premier },
         { label: `Elite (${tierCounts.elite})`, value: "Elite", isDisabled: !tierCounts.elite },
@@ -29,7 +29,7 @@ export function LeaderBoards() {
         { label: `Contender (${tierCounts.contender})`, value: "Contender", isDisabled: !tierCounts.contender },
         { label: `Prospect (${tierCounts.prospect})`, value: "Prospect", isDisabled: !tierCounts.prospect },
         { label: `New Tier (${tierCounts.newTier})`, value: "NewTier", isDisabled: !tierCounts.newTier },
-    ];
+    ], [ tierCounts.premier, tierCounts.elite,tierCounts.challenger,tierCounts.contender, tierCounts.prospect, tierCounts.newTier, sumTierCount]);
     
     React.useEffect( () => {
         const tierCounts = {
