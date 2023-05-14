@@ -8,7 +8,7 @@ import { useKonamiCode } from "../common/hooks/konami";
 
 export function Teams() {
     const konami = useKonamiCode();
-    const { franchises = [], isLoading } = useDataContext();
+    const { franchises = [], loading } = useDataContext();
     //const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     
     return (
@@ -19,7 +19,7 @@ export function Teams() {
                     Current Teams and players on those teams + roles.
                 </p>
             </div>
-            { isLoading && <Loading /> }
+            { loading.isLoadingFranchises && <Loading /> }
             {
                 franchises.map( franchise => 
                     <div key={`${franchise.name}`} className="my-4 block bg-midnight2 rounded-xl border border-gray-800 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10">
