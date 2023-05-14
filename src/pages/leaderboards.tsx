@@ -15,9 +15,11 @@ export function LeaderBoards() {
     const { players = [], isLoading } = useDataContext();
     const [ filterBy, setFilterBy ] = React.useState<string>("All");
 
-    const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats ) as PlayerStats[];
+    const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats ).filter( s => s!.GP >= 3) as PlayerStats[];
+    console.info( playerStats.length );
+    console.info( filterBy.toLowerCase());
 
-    const playerData = filterBy.includes("All") ? playerStats.filter( f => f.GP >= 3) : playerStats.filter( f => f.GP >= 3 && f.Tier.toLowerCase() === filterBy.toLowerCase());
+    const playerData = filterBy.includes("All") ? playerStats : playerStats.filter( f => f.Tier.toLowerCase() === filterBy.toLowerCase());
 
     // Debugging why leaderboard is broken for new tier and premier only
     // console.info( 'x',players.filter( p => p.stats?.Tier.includes("New")) );

@@ -29,10 +29,7 @@ export function Players() {
     sortedPlayerData = orderBy?.value.includes("Name") ? sortedPlayerData.reverse() : sortedPlayerData;
 
     const filteredByPlayerType = viewPlayerTypeOptions?.length ? sortedPlayerData.filter( player => viewPlayerTypeOptions?.some( type => type.value === player.type)) : playersWithStats;
-    console.info( 'type', filteredByPlayerType.length );
-
     const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.stats?.Tier)) : filteredByPlayerType;
-    console.info( 'tier', filteredByTier.length );
 
     const filteredPlayers = filters.length > 0 ? filteredByTier.filter( player => {
         return filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ) );
