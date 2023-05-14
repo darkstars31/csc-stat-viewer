@@ -123,15 +123,22 @@ export function Player() {
         allPlayers: PlayerStats[],
         property: keyof PlayerStats
     ): boolean => {
+        if (currentPlayer[property] === 0) {
+            return false;
+        }
         const top10Players = getTop10PlayersInTier3GP(currentPlayer, allPlayers, property);
         const numberOnePlayer = top10Players[0];
         return numberOnePlayer && numberOnePlayer.Name === currentPlayer.Name;
     };
+
     const isCurrentPlayerInTop10ForProperty = (
         currentPlayer: PlayerStats,
         allPlayers: PlayerStats[],
         property: keyof PlayerStats
     ): boolean => {
+        if (currentPlayer[property] === 0) {
+            return false;
+        }
         const top10Players = getTop10PlayersInTier3GP(currentPlayer, allPlayers, property);
         return top10Players.some(p => p.Name === currentPlayer.Name);
     };
@@ -213,7 +220,6 @@ export function Player() {
                                     </li>
 }
                                 </ul>
-
                             </div>
                     </div>
                         <div className="p-[2.5%] space-y-4">
