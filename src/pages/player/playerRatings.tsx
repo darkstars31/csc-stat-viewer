@@ -14,7 +14,7 @@ initTE({ Ripple });
 type Props = {
     player: PlayerStats
 }
-function ToolTip({message, pos, type, stat1, stat2, range}: {message: string, pos?: string, type: 'rating' | 'icon', stat1?: number, stat2?: number, range?: number}): JSX.Element {
+function ToolTip({message, pos, type, stat1, stat2, range}: {message: string, pos?: string, type: 'rating' | 'icon', stat1?: number, stat2?: number, range?: number}) {
     if (type === 'rating') {
         return (
             <span className="top-5 h-3 absolute border-l-2 border-neutral-300 rounded-lg" data-te-toggle="tooltip" title={message} style={{left: pos}}>
@@ -38,9 +38,8 @@ function ToolTip({message, pos, type, stat1, stat2, range}: {message: string, po
                 {stat2}
             </div>
         )
-    } else {
-        return <></>;
     }
+    return null;
 }
 function inRange(base: number, compare: number, range: number){ //Checks if one number is with a certain range of another, returns bool
     return(((base - (compare * (1 - range))) * (base - (compare * (1 + range)))) <= 0)
