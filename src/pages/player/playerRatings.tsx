@@ -14,31 +14,32 @@ initTE({ Ripple });
 type Props = {
     player: PlayerStats
 }
-function ToolTipRatings({message, pos}: {message: string, pos:string}): JSX.Element { //Tooltips for the player profile stat bars
-    return(
-        <span className="top-5 h-3 absolute border-l-2 border-neutral-300 rounded-lg" data-te-toggle="tooltip" title={message} style={{left: pos}}>
-            <button type="button" className="bg-midnight1 text-sm pointer-events-none transition duration-150 ease-in-out inline-block" disabled/>
-        </span>
-    )
-}
-function ToolTipIcons({message, stat1, stat2, range}: {message: string, stat1: number, stat2: number, range: number}): JSX.Element { //Tooltips for the svg icons
-    return(
-        <div className="float-right text-sm">
-            <img className="h-3 w-3 transition inline-block ease-in-out select-none" // shows an svg based on inRange()
-                 src={
-                     inRange(
-                         stat1, stat2, range)?
-                         `data:image/svg+xml;utf-8,${updownarrow}`:
-                         (stat1>(stat2))?
-                             `data:image/svg+xml;utf-8,${uparrow}`:
-                             `data:image/svg+xml;utf-8,${downarrow}`
-                 }
-                 data-te-toggle="tooltip" title={message}
-                 alt={""} />
-            {stat2}
-        </div>
-    /* For troubleshooting set alt to: "stat1/stat2: " + stat1 + ' ' + stat2 + inRange(stat1, stat2, range) */
-)
+function ToolTip({message, pos, type, stat1, stat2, range}: {message: string, pos?: string, type: 'rating' | 'icon', stat1?: number, stat2?: number, range?: number}) {
+    if (type === 'rating') {
+        return (
+            <span className="top-5 h-3 absolute border-l-2 border-neutral-300 rounded-lg" data-te-toggle="tooltip" title={message} style={{left: pos}}>
+                <button type="button" className="bg-midnight1 text-sm pointer-events-none transition duration-150 ease-in-out inline-block" disabled/>
+            </span>
+        )
+    } else if (type === 'icon') {
+        return (
+            <div className="float-right text-sm">
+                <img className="h-3 w-3 transition inline-block ease-in-out select-none"
+                     src={
+                         inRange(
+                             stat1!, stat2!, range!)?
+                             `data:image/svg+xml;utf-8,${updownarrow}`:
+                             (stat1!>(stat2!))?
+                                 `data:image/svg+xml;utf-8,${uparrow}`:
+                                 `data:image/svg+xml;utf-8,${downarrow}`
+                     }
+                     data-te-toggle="tooltip" title={message}
+                     alt={""} />
+                {stat2}
+            </div>
+        )
+    }
+    return null;
 }
 function inRange(base: number, compare: number, range: number){ //Checks if one number is with a certain range of another, returns bool
     return(((base - (compare * (1 - range))) * (base - (compare * (1 + range)))) <= 0)
@@ -66,11 +67,11 @@ export function PlayerRatings({ player }: Props) {
                 {/* Rating bar*/}
                 <div className="relative">
                     Rating
-                    <ToolTipIcons message={"Recent Form: " + player.Form} stat1={player.Form} stat2={player.Rating} range={0.05}/>
+                    <ToolTip message={"Recent Form: " + player.Form} stat1={player.Form} stat2={player.Rating} range={0.05} type={"icon"}/>
                     <div className="h-1 bg-midnight2 rounded-lg">
                         <div className="h-1 bg-gradient-to-l from-violet-500 to-violet-900 via-violet-600 rounded-lg" style={{width: avgWidth}}/>
                     </div>
-                    <ToolTipRatings message={"Tier Average: " + String(tierPlayerAverages.average.rating)} pos={((tierPlayerAverages.average.rating/2)*100).toString().concat("%")}/>
+                    <ToolTip message={"Tier Average: " + String(tierPlayerAverages.average.rating)} pos={((tierPlayerAverages.average.rating/2)*100).toString().concat("%")} type="rating"/>
                 </div>
                 {/* Peak bar*/}
                 <div className="relative">
@@ -81,7 +82,7 @@ export function PlayerRatings({ player }: Props) {
                     <div className="h-1 bg-midnight2 rounded-lg">
                         <div className="h-1 bg-gradient-to-l from-green-500 to-green-900 via-green-600 rounded-lg" style={{width: peakWidth}} />
                     </div>
-                    <ToolTipRatings message={"Tier Average: " + String(tierPlayerAverages.average.peak)} pos={((tierPlayerAverages.average.peak/2)*100).toString().concat("%")}/>
+                    <ToolTip message={"Tier Average: " + String(tierPlayerAverages.average.peak)} pos={((tierPlayerAverages.average.peak/2)*100).toString().concat("%")} type="rating"/>
                 </div>
                 {/* Pit Bar */}
                 <div className="relative">
@@ -92,7 +93,7 @@ export function PlayerRatings({ player }: Props) {
                     <div className="h-1 bg-midnight2 rounded-lg">
                         <div className="h-1 bg-gradient-to-l from-yellow-500 to-yellow-900 via-yellow-600 rounded-lg" style={{width: pitWidth}}/>
                     </div>
-                    <ToolTipRatings message={"Tier Average: " + String(tierPlayerAverages.average.pit)} pos={((tierPlayerAverages.average.pit/2)*100).toString().concat("%")}/>
+                    <ToolTip message={"Tier Average: " + String(tierPlayerAverages.average.pit)} pos={((tierPlayerAverages.average.pit/2)*100).toString().concat("%")} type="rating"/>
                 </div>
                 {/* Consistency Bar */}
                 <div className="relative">
@@ -108,7 +109,7 @@ export function PlayerRatings({ player }: Props) {
                     <div className="h-1 bg-midnight2 rounded-lg">
                         <div className="h-1 bg-gradient-to-l from-blue-500 to-blue-900 via-blue-600 rounded-lg" style={{width: concyWidth.toString().concat("%")}}/>
                     </div>
-                    <ToolTipRatings message={"Tier Average: " + tierAvgConcy} pos={String((1 - (tierPlayerAverages.average.ratingConsistency/tierPlayerAverages.average.rating))*100).concat("%")}/>
+                    <ToolTip message={"Tier Average: " + tierAvgConcy} pos={String((1 - (tierPlayerAverages.average.ratingConsistency/tierPlayerAverages.average.rating))*100).concat("%")} type="rating"/>
                 </div>
                 {/* Warning Not Enough Data */}
                 {player.GP<3 &&
