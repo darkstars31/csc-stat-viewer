@@ -2,13 +2,13 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import {
     PlayerMappings,
-    TotalPlayerAverages,
+    getTotalPlayerAverages,
     teamNameTranslator,
-    //getPlayerTeammates,
     getPlayerRatingIndex,
     //getPlayersInTierOrderedByRating,
-    getTop10PlayersInTier3GP,
 } from "../common/utils/player-utils";
+import { GridContainer, GridStat } from "./player/grid-container";
+import { Stat } from "./player/stat";
 import { Link, useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
@@ -17,39 +17,10 @@ import { PlayerStats } from "../models";
 import { PlayerNavigator } from "./player/player-navigator";
 //import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
 import { PlayerRatings } from "./player/playerRatings";
-import {tiertopincategory} from "../svgs";
-
-function Stat( { title, value, children }: { title?:string, value?: string|number, children?: React.ReactNode | React.ReactNode[] } ) {
-    if(!title && !value && !children ){
-		return null;
-	}
-	return (
-        <div className="bg-midnight2 mb-2 flex flex-col rounded-lg border border-gray-100 p-4 dark:border-gray-800">
-          { title && <dt className="order-last text-s font-medium text-gray-500 dark:text-gray-400">
-            {title}
-          </dt> }
-          { value && <dd className="text-l font-extrabold text-blue-600 md:text-2xl">
-            {value}
-          </dd> }
-          <div> {children} </div>
-        </div>
-    );
-}
-
-function GridStat( { name, value, rowIndex }: { name: string, value: string | number | React.ReactNode, rowIndex: number }){
-    return (
-        <div className={`grid grid-cols-2 ${ rowIndex % 2 ? "bg-midnight2" : ""}`}>
-			<div className={`text-left pl-2`}>
-				{name}
-			</div>
-			<div className={`text-right pr-2`}>
-				<strong>{value}</strong>
-			</div>
-        </div>
-    );
-}
-
-const GridContainer = ( { children }: { children: React.ReactNode | React.ReactNode[]} ) => <div className="grid grid-cols-2 gap-2 p-2 m-2">{children}</div>;
+import { tiertopincategory } from "../svgs";
+import { awardProperties, propertiesCurrentPlayerIsInTop10For, propertiesCurrentPlayerIsNumberOneFor } from "../common/utils/awards-utils";
+import { nth } from "../common/utils/string-utils";
+import { getTeammates } from "../common/utils/franchise-utils";
 
 
 export function Player() {
@@ -81,8 +52,7 @@ export function Player() {
 		</Container>
 	}
 
-    const tierPlayerAverages = TotalPlayerAverages( playerStats, { tier: currentPlayerStats?.Tier} );
-    //const playerTeammates = getPlayerTeammates( currentPlayerStats!, playerStats);
+    const tierPlayerAverages = getTotalPlayerAverages( playerStats, { tier: currentPlayerStats?.Tier} );
     //const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( currentPlayerStats!, playerStats );
     const playerRatingIndex = getPlayerRatingIndex( currentPlayerStats!, playerStats );
 
@@ -110,88 +80,10 @@ export function Player() {
     } = currentPlayerStats!;
 
     const teamAndFranchise = currentPlayer?.team?.franchise ? `${currentPlayer?.team?.franchise.name} (${currentPlayer?.team?.franchise.prefix}) > ${currentPlayer?.team?.name}` : teamNameTranslator(currentPlayer);
-    const franchise = franchises.find( f => f.name === currentPlayer?.team?.franchise.name);
-    const team = franchise?.teams.find( t => t.name === currentPlayer?.team?.name);
-    const teamMates = players.filter( p => { 
-        return p.team?.name === currentPlayer?.team?.name && p.tier.name === team?.tier.name && p.name !== currentPlayer?.name;
-    });
+    const teammates = getTeammates( currentPlayer, players, franchises);
     
-    const nth = (n: string | number) => {
-        return ["st", "nd", "rd"][((Number(n) + 90) % 100 - 10) % 10 - 1] || "th";
-    };
-
-    /* AWARDS logic */
-    const isCurrentPlayerNumberOneForProperty = (
-        currentPlayer: PlayerStats,
-        allPlayers: PlayerStats[],
-        property: keyof PlayerStats
-    ): boolean => {
-        if (currentPlayer[property] === 0) {
-            return false;
-        }
-        const top10Players = getTop10PlayersInTier3GP(currentPlayer, allPlayers, property);
-        const numberOnePlayer = top10Players[0];
-        return numberOnePlayer && numberOnePlayer.Name === currentPlayer.Name;
-    };
-
-    const isCurrentPlayerInTop10ForProperty = (
-        currentPlayer: PlayerStats,
-        allPlayers: PlayerStats[],
-        property: keyof PlayerStats
-    ): boolean => {
-        if (currentPlayer[property] === 0) {
-            return false;
-        }
-        const top10Players = getTop10PlayersInTier3GP(currentPlayer, allPlayers, property);
-        return top10Players.some(p => p.Name === currentPlayer.Name);
-    };
-    const propertiesCurrentPlayerIsInTop10For = (
-        currentPlayer: PlayerStats,
-        allPlayers: PlayerStats[],
-        properties: (keyof PlayerStats)[]
-    ): (keyof PlayerStats)[] => {
-        return properties.filter((property) => isCurrentPlayerInTop10ForProperty(currentPlayer, allPlayers, property));
-    };
-
-    const propertiesCurrentPlayerIsNumberOneFor = (
-        currentPlayer: PlayerStats,
-        allPlayers: PlayerStats[],
-        properties: (keyof PlayerStats)[]
-    ): (keyof PlayerStats)[] => {
-        return properties.filter((property) => isCurrentPlayerNumberOneForProperty(currentPlayer, allPlayers, property));
-    };
-    const properties = [
-        'HS',
-        'EF',
-        'Kills',
-        '2k',
-        '3k',
-        '4k',
-        '5k',
-        '1v1',
-        '1v2',
-        '1v3',
-        '1v4',
-        '1v5',
-        'multi/R',
-        'Impact',
-        'Assists',
-        'ADR',
-        'F_Assists',
-        'trades/R',
-        'X/nade',
-        'SuppR',
-        'SuppXr',
-        'KAST',
-        'UD',
-        'Util',
-        'clutch/R',
-        'entries/R',
-        'IWR',
-        'AWP/ctr',
-        'wlp/L'] as (keyof PlayerStats)[]; // add properties here
-    const numberOneProperties = propertiesCurrentPlayerIsNumberOneFor(currentPlayerStats, playerStats, properties);
-    const top10Properties = propertiesCurrentPlayerIsInTop10For(currentPlayerStats, playerStats, properties);
+    const numberOneProperties = propertiesCurrentPlayerIsNumberOneFor(currentPlayerStats, playerStats, awardProperties);
+    const top10Properties = propertiesCurrentPlayerIsInTop10For(currentPlayerStats, playerStats, awardProperties);
 
     return (
         <>
@@ -221,7 +113,7 @@ export function Player() {
                                         This player also has stats in {linksToDifferentTier}
                                         </div>
                                     </li>
-}
+                                    }
                                 </ul>
                             </div>
                     </div>
@@ -275,17 +167,17 @@ export function Player() {
 				</div>
             </Stat>
 
-            { teamMates.length > 0 && false && // TODO: fix weird bug in logic that shows same teammate twice
+            { teammates.length > 0 && false && // TODO: fix weird bug in logic that shows same teammate twice
             <div>
                 Teammates - {teamAndFranchise}
                 <div className="grid grid-cols-1 md:grid-cols-5">
-                { teamMates.map( teamMate => 
-                        <Link key={`closeby-${teamMate.name}`} to={`/players/${teamMate.tier.name}/${teamMate.name}`}>
+                { teammates.map( teammate => 
+                        <Link key={`closeby-${teammate.name}`} to={`/players/${teammate.tier.name}/${teammate.name}`}>
                         <div
                             style={{userSelect:'none', lineHeight: '95%' }}
                             className="my-[5px] mr-4 flex h-[32px] cursor-pointer items-center rounded-[4px] bg-[#eceff1] px-[12px] py-0 text-[11px] font-normal normal-case leading-loose text-[#4f4f4f] shadow-none hover:!shadow-none active:bg-[#cacfd1] dark:bg-midnight2 dark:text-neutral-200">
-                            <img className="my-0 -ml-[12px] mr-[8px] h-[inherit] w-[inherit] rounded-[4px]" src={teamMate?.avatarUrl} alt=""/>
-                            {teamMate.name}
+                            <img className="my-0 -ml-[12px] mr-[8px] h-[inherit] w-[inherit] rounded-[4px]" src={teammate?.avatarUrl} alt=""/>
+                            {teammate.name}
                         </div>
                     </Link>
                     )

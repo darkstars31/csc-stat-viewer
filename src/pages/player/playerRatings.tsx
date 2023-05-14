@@ -1,7 +1,7 @@
 import * as React from "react";
 import { PlayerStats } from "../../models";
 import { useDataContext } from "../../DataContext";
-import { TotalPlayerAverages } from "../../common/utils/player-utils";
+import { getTotalPlayerAverages } from "../../common/utils/player-utils";
 import {
     Ripple,
     initTE,
@@ -47,7 +47,7 @@ function inRange(base: number, compare: number, range: number){ //Checks if one 
 export function PlayerRatings({ player }: Props) {
     const { players = [] } = useDataContext();
     const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
-    const tierPlayerAverages = TotalPlayerAverages( playerStats, { tier: player?.Tier} );
+    const tierPlayerAverages = getTotalPlayerAverages( playerStats, { tier: player?.Tier} );
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-te-toggle="tooltip"]'));
     const peakWidth = ((player.Peak/2)*100).toFixed(0).toString().concat("%");
     const pitWidth = ((player.Pit/2)*100).toFixed(0).toString().concat("%");
