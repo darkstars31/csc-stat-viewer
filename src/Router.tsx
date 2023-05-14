@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Router as Wouter, Route, Switch } from 'wouter';
 import { Container } from './common/components/container';
-import { Dashboard } from './pages/dashboard';
+import { Home } from './pages/home';
 import { Teams } from './pages/teams';
 import { Players } from './pages/players';
 import { Player } from './pages/player';
@@ -13,7 +13,7 @@ import { useDataContext } from './DataContext';
 import { ProgressBar } from './common/components/progress';
   
 const routes = [
-  { path: `/`, component: () => <Dashboard /> },
+  { path: `/`, component: () => <Home /> },
   { path: `/teams`, component: () => <Teams /> },
   { path: `/players`, component: () => <Players /> },
   { path: `/players/:tier/:id`, component: () => <Player /> },
