@@ -15,34 +15,9 @@ export function LeaderBoards() {
     const { players = [], isLoading } = useDataContext();
     
     const [ filterBy, setFilterBy ] = React.useState<SingleValue<{label: string;value: string;}>>();
-    const [ tierCounts, setTierCounts ] = React.useState<Record<string,number>>({});
 
     const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats ).filter( s => s!.GP >= 3) as PlayerStats[];
-
-    const sumTierCount = Object.values(tierCounts ?? {}).reduce( (sum, num) => sum + num, 0);
-
-    const tierOptionsList = React.useMemo( () => [
-        { label: `All (${sumTierCount})`, value: "All"}, 
-        { label: `Premier (${tierCounts.premier})`, value: "Premier", isDisabled: !tierCounts.premier },
-        { label: `Elite (${tierCounts.elite})`, value: "Elite", isDisabled: !tierCounts.elite },
-        { label: `Challenger (${tierCounts.challenger})`, value: "Challenger", isDisabled: !tierCounts.challenger },
-        { label: `Contender (${tierCounts.contender})`, value: "Contender", isDisabled: !tierCounts.contender },
-        { label: `Prospect (${tierCounts.prospect})`, value: "Prospect", isDisabled: !tierCounts.prospect },
-        { label: `New Tier (${tierCounts.newTier})`, value: "NewTier", isDisabled: !tierCounts.newTier },
-    ], [ tierCounts.premier, tierCounts.elite,tierCounts.challenger,tierCounts.contender, tierCounts.prospect, tierCounts.newTier, sumTierCount]);
     
-    React.useEffect( () => {
-        const tierCounts = {
-            premier: playerStats.filter(f => f.Tier.toLowerCase() === "premier").length,
-            elite: playerStats.filter(f => f.Tier.toLowerCase() === "elite").length,
-            challenger: playerStats.filter(f => f.Tier.toLowerCase() === "challenger").length,
-            contender: playerStats.filter(f => f.Tier.toLowerCase() === "contender").length,
-            prospect: playerStats.filter(f => f.Tier.toLowerCase() === "prospect").length,
-            newTier: playerStats.filter(f => f.Tier.toLowerCase() === "newtier").length
-        };
-        setTierCounts( tierCounts );
-        setFilterBy(tierOptionsList[0]);
-    }, [ playerStats, tierOptionsList ]);
     const playerData = filterBy?.value.includes("All") ? playerStats : playerStats.filter( f => f.Tier.toLowerCase() === filterBy?.value.toLowerCase());
       
     const gamesPlayed = _sort(playerData, "GP", 5).map( p => buildTableRow(p, "Games Played", "GP"));
@@ -77,6 +52,26 @@ export function LeaderBoards() {
         singleValue: () => "text-slate-200",
         //valueContainer: () => "bg-slate-700",
     };
+
+    const tierCounts = {
+        premier: playerStats.filter(f => f.Tier.toLowerCase() === "premier").length,
+        elite: playerStats.filter(f => f.Tier.toLowerCase() === "elite").length,
+        challenger: playerStats.filter(f => f.Tier.toLowerCase() === "challenger").length,
+        contender: playerStats.filter(f => f.Tier.toLowerCase() === "contender").length,
+        prospect: playerStats.filter(f => f.Tier.toLowerCase() === "prospect").length,
+        newTier: playerStats.filter(f => f.Tier.toLowerCase() === "newtier").length
+    };
+    const sumTierCount = Object.values(tierCounts).reduce( (sum, num) => sum + num, 0);
+    const tierOptionsList = [
+        { label: `All (${sumTierCount})`, value: "All"}, 
+        { label: `Premier (${tierCounts.premier})`, value: "Premier", isDisabled: !tierCounts.premier },
+        { label: `Elite (${tierCounts.elite})`, value: "Elite", isDisabled: !tierCounts.elite },
+        { label: `Challenger (${tierCounts.challenger})`, value: "Challenger", isDisabled: !tierCounts.challenger },
+        { label: `Contender (${tierCounts.contender})`, value: "Contender", isDisabled: !tierCounts.contender },
+        { label: `Prospect (${tierCounts.prospect})`, value: "Prospect", isDisabled: !tierCounts.prospect },
+        { label: `New Tier (${tierCounts.newTier})`, value: "NewTier", isDisabled: !tierCounts.newTier },
+    ];
+
 
     if( isLoading ) {
         return <Container><Loading /></Container>;
