@@ -3,7 +3,19 @@ import { Container } from "../common/components/container";
 import { useDataContext } from "../DataContext";
 import { Link, useRoute } from "wouter";
 import { Loading } from "../common/components/loading";
+import { Player as FranchisePlayer, Team } from "../models/franchise-types";
+import { SiFaceit } from "react-icons/si";
 
+function PlayerRow( { franchisePlayer, team }: {franchisePlayer: FranchisePlayer, team: Team}) {
+    const { players = [] } = useDataContext();
+    const player = players.find( p => p.name === franchisePlayer.name);
+    return <div className=" m-1 hover:cursor-pointer">
+            <Link key={`${team.tier.name}-${franchisePlayer.name}`} to={`/players/${team.tier.name}/${franchisePlayer.name}`}>
+                {franchisePlayer.name} { false && <span className="text-xs text-gray-500">- {franchisePlayer.mmr} ({((franchisePlayer?.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span> }
+                </Link>
+                <div className="float-right"><a href={`https://www.faceit.com/en/players/${player?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div>
+            </div>;
+}
 
 export function Franchise(){
     const { franchises = [], loading } = useDataContext();
@@ -35,11 +47,7 @@ export function Franchise(){
                                     </div>
                                     <div className="mx-4 px-2">
                                     { team.players.map( player => 
-                                        <Link key={`${team.tier.name}-${player.name}`} to={`/players/${team.tier.name}/${player.name}`}>                                          
-                                            <div className="m-1 hover:cursor-pointer">
-                                                {player.name} { false && <span className="text-xs text-gray-500">- {player.mmr} ({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span> }
-                                            </div>
-                                        </Link>
+                                       <PlayerRow franchisePlayer={player} team={team} />
                                         )}
                                     </div>
                                 </div>
