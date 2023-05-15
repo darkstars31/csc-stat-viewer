@@ -17,7 +17,7 @@ export function Header() {
 
   const navigation = [
     { name: 'Home', href: '/', current: location.endsWith("/") },
-    { name: 'Teams', href: '/teams', current: location.includes("teams") },
+    { name: 'Franchises', href: '/franchises', current: location.includes("franchises") },
     { name: 'Players', href: '/players', current: location.includes("players") },
     { name: 'Team Builder', href: '/team-builder', current: location.includes("team-builder") },
     { name: 'Leaderboards', href: '/leaderboards', current: location.includes("leaderboards") },
