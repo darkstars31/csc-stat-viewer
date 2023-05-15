@@ -116,7 +116,7 @@ export function Player() {
                         </ul>
                     </div>
                 </div>
-                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                     <div className="space-y-2">
                         <div className="p-[2.5%] space-y-4">
                             <div className="space-y-4">
