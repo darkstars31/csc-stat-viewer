@@ -112,6 +112,7 @@ export const getGridData = (currentPlayerStats: PlayerStats) => {
             {name: PlayerMappings["Blind/EF"], value: `${enemyBlindTime}s`, rowIndex: 0},
             {name: PlayerMappings["EF/F"], value: `${enemiesFlashedPerFlash}`, rowIndex: 1},
             {name: PlayerMappings["F_Assists"], value: `${F_Assists}`, rowIndex: 0},
+            {name: PlayerMappings["EF"], value: `${EF}`, rowIndex: 1}
         ],
         [
             {name: PlayerMappings["SuppR"], value: `${SuppR}`, rowIndex: 0},

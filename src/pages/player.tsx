@@ -193,7 +193,7 @@ export function Player() {
                         <React.Fragment key={`pair-${i}`}>
                             <GridContainer>
                                 {pair.map((section, sectionIndex) => (
-                                    <div key={`section-${i * 2 + sectionIndex}`} className="grid grid-cols-1 gap-2 p-2">
+                                    <div key={`section-${i * 2 + sectionIndex}`} className="grid grid-cols-1 gap-2 p-2 h-fit">
                                         {section.map(({ name, value, rowIndex }, statIndex) => (
                                             <GridStat
                                                 key={`stat-${i * 2 + sectionIndex}-${statIndex}`}
