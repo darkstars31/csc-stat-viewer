@@ -20,7 +20,7 @@ export function PlayerRatings({ player }: Props) {
     const tierPlayerAverages = getTotalPlayerAverages( playerStats, { tier: player?.Tier} );
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-te-toggle="tooltip"]'));
     const concyWidth = ((1 - (player.CONCY/player.Rating))*100).toFixed(0);
-    const tierAvgConcy = String(((1 - (tierPlayerAverages.average.ratingConsistency/tierPlayerAverages.average.rating))*100).toFixed(0));
+    const tierAvgConcy = String(((1 - (tierPlayerAverages.average["CONCY"]/tierPlayerAverages.average["Rating"]))*100).toFixed(0));
     const gamesPlayedCaption = String('Data from last ' + player.GP).concat((player.GP>1)?' matches':' match');
     tooltipTriggerList.map((tooltipTriggerEl) => new Tooltip(tooltipTriggerEl));
     return (
@@ -36,7 +36,7 @@ export function PlayerRatings({ player }: Props) {
                 stat1={player.Form}
                 stat2={player.Rating}
                 range={0.05}
-                average={tierPlayerAverages.average.rating}
+                average={tierPlayerAverages.average["Rating"]}
                 color="violet"
             />
 
@@ -44,7 +44,7 @@ export function PlayerRatings({ player }: Props) {
                 label="Peak"
                 stat1={player.Peak}
                 stat2={player.Peak}
-                average={tierPlayerAverages.average.peak}
+                average={tierPlayerAverages.average["Peak"]}
                 color="green"
             />
 
@@ -52,7 +52,7 @@ export function PlayerRatings({ player }: Props) {
                 label="Pit"
                 stat1={player.Pit}
                 stat2={player.Pit}
-                average={tierPlayerAverages.average.pit}
+                average={tierPlayerAverages.average["Pit"]}
                 color="yellow"
             />
 
@@ -72,7 +72,7 @@ export function PlayerRatings({ player }: Props) {
                 <ToolTip
                     message={`Tier Average: ${tierAvgConcy}`}
                     pos={String(
-                        (1 - tierPlayerAverages.average.ratingConsistency / tierPlayerAverages.average.rating) * 100
+                        (1 - tierPlayerAverages.average["CONCY"] / tierPlayerAverages.average["Rating"]) * 100
                     ).concat("%")}
                     type="rating"
                 />

@@ -71,25 +71,6 @@ export const PlayerMappings: Record<string,string> = {
 
 export const tiers = ["Premier", "EliPrem", "Elite", "Challenger", "Contender", "Prospect", "New Tier"];
 
-export const tierColorClassNames = {
-    "Premier": "purple",
-    "EliPrem": "purple",
-    "Elite": "blue",
-    "Challenger": "green",
-    "Contender": "slate",
-    "Prospect": "orange",
-    "New Tier": "red"
-}
-
-export const roleColors = {
-	"AWPER": "blue",
-	"ENTRY": "orange",
-	"FRAGGER": "red",
-	"SUPPORT": "green",
-	"LURKER": "purple",
-	"RIFLER": "black",
-}
-
 export const teamNameTranslator = ( player?: Player ) => {
     const name = player?.team?.name ?? player?.type ?? player?.stats?.Team ?? "";
     switch( name?.toUpperCase() ){
@@ -130,65 +111,20 @@ export const getPlayerTeammates = ( player: PlayerStats, allPlayers: PlayerStats
 
 export const getTotalPlayerAverages = ( combinePlayerData: PlayerStats[], options?: Record<string,unknown> ) => {
     const players = options?.tier ? combinePlayerData.filter( p => p.Tier === options?.tier) : combinePlayerData;
+    const standardDeviation: Record<string, number> = {};
+    const average: Record<string, number> = {};
+    const lowest: Record<string, any> = {};
+    const highest: Record<string, any> = {};
 
-    const standardDeviation = {
-        rating: calculateStandardDeviation(players, "Rating"),
-        ratingConsistency: calculateStandardDeviation(players, "CONCY"),
-        headShotPercentage: calculateStandardDeviation(players, "HS"),
-        damagePerRound: calculateStandardDeviation(players, "ADR"),
-        gamesPlayed: calculateStandardDeviation(players, "GP"),
-        roundsPlayed: calculateStandardDeviation(players, "Rounds"),
-        utilThrownPerMatch: calculateStandardDeviation(players, "Util"),
-        timeTilDeath: calculateStandardDeviation(players, "ATD"),
-        impactOnWonRounds: calculateStandardDeviation(players, "IWR"),
-        nadeDamagePerNade: calculateStandardDeviation(players, "X/nade"),
-        enemiesFlashedPerFlash: calculateStandardDeviation(players, "EF/F"),
-    };
-
-    const average = {
-        form: calculateAverage(players, "Form"),
-        peak: calculateAverage(players, "Peak"),
-        pit: calculateAverage(players, "Pit"),
-        rating: calculateAverage(players, "Rating"),
-        ratingConsistency: calculateAverage(players, "CONCY"),
-        headShotPercentage: calculateAverage(players, "HS"),
-        damagePerRound: calculateAverage(players, "ADR"),
-        gamesPlayed: calculateAverage(players, "GP"),
-        roundsPlayed: calculateAverage(players, "Rounds"),
-        utilThrownPerMatch: calculateAverage(players, "Util"),
-        timeTilDeath: calculateAverage(players, "ATD"),
-        impactOnWonRounds: calculateAverage(players, "IWR"),
-        nadeDamagePerNade: calculateAverage(players, "X/nade"),
-        enemiesFlashedPerFlash: calculateAverage(players, "EF/F"),
-    };
-
-    const lowest = {
-        rating: calculateLowest(players, "Rating"),
-        ratingConsistency: calculateLowest(players, "CONCY"),
-        headShotPercentage: calculateLowest(players, "HS"),
-        damagePerRound: calculateLowest(players, "ADR"),
-        gamesPlayed: calculateLowest(players, "GP"),
-        roundsPlayed: calculateLowest(players, "Rounds"),
-        utilThrownPerMatch: calculateLowest(players, "Util"),
-        timeTilDeath: calculateLowest(players, "ATD"),
-        impactOnWonRounds: calculateLowest(players, "IWR"),
-        nadeDamagePerNade: calculateLowest(players, "X/nade"),
-        enemiesFlashedPerFlash: calculateLowest(players, "EF/F"),
-    };
-
-    const highest = {
-        rating: calculateHighest(players, "Rating"),
-        ratingConsistency: calculateHighest(players, "CONCY"),
-        headShotPercentage: calculateHighest(players, "HS"),
-        damagePerRound: calculateHighest(players, "ADR"),
-        gamesPlayed: calculateHighest(players, "GP"),
-        roundsPlayed: calculateHighest(players, "Rounds"),
-        utilThrownPerMatch: calculateHighest(players, "Util"),
-        timeTilDeath: calculateHighest(players, "ATD"),
-        impactOnWonRounds: calculateHighest(players, "IWR"),
-        nadeDamagePerNade: calculateHighest(players, "X/nade"),
-        enemiesFlashedPerFlash: calculateHighest(players, "EF/F"),
-    };
+    for (const key in PlayerMappings) {
+        if (PlayerMappings.hasOwnProperty(key)) {
+            const statsKey = key as keyof PlayerStats;
+            standardDeviation[key] = calculateStandardDeviation(players, statsKey);
+            average[key] = calculateAverage(players, statsKey);
+            lowest[key] = calculateMinMax(players, statsKey, 'min');
+            highest[key] = calculateMinMax(players, statsKey, 'max');
+        }
+    }
 
     return {
         standardDeviation,
@@ -207,14 +143,8 @@ function calculateAverage(players: PlayerStats[], prop: string){
     return Number((players.reduce(( cumulative, player ) => cumulative + Number(player[prop as keyof PlayerStats]), 0 ) / players.length).toFixed(2));
 }
 
-function calculateHighest(players: PlayerStats[], prop: keyof PlayerStats){
-    const sortedPlayers = _sort(players, prop).at(0);
-    return sortedPlayers![prop as keyof PlayerStats];
+function calculateMinMax(players: PlayerStats[], prop: keyof PlayerStats, type: 'min' | 'max') {
+    const sortedPlayers = _sort(players, prop);
+    return type === 'max' ? sortedPlayers[0][prop] : sortedPlayers.reverse()[0][prop];
 }
-
-function calculateLowest(players: PlayerStats[], prop: keyof PlayerStats){
-    const sortedPlayers = _sort(players, prop).reverse().at(0);
-    return sortedPlayers![prop as keyof PlayerStats];
-}
-
 
