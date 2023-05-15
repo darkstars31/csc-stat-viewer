@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Router as Wouter, Route, Switch } from 'wouter';
 import { Container } from './common/components/container';
 import { Home } from './pages/home';
-import { Teams } from './pages/teams';
+import { Franchises } from './pages/franchises';
 import { Players } from './pages/players';
 import { Player } from './pages/player';
 import { LeaderBoards } from './pages/leaderboards';
@@ -11,10 +11,14 @@ import { TeamBuilder } from './pages/teamBuilder';
 import { Playground } from './pages/playground';
 import { useDataContext } from './DataContext';
 import { ProgressBar } from './common/components/progress';
+import { Team } from './pages/team';
+import { Franchise } from './pages/franchise';
   
 const routes = [
   { path: `/`, component: () => <Home /> },
-  { path: `/teams`, component: () => <Teams /> },
+  { path: `/franchises`, component: () => <Franchises /> },
+  { path: `/franchises/:franchise`, component: () => <Franchise /> },
+  { path: `/franchises/:franchise/:team`, component: () => <Team />},
   { path: `/players`, component: () => <Players /> },
   { path: `/players/:tier/:id`, component: () => <Player /> },
   { path: `/team-builder`, component: () => <TeamBuilder /> },
