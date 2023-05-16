@@ -7,7 +7,6 @@ import {
     initTE,
     Tooltip,
 } from "tw-elements";
-import { ToolTip } from "../../common/utils/tooltip-utils";
 import {RatingBar} from "./rating-bar";
 initTE({ Ripple });
 
@@ -38,6 +37,7 @@ export function PlayerRatings({ player }: Props) {
                 range={0.05}
                 average={tierPlayerAverages.average["Rating"]}
                 color="violet"
+                type="default"
             />
 
             <RatingBar
@@ -46,6 +46,7 @@ export function PlayerRatings({ player }: Props) {
                 stat2={player.Peak}
                 average={tierPlayerAverages.average["Peak"]}
                 color="green"
+                type="default"
             />
 
             <RatingBar
@@ -54,37 +55,24 @@ export function PlayerRatings({ player }: Props) {
                 stat2={player.Pit}
                 average={tierPlayerAverages.average["Pit"]}
                 color="yellow"
+                type="default"
             />
-
-            <div className="relative">
-                Consistency
-                <ToolTip
-                    message="Are you consistent compared to your rating? This measures Standard Deviation by Percent of Rating Average as a scale from 0 - 100, the higher the better"
-                    type="explain"
-                />
-                <div className="float-right text-sm">{concyWidth}</div>
-                <div className="h-1 bg-midnight2 rounded-lg">
-                    <div
-                        className="h-1 bg-gradient-to-l from-blue-500 to-blue-900 via-blue-600 rounded-lg"
-                        style={{ width: concyWidth.toString().concat("%") }}
-                    />
-                </div>
-                <ToolTip
-                    message={`Tier Average: ${tierAvgConcy}`}
-                    pos={String(
-                        (1 - tierPlayerAverages.average["CONCY"] / tierPlayerAverages.average["Rating"]) * 100
-                    ).concat("%")}
-                    type="rating"
-                />
-                {/* Warning Not Enough Data */}
-                {player.GP<3 &&
-                    <div className="relative pt-[5%] text-center">
-                        <div className="text-yellow-500 inline-block text-[0.8rem] w-[90%] italic">
-                            Less than 3 matches played. Stats shown may not provide an accurate picture of player skill or consistency
-                        </div>
+            <RatingBar
+                label="Consistency"
+                stat1={Number(concyWidth)}
+                stat2={Number(concyWidth)}
+                average={Number(tierAvgConcy)}
+                color="blue"
+                type="concy"
+            />
+            {/* Warning Not Enough Data */}
+            {player.GP<3 &&
+                <div className="relative pt-[5%] text-center">
+                    <div className="text-yellow-500 inline-block text-[0.8rem] w-[90%] italic">
+                        Less than 3 matches played. Stats shown may not provide an accurate picture of player skill or consistency
                     </div>
-                }
-            </div>
+                </div>
+            }
             </div>
         </div>
     );
