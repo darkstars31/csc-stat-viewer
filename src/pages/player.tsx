@@ -57,7 +57,6 @@ export function Player() {
     //const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( currentPlayerStats!, playerStats );
     const playerRatingIndex = getPlayerRatingIndex( currentPlayerStats!, playerStats );
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { 
         Name, Tier, Team, Rating, Steam, ppR, GP,
         Kills, Assists, Deaths,
@@ -78,6 +77,7 @@ export function Player() {
 		"lurks/tR": lurksPerTsideRound, "wlp/L": lurkPointsEarned, "AWP/ctr": awpKillsCTside,
 		Rounds, "MIP/r": mvpRounds, "K/ctr": killsCTside,
         Xdiff, "awp/R": awpKillsPerRound,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ...playerRest 
     } = currentPlayerStats!;
 
