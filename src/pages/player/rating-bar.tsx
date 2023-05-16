@@ -68,7 +68,7 @@ export function RatingBar({
                 <div className="float-right text-sm">{stat1}</div>
                 <div className="h-1 bg-midnight2 rounded-lg">
                     <div
-                        className="h-1 bg-gradient-to-l from-blue-500 to-blue-900 via-blue-600 rounded-lg"
+                        className={`h-1 bg-gradient-to-l from-${color}-500 to-${color}-900 via-${color}-600 rounded-lg`}
                         style={{width: width}}
                     />
                 </div>

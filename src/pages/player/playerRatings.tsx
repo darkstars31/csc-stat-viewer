@@ -24,7 +24,7 @@ export function PlayerRatings({ player }: Props) {
     tooltipTriggerList.map((tooltipTriggerEl) => new Tooltip(tooltipTriggerEl));
     return (
         /* Games Played*/
-        <div className="m-4 w-full m-auto relative flex flex-col bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
+        <div className="w-full m-auto relative flex flex-col bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
             <div className="p-[5%] space-y-4">
                 <div className="relative text-neutral-700 text-sm text-left italic font-bold">
                     {gamesPlayedCaption}
