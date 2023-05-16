@@ -2,6 +2,8 @@ import {PlayerStats} from "../../models";
 import {PlayerMappings} from "../../common/utils/player-utils";
 
 export const getGridData = (currentPlayerStats: PlayerStats) => {
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {
         Name,
         Tier,
