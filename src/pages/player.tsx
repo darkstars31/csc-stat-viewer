@@ -7,6 +7,7 @@ import {
     getPlayerRatingIndex,
     //getPlayersInTierOrderedByRating,
 } from "../common/utils/player-utils";
+import {getGridData} from "./player/grid-data"
 import { GridContainer, GridStat } from "./player/grid-container";
 import { Stat } from "./player/stat";
 import { Link, useRoute } from "wouter";
@@ -93,30 +94,30 @@ export function Player() {
             <PlayerNavigator player={currentPlayerStats} playerIndex={playerRatingIndex} />
 
             <Stat>
-                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    <div className="p-[2.5%] space-y-4">
-                        <div className="flex space-x-4 pb-[2.5%]">
-                            <div className="object-contain">
-                                { currentPlayer?.avatarUrl && <img className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
-                                { !currentPlayer?.avatarUrl && <div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border"/>}
-                            </div>
-                            <div className="text-left">
-                                <div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
-                                    { Name ?? "n/a"}
-                                </div>
-                                <div className={"text-[1.1rem pb-5"}>
-                                    <i><b>{ppR.includes('-')?'RIFLER':ppR}</b>{' — '}{teamAndFranchise?.split("(").pop()?.replace(')', '').replace('>', '')}</i>
-                                </div>
-                                <ul className="text-[0.8rem]">
-                                    <li>{String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in {Tier}</li>
-                                    { statsInDifferentTier.length > 0 && <li> <div className="text-xs">
-                                        This player also has stats in {linksToDifferentTier}
-                                        </div>
-                                    </li>
-                                    }
-                                </ul>
-                            </div>
+                <div className="flex space-x-4 pb-2">
+                    <div className="object-contain">
+                        { currentPlayer?.avatarUrl && <img className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
+                        { !currentPlayer?.avatarUrl && <div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border"/>}
                     </div>
+                    <div className="text-left">
+                        <div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
+                            { Name ?? "n/a"}
+                        </div>
+                        <div className={"text-[1.1rem] pb-5"}>
+                            <i><b>{ppR.includes('-')?'RIFLER':ppR}</b>{' — '}{teamAndFranchise?.split("(").pop()?.replace(')', '').replace('>', '')}</i>
+                        </div>
+                        <ul className="text-[0.8rem]">
+                            <li>{String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in {Tier}</li>
+                            { statsInDifferentTier.length > 0 && <li> <div className="text-xs">
+                                This player also has stats in {linksToDifferentTier}
+                            </div>
+                            </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                    <div className="space-y-2">
                         <div className="p-[2.5%] space-y-4">
                             <div className="space-y-4">
                                 <div className="flex flex-wrap gap-y-4 gap-x-4">
@@ -160,11 +161,10 @@ export function Player() {
                     <div className="place-content-center">
                         <RoleRadar player={currentPlayerStats!}/>
                     </div>
-
-                </div>
 				<div className="text-xs mt-4">
-					Impact On Rounds Won {IWR} (tier average {tierPlayerAverages.average.impactOnWonRounds}) - { (((IWR/tierPlayerAverages.average.impactOnWonRounds)-1)*100).toFixed(2)}%
+					Impact On Rounds Won {IWR} (tier average {tierPlayerAverages.average["IWR"]}) - { (((IWR/tierPlayerAverages.average["IWR"])-1)*100).toFixed(2)}%
 				</div>
+                </div>
             </Stat>
 
             { teammates.length > 0 && false && // TODO: fix weird bug in logic that shows same teammate twice
@@ -184,89 +184,35 @@ export function Player() {
                 }
                 </div>
             </div> }
-
-            <GridContainer>
-                <div className="grid grid-cols-1 gap-2 p-2">
-					<GridStat name={"Kills  /  Assists  /  Deaths"} value={`${Kills} / ${Assists} / ${Deaths}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["HS"]} value={`${HS}%`} rowIndex={1}/>
-					<GridStat name="K/D Ratio" value={(Kills/Deaths).toFixed(2)} rowIndex={0}/>
-					<GridStat name={PlayerMappings["ADR"]} value={`${ADR}`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["KPA"]} value={`${KPA}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["KAST"]} value={`${(KAST*100).toFixed(2).replace(/[.,]00$/, "")}%`} rowIndex={1}/>
-				</div>
-				<div className="grid grid-cols-1 gap-2 p-2">
-					<GridStat name={PlayerMappings["K/R"]} value={`${avgKillsPerRound}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["SRate"]} value={`${(SRate*100).toFixed(0)}%`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["ATD"]} value={`${ATD}s`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["multi/R"]} value={`${multiKillRound}`} rowIndex={1}/>
-                    <GridStat name={PlayerMappings["clutch/R"]} value={`${clutchPerRound}`} rowIndex={0}/>
-					<GridStat name={"2k  /  3k  /  4k  /  Ace"} value={`${twoKills}  /  ${threeKills}  /  ${fourKills}  /  ${aces}`} rowIndex={1}/>
-				</div>
-            </GridContainer>
-			<hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
-			<GridContainer>
-                <div className="grid grid-cols-1 gap-2 p-2">
-					<GridStat name={PlayerMappings["ODR"]} value={`${(openDuelPercentage*100).toFixed(0)}%`} rowIndex={0}/>
-					<GridStat name={"Entry Frags T-side per Round"} value={`${TsidedEntryFragsPerRound}`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["TRatio"]} value={`${(TRatio*100).toFixed(0)}%`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["saves/R"]} value={`${savesPerRound}`} rowIndex={1}/>
-				</div>
-				<div className="grid grid-cols-1 gap-2 p-2">
-					<GridStat name={PlayerMappings["oda/R"]} value={`${openDuelsPerRound}`} rowIndex={0}/>
-					<GridStat name={"Average Opening Duel T-side"} value={`${avgRoundsOpenDuelOnTside}`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["trades/R"]} value={`${tradesPerRound}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["RWK"]} value={`${(RWK*100).toFixed(0)}%`} rowIndex={1}/>
-				</div>
-            </GridContainer>
-			<hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
-			<GridContainer>
-                <div className="grid grid-cols-1 gap-2 p-2">
-					<GridStat name={PlayerMappings["Util"]} value={`${utilThrownPerMatch}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["EF/F"]} value={`${enemiesFlashedPerFlash}`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["F_Assists"]} value={`${F_Assists}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["X/nade"]} value={`${nadeDmgPerFrag}`} rowIndex={1}/>
-				</div>
-				<div className="grid grid-cols-1 gap-2 p-2">
-					<GridStat name={PlayerMappings["EF"]} value={`${EF}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["Blind/EF"]} value={`${enemyBlindTime}s`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["UD"]} value={`${UD}`} rowIndex={0}/>
-					<GridStat name="" value="" rowIndex={0}/>
-				</div>
-            </GridContainer>
-			<hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
-			<GridContainer>
-                <div className="grid grid-cols-1 gap-2 p-2">
-					<GridStat name={PlayerMappings["SuppR"]} value={`${SuppR}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["lurks/tR"]} value={`${lurksPerTsideRound}`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["AWP/ctr"]} value={`${awpKillsCTside}`} rowIndex={0}/>
-				</div>
-				<div className="grid grid-cols-1 gap-2 p-2">
-					<GridStat name={PlayerMappings["SuppXr"]} value={`${SuppXr}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["wlp/L"]} value={`${lurkPointsEarned}`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["AWP/ctr"]} value={`${awpKillsCTside}`} rowIndex={0}/>
-				</div>
-            </GridContainer>
-			<hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
-			<GridContainer>
-                <div className="grid grid-cols-1 gap-2 p-2">
-					<GridStat name={PlayerMappings["Rounds"]} value={`${Rounds}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["ADP"]} value={`${ADP}`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["ctADP"]} value={`${ctADP}`} rowIndex={0}/>
-					<GridStat name={"1v1/2/3/4/5 Clutch Rounds"} value={`${clutch1v1} / ${clutch1v2} / ${clutch1v3} / ${clutch1v4} / ${clutch1v5}`} rowIndex={1}/>
-				</div>
-				<div className="grid grid-cols-1 gap-2 p-2">
-					<GridStat name={PlayerMappings["MIP/r"]} value={`${mvpRounds}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["K/ctr"]} value={`${killsCTside}`} rowIndex={1}/>
-					<GridStat name={PlayerMappings["tADP"]} value={`${tADP}`} rowIndex={0}/>
-					<GridStat name={PlayerMappings["Xdiff"]} value={`${Xdiff}`} rowIndex={1}/>
-				</div>
-            </GridContainer>
-            <dl className="grid grid-cols-1 gap-2 sm:grid-cols-4">
-                { Object.entries(playerRest ?? []).map( ( [key, value] ) => 
-                    <Stat key={`${key}${value}`} title={PlayerMappings[key]} value={ value! } />
-                )}
-            </dl>
-        </Container>
+            <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
+            <>
+            {/* Creating pairs of arrays from grid-data to display them side-by-side with a divider after unless there are no more arrays */}
+                {Array(Math.ceil(getGridData(currentPlayerStats).length / 2)).fill(0).map((_, i) => {
+                    const pair = getGridData(currentPlayerStats).slice(i * 2, (i + 1) * 2);
+                    return (
+                        <React.Fragment key={`pair-${i}`}>
+                            <GridContainer>
+                                {pair.map((section, sectionIndex) => (
+                                    <div key={`section-${i * 2 + sectionIndex}`} className="grid grid-cols-1 gap-2 p-2 h-fit">
+                                        {section.map(({ name, value, rowIndex }, statIndex) => (
+                                            <GridStat
+                                                key={`stat-${i * 2 + sectionIndex}-${statIndex}`}
+                                                name={name}
+                                                value={value}
+                                                rowIndex={rowIndex}
+                                            />
+                                        ))}
+                                    </div>
+                                ))}
+                            </GridContainer>
+                            {i < Math.ceil(getGridData(currentPlayerStats).length / 2) - 1 && (
+                                <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
+                            )}
+                        </React.Fragment>
+                    );
+                })}
+            </>
+            </Container>
         </>
     );
 }
