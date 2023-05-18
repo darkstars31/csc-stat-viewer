@@ -17,8 +17,6 @@ export function Players() {
     const [ viewTierOptions, setViewTierOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
     const [ viewPlayerTypeOptions, setViewPlayerTypeOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
 
-    console.info("Re-rendered");
-
     let sortedPlayerData = playersWithStats.sort( (a,b) => {
         const itemA = a.stats![orderBy?.value as keyof PlayerStats];
         const itemB = b.stats![orderBy?.value as keyof PlayerStats];
@@ -37,15 +35,11 @@ export function Players() {
 
     const playerCards = filteredPlayers?.map( (player: Player, index: number) => <PlayerCard key={`${player.stats?.Tier}-${player.name}`} player={player} index={index} />);
 
-    // TODO: Re-implement or Delete this
-    // const filteredPlayers = playersWithStats.filter( player =>
-    //     filters.every( f => {
-    //         let metaFilter = Object.entries(player.stats ?? []).map( ( [key,value] ) => `${key}:${value} ${PlayerMappings[key]}:${value}`).join(" ");
-    //             metaFilter = metaFilter.concat(" "+teamNameTranslator(player));
-    //         return metaFilter.toLowerCase().includes(f.toLowerCase());
-    //         }
-    //     ) 
-    // );
+    const addFilter = () => {
+        setSearchValue(""); 
+        const newFilters = [ ...filters, searchValue ].filter(Boolean);
+        setFilters( newFilters );
+    }
 
     const removeFilter = ( label: string ) => {
         const newFilters = filters;
@@ -64,11 +58,11 @@ export function Players() {
         { label: "Challenger", value: "Challenger"},
         { label: "Contender", value: "Contender"},
         { label: "Prospect", value: "Prospect"},
-        { label: "New Tier", value: "New Tier"},
+        { label: "Recruit", value: "NewTier"},
     ];
 
     const viewPlayerTypeList = [
-        //{ label: `Signed`, value: "Signed"},
+        { label: `Signed`, value: "SIGNED"},
         { label: `Free Agents`, value: "FREE_AGENT"},
         { label: `Draft Eligible`, value: "DRAFT_ELIGIBLE"},
         { label: `Perma FA`, value: "PERMANENT_FREE_AGENT"},
@@ -86,7 +80,6 @@ export function Players() {
         multiValueLabel: () => "text-slate-200",
         multiValueRemove: () => "text-slate-800 pl-1",
         singleValue: () => "text-slate-200",
-        //valueContainer: () => "bg-slate-700",
     };
 
     return (
@@ -112,7 +105,7 @@ export function Players() {
                 <button
                     type="submit"
                     className="basis-1/6 ml-4 inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
-                    onClick={() => { setSearchValue(""); setFilters( [ ...filters, searchValue ].filter(Boolean) ) } }
+                    onClick={addFilter}
                     >
                     +Filter
                 </button>
@@ -123,9 +116,6 @@ export function Players() {
                     )
                 }
             </div>
-            {/* <div className="grid grid-cols-3 mid:grid-cols-5 text-sm">
-            
-            </div> */}
         </div>
         <div className="flex flex-col mt-36 md:flex-row md:mt-0 h-12 justify-end">
             <div className="basis-1/3">

@@ -67,6 +67,7 @@ export const getGridData = (currentPlayerStats: PlayerStats) => {
         "K/ctr": killsCTside,
         Xdiff,
         "awp/R": awpKillsPerRound,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ...playerRest
     } = currentPlayerStats;
 
