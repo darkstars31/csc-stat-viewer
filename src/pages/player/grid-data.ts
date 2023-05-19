@@ -2,6 +2,7 @@ import {PlayerStats} from "../../models";
 import {PlayerMappings} from "../../common/utils/player-utils";
 
 export const getGridData = (currentPlayerStats: PlayerStats) => {
+
     const {
         Name,
         Tier,
