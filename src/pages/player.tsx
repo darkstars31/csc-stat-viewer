@@ -57,6 +57,14 @@ export function Player() {
     //const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( currentPlayerStats!, playerStats );
     const playerRatingIndex = getPlayerRatingIndex( currentPlayerStats!, playerStats );
 
+    const rankingsInAllTiers = statsInDifferentTier.map( s => {
+        const playerRatingIndexInThisTier = getPlayerRatingIndex(s, playerStats);
+        return {
+            tier: s.Tier,
+            ranking: playerRatingIndexInThisTier+1
+        };
+    });
+
     const { 
         Name, Tier, Team, Rating, Steam, ppR, GP,
         Kills, Assists, Deaths,
@@ -108,13 +116,17 @@ export function Player() {
                             <i><b>{ppR.includes('-')?'RIFLER':ppR}</b>{' — '}{teamAndFranchise?.split("(").pop()?.replace(')', '').replace('>', '')}</i>
                         </div>
                         <ul className="text-[0.8rem]">
-                            <li>{String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in {Tier}</li>
-                            { statsInDifferentTier.length > 0 && <li> <div className="text-xs">
-                                This player also has stats in {linksToDifferentTier}
-                            </div>
-                            </li>
-                            }
+                            <li>
+                                {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{Tier}</i></b>
+                                </li>
+                            { rankingsInAllTiers.map(({tier, ranking}) => (
+                                <li key={tier}>
+                                    {ranking}{nth(ranking)} Overall in {" "}
+                                    <Link className="text-blue-300 italic hover:text-blue-500" href={`/players/${tier}/${Name}`}>{tier}</Link>
+                                </li>
+                            )) }
                         </ul>
+
                     </div>
                 </div>
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
