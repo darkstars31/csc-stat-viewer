@@ -26,12 +26,9 @@ export function RatingBar({
   color,
   type,
 }: RatingBarProps) {
-  let width = (type === "default")
-    ? `${(stat1 / 2) * 100}%`
-    : `${stat1}%`;
-    if (stat1 > 2) {
-        width = "100%";
-    }
+  let width = type === "default" ? `${(stat1 / 2) * 100}%` : `${stat1}%`;
+  width = parseFloat(width) > 100 ? "100%" : width;
+
   const gradientClasses: GradientClasses = {
     red: "h-1 bg-gradient-to-l from-red-500 to-red-900 via-red-600 rounded-lg",
     violet: "h-1 bg-gradient-to-l from-violet-500 to-violet-900 via-violet-600 rounded-lg",
@@ -42,54 +39,44 @@ export function RatingBar({
 
   const gradientClass = gradientClasses[color] || "";
 
-  if (type === "default") {
-    return (
-      <div className="relative">
-        {label}
-        {!range ? (
-          <div className="float-right text-sm inline-block">{stat1}</div>
-        ) : null}
-        {message && (
-          <ToolTip
-            message={message}
-            stat1={stat1}
-            stat2={stat2}
-            range={range}
-            type="icon"
-          />
-        )}
-        <div className="h-1 bg-midnight2 rounded-lg">
-          <div className={`${gradientClass} rounded-lg`} style={{ width }} />
-        </div>
-        {average && (
-          <ToolTip
-            message={`Tier Average: ${average}`}
-            pos={`${(average / 2) * 100}%`}
-            type="rating"
-          />
-        )}
-      </div>
-    );
-  } else if (type === "concy") {
-    return (
-      <div className="relative">
-        {label}
-        <ToolTip
+  return (
+    <div className="relative">
+      {label}
+      {
+        type === "concy" && (
+            <ToolTip
           message="Are you consistent compared to your rating? This measures Standard Deviation by Percent of Rating Average as a scale from 0 - 100, the higher the better"
           type="explain"
         />
-        <div className="float-right text-sm">{stat1}</div>
-        <div className="h-1 bg-midnight2 rounded-lg">
-          <div className={`${gradientClass} rounded-lg`} style={{ width }} />
-        </div>
+        )
+      }
+      {!range && <div className="float-right text-sm inline-block">{stat1}</div>}
+      {message && (
+        <ToolTip
+          message={message}
+          stat1={stat1}
+          stat2={stat2}
+          range={range}
+          type="icon"
+        />
+      )}
+      <div className="h-1 bg-midnight2 rounded-lg">
+        <div className={`${gradientClass} rounded-lg`} style={{ width }} />
+      </div>
+      {average && (
+        <ToolTip
+          message={`Tier Average: ${average}`}
+          pos={`${(average / 2) * 100}%`}
+          type="rating"
+        />
+      )}
+      {type === "concy" && (
         <ToolTip
           message={`Tier Average: ${average?.toFixed(0)}`}
           pos={String(average).concat("%")}
           type="rating"
         />
-      </div>
-    );
-  } else {
-    return null;
-  }
+      )}
+    </div>
+  );
 }
