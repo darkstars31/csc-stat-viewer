@@ -11,7 +11,7 @@ export type Franchise = {
     prefix: string;
     logo:   Gm;
     gm:     Gm;
-    agm:    Gm | null;
+    agms:    Gm[] | null;
     teams:  Team[];
 }
 
@@ -28,6 +28,7 @@ export type Team = {
 export type Player = {
     name: string;
     mmr: number;
+    steam64Id: string;
 }
 
 export type Tier = {

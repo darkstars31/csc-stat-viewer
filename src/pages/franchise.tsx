@@ -8,13 +8,14 @@ import { SiFaceit } from "react-icons/si";
 
 function PlayerRow( { franchisePlayer, team }: {franchisePlayer: FranchisePlayer, team: Team}) {
     const { players = [] } = useDataContext();
-    const player = players.find( p => p.name === franchisePlayer.name);
+    const player = players.find( p => p.steam64Id === franchisePlayer.steam64Id);
+    console.info( player?.mmr );
     return <div className=" m-1 hover:cursor-pointer">
             <div className="grid grid-cols-4">
             <Link key={`${team.tier.name}-${franchisePlayer.name}`} to={`/players/${team.tier.name}/${franchisePlayer.name}`}>
-                {franchisePlayer.name} { false && <span className="text-xs text-gray-500">- {franchisePlayer.mmr} ({((franchisePlayer?.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span> }
+                {franchisePlayer.name} { false && <span className="text-xs text-gray-500">- {franchisePlayer.mmr} ({((franchisePlayer.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span> }
                 </Link>
-                <div>{player?.mmr} - {(((player?.mmr ?? 0)/team.tier.mmrCap)*100).toFixed(2)}%</div>
+                <div>{franchisePlayer.mmr} - {(((franchisePlayer.mmr ?? 0)/team.tier.mmrCap)*100).toFixed(2)}%</div>
                 <div>Contract Duration {player?.contractDuration}</div>
                 {/* <div></div> */}
                 <div><a href={`https://www.faceit.com/en/players/${player?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div>
@@ -42,7 +43,7 @@ export function Franchise(){
                     <div className="pt-2 grow">
                         <h2 className="text-5xl font-bold text-white grow text-center">{currentFranchise?.name} - <i>{currentFranchise?.prefix}</i></h2>
                         <div className="text-center p-4 text-xl">
-                            GM - {currentFranchise?.gm.name} | AGM - {currentFranchise?.agm?.name}
+                            GM - {currentFranchise?.gm.name} | AGM - {currentFranchise?.agms?.map( agm => agm.name).join(', ')}
                         </div>
                         <div className="grid grid-cols-1 gap-4 p-1 text-sm text-gray-300">
                             { currentFranchise?.teams.map( team =>      

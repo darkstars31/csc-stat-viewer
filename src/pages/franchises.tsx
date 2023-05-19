@@ -32,7 +32,7 @@ export function Franchises() {
                                 <div className="pt-2 grow">
                                     <h2 className="text-xl font-bold text-white grow text-center">{franchise.name} - <i>{franchise.prefix}</i></h2>
                                     <div className="text-center text-sm">
-                                        GM - {franchise.gm.name} | AGM - {franchise.agm?.name}
+                                        GM - {franchise.gm.name} | AGM - {franchise.agms?.map( agm => agm.name).join(', ')}
                                     </div>
                                     <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3 p-1 text-sm text-gray-300">
                                         { franchise.teams.map( team =>      
