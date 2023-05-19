@@ -26,10 +26,12 @@ export function RatingBar({
   color,
   type,
 }: RatingBarProps) {
-  const width = (type === "default")
+  let width = (type === "default")
     ? `${(stat1 / 2) * 100}%`
     : `${stat1}%`;
-
+    if (parseFloat(width) > 100) {
+        width = "100%";
+      }
   const gradientClasses: GradientClasses = {
     red: "h-1 bg-gradient-to-l from-red-500 to-red-900 via-red-600 rounded-lg",
     violet: "h-1 bg-gradient-to-l from-violet-500 to-violet-900 via-violet-600 rounded-lg",
