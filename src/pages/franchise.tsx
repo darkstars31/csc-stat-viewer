@@ -10,10 +10,15 @@ function PlayerRow( { franchisePlayer, team }: {franchisePlayer: FranchisePlayer
     const { players = [] } = useDataContext();
     const player = players.find( p => p.name === franchisePlayer.name);
     return <div className=" m-1 hover:cursor-pointer">
+            <div className="grid grid-cols-4">
             <Link key={`${team.tier.name}-${franchisePlayer.name}`} to={`/players/${team.tier.name}/${franchisePlayer.name}`}>
                 {franchisePlayer.name} { false && <span className="text-xs text-gray-500">- {franchisePlayer.mmr} ({((franchisePlayer?.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span> }
                 </Link>
-                <div className="float-right"><a href={`https://www.faceit.com/en/players/${player?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div>
+                <div>{player?.mmr} - {(((player?.mmr ?? 0)/team.tier.mmrCap)*100).toFixed(2)}%</div>
+                <div>Contract Duration {player?.contractDuration}</div>
+                {/* <div></div> */}
+                <div><a href={`https://www.faceit.com/en/players/${player?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div>
+                </div>
             </div>;
 }
 
@@ -50,9 +55,16 @@ export function Franchise(){
                                        <PlayerRow franchisePlayer={player} team={team} />
                                         )}
                                     </div>
+                                    <div className="grid grid-cols-4">
+                                        <div></div>
+                                        <div>{team.players.reduce((sum, next) => sum+next.mmr, 0)} / {team.tier.mmrCap} Tier Cap - {((team.players.reduce((sum, next) => sum+next.mmr, 0)/team.tier.mmrCap)*100).toFixed(2)}%</div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
                                 </div>
                                 )
                             }
+
                         </div>
                     </div>
                 </Container>
