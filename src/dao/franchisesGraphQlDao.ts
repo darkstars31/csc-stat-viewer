@@ -15,7 +15,7 @@ const fetchFranchisesGraph = async () => await fetch(`https://core.csconfederati
                         gm {
                             name
                         }
-                        [agms] {
+                        agms {
                             name
                         }
                         teams {
