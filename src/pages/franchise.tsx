@@ -5,20 +5,22 @@ import { Link, useRoute } from "wouter";
 import { Loading } from "../common/components/loading";
 import { Player as FranchisePlayer, Team } from "../models/franchise-types";
 import { SiFaceit } from "react-icons/si";
+import { RxDiscordLogo } from "react-icons/rx"
+
 
 function PlayerRow( { franchisePlayer, team }: {franchisePlayer: FranchisePlayer, team: Team}) {
     const { players = [] } = useDataContext();
     const player = players.find( p => p.steam64Id === franchisePlayer.steam64Id);
     console.info( player?.mmr );
     return <div className=" m-1 hover:cursor-pointer">
-            <div className="grid grid-cols-4">
+            <div className="grid grid-cols-5">
             <Link key={`${team.tier.name}-${franchisePlayer.name}`} to={`/players/${team.tier.name}/${franchisePlayer.name}`}>
                 {franchisePlayer.name} { false && <span className="text-xs text-gray-500">- {franchisePlayer.mmr} ({((franchisePlayer.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span> }
                 </Link>
                 <div>{franchisePlayer.mmr} - {(((franchisePlayer.mmr ?? 0)/team.tier.mmrCap)*100).toFixed(2)}%</div>
                 <div>Contract Duration {player?.contractDuration}</div>
-                {/* <div></div> */}
-                <div><a href={`https://www.faceit.com/en/players/${player?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div>
+                <div className="bg-blue-700 p-1 rounded w-6"><a href={`https://discordapp.com/users/${franchisePlayer.discordId}`} target="_blank" rel="noreferrer"><RxDiscordLogo /></a></div>
+                <div className="text-orange-500 bg-slate-900 p-1 rounded w-6"><a href={`https://www.faceit.com/en/players/${player?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div>
                 </div>
             </div>;
 }
