@@ -5,24 +5,50 @@ import { Link, useRoute } from "wouter";
 import { Loading } from "../common/components/loading";
 import { Player as FranchisePlayer, Team } from "../models/franchise-types";
 import { SiFaceit } from "react-icons/si";
-import { RxDiscordLogo } from "react-icons/rx"
+import { RxDiscordLogo } from "react-icons/rx";
+import { Player } from "../models/player";
 
+const COLUMNS = 5;
 
 function PlayerRow( { franchisePlayer, team }: {franchisePlayer: FranchisePlayer, team: Team}) {
     const { players = [] } = useDataContext();
     const player = players.find( p => p.steam64Id === franchisePlayer.steam64Id);
-    console.info( player?.mmr );
-    return <div className=" m-1 hover:cursor-pointer">
-            <div className="grid grid-cols-5">
-            <Link key={`${team.tier.name}-${franchisePlayer.name}`} to={`/players/${team.tier.name}/${franchisePlayer.name}`}>
-                {franchisePlayer.name} { false && <span className="text-xs text-gray-500">- {franchisePlayer.mmr} ({((franchisePlayer.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span> }
+    return (
+        <div className=" m-1 hover:cursor-pointer">
+            <div className={`grid grid-cols-${COLUMNS}`}>
+                <Link key={`${team.tier.name}-${franchisePlayer.name}`} to={`/players/${team.tier.name}/${franchisePlayer.name}`}>
+                    {franchisePlayer.name} { false && <span className="text-xs text-gray-500">- {franchisePlayer.mmr} ({((franchisePlayer.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span> }
                 </Link>
                 <div>{franchisePlayer.mmr} - {(((franchisePlayer.mmr ?? 0)/team.tier.mmrCap)*100).toFixed(2)}%</div>
-                <div>Contract Duration {player?.contractDuration}</div>
-                <div className="bg-blue-700 p-1 rounded w-6"><a href={`https://discordapp.com/users/${franchisePlayer.discordId}`} target="_blank" rel="noreferrer"><RxDiscordLogo /></a></div>
-                <div className="text-orange-500 bg-slate-900 p-1 rounded w-6"><a href={`https://www.faceit.com/en/players/${player?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div>
+                <div>{player?.stats?.Rating.toFixed(2) ?? "-"}</div>
+                <div>Contract {player?.contractDuration}</div>
+                <div>
+                    <div className="bg-blue-700 p-1 rounded w-6 float-left"><a href={`https://discordapp.com/users/${franchisePlayer.discordId}`} target="_blank" rel="noreferrer"><RxDiscordLogo /></a></div>
+                    <div className="text-orange-500 mx-2 bg-slate-900 p-1 rounded w-6 float-left"><a href={`https://www.faceit.com/en/players/${player?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div>
                 </div>
-            </div>;
+            </div>
+        </div> );
+}
+
+function TeamFooterTabulation( { team }: { team: Team }) {
+    const { players = [] } = useDataContext();
+    const mmrTeamTotal = team.players.reduce((sum, next) => sum+next.mmr, 0);
+    const tierMmrCap = team.tier.mmrCap;
+    const playersOnTeam = team.players.reduce( (accumlator: Player[], player) => {
+        const p = players.find( p => player.name === p.name && p.tier.name === team.tier.name && p.stats?.Tier === team.tier.name && p.stats);
+        if( p ) {
+            accumlator.push( p );
+        }
+        return accumlator;
+    }, [] );
+
+    return (
+        <div className={`grid grid-cols-${COLUMNS} text-xs`}>
+            <div></div>
+            <div>{mmrTeamTotal}/{tierMmrCap} Cap - {((mmrTeamTotal/tierMmrCap)*100).toFixed(0)}%</div>
+            {playersOnTeam.length > 0 && <div>{(playersOnTeam.reduce((sum, next) => sum+(next?.stats?.Rating ?? 0), 0)/playersOnTeam.length).toFixed(2)} Avg Rating</div> }
+        </div>
+    );
 }
 
 export function Franchise(){
@@ -58,16 +84,10 @@ export function Franchise(){
                                        <PlayerRow franchisePlayer={player} team={team} />
                                         )}
                                     </div>
-                                    <div className="grid grid-cols-4">
-                                        <div></div>
-                                        <div>{team.players.reduce((sum, next) => sum+next.mmr, 0)} / {team.tier.mmrCap} Tier Cap - {((team.players.reduce((sum, next) => sum+next.mmr, 0)/team.tier.mmrCap)*100).toFixed(2)}%</div>
-                                        <div></div>
-                                        <div></div>
-                                    </div>
+                                    <TeamFooterTabulation team={team} />
                                 </div>
                                 )
                             }
-
                         </div>
                     </div>
                 </Container>
