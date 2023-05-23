@@ -19,7 +19,16 @@ module.exports = {
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
-    },
+      animation: {
+        'fade-in': 'fadeIn 1s ease-in',
+      },
+      keyframes: theme => ({
+        'fadeIn': {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
+        },
+    }),
   },
+},
   plugins: [require("tw-elements/dist/plugin.cjs")],
 }

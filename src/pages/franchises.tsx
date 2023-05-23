@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
-import { useDataContext } from '../DataContext';
 import { Loading } from '../common/components/loading';
 import { Link } from "wouter";
 import { useKonamiCode } from "../common/hooks/konami";
-//import { PlayerStats } from '../models';
+import { useDataContext } from "../DataContext";
+
 
 export function Franchises() {
     const konami = useKonamiCode();

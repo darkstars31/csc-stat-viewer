@@ -26,7 +26,7 @@ import { getTeammates } from "../common/utils/franchise-utils";
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
-    const { players = [], franchises = [], isLoading, selectedDataOption} = useDataContext();
+    const { players = [], franchises = [], loading, selectedDataOption} = useDataContext();
     const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const [, params] = useRoute("/players/:tier/:id");
     const tierParam = decodeURIComponent(params?.tier ?? "");
@@ -42,7 +42,7 @@ export function Player() {
         divRef.current?.scrollIntoView();
     }, []);
 
-    if( isLoading ){
+    if( loading.isLoadingCscPlayers ){
         return <Container><Loading /></Container>;
     } else if ( !currentPlayerStats ){
 		return <Container>
@@ -197,7 +197,7 @@ export function Player() {
                 }
                 </div>
             </div> }
-            <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
+            <br />
             <>
             {/* Creating pairs of arrays from grid-data to display them side-by-side with a divider after unless there are no more arrays */}
                 {Array(Math.ceil(getGridData(currentPlayerStats).length / 2)).fill(0).map((_, i) => {
@@ -218,9 +218,7 @@ export function Player() {
                                     </div>
                                 ))}
                             </GridContainer>
-                            {i < Math.ceil(getGridData(currentPlayerStats).length / 2) - 1 && (
-                                <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
-                            )}
+                            {i < Math.ceil(getGridData(currentPlayerStats).length / 2) - 1 && <br />}
                         </React.Fragment>
                     );
                 })}

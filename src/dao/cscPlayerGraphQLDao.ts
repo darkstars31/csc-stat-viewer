@@ -1,36 +1,18 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { CscPlayersQuery } from "../models";
+import { CscPlayer, CscPlayersQuery } from "../models";
 
 const url = `https://core.csconfederation.com/graphql`
 
-const fetchNameAndAvatar = async () => await fetch(url,
-    { method: "POST", 
-    body: JSON.stringify({
-        "operationName": "",
-        "query": `query CscPlayers {
-            players {
-                name
-                avatarUrl
-                steam64Id
-                tier {
-                    name
-                }
-            }
-        }`
-        ,
-        "variables": {}      
-    })
-})
-.then( async response => {
-    return response.json();
-} );
+type CscPlayerTypes = "SIGNED" | "FREE_AGENT" | "DRAFT_ELIGIBLE" | "PERMANENT_FREE_AGENT" | "SPECTATOR";
 
-const fetchGraph = async () => await fetch(url,
+const OneHour = 1000 * 60 * 60;
+
+const fetchGraph = async ( playerType: CscPlayerTypes ) => await fetch(url,
     { method: "POST", 
         body: JSON.stringify({
             "operationName": "",
-            "query": `query CscPlayers {
-                players {
+            "query": `query CscPlayers ( $playerType: PlayerTypes) {
+                players ( type: $playerType ) {
                     steam64Id
                     name
                     faceitName
@@ -51,26 +33,23 @@ const fetchGraph = async () => await fetch(url,
                 }
             }`
             ,
-            "variables": {}      
+            "variables": {
+                "playerType": playerType
+            }      
         })
     })
     .then( async response => {
-        return response.json();
+        return response.json().then( (json: CscPlayersQuery) => {
+            return json.data.players;
+        });
     } );
 
-export function useCscNameAndAvatar(): UseQueryResult<CscPlayersQuery> {
-    return useQuery({ 
-        queryKey: ["cscplayers-nameAndAvatar"], 
-        queryFn: fetchNameAndAvatar, 
-        staleTime: 1000 * 60 * 60,
-    }); // 1 second * 60 * 60 = 1 hour
-}
-
-export function useCscPlayersGraph( placeholderData: CscPlayersQuery | undefined ): UseQueryResult<CscPlayersQuery> {
-    return useQuery({ 
-        queryKey: ["cscplayers-graph"], 
-        queryFn: fetchGraph, 
-        staleTime: 1000 * 60 * 60, // 1 second * 60 * 60 = 1 hour
-        placeholderData: placeholderData,
-    });
+export function useCscPlayersGraph( playerType: CscPlayerTypes ): UseQueryResult<CscPlayer[]> {
+    return useQuery( 
+        [`cscplayers-${playerType}-graph`], 
+        () => fetchGraph( playerType ), 
+        {
+            staleTime: OneHour,
+        }
+    );
 }

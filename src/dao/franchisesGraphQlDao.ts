@@ -1,5 +1,5 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { FranchiseRequest } from "../models/franchise-types";
+import { Franchise } from "../models/franchise-types";
 
 const fetchFranchisesGraph = async () => await fetch(`https://core.csconfederation.com/graphql`,
     { method: "POST", 
@@ -38,9 +38,11 @@ const fetchFranchisesGraph = async () => await fetch(`https://core.csconfederati
             })     
         })
     .then( async response => {
-        return response.json();
+        return response.json().then( json => {
+            return json.data.franchises;
+        });
     } );
 
-export function useFetchFranchisesGraph(): UseQueryResult<FranchiseRequest> {
+export function useFetchFranchisesGraph(): UseQueryResult<Franchise[]> {
     return useQuery({ queryKey: ["franchises-graph"], queryFn: fetchFranchisesGraph, staleTime: 1000 * 60 * 60}); // 1 second * 60 * 60 = 1 hour
 }
