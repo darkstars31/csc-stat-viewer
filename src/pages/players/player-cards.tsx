@@ -16,7 +16,7 @@ export function PlayerCard( { player, index}: Props) {
         key={`player-${index}`}
         to={`/players/${player.stats?.Tier}/${encodeURIComponent(player.name)}`}
         >
-        <div className="block bg-midnight2 rounded-xl border border-gray-800 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10">
+        <div className="fade-in block bg-midnight2 rounded-xl border border-gray-800 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10">
             <div className="flex flex-row justify-between">
                 <div className="mr-4 h-[64px] w-[64px] rounded-tl-xl">
                     <img className="rounded-tl-xl rounded-br-xl" src={player.avatarUrl} alt=""/>
