@@ -26,6 +26,7 @@ const fetchFranchisesGraph = async () => await fetch(`https://core.csconfederati
                             }
                             players {
                                 name
+                                discordId
                                 steam64Id
                                 mmr
                             }

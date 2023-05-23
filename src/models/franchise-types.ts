@@ -28,6 +28,7 @@ export type Team = {
 export type Player = {
     name: string;
     mmr: number;
+    discordId: number;
     steam64Id: string;
 }
 
