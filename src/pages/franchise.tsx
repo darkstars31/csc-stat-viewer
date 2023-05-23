@@ -13,18 +13,19 @@ const COLUMNS = 5;
 function PlayerRow( { franchisePlayer, team }: {franchisePlayer: FranchisePlayer, team: Team}) {
     const { players = [] } = useDataContext();
     const player = players.find( p => p.steam64Id === franchisePlayer.steam64Id);
+    const percentageOfMmrCap = (((franchisePlayer.mmr ?? 0)/team.tier.mmrCap)*100).toFixed(1);
     return (
-        <div className=" m-1 hover:cursor-pointer">
+        <div className=" m-1">
             <div className={`grid grid-cols-${COLUMNS}`}>
-                <Link key={`${team.tier.name}-${franchisePlayer.name}`} to={`/players/${team.tier.name}/${franchisePlayer.name}`}>
+                <Link className="hover:cursor-pointer text-blue-300" key={`${team.tier.name}-${franchisePlayer.name}`} to={`/players/${team.tier.name}/${franchisePlayer.name}`}>
                     {franchisePlayer.name} { false && <span className="text-xs text-gray-500">- {franchisePlayer.mmr} ({((franchisePlayer.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span> }
                 </Link>
-                <div>{franchisePlayer.mmr} - {(((franchisePlayer.mmr ?? 0)/team.tier.mmrCap)*100).toFixed(2)}%</div>
+                <div>{franchisePlayer.mmr} <span className="text-gray-400">({percentageOfMmrCap}%)</span></div>
                 <div>{player?.stats?.Rating.toFixed(2) ?? "-"}</div>
                 <div>Contract {player?.contractDuration}</div>
                 <div>
-                    <div className="bg-blue-700 p-1 rounded w-6 float-left"><a href={`https://discordapp.com/users/${franchisePlayer.discordId}`} target="_blank" rel="noreferrer"><RxDiscordLogo /></a></div>
-                    <div className="text-orange-500 mx-2 bg-slate-900 p-1 rounded w-6 float-left"><a href={`https://www.faceit.com/en/players/${player?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div>
+                    { franchisePlayer.discordId && <div className="hover:cursor-pointer bg-blue-700 p-1 rounded w-6 float-left"><a href={`https://discordapp.com/users/${franchisePlayer.discordId}`} target="_blank" rel="noreferrer"><RxDiscordLogo /></a></div> }
+                    { player?.faceitName && <div className="hover:cursor-pointer text-orange-500 mx-2 bg-slate-900 p-1 rounded w-6 float-left"><a href={`https://www.faceit.com/en/players/${player?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div> }
                 </div>
             </div>
         </div> );
@@ -46,7 +47,7 @@ function TeamFooterTabulation( { team }: { team: Team }) {
         <div className={`grid grid-cols-${COLUMNS} text-xs`}>
             <div></div>
             <div>{mmrTeamTotal}/{tierMmrCap} Cap - {((mmrTeamTotal/tierMmrCap)*100).toFixed(0)}%</div>
-            {playersOnTeam.length > 0 && <div>{(playersOnTeam.reduce((sum, next) => sum+(next?.stats?.Rating ?? 0), 0)/playersOnTeam.length).toFixed(2)} Avg Rating</div> }
+            { playersOnTeam.length > 0 && <div>{(playersOnTeam.reduce((sum, next) => sum+(next?.stats?.Rating ?? 0), 0)/playersOnTeam.length).toFixed(2)} Avg Rating</div> }
         </div>
     );
 }
@@ -62,8 +63,8 @@ export function Franchise(){
     }
 
     return (
-        <div style={{backgroundImage: `url('https://core.csconfederation.com/images/${currentFranchise?.logo.name}')`}} className={`bg-repeat bg-fixed bg-center`}>
-            <div className="backdrop-opacity-10 backdrop-brightness-90 bg-black/[.85]">
+        <div style={{backgroundImage: `url('https://core.csconfederation.com/images/${currentFranchise?.logo.name}')`, overflow:'auto'}} className={`bg-repeat bg-center bg-fixed`}>
+            <div className="backdrop-opacity-10 backdrop-brightness-90 bg-black/[.85] overflow-auto">
                 <Container>
                     <div className="float-left h-24 w-24 md:w-48 md:h-48 relative">
                         <img className="absolute h-full w-full" src={`https://core.csconfederation.com/images/${currentFranchise?.logo.name}`} placeholder="" alt=""/>
@@ -81,7 +82,7 @@ export function Franchise(){
                                     </div>
                                     <div className="mx-4 px-2">
                                     { team.players.map( player => 
-                                       <PlayerRow franchisePlayer={player} team={team} />
+                                       <PlayerRow key={`${team.tier.name}-${player.name}`} franchisePlayer={player} team={team} />
                                         )}
                                     </div>
                                     <TeamFooterTabulation team={team} />
