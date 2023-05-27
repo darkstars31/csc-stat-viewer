@@ -1,5 +1,4 @@
 import * as React from "react";
-import { type PlayerStats } from "../models";
 import { Container } from "../common/components/container";
 import { Input } from "../common/components/input";
 import { Pill } from "../common/components/pill";
@@ -7,20 +6,29 @@ import Select, { MultiValue, SingleValue } from "react-select";
 import { useDataContext } from "../DataContext";
 import { Player } from "../models/player";
 import { PlayerCard } from "./players/player-cards";
+import _get from "lodash/get";
+
+const sortOptionsList = [
+    { label: "Name", value: "stats.Name"}, 
+    { label: "Rating", value: "stats.Rating"},
+    { label: "MMR", value: "mmr"},
+];
 
 export function Players() {
     const { players } = useDataContext();
     const playersWithStats = players.filter( p => p.stats );
     const [ searchValue, setSearchValue ] = React.useState("");
     const [ filters, setFilters ] = React.useState<string[]>([]);
-    const [ orderBy, setOrderBy ] = React.useState<SingleValue<{label: string;value: string;}>>();
+    const [ orderBy, setOrderBy ] = React.useState<SingleValue<{label: string;value: string;}>>(sortOptionsList[0]);
     const [ viewTierOptions, setViewTierOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
     const [ viewPlayerTypeOptions, setViewPlayerTypeOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
+    const [ viewPlayerRoleOptions, setViewPlayerRoleOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
+
 
     let sortedPlayerData = playersWithStats.sort( (a,b) => {
-        const itemA = a.stats![orderBy?.value as keyof PlayerStats];
-        const itemB = b.stats![orderBy?.value as keyof PlayerStats];
-        return itemA! < itemB! ? 1 : -1
+        const itemA = _get(a, orderBy!.value, 0); 
+        const itemB = _get(b, orderBy!.value, 0);
+        return itemA < itemB ? 1 : -1
     } );
 
     // eslint-disable-next-line
@@ -28,10 +36,12 @@ export function Players() {
 
     const filteredByPlayerType = viewPlayerTypeOptions?.length ? sortedPlayerData.filter( player => viewPlayerTypeOptions?.some( type => type.value === player.type)) : playersWithStats;
     const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.stats?.Tier)) : filteredByPlayerType;
+    const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.stats?.ppR)) : filteredByTier;
 
-    const filteredPlayers = filters.length > 0 ? filteredByTier.filter( player => {
+
+    const filteredPlayers = filters.length > 0 ? filteredByRole.filter( player => {
         return filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ) );
-    } ) : filteredByTier;
+    } ) : filteredByRole;
 
     const playerCards = filteredPlayers?.map( (player: Player, index: number) => <PlayerCard key={`${player.stats?.Tier}-${player.name}`} player={player} index={index} />);
 
@@ -47,11 +57,6 @@ export function Players() {
         setFilters( newFilters.filter(Boolean) );
     }
 
-    const sortOptionsList = [
-        { label: "Name", value: "Name"}, 
-        { label: "Rating", value: "Rating"},
-    ];
-
     const viewTiersList = [
         { label: "Premier", value: "Premier"},
         { label: "Elite", value: "Elite"},
@@ -59,6 +64,15 @@ export function Players() {
         { label: "Contender", value: "Contender"},
         { label: "Prospect", value: "Prospect"},
         { label: "Recruit", value: "NewTier"},
+    ];
+
+    const viewRolesList = [
+        { label: "Awper", value: "AWPER"},
+        { label: "Fragger", value: "FRAGGER"},
+        { label: "Rifler", value: "RIFLER"},
+        { label: "Support", value: "SUPPORT"},
+        { label: "Entry", value: "ENTRY"},
+        { label: "Lurker", value: "LURKER"},
     ];
 
     const viewPlayerTypeList = [
@@ -151,6 +165,24 @@ export function Players() {
                                 classNames={selectClassNames}
                                 options={viewTiersList}
                                 onChange={setViewTierOptions}
+                            />
+                    </div>
+                </div>
+                <div className="basis-1/5">
+                    <div className="flex flex-row text-xs m-2">
+                        <label title="Tiers" className="p-1 leading-9">
+                            Roles
+                        </label>
+                            <Select
+                                placeholder="All"
+                                isClearable={false}
+                                isMulti
+                                className="grow"
+                                unstyled
+                                isSearchable={false}
+                                classNames={selectClassNames}
+                                options={viewRolesList}
+                                onChange={setViewPlayerRoleOptions}
                             />
                     </div>
                 </div>

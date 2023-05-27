@@ -2,10 +2,25 @@ import * as React from "react";
 import { Link } from "wouter";
 import { Player } from "../../models/player";
 import { teamNameTranslator } from "../../common/utils/player-utils";
+import { BiStats } from "react-icons/bi";
+import { GiMoneyStack } from "react-icons/gi";
 
 type Props = {
     player: Player,
     index: number,
+}
+
+const Tooltip = (props: { children: React.ReactNode, tip?: string }) => {
+    return (
+        <button
+        className="transititext-primary text-primary transition duration-150 ease-in-out hover:text-primary-600 focus:text-primary-600 active:text-primary-700 dark:text-primary-400 dark:hover:text-primary-500 dark:focus:text-primary-500 dark:active:text-primary-600"
+        data-te-toggle="tooltip"
+        data-te-placement="bottom"
+        title={props.tip}
+        >
+            {props.children}
+        </button>
+    );
 }
 
 export function PlayerCard( { player, index}: Props) {
@@ -30,7 +45,10 @@ export function PlayerCard( { player, index}: Props) {
                     <div className="p-1 text-sm text-gray-300">
                         <div className="text-center">
                             <div>{player.stats.Tier}</div>
-                            <div className={`text-${ player.stats.Rating > 1 ? "green" : "orange" }-400`}>Rating: {player.stats.Rating}</div>
+                            <div className="grid grid-cols-2 mt-1">
+                                <Tooltip tip="Rating"><div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player.stats.Rating.toFixed(2)}</div></Tooltip>
+                                <Tooltip tip="Match Making Rank"><div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/> {player.mmr}</div></Tooltip>
+                            </div>  
                         </div>
                     </div> }
                 </div>

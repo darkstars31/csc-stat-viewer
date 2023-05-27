@@ -12,10 +12,9 @@ function buildTableRow( player: PlayerStats, columnName: string, property: keyof
 }
 
 export function LeaderBoards() {
-    const { players = [], isLoading } = useDataContext();
+    const { players = [], loading } = useDataContext();
+    const [ filterBy, setFilterBy ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: `All`, value: "All"});
     
-    const [ filterBy, setFilterBy ] = React.useState<SingleValue<{label: string;value: string;}>>();
-
     const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats ).filter( s => s!.GP >= 3) as PlayerStats[];
     
     const playerData = filterBy?.value.includes("All") ? playerStats : playerStats.filter( f => f.Tier.toLowerCase() === filterBy?.value.toLowerCase());
@@ -73,7 +72,7 @@ export function LeaderBoards() {
     ];
 
 
-    if( isLoading ) {
+    if( loading.isLoadingCscPlayers && loading.isLoadingPlayerStats ) {
         return <Container><Loading /></Container>;
     }
 
