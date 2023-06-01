@@ -21,6 +21,7 @@ export type Gm = {
 
 export type Team = {
     name:    string;
+    captain: Captain;
     tier: Tier;
     players: Player[];
 }
@@ -29,6 +30,10 @@ export type Player = {
     name: string;
     mmr: number;
     discordId: number;
+    steam64Id: string;
+}
+
+export type Captain = {
     steam64Id: string;
 }
 

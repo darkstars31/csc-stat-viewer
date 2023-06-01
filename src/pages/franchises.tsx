@@ -4,6 +4,7 @@ import { Loading } from '../common/components/loading';
 import { Link } from "wouter";
 import { useKonamiCode } from "../common/hooks/konami";
 import { useDataContext } from "../DataContext";
+import { AiOutlineCopyrightCircle } from "react-icons/ai";
 
 
 export function Franchises() {
@@ -42,11 +43,13 @@ export function Franchises() {
                                                 </div>
                                                 <div className="mx-4 px-2">
                                                 { team.players.map( player => 
-                                                    <Link key={`${team.tier.name}-${player.name}`} to={`/players/${team.tier.name}/${player.name}`}>                                          
-                                                        <div className="m-1 hover:cursor-pointer">
-                                                            {player.name} { konami && <span className="text-xs text-gray-500">- {player.mmr} ({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span> }
-                                                        </div>
-                                                    </Link>
+                                                    <div className="m-1 hover:cursor-pointer grid grid-cols-3">
+                                                        <Link key={`${team.tier.name}-${player.name}`} to={`/players/${team.tier.name}/${player.name}`}>                                          
+                                                            {player.name} { team?.captain?.steam64Id === player.steam64Id ? <AiOutlineCopyrightCircle className="inline"/> : ""}
+                                                        </Link>
+                                                        <div></div>
+                                                        <div className="text-xs text-gray-500"> {player.mmr} ({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</div>
+                                                    </div>
                                                     )}
                                                 </div>
                                             </div>
