@@ -20,6 +20,7 @@ export type Gm = {
 }
 
 export type Team = {
+    id: string;
     name:    string;
     captain: Captain;
     tier: Tier;

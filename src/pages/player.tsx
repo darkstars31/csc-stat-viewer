@@ -174,9 +174,9 @@ export function Player() {
                     <div className="place-content-center">
                         <RoleRadar player={currentPlayerStats!}/>
                     </div>
-				<div className="text-xs mt-4">
-					Impact On Rounds Won {IWR} (tier average {tierPlayerAverages.average["IWR"]}) - { (((IWR/tierPlayerAverages.average["IWR"])-1)*100).toFixed(2)}%
-				</div>
+                    <div className="text-xs mt-4">
+                        Impact On Rounds Won {IWR} (tier average {tierPlayerAverages.average["IWR"]}) - { (((IWR/tierPlayerAverages.average["IWR"])-1)*100).toFixed(2)}%
+                    </div>
                 </div>
             </Stat>
 

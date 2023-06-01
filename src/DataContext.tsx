@@ -3,7 +3,7 @@ import { useCscPlayersGraph } from "./dao/cscPlayerGraphQLDao";
 import { useFetchSeasonData } from "./dao/seasonPlayerStatsDao";
 import { dataConfiguration } from "./dataConfig";
 import { Player } from "./models/player";
-import { useFetchFranchisesGraph } from "./dao/franchisesGraphQlDao";
+import { useFetchFranchisesGraph } from "./dao/franchisesGraphQLDao";
 
 const useDataContextProvider = () => {
 	const [ selectedDataOption, setSelectedDataOption ] = React.useState<string>(dataConfiguration[0].name);

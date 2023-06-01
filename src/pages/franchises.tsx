@@ -23,7 +23,7 @@ export function Franchises() {
             { loading.isLoadingFranchises && <Loading /> }
             {
                 franchises.map( franchise => 
-                    <div key={`${franchise.name}`} className="my-4 block bg-midnight2 rounded-xl border border-gray-800 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10">
+                    <div key={`${franchise.name}`} className="hover:cursor-pointer my-4 block bg-midnight2 rounded-xl border border-gray-800 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10">
                     <Link to={`/franchises/${encodeURIComponent(franchise.name)}`}>
                         <div style={{backgroundImage: `url('https://core.csconfederation.com/images/${franchise.logo.name}')`}} className={`bg-repeat bg-fixed bg-center`}>
                             <div className="flex flex-col md:flex-row justify-between overflow-hidden backdrop-opacity-10 backdrop-brightness-90 bg-black/[.85]">
@@ -43,7 +43,7 @@ export function Franchises() {
                                                 </div>
                                                 <div className="mx-4 px-2">
                                                 { team.players.map( player => 
-                                                    <div key={`${team.tier.name}-${player.name}`} className="m-1 hover:cursor-pointer grid grid-cols-2">
+                                                    <div key={`${team.tier.name}-${player.name}`} className="m-1 grid grid-cols-2">
                                                         <div>{player.name} { team?.captain?.steam64Id === player.steam64Id ? <GiPirateHat size="1.5em" className="inline"/> : ""}</div>         
                                                         <div className="text-xs text-gray-500"> {player.mmr} ({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</div>
                                                     </div>

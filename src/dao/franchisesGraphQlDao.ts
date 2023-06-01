@@ -19,6 +19,7 @@ const fetchFranchisesGraph = async () => await fetch(`https://core.csconfederati
                             name
                         }
                         teams {
+                            id
                             name
                             captain {
                                 steam64Id
