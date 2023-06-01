@@ -34,7 +34,7 @@ export function Franchise(){
                             { currentFranchise?.teams.map( team =>      
                                 <div key={`${team.tier.name}`} className="">
                                     <Link to={`/franchises/${currentFranchise.name}/${team.name}`}>
-                                        <div className="m-2 border-b-[1px] border-slate-700">
+                                        <div className="m-2 border-b-[1px] hover:cursor-pointer hover:text-sky-400 transition ease-in-out hover:-translate-y-1 duration-300">
                                             <h2 className="text-xl"><strong>{team.name}</strong> <span className="text-gray-400"><i>{team.tier.name} { false && <span className="text-xs">({team.players.reduce((cum,player) => cum + player.mmr, 0)}/{team.tier.mmrCap})</span>} </i></span></h2>
                                         </div>
                                     </Link>

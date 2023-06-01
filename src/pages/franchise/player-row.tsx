@@ -15,7 +15,10 @@ export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: Franchis
     return (
         <div className=" m-1">
             <div className={`grid grid-cols-${COLUMNS}`}>
-                <Link className="hover:cursor-pointer text-blue-300" key={`${team.tier.name}-${franchisePlayer.name}`} to={`/players/${team.tier.name}/${franchisePlayer.name}`}>
+                <Link className="hover:cursor-pointer hover:text-sky-400 hover:text-sky-400 transition ease-in-out hover:-translate-x-1 duration-300" 
+                key={`${team.tier.name}-${franchisePlayer.name}`} 
+                to={`/players/${team.tier.name}/${franchisePlayer.name}`}
+                >
                     {franchisePlayer.name} { team?.captain?.steam64Id === franchisePlayer.steam64Id ? <GiPirateHat size="1.5em" className="inline"/> : ""}
                 </Link>
                 <div>{franchisePlayer.mmr} <span className="text-gray-400">({percentageOfMmrCap}%)</span></div>
