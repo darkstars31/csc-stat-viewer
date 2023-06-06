@@ -15,6 +15,7 @@ const fetchGraph = async ( playerType: CscPlayerTypes ) => await fetch(url,
                 players ( type: $playerType ) {
                     steam64Id
                     name
+                    discordId
                     faceitName
                     mmr
                     avatarUrl

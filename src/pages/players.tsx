@@ -131,7 +131,7 @@ export function Players() {
                 }
             </div>
         </div>
-        <div className="flex flex-col mt-36 md:flex-row md:mt-0 h-12 justify-end">
+        <div className="flex flex-col mt-48 md:flex-row md:mt-0 h-12 justify-end">
             <div className="basis-1/3">
                     <div className="flex flex-row text-xs m-2">
                         <label title="Player Type" className="p-1 leading-9">

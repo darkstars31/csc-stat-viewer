@@ -11,6 +11,7 @@ export type CscPlayer = {
     avatarUrl: string,
     steam64Id: string,
     faceitName?: string,
+    discordId?: string,
     mmr?: number,
     contractDuration?: number,
     tier: CscTier,

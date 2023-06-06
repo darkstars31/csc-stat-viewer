@@ -10,6 +10,7 @@ interface RatingBarProps {
   average?: number;
   color: 'red' | 'violet' | 'yellow' | 'blue' | 'green';
   type: 'default' | 'concy';
+  tooltipMessage?: string;
 }
 
 type GradientClasses = {
@@ -25,6 +26,7 @@ export function RatingBar({
   average,
   color,
   type,
+  tooltipMessage
 }: RatingBarProps) {
   let width = type === "default" ? `${(stat1 / 2) * 100}%` : `${stat1}%`;
   width = parseFloat(width) > 100 ? "100%" : width;
@@ -42,14 +44,7 @@ export function RatingBar({
   return (
     <div className="relative">
       {label}
-      {
-        type === "concy" && (
-            <ToolTip
-          message="Are you consistent compared to your rating? This measures Standard Deviation by Percent of Rating Average as a scale from 0 - 100, the higher the better"
-          type="explain"
-        />
-        )
-      }
+      { tooltipMessage && <span className="pl-1"><ToolTip message={tooltipMessage} type="explain"/></span>}
       {!range && <div className="float-right text-sm inline-block">{stat1}</div>}
       {message && (
         <ToolTip

@@ -27,6 +27,6 @@ export function PlayerRadar( { options }: Props) {
 
 
     return (
-        <ReactECharts option={defaultOptions} style={{height: 300}} />
+        <ReactECharts option={defaultOptions} style={{height: "300px",width: "100%"}}/>
     )
 }

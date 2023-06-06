@@ -2,10 +2,8 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import {
     PlayerMappings,
-    getTotalPlayerAverages,
     teamNameTranslator,
     getPlayerRatingIndex,
-    //getPlayersInTierOrderedByRating,
 } from "../common/utils/player-utils";
 import {getGridData} from "./player/grid-data"
 import { GridContainer, GridStat } from "./player/grid-container";
@@ -16,12 +14,15 @@ import { Loading } from "../common/components/loading";
 import { RoleRadar } from "../common/components/roleRadar";
 import { PlayerStats } from "../models";
 import { PlayerNavigator } from "./player/player-navigator";
-//import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
 import { PlayerRatings } from "./player/playerRatings";
 import { tiertopincategory } from "../svgs";
 import { awardProperties, propertiesCurrentPlayerIsInTop10For, propertiesCurrentPlayerIsNumberOneFor } from "../common/utils/awards-utils";
 import { nth } from "../common/utils/string-utils";
 import { getTeammates } from "../common/utils/franchise-utils";
+import { RxDiscordLogo } from "react-icons/rx";
+import { SiFaceit } from "react-icons/si";
+import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
+import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
 
 
 export function Player() {
@@ -54,8 +55,6 @@ export function Player() {
 		</Container>
 	}
 
-    const tierPlayerAverages = getTotalPlayerAverages( playerStats, { tier: currentPlayerStats?.Tier} );
-    //const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( currentPlayerStats!, playerStats );
     const playerRatingIndex = getPlayerRatingIndex( currentPlayerStats!, playerStats );
 
     const rankingsInAllTiers = statsInDifferentTier.map( s => {
@@ -109,7 +108,7 @@ export function Player() {
                         { currentPlayer?.avatarUrl && <img className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
                         { !currentPlayer?.avatarUrl && <div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border"/>}
                     </div>
-                    <div className="text-left">
+                    <div className="text-left basis-3/4">
                         <div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
                             { Name ?? "n/a"}
                         </div>
@@ -128,6 +127,12 @@ export function Player() {
                             )) }
                         </ul>
 
+                    </div>
+                    <div className="w-full">
+                        <div className="flex justify-end">
+                        { currentPlayer?.discordId && <div className="hover:cursor-pointer bg-blue-700 p-1 rounded w-6 float-left"><a href={`https://discordapp.com/users/${currentPlayer.discordId}`} target="_blank" rel="noreferrer"><RxDiscordLogo /></a></div> }
+                        { currentPlayer?.faceitName && <div className="hover:cursor-pointer text-orange-500 mx-2 bg-slate-900 p-1 rounded w-6 float-left"><a href={`https://www.faceit.com/en/players/${currentPlayer?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div> }
+                        </div>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -166,18 +171,16 @@ export function Player() {
                                     }
                                 </div>
                             </div>
-                            {/*<div className="w-64 h-32">
-                            <TeamSideRatingPie player={currentPlayerStats}/>
-                        </div> */}
                         </div>
                         <PlayerRatings player={currentPlayerStats} />
                     </div>
-                    <div className="place-content-center">
-                        <RoleRadar player={currentPlayerStats!}/>
+                    <div className="justify-center">
+                        <RoleRadar player={currentPlayerStats!}/>         
                     </div>
-                    <div className="text-xs mt-4">
-                        Impact On Rounds Won {IWR} (tier average {tierPlayerAverages.average["IWR"]}) - { (((IWR/tierPlayerAverages.average["IWR"])-1)*100).toFixed(2)}%
-                    </div>
+                </div>
+                <div className="grid grid-cols-2 w-full">
+                    <TeamSideRatingPie player={currentPlayerStats} />
+                    <KillsAssistsDeathsPie player={currentPlayerStats} />
                 </div>
             </Stat>
 

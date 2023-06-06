@@ -7,16 +7,17 @@ type Props = {
     player: PlayerStats,
 }
 
-export function TeamSideRatingPie( { player }: Props) {
+export function KillsAssistsDeathsPie( { player }: Props) {
         
         const defaultOptions: EChartsOption = {
-            color: ['#4169e1','#ff6347'],
+            color: ['#2dd4bf', '#fde047', '#ff6347'],
             title: {
-                text: 'Team Rating',
+                text: 'Kills/Assists/Deaths',
                 top: '16px',
                 textStyle: {
                     color: '#fff'
                 },
+                show: false,
                 //subtext: 'Fake Data',
                 left: 'center'
               },
@@ -28,37 +29,42 @@ export function TeamSideRatingPie( { player }: Props) {
                 type: 'pie',
                 radius: ['0%', '55%'],
                 center: ['50%', '52%'],
-                startAngle: 270,
+                startAngle: -120,
                 avoidLabelOverlap: false,
                 itemStyle: {
                   borderRadius: 4,
                   borderColor: '#1d1d31',
-                  borderWidth: 2
+                  borderWidth: 2,
+                  
                 },
                 label: {
                   show: true,
                   formatter: ( item ) =>{
-                    return `${item.name}\n\n${item.value}`;
+                    //const percent = (Number(item.value)/(player["Kills"]+player["Assists"]+player["Deaths"])*100).toFixed(2);
+                    return `${item.name}\n${item.value}`;
                   },
-                  position: 'inner',
+                  fontSize: 18,
+                  color: '#fff'
+                  //position: 'outer',
                 },
                 emphasis: {
                   label: {
                     show: true,
-                    fontSize: 20,
-                    fontWeight: 'bold'
+                    //fontSize: 24,
+                    //fontWeight: 'normal',
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(255,255,255, 0.5)'
                   }
                 },
                 labelLine: { 
                   show: true
                 },
                 data: [
-                    { name: "CT", value: player['CT #']},
-                    { name: "T", value: player['T #']},
-                    // { name: "", value: player['CT #'] + player['T #'], 
-                    //     itemStyle: { color: 'none'}, 
-                    //     label: { show: false }
-                    // },
+                    { name: "Kills", value: player["Kills"]},
+                    { name: "Assists", value: player['Assists']},
+                    { name: "Deaths", value: player['Deaths']},
+
                 ],
               }
             ,

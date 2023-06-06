@@ -29,6 +29,16 @@ export function PlayerRatings({ player }: Props) {
                 <div className="relative text-neutral-700 text-sm text-left italic font-bold">
                     {gamesPlayedCaption}
                 </div>
+
+            <RatingBar
+                label="Peak"
+                stat1={player.Peak}
+                stat2={player.Peak}
+                average={tierPlayerAverages.average["Peak"]}
+                color="green"
+                type="default"
+            />
+
             <RatingBar
                 label="Rating"
                 message={`Recent Form: ${player.Form}`}
@@ -37,15 +47,6 @@ export function PlayerRatings({ player }: Props) {
                 range={0.05}
                 average={tierPlayerAverages.average["Rating"]}
                 color="violet"
-                type="default"
-            />
-
-            <RatingBar
-                label="Peak"
-                stat1={player.Peak}
-                stat2={player.Peak}
-                average={tierPlayerAverages.average["Peak"]}
-                color="green"
                 type="default"
             />
 
@@ -63,6 +64,16 @@ export function PlayerRatings({ player }: Props) {
                 stat2={Number(concyWidth)}
                 average={Number(tierAvgConcy)}
                 color="blue"
+                type="concy"
+                tooltipMessage="Are you consistent compared to your rating? This measures Standard Deviation by Percent of Rating Average as a scale from 0 - 100, the higher the better."
+            />
+
+            <RatingBar
+                label="Impact on Rounds Won"
+                stat1={Number((player.IWR*100).toFixed(0))}
+                stat2={player.IWR*100}
+                average={tierPlayerAverages.average["IWR"]*100}
+                color="red"
                 type="concy"
             />
             {/* Warning Not Enough Data */}
