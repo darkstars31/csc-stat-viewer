@@ -6,26 +6,47 @@ const fetchMatchesGraph = async ( teamId?: string) => await fetch(`https://core.
         body: JSON.stringify({
                 "operationName": "",
                 "query": `query matches ( $teamId: String!) {
-                    matches (teamId: $teamId, daysAgo: 60) {
+                    matches (teamId: $teamId, daysAgo: 7) {
+                        id
+                        scheduledDate
+                        completedAt
                         demoUrl
                         matchDay {
-                            id
-                            number
-                            scheduledDate
+                          number
                         }
                         home {
-                            name
+                          franchise {
+                            prefix
+                            logo {
+                              url
+                            }
+                          }
+                          name
                         }
                         away {
-                            name
+                          franchise {
+                            prefix
+                            logo {
+                              url
+                            }
+                          }
+                          name
+                        }
+                        dathostServer {
+                          connectString
+                          port
+                          gotv
                         }
                         stats {
-                            mapName
-                            rounds {
-                                id
-                            }
+                          homeScore
+                          awayScore
+                          mapName
+                          mapNumber
+                          winner {
+                            name
+                          }
                         }
-                    }
+                      }
                 }`
                 ,
                 "variables": {
