@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Match } from "../../models/matches-types";
 import { Team } from "../../models/franchise-types";
+import { GrDocumentVideo } from "react-icons/gr"
 
 type Props = {
     match: Match
@@ -27,7 +28,6 @@ export function MatchCards( { match, team }: Props ) {
     }
 
     const backgroundColor = match.stats.length > 0 ? match.stats[0].winner.name === team?.name ? "bg-emerald-900": "bg-amber-950": "bg-midnight1";
-
     return (
         <div className={`m-4 p-2 ${backgroundColor} rounded-lg overflow-hidden z-0`}>
             <div className="w-full flex text-sm pb-2">
@@ -57,6 +57,7 @@ export function MatchCards( { match, team }: Props ) {
                         <span className={`${match.stats[0].homeScore > match.stats[0].awayScore} ? "text-green-400 : "text-red-400"`}>{match.stats[0].awayScore}</span>
                     </div>
                 </div>
+                { match.demoUrl && <div className="float-right"><a href={match.demoUrl} title="Download Demo" rel="noreferrer" target="_blank"><GrDocumentVideo className="text-white" /></a></div> }
             </div>
             }
         </div>
