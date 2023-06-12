@@ -48,7 +48,7 @@ export function Player() {
         return <Container><Loading /></Container>;
     } else if ( !currentPlayerStats ){
 		return <Container>
-			No {selectedDataOption} stats found for {nameParam} in {tierParam}
+			No {selectedDataOption?.label} stats found for {nameParam} in {tierParam}
             <div className="text-xs mt-4 pl-4">
                 { linksToDifferentTier.length > 0 && <div>This player has stats in a different tier. {linksToDifferentTier}</div> }
             </div>

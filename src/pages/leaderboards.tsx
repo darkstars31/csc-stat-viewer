@@ -58,7 +58,7 @@ export function LeaderBoards() {
         challenger: playerStats.filter(f => f.Tier.toLowerCase() === "challenger").length,
         contender: playerStats.filter(f => f.Tier.toLowerCase() === "contender").length,
         prospect: playerStats.filter(f => f.Tier.toLowerCase() === "prospect").length,
-        newTier: playerStats.filter(f => f.Tier.toLowerCase() === "newtier").length
+        recruit: playerStats.filter(f => f.Tier.toLowerCase() === "recruit").length
     };
     const sumTierCount = Object.values(tierCounts).reduce( (sum, num) => sum + num, 0);
     const tierOptionsList = [
@@ -68,7 +68,7 @@ export function LeaderBoards() {
         { label: `Challenger (${tierCounts.challenger})`, value: "Challenger", isDisabled: !tierCounts.challenger },
         { label: `Contender (${tierCounts.contender})`, value: "Contender", isDisabled: !tierCounts.contender },
         { label: `Prospect (${tierCounts.prospect})`, value: "Prospect", isDisabled: !tierCounts.prospect },
-        { label: `New Tier (${tierCounts.newTier})`, value: "NewTier", isDisabled: !tierCounts.newTier },
+        { label: `Recruit (${tierCounts.recruit})`, value: "Recruit", isDisabled: !tierCounts.recruit },
     ];
 
 

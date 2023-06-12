@@ -63,7 +63,7 @@ export function Players() {
         { label: "Challenger", value: "Challenger"},
         { label: "Contender", value: "Contender"},
         { label: "Prospect", value: "Prospect"},
-        { label: "Recruit", value: "NewTier"},
+        { label: "Recruit", value: "Recruit"},
     ];
 
     const viewRolesList = [

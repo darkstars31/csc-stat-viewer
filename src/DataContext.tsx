@@ -4,10 +4,11 @@ import { useFetchSeasonData } from "./dao/seasonPlayerStatsDao";
 import { dataConfiguration } from "./dataConfig";
 import { Player } from "./models/player";
 import { useFetchFranchisesGraph } from "./dao/franchisesGraphQLDao";
+import { SingleValue } from "react-select";
 
 const useDataContextProvider = () => {
-	const [ selectedDataOption, setSelectedDataOption ] = React.useState<string>(dataConfiguration[0].name);
-	const dataConfig = dataConfiguration.find( item => selectedDataOption === item.name);
+	const [ selectedDataOption, setSelectedDataOption ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: dataConfiguration[0].name, value: dataConfiguration[0].name });
+	const dataConfig = dataConfiguration.find( item => selectedDataOption?.value === item.name);
 
 	const { data: cscSignedPlayers = [], isLoading: isLoadingSignedCscPlayers } = useCscPlayersGraph( "SIGNED");
 	const { data: cscFreeAgentsPlayers = [], isLoading: isLoadingFreeAgentsCscPlayers } = useCscPlayersGraph( "FREE_AGENT");

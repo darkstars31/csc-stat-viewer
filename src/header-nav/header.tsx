@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'; //BellIcon,
 import { Link, useLocation } from 'wouter';
-import { Select } from '../common/components/select';
+import Select from "react-select";
 import { useDataContext } from '../DataContext';
 import { dataConfiguration } from "../dataConfig";
 
@@ -11,7 +11,21 @@ function classNames(...classes: string[]) {
 }
 
 export function Header() {
-  const { selectedDataOption, setSelectedDataOption } = useDataContext();
+  const { setSelectedDataOption } = useDataContext();
+
+  const selectClassNames = {
+    placeholder: () => "text-gray-400 bg-inherit",
+    container: () => "m-1 rounded bg-inherit",
+    control: () => "p-2 rounded-l bg-slate-700",
+    option: () => "p-2 hover:bg-slate-900",
+    input: () => "text-slate-200",
+    menu: () => "bg-slate-900",
+    menuList: () => "bg-slate-700",
+    multiValue: () => "bg-sky-700 p-1 mr-1 rounded",
+    multiValueLabel: () => "text-slate-200",
+    multiValueRemove: () => "text-slate-800 pl-1",
+    singleValue: () => "text-slate-200",
+};
 
   const [ location ] = useLocation();
 
@@ -72,20 +86,27 @@ export function Header() {
                   </div>
                 </div>
               </div>
-              <div className="inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <div className="inset-y-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0 basis-1/4 w-full">
                 {/* Profile dropdown */}
-                <Menu as="div" className="relative ml-3">
-                  <div>
-                    <div className="flex flex-box h-12 mx-auto justify-start">
-                      <div className="overflow-auto">
-                          <Select
+                <Menu as="div" className="grow">                  
+                      <div className="text-xs grow">
+                        <Select
+                                className="grow"
+                                unstyled
+                                isSearchable={false}
+                                defaultValue={{ label: dataConfiguration[0].name, value: dataConfiguration[0].name}}
+                                classNames={selectClassNames}
+                                options={dataConfiguration.map( item => ({ label: item.name, value: item.name}))}
+                                onChange={setSelectedDataOption}
+                            />
+                          {/* <Select
                               label=""
                               options={ dataConfiguration.map( item => ({ id: item.name, value: item.name}))}
                               onChange={ ( e ) => setSelectedDataOption( e.currentTarget.value )}
                               value={selectedDataOption}
-                          />
+                          /> */}
                       </div>
-                  </div>
+                  
                     {/* <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="sr-only">Open user menu</span>
                       <img
@@ -93,8 +114,7 @@ export function Header() {
                         src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                         alt=""
                       />
-                    </Menu.Button> */}
-                  </div>
+                    </Menu.Button> */}              
                   <Transition
                     as={Fragment}
                     enter="transition ease-out duration-100"

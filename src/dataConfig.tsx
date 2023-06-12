@@ -13,6 +13,11 @@ export type DataConfiguration = {
 export const dataConfiguration = [
     {
         season: 11,
+        name: "Season 11",
+        spreadsheetUrl: googleSheetsUrl("18qgpc4NdPNg4I5Q9lmzaEgUYyxHtq25JKZfTxiQg_lc",334898684),
+    },
+    {
+        season: 11,
         name: "Season 11 (Combines)",
         spreadsheetUrl: googleSheetsUrl("16sdOBw-0fjwIZAvY7CT_r6O8Dji5mb6LpA7xcgwp1DI",334898684),
     },
