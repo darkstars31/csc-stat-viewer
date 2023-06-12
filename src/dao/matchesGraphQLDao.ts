@@ -1,12 +1,22 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { Match } from "../models/matches-types";
 
+const calculateDaysSinceSeasonStart = () => {
+  const oneDay = 1000 *60*60*24;
+  const currentDate = new Date();
+  const startOfSeasonDate = new Date(2023,5);
+  const diff = currentDate.getTime() - startOfSeasonDate.getTime();
+  const diffInDays = Math.round( diff/ oneDay);
+  console.info( diff, diffInDays);
+  return diffInDays;
+}
+
 const fetchMatchesGraph = async ( teamId?: string) => await fetch(`https://core.csconfederation.com/graphql`,
     { method: "POST", 
         body: JSON.stringify({
                 "operationName": "",
-                "query": `query matches ( $teamId: String!) {
-                    matches (teamId: $teamId, daysAgo: 7) {
+                "query": `query matches ( $teamId: String!, $daysAgo: Int) {
+                    matches (teamId: $teamId, daysAgo: $daysAgo) {
                         id
                         scheduledDate
                         completedAt
@@ -50,7 +60,8 @@ const fetchMatchesGraph = async ( teamId?: string) => await fetch(`https://core.
                 }`
                 ,
                 "variables": {
-                    "teamId": teamId
+                    "teamId": teamId,
+                    "daysAgo": calculateDaysSinceSeasonStart()
                 }      
             })     
         })
