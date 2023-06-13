@@ -5,6 +5,9 @@ import { Link, useLocation } from 'wouter';
 import Select from "react-select";
 import { useDataContext } from '../DataContext';
 import { dataConfiguration } from "../dataConfig";
+import { SiCounterstrike } from 'react-icons/si';
+import { LuBarChart } from 'react-icons/lu';
+
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -56,17 +59,9 @@ export function Header() {
                 </Disclosure.Button>
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex flex-shrink-0 items-center">
-                  <img
-                    className="block h-8 w-auto lg:hidden"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="Your Company"
-                  />
-                  <img
-                    className="hidden h-8 w-auto lg:block"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                    alt="Your Company"
-                  />
+                <div className="flex flex-shrink-0 -px-4 items-center">
+                 <SiCounterstrike size="2em" />
+                 <LuBarChart size="2em" />
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
@@ -86,7 +81,7 @@ export function Header() {
                   </div>
                 </div>
               </div>
-              <div className="inset-y-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0 basis-1/4 w-full">
+              <div className="inset-y-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0 basis-1/2 md:basis-1/4 w-full">
                 {/* Profile dropdown */}
                 <Menu as="div" className="grow">                  
                       <div className="text-xs grow">

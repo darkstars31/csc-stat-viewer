@@ -50,7 +50,7 @@ export function Team(){
 								<div className="pt-8">
 									<h2 className="text-2xl font-bold text-white grow text-center">Matches ({teamRecord[0]} - {teamRecord[1]})</h2>
 									<MapRecord matches={matches} team={currentTeam} />
-									<div className="grid grid-cols-2 md:grid-cols-4 ">
+									<div className="grid grid-cols-1 md:grid-cols-4 ">
 										{ matches.map( match => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
 									</div>
 								</div>

@@ -36,7 +36,7 @@ export function MapRecord( { matches, team }: Props) {
     return (
         <>
         <div className='text-center text-sm'>Total RWP {totalRoundsWon}:{totalRoundsLost} ({calcPercentage(totalRoundsWon, totalRoundsLost+totalRoundsWon)}%)</div>
-        <div className='grid grid-cols-7'>
+        <div className='grid grid-cols-4 md:grid-cols-7'>
             {
                 Object.values(mapRecords).map( ( record ) => 
                     <div key={`record ${record.name}`} className=''>
@@ -45,7 +45,7 @@ export function MapRecord( { matches, team }: Props) {
                             <span className='text-green-400'>{record.wins}</span>
                             :
                             <span className='text-red-400'>{record.loss}</span>
-                            <span className='text-gray-500 mx-2 hidden'>
+                            <span className='text-gray-500 md:mx-2 hidden'>
                                 ({calcPercentage(record.wins, record.wins+record.loss)}%)
                             </span>
                             <div className='text-slate-500 text-xs'>
