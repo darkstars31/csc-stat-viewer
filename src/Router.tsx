@@ -13,9 +13,11 @@ import { useDataContext } from './DataContext';
 import { ProgressBar } from './common/components/progress';
 import { Team } from './pages/team';
 import { Franchise } from './pages/franchise';
+import { Charts } from './pages/charts';
   
 const routes = [
   { path: `/`, component: () => <Home /> },
+  { path: `/charts`, component: () => <Charts />},
   { path: `/franchises`, component: () => <Franchises /> },
   { path: `/franchises/:franchise`, component: () => <Franchise /> },
   { path: `/franchises/:franchise/:team`, component: () => <Team />},

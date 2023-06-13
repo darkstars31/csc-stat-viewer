@@ -34,6 +34,7 @@ export function Header() {
 
   const navigation = [
     { name: 'Home', href: '/', current: location.endsWith("/") },
+    { name: 'Charts', href: '/charts', current: location.endsWith("/charts") },
     { name: 'Franchises', href: '/franchises', current: location.includes("franchises") },
     { name: 'Players', href: '/players', current: location.includes("players") },
     { name: 'Team Builder', href: '/team-builder', current: location.includes("team-builder") },
@@ -94,12 +95,6 @@ export function Header() {
                                 options={dataConfiguration.map( item => ({ label: item.name, value: item.name}))}
                                 onChange={setSelectedDataOption}
                             />
-                          {/* <Select
-                              label=""
-                              options={ dataConfiguration.map( item => ({ id: item.name, value: item.name}))}
-                              onChange={ ( e ) => setSelectedDataOption( e.currentTarget.value )}
-                              value={selectedDataOption}
-                          /> */}
                       </div>
                   
                     {/* <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
