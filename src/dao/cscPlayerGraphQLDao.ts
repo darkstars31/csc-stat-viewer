@@ -3,7 +3,7 @@ import { CscPlayer, CscPlayersQuery } from "../models";
 
 const url = `https://core.csconfederation.com/graphql`
 
-type CscPlayerTypes = "SIGNED" | "FREE_AGENT" | "DRAFT_ELIGIBLE" | "PERMANENT_FREE_AGENT" | "SPECTATOR";
+type CscPlayerTypes = "SIGNED" | "FREE_AGENT" | "DRAFT_ELIGIBLE" | "PERMANENT_FREE_AGENT" | "SPECTATOR" | "INACTIVE_RESERVE" | "SIGNED_SUBBED" | "TEMPSIGNED" | "PERMFA_TEMP_SIGNED";
 
 const OneHour = 1000 * 60 * 60;
 

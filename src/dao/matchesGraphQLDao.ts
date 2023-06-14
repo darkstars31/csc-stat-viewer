@@ -27,6 +27,7 @@ const fetchMatchesGraph = async ( teamId?: string) => await fetch(`https://core.
                         home {
                           franchise {
                             prefix
+                            name
                             logo {
                               url
                             }
@@ -36,6 +37,7 @@ const fetchMatchesGraph = async ( teamId?: string) => await fetch(`https://core.
                         away {
                           franchise {
                             prefix
+                            name
                             logo {
                               url
                             }

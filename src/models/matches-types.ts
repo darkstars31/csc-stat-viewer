@@ -25,6 +25,7 @@ export type Away = {
 
 export type Franchise = {
     prefix: string;
+    name: string;
     logo:   Logo;
 }
 

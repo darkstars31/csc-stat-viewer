@@ -2,6 +2,7 @@ import * as React from "react";
 import { Match } from "../../models/matches-types";
 import { Team } from "../../models/franchise-types";
 import { GrDocumentVideo } from "react-icons/gr"
+import { Link } from "wouter";
 
 type Props = {
     match: Match
@@ -28,6 +29,8 @@ export function MatchCards( { match, team }: Props ) {
     }
 
     const backgroundColor = match.stats.length > 0 ? match.stats[0].winner.name === team?.name ? "bg-emerald-900": "bg-amber-950": "bg-midnight1";
+
+    console.info(match);
     return (
         <div className={`m-2 p-2 ${backgroundColor} rounded-lg overflow-hidden z-0`}>
             <div className="w-full flex text-sm pb-2">
@@ -36,13 +39,15 @@ export function MatchCards( { match, team }: Props ) {
                     id:{ match.id }
                 </span>
             </div>
-            <div className="grid grid-cols-2 overflow-hidden">
-                <div className="h-16 w-16 mx-auto"><img src={`https://core.csconfederation.com/${match.home.franchise.logo.url}`} alt=""/></div>
-                <div className="h-16 w-16 mx-auto"><img src={`https://core.csconfederation.com/${match.away.franchise.logo.url}`} alt=""/></div>
-            </div>
-            <div className="grid grid-cols-2 text-center text-sm">
-                <div className="text-sky-500">{match.home.name}</div>
-                <div className="text-amber-500">{match.away.name}</div>
+            <div className="cursor-pointer">
+                <div className="grid grid-cols-2 overflow-hidden">
+                    <Link to={`/franchises/${match.home.franchise.name}/${match.home.name}`}><div className="h-16 w-16 mx-auto"><img src={`https://core.csconfederation.com/${match.home.franchise.logo.url}`} alt=""/></div></Link>
+                    <Link to={`/franchises/${match.away.franchise.name}/${match.away.name}`}><div className="h-16 w-16 mx-auto"><img src={`https://core.csconfederation.com/${match.away.franchise.logo.url}`} alt=""/></div></Link>
+                </div>
+                <div className="grid grid-cols-2 text-center text-sm">
+                    <Link to={`/franchises/${match.home.franchise.name}/${match.home.name}`}><div className="text-sky-500">{match.home.name}</div></Link>
+                    <Link to={`/franchises/${match.away.franchise.name}/${match.away.name}`}><div className="text-amber-500">{match.away.name}</div></Link>
+                </div>
             </div>
             { match.stats.length > 0 &&
             <div className="relative pt-2">

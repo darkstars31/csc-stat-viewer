@@ -301,6 +301,157 @@ export function Charts() {
     ],
     };
 
+    const getByRole = ( role: string ) => playersWithStats.filter( p => p.stats?.ppR === role);
+
+    const optionByRole = {
+        title: {
+            text: 'Roles',
+            left: 'center'
+        },
+        legend: {
+            data: ['Awper','Fragger','Entry','Support','Lurker','Rifler'],
+            top: 30
+        },
+        series: {
+            radius: ['40%', '70%'],
+            center: ['50%', '50%'],
+            type: 'pie',
+            roseType: 'radius',
+            itemStyle: {
+                borderRadius: 5
+              },
+            label: {
+                color: '#fff',
+                show: true,
+                formatter(param: Record<string,unknown>) {
+                  // correct the percentage
+                  return param.name + ' (' + param.percent + '%)';
+                }
+              },
+            data: [ 
+                { value: getByRole("FRAGGER").length, name: 'Fragger' },
+                { value: getByRole("LURKER").length, name: 'Lurker' },
+                { value: getByRole("AWPER").length, name: 'Awper' },
+                { value: getByRole("ENTRY").length, name: 'Entry' },
+                { value: getByRole("SUPPORT").length, name: 'Support' },
+                { value: getByRole("RIFLER").length, name: 'Rifler' },
+            ]
+        }
+    };
+
+    const getByRoleAndTier = ( role: string, tier: string ) => playersWithStats.filter( p => p.stats?.ppR === role && p.tier.name === tier );
+    const getByTier = ( tier: string) => playersWithStats.filter( p => p.tier.name === tier);
+    const optionPlayersInTier = {
+        title: {
+            text: 'Players in Tier and Roles',
+            left: 'center',
+            top: 30,
+        },
+        xAxis: {
+          type: 'category',
+          data: ['Recruit', 'Prospect', 'Contender', 'Challenger', 'Elite', 'Premier']
+        },
+        yAxis: {
+          type: 'value',
+        },
+        legend: [{
+            orient: "vertical",
+            right: -40,
+            top: 100,
+        }],
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow',
+            }
+          },
+        series: [
+          {
+            name: 'Total Players',
+            data: [getByTier('Recruit').length, 
+                getByTier('Prospect').length, 
+                getByTier('Contender').length, 
+                getByTier('Challenger').length, 
+                getByTier('Elite').length, 
+                getByTier('Premier').length
+            ],
+            type: 'line',
+            smooth: true
+          },
+          {
+            name: 'No Role',
+            type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
+            data: [ getByRoleAndTier('-','Recruit').length,
+                    getByRoleAndTier('-','Prospect').length,
+                    getByRoleAndTier('-','Contender').length,
+                    getByRoleAndTier('-','Challenger').length,
+                    getByRoleAndTier('-','Elite').length,
+                    getByRoleAndTier('-','Premier').length]
+          },
+          {
+            name: 'Rifler',
+            type: 'bar', stack: 'total', label: {show: true}, emphasis: {focus: 'series'},
+            data: [getByRoleAndTier('RIFLER','Recruit').length,
+                    getByRoleAndTier('RIFLER','Prospect').length,
+                    getByRoleAndTier('RIFLER','Contender').length,
+                    getByRoleAndTier('RIFLER','Challenger').length,
+                    getByRoleAndTier('RIFLER','Elite').length,
+                    getByRoleAndTier('RIFLER','Premier').length]
+          },
+          {
+            name: 'Awper',
+            type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
+            data: [getByRoleAndTier('AWPER','Recruit').length,
+                    getByRoleAndTier('AWPER','Prospect').length,
+                    getByRoleAndTier('AWPER','Contender').length,
+                    getByRoleAndTier('AWPER','Challenger').length,
+                    getByRoleAndTier('AWPER','Elite').length,
+                    getByRoleAndTier('AWPER','Premier').length]
+          },
+          {
+            name: 'Support',
+            type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
+            data: [getByRoleAndTier('SUPPORT','Recruit').length,
+                    getByRoleAndTier('SUPPORT','Prospect').length,
+                    getByRoleAndTier('SUPPORT','Contender').length,
+                    getByRoleAndTier('SUPPORT','Challenger').length,
+                    getByRoleAndTier('SUPPORT','Elite').length,
+                    getByRoleAndTier('SUPPORT','Premier').length]
+          },
+          {
+            name: 'Fragger',
+            type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
+            data: [getByRoleAndTier('FRAGGER','Recruit').length,
+                    getByRoleAndTier('FRAGGER','Prospect').length,
+                    getByRoleAndTier('FRAGGER','Contender').length,
+                    getByRoleAndTier('FRAGGER','Challenger').length,
+                    getByRoleAndTier('FRAGGER','Elite').length,
+                    getByRoleAndTier('FRAGGER','Premier').length]
+          },
+          {
+            name: 'Entry',
+            type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
+            data: [getByRoleAndTier('ENTRY','Recruit').length,
+                    getByRoleAndTier('ENTRY','Prospect').length,
+                    getByRoleAndTier('ENTRY','Contender').length,
+                    getByRoleAndTier('ENTRY','Challenger').length,
+                    getByRoleAndTier('ENTRY','Elite').length,
+                    getByRoleAndTier('ENTRY','Premier').length]
+          },
+          {
+            name: 'Lurker',
+            type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
+            data: [getByRoleAndTier('LURKER','Recruit').length,
+                    getByRoleAndTier('LURKER','Prospect').length,
+                    getByRoleAndTier('LURKER','Contender').length,
+                    getByRoleAndTier('LURKER','Challenger').length,
+                    getByRoleAndTier('LURKER','Elite').length,
+                    getByRoleAndTier('LURKER','Premier').length]
+          },
+        ]
+      };
+
+
     return (
         <Container>
             <div>
@@ -314,6 +465,11 @@ export function Charts() {
             </div>
             <div>
                 <ReactECharts option={optionUtils} style={{height: 500}} />
+            </div>
+            <div className='grid grid-cols-2'>
+                <ReactECharts option={optionByRole} style={{height: 500}} />
+          
+                <ReactECharts option={optionPlayersInTier} style={{height: 500,width: 650}} />
             </div>
         </Container>
     );
