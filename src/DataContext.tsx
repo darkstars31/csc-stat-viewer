@@ -18,7 +18,7 @@ const useDataContextProvider = () => {
 	const { data: cscFreeAgentsPlayers = [], isLoading: isLoadingFreeAgentsCscPlayers } = useCscPlayersGraph( "FREE_AGENT");
 	const { data: cscDraftElegiblePlayers = [], isLoading: isLoadingDraftElegibleCscPlayers } = useCscPlayersGraph( "DRAFT_ELIGIBLE" );
 	const { data: cscPermaFreeAgentPlayers = [], isLoading: isLoadingPermaFreeAgentPlayers } = useCscPlayersGraph( "PERMANENT_FREE_AGENT" );
-	const { data: cscSpectatorPlayers = [], isLoading: isLoadingSpectatorPlayers } = useCscPlayersGraph( "SPECTATOR" );
+	//const { data: cscSpectatorPlayers = [], isLoading: isLoadingSpectatorPlayers } = useCscPlayersGraph( "SPECTATOR" );
 
 
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
@@ -29,7 +29,6 @@ const useDataContextProvider = () => {
 		...cscFreeAgentsPlayers, 
 		...cscDraftElegiblePlayers, 
 		...cscPermaFreeAgentPlayers, 
-		...cscSpectatorPlayers, 
 		...cscInactiveReservePlayers, 
 		...cscSignedSubbedPlayers,
 		...cscTempSignedPlayers,
@@ -51,7 +50,6 @@ const useDataContextProvider = () => {
 		isLoadingDraftElegibleCscPlayers,
 		isLoadingPermaFreeAgentPlayers,
 		isLoadingInactiveReserveCscPlayers,
-		isLoadingSpectatorPlayers,
 		isLoadingSignedSubbedCscPlayers,
 		isLoadingTempSignedCscPlayers,
 		isLoadingPermaTempSignedCscPlayers,
