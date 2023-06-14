@@ -3,7 +3,7 @@ import { useDataContext } from "../DataContext";
 import { PlayerStats } from "../models";
 import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
-import { useRoute } from "wouter";
+import { Link, useRoute } from "wouter";
 import { useFetchMatchesGraph } from "../dao/matchesGraphQLDao";
 import { PlayerRow } from "./franchise/player-row";
 import { MatchCards } from "./team/matches";
@@ -37,6 +37,9 @@ export function Team(){
 				<div className="backdrop-opacity-10 backdrop-brightness-90 bg-black/[.85] overflow-auto">
 					<Container>
 						<div className="m-2 p-2 backdrop-blur-sm">
+						<div className="my-4">
+							<i><Link className="hover:text-blue-400" to={`/franchises`}>Franchises</Link> {">"} <Link className="hover:text-blue-400" to={`/franchises/${currentFranchise?.name}`}>{currentFranchise?.name}</Link></i>
+						</div>
 							{	loading.isLoadingFranchises && <Loading />}
 							<h2 className="text-5xl font-bold text-white grow text-center">{currentTeam?.name}</h2>
 							<div className="text-center p-4 text-xl">
@@ -47,13 +50,15 @@ export function Team(){
 								{
 									currentTeam?.players?.map( player => <PlayerRow key={player.name} franchisePlayer={player} team={currentTeam} /> )
 								}
-								<div className="pt-8">
-									<h2 className="text-2xl font-bold text-white grow text-center">Matches ({teamRecord[0]} - {teamRecord[1]})</h2>
-									<MapRecord matches={matches} team={currentTeam} />
-									<div className="grid grid-cols-1 md:grid-cols-4 ">
-										{ matches.map( match => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
+								{ matches.length > 0 && 
+									<div className="pt-8">
+										<h2 className="text-2xl font-bold text-white grow text-center">Matches ({teamRecord[0]} - {teamRecord[1]})</h2>
+										<MapRecord matches={matches} team={currentTeam} />
+										<div className="grid grid-cols-1 md:grid-cols-4 ">
+											{ matches.map( match => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
+										</div>
 									</div>
-								</div>
+								}	
 							</div>	
 						</div>
 					</Container>

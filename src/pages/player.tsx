@@ -113,7 +113,13 @@ export function Player() {
                             { Name ?? "n/a"}
                         </div>
                         <div className={"text-[1.1rem] pb-5"}>
-                            <i><b>{ppR.includes('-')?'RIFLER':ppR}</b>{' — '}{teamAndFranchise?.split("(").pop()?.replace(')', '').replace('>', '')}</i>
+                            <i>
+                                <b>{ppR.includes('-')?'RIFLER':ppR}</b>{' — '} 
+                                { currentPlayer?.team?.franchise.name ? 
+                                    <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
+                                    : <span>{teamNameTranslator(currentPlayer)}</span>                         
+                                }                              
+                            </i>
                         </div>
                         <ul className="text-[0.8rem]">
                             <li>
