@@ -10,7 +10,7 @@ const useDataContextProvider = () => {
 	const [ selectedDataOption, setSelectedDataOption ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: dataConfiguration[0].name, value: dataConfiguration[0].name });
 	const dataConfig = dataConfiguration.find( item => selectedDataOption?.value === item.name);
 
-	const { data: cscSignedPlayers = [], isLoading: isLoadingSignedCscPlayers } = useCscPlayersGraph( "SIGNED" );
+	const { data: cscSignedPlayers = [], isLoading: isLoadingSignedCscPlayers, error } = useCscPlayersGraph( "SIGNED" );
 	const { data: cscSignedSubbedPlayers = [], isLoading: isLoadingSignedSubbedCscPlayers } = useCscPlayersGraph( "SIGNED_SUBBED" );
 	const { data: cscTempSignedPlayers = [], isLoading: isLoadingTempSignedCscPlayers } = useCscPlayersGraph( "TEMPSIGNED" );
 	const { data: cscPermaTempSignedPlayers = [], isLoading: isLoadingPermaTempSignedCscPlayers } = useCscPlayersGraph( "PERMFA_TEMP_SIGNED" );
@@ -18,7 +18,9 @@ const useDataContextProvider = () => {
 	const { data: cscFreeAgentsPlayers = [], isLoading: isLoadingFreeAgentsCscPlayers } = useCscPlayersGraph( "FREE_AGENT");
 	const { data: cscDraftElegiblePlayers = [], isLoading: isLoadingDraftElegibleCscPlayers } = useCscPlayersGraph( "DRAFT_ELIGIBLE" );
 	const { data: cscPermaFreeAgentPlayers = [], isLoading: isLoadingPermaFreeAgentPlayers } = useCscPlayersGraph( "PERMANENT_FREE_AGENT" );
-	//const { data: cscSpectatorPlayers = [], isLoading: isLoadingSpectatorPlayers } = useCscPlayersGraph( "SPECTATOR" );
+	const { data: cscUnrosteredGMPlayers = [], isLoading: isLoadingUnrosteredGMPlayers } = useCscPlayersGraph( "UNROSTERED_GM" );
+	const { data: cscInactivePlayers = [], isLoading: isLoadingInactivePlayers } = useCscPlayersGraph( "INACTIVE" );
+	const { data: cscSpectatorPlayers = [] } = useCscPlayersGraph( "SPECTATOR" );
 
 
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
@@ -32,8 +34,17 @@ const useDataContextProvider = () => {
 		...cscInactiveReservePlayers, 
 		...cscSignedSubbedPlayers,
 		...cscTempSignedPlayers,
-		...cscPermaTempSignedPlayers
+		...cscPermaTempSignedPlayers,
+		...cscUnrosteredGMPlayers,
+		...cscInactivePlayers,
+		...cscSpectatorPlayers,
 	];
+
+	console.info( cscPlayers.reduce( ( acc: string[], player) => {
+		acc.push(player.type ?? "");
+		acc = [...new Set(acc)];
+		return acc.filter(Boolean);
+	}, [] ));
 
 	console.info( cscPlayers.find( p => p.name === "Brodog"))
 
@@ -42,7 +53,6 @@ const useDataContextProvider = () => {
 		return foundStats.map( stats => ({ ...cscPlayer, stats: stats}));
 	});
 
-	//console.info( cscPlayers.length, playerStats.length, players.length);
 
 	const isLoadingCscPlayers = [
 		isLoadingSignedCscPlayers,
@@ -53,6 +63,8 @@ const useDataContextProvider = () => {
 		isLoadingSignedSubbedCscPlayers,
 		isLoadingTempSignedCscPlayers,
 		isLoadingPermaTempSignedCscPlayers,
+		isLoadingUnrosteredGMPlayers,
+		isLoadingInactivePlayers,
 	].some(Boolean);
 
     return {
@@ -67,6 +79,7 @@ const useDataContextProvider = () => {
 		selectedDataOption, setSelectedDataOption,
 		featureFlags:{
 		},
+		errors: [ error ].filter(Boolean),
     };
 }
 

@@ -6,6 +6,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
+import { AppLoadingError } from './pages/appLoadingError';
 
 const queryClient = new QueryClient();
 const env : string = process.env.NODE_ENV!;
@@ -16,6 +17,7 @@ function App() {
     <div className="bg-midnight1 text-white h-screen overflow-hidden">
       <QueryClientProvider client={queryClient}>
         <DataContextProvider>
+          <AppLoadingError />
           <Router />
         </DataContextProvider>
       </QueryClientProvider>
