@@ -68,7 +68,10 @@ const fetchContractsGraph = async () => await fetch(`https://core.csconfederatio
                 }
               }`,
             "variables": {}      
-        })
+        }),
+        headers: {
+            'content-type': "application/json"
+        }
     })
     .then( async response => {
         return response.json();

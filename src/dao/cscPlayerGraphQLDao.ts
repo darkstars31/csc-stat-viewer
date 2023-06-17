@@ -37,7 +37,10 @@ const fetchGraph = async ( playerType: CscPlayerTypes ) => await fetch(url,
             "variables": {
                 "playerType": playerType
             }      
-        })
+        }),
+        headers: {
+            'Content-Type': "application/json"
+        }
     })
     .then( async response => {
         return response.json().then( (json: CscPlayersQuery) => {

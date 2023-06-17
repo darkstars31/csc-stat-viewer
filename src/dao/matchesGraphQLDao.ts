@@ -65,7 +65,10 @@ const fetchMatchesGraph = async ( teamId?: string) => await fetch(`https://core.
                     "teamId": teamId,
                     "daysAgo": calculateDaysSinceSeasonStart()
                 }      
-            })     
+            }),
+            headers: {
+                'content-type': "application/json"
+            }   
         })
     .then( async response => {
         return response.json().then( json => {

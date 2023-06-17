@@ -39,7 +39,10 @@ const fetchFranchisesGraph = async () => await fetch(`https://core.csconfederati
                 }`
                 ,
                 "variables": {}      
-            })     
+            }),
+            headers: {
+                'content-type': "application/json"
+            }
         })
     .then( async response => {
         return response.json().then( json => {
