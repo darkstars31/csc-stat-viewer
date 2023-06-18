@@ -38,7 +38,6 @@ export function Players() {
     const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.stats?.Tier)) : filteredByPlayerType;
     const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.stats?.ppR)) : filteredByTier;
 
-
     const filteredPlayers = filters.length > 0 ? filteredByRole.filter( player => {
         return filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ) );
     } ) : filteredByRole;

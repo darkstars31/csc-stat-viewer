@@ -19,6 +19,8 @@ const useDataContextProvider = () => {
 	const { data: cscDraftElegiblePlayers = [], isLoading: isLoadingDraftElegibleCscPlayers } = useCscPlayersGraph( "DRAFT_ELIGIBLE" );
 	const { data: cscPermaFreeAgentPlayers = [], isLoading: isLoadingPermaFreeAgentPlayers } = useCscPlayersGraph( "PERMANENT_FREE_AGENT" );
 	const { data: cscUnrosteredGMPlayers = [], isLoading: isLoadingUnrosteredGMPlayers } = useCscPlayersGraph( "UNROSTERED_GM" );
+	const { data: cscUnrosteredAGMPlayers = [], isLoading: isLoadingUnrosteredAGMPlayers } = useCscPlayersGraph( "UNROSTERED_AGM" );
+	const { data: cscSignedPromotedPlayers = [], isLoading: isLoadingSignPromoted } = useCscPlayersGraph("SIGNED_PROMOTED");
 	const { data: cscInactivePlayers = [], isLoading: isLoadingInactivePlayers } = useCscPlayersGraph( "INACTIVE" );
 	const { data: cscSpectatorPlayers = [] } = useCscPlayersGraph( "SPECTATOR" );
 
@@ -37,6 +39,8 @@ const useDataContextProvider = () => {
 		...cscPermaTempSignedPlayers,
 		...cscUnrosteredGMPlayers,
 		...cscInactivePlayers,
+		...cscUnrosteredAGMPlayers,
+		...cscSignedPromotedPlayers,
 		...cscSpectatorPlayers,
 	];
 
@@ -46,13 +50,10 @@ const useDataContextProvider = () => {
 		return acc.filter(Boolean);
 	}, [] ));
 
-	console.info( cscPlayers.find( p => p.name === "Brodog"))
-
 	const players: Player[] = cscPlayers?.flatMap( cscPlayer => {
 		const foundStats = playerStats.filter( ps => (ps.Steam === "sid".concat(cscPlayer?.steam64Id ?? 0)));
 		return foundStats.map( stats => ({ ...cscPlayer, stats: stats}));
 	});
-
 
 	const isLoadingCscPlayers = [
 		isLoadingSignedCscPlayers,
@@ -65,6 +66,8 @@ const useDataContextProvider = () => {
 		isLoadingPermaTempSignedCscPlayers,
 		isLoadingUnrosteredGMPlayers,
 		isLoadingInactivePlayers,
+		isLoadingUnrosteredAGMPlayers,
+		isLoadingSignPromoted,
 	].some(Boolean);
 
     return {
