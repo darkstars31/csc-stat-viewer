@@ -5,16 +5,17 @@ import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
 import { Link, useRoute } from "wouter";
 import { useFetchMatchesGraph } from "../dao/matchesGraphQLDao";
-import { PlayerRow } from "./franchise/player-row";
+//import { PlayerRow } from "./franchise/player-row";
 import { MatchCards } from "./team/matches";
 import { MapRecord } from "./team/mapRecord";
+import { PlayerCard } from "./players/player-cards";
 
 
 export function Team(){
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { franchises = [], players: CscPlayers = [], loading } = useDataContext();
+	const { franchises = [], players: cscPlayers = [], loading } = useDataContext();
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const playerStats: PlayerStats[] = CscPlayers.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
+	const playerStats: PlayerStats[] = cscPlayers.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
 	const [, params] = useRoute("/franchises/:franchiseName/:teamName");
 	const franchiseName = decodeURIComponent(params?.franchiseName ?? "");
     const teamName = decodeURIComponent(params?.teamName ?? "");
@@ -22,9 +23,10 @@ export function Team(){
 	const currentFranchise = franchises.find( f => f.name === franchiseName );
 	const currentTeam = currentFranchise?.teams.find( t => t.name === teamName );
 
+	const players = cscPlayers.filter( cscPlayer => cscPlayer.team?.name === currentTeam?.name );
+
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph(currentTeam?.id);
-	console.info( matches )
 	const teamRecord = matches.reduce((acc, match) => {
 		if( match.stats.length > 0){
 			match.stats[0].winner.name === currentTeam?.name ? acc[0] = acc[0] + 1 : acc[1] = acc[1] + 1;
@@ -47,9 +49,13 @@ export function Team(){
 							</div>
 							<div className="p-4 rounded">
 								<hr className="h-px my-4 border-0" />
+								<div className="grid grid-cols-2 md:grid-cols-5 gap-4">
 								{
-									currentTeam?.players?.map( player => <PlayerRow key={player.name} franchisePlayer={player} team={currentTeam} /> )
+									//currentTeam?.players?.map( player => <PlayerRow key={player.name} franchisePlayer={player} team={currentTeam} /> )
+									players?.map( ( player, index ) => <PlayerCard key={player.name} player={player} index={index}/> )								
 								}
+								</div>
+								{ isLoadingMatches && <Loading />}
 								{ matches.length > 0 && 
 									<div className="pt-8">
 										<h2 className="text-2xl font-bold text-white grow text-center">Matches ({teamRecord[0]} - {teamRecord[1]})</h2>

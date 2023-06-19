@@ -53,7 +53,6 @@ export function PieChart( { options }: Props) {
             ,
             ...options
           };
-          console.info( defaultOptions.series );
 
     return (
         <ReactECharts option={defaultOptions} />

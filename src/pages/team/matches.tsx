@@ -30,7 +30,6 @@ export function MatchCards( { match, team }: Props ) {
 
     const backgroundColor = match.stats.length > 0 ? match.stats[0].winner.name === team?.name ? "bg-emerald-900": "bg-amber-950": "bg-midnight1";
 
-    console.info(match);
     return (
         <div className={`m-2 p-2 ${backgroundColor} rounded-lg overflow-hidden z-0`}>
             <div className="w-full flex text-sm pb-2">

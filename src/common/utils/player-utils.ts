@@ -2,7 +2,6 @@ import { PlayerStats } from "../../models";
 import { Player } from "../../models/player";
 
 export const PlayerMappings: Record<string,string> = {
-    "": "",
     "Steam": "SteamID",
     "Team": "Team",
     "Name": "Name",
@@ -145,6 +144,6 @@ function calculateAverage(players: PlayerStats[], prop: string){
 
 function calculateMinMax(players: PlayerStats[], prop: keyof PlayerStats, type: 'min' | 'max') {
     const sortedPlayers = _sort(players, prop);
-    return type === 'max' ? sortedPlayers[0][prop] : sortedPlayers.reverse()[0][prop];
+    return type === 'max' ? sortedPlayers[0][prop] : sortedPlayers?.reverse()[0][prop];
 }
 

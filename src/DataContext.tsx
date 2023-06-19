@@ -22,7 +22,7 @@ const useDataContextProvider = () => {
 	const { data: cscUnrosteredAGMPlayers = [], isLoading: isLoadingUnrosteredAGMPlayers } = useCscPlayersGraph( "UNROSTERED_AGM" );
 	const { data: cscSignedPromotedPlayers = [], isLoading: isLoadingSignPromoted } = useCscPlayersGraph("SIGNED_PROMOTED");
 	const { data: cscInactivePlayers = [], isLoading: isLoadingInactivePlayers } = useCscPlayersGraph( "INACTIVE" );
-	const { data: cscSpectatorPlayers = [] } = useCscPlayersGraph( "SPECTATOR" );
+	//const { data: cscSpectatorPlayers = [] } = useCscPlayersGraph( "SPECTATOR" );
 
 
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
@@ -41,14 +41,8 @@ const useDataContextProvider = () => {
 		...cscInactivePlayers,
 		...cscUnrosteredAGMPlayers,
 		...cscSignedPromotedPlayers,
-		...cscSpectatorPlayers,
+		//...cscSpectatorPlayers,
 	];
-
-	console.info( cscPlayers.reduce( ( acc: string[], player) => {
-		acc.push(player.type ?? "");
-		acc = [...new Set(acc)];
-		return acc.filter(Boolean);
-	}, [] ));
 
 	const players: Player[] = cscPlayers?.flatMap( cscPlayer => {
 		const foundStats = playerStats.filter( ps => (ps.Steam === "sid".concat(cscPlayer?.steam64Id ?? 0)));

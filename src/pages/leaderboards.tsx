@@ -35,7 +35,10 @@ export function LeaderBoards() {
     const leastUtilThrownPerMatch = utilThrownPerMatchX.reverse().map( p => ({ "Player": p.Name, "Tier": p.Tier, "Least Util/Match": p.Util })).splice(0,5);
     const headshotPercentage = _sort(playerData, "HS", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "HeadShot %": p.HS}));
     const clutchAbility = _sort(playerData, "clutch/R", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Clutch Points per Match": p['clutch/R']}));
-    const mostConsistent = _sort(playerData, "CONCY", 5).reverse().map( p => ({ "Player": p.Name, "Tier": p.Tier, "Most Consistent Rating": p['CONCY']}));
+    const grenadeDamagePerRound = _sort(playerData, "X/nade", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Grenade Damage Per Round": p["X/nade"]}));
+    const flashesPerFlash = _sort(playerData, "EF/F", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Flashes per Flash Thrown": p["EF/F"]}));
+    const openDuels = _sort(playerData, "ODR", 5).map( p => ({ "Player": p.Name, "Tier": p.Tier, "Open Duels": p.ODR}));
+
 
     const selectClassNames = {
         placeholder: () => "text-gray-400 bg-inherit",
@@ -182,8 +185,18 @@ export function LeaderBoards() {
                         <Table rows={clutchAbility}/>
                     </div>
                     <div className="m-4">
-                        Most Consistent Rating
-                        <Table rows={mostConsistent}/>
+                        Grenade Damage per Round
+                        <Table rows={grenadeDamagePerRound}/>
+                    </div>
+                </div>   
+                <div className="grid md:grid-cols-2 sm:grid-cols-1">
+                    <div className="m-4">
+                        Enemies Flashed per Flash
+                        <Table rows={flashesPerFlash}/>
+                    </div>
+                    <div className="m-4">
+                        Grenade Damage per Round
+                        <Table rows={openDuels}/>
                     </div>
                 </div>   
             </div> }

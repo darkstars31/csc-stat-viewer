@@ -28,6 +28,7 @@ export function Header() {
     multiValueLabel: () => "text-slate-200",
     multiValueRemove: () => "text-slate-800 pl-1",
     singleValue: () => "text-slate-200",
+    
 };
 
   const [ location ] = useLocation();
@@ -41,6 +42,8 @@ export function Header() {
     { name: 'Leaderboards', href: '/leaderboards', current: location.includes("leaderboards") },
     // { name: 'About', href: '/about', current: false },
   ];
+
+  const disableSeasonStatsSelector = location.includes("franchises");
 
   return (
     <Disclosure as="nav" className="bg-midnight2 w-full relative">
@@ -85,8 +88,9 @@ export function Header() {
               <div className="inset-y-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0 basis-1/2 md:basis-1/4 w-full">
                 {/* Profile dropdown */}
                 <Menu as="div" className="grow">                  
-                      <div className="text-xs grow">
+                      { !disableSeasonStatsSelector ? <div className="text-xs grow">
                         <Select
+                                isDisabled={disableSeasonStatsSelector}
                                 className="grow"
                                 unstyled
                                 isSearchable={false}
@@ -95,7 +99,16 @@ export function Header() {
                                 options={dataConfiguration.map( item => ({ label: item.name, value: item.name}))}
                                 onChange={setSelectedDataOption}
                             />
-                      </div>
+                      </div> : 
+                       <Select
+                        isDisabled={disableSeasonStatsSelector}
+                        className="grow"
+                        unstyled
+                        isSearchable={false}
+                        defaultValue={{ label: "Current Season", value: ""}}
+                        classNames={selectClassNames}
+                      />
+                      }
                   
                     {/* <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="sr-only">Open user menu</span>

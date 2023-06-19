@@ -62,7 +62,6 @@ export function Gauge( { options, data }: Props) {
             ],
             ...options, 
           };
-          console.info( defaultOptions );
 
     return (
         <ReactECharts option={defaultOptions} style={{height: 300}} />
