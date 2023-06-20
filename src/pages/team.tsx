@@ -8,7 +8,8 @@ import { useFetchMatchesGraph } from "../dao/matchesGraphQLDao";
 //import { PlayerRow } from "./franchise/player-row";
 import { MatchCards } from "./team/matches";
 import { MapRecord } from "./team/mapRecord";
-import { PlayerCard } from "./players/player-cards";
+//import { PlayerCard } from "./players/player-cards";
+import { PlayerRow } from "./franchise/player-row";
 
 
 export function Team(){
@@ -23,7 +24,7 @@ export function Team(){
 	const currentFranchise = franchises.find( f => f.name === franchiseName );
 	const currentTeam = currentFranchise?.teams.find( t => t.name === teamName );
 
-	const players = cscPlayers.filter( cscPlayer => cscPlayer.team?.name === currentTeam?.name );
+	//const players = cscPlayers.filter( cscPlayer => cscPlayer.team?.name === currentTeam?.name );
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph(currentTeam?.id);
@@ -49,10 +50,10 @@ export function Team(){
 							</div>
 							<div className="p-4 rounded">
 								<hr className="h-px my-4 border-0" />
-								<div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+								<div>
 								{
-									//currentTeam?.players?.map( player => <PlayerRow key={player.name} franchisePlayer={player} team={currentTeam} /> )
-									players?.map( ( player, index ) => <PlayerCard key={player.name} player={player} index={index}/> )								
+									currentTeam?.players?.map( player => <PlayerRow key={player.name} franchisePlayer={player} team={currentTeam} /> )
+									//players?.map( ( player, index ) => <PlayerCard key={player.name} player={player} index={index}/> )								
 								}
 								</div>
 								{ isLoadingMatches && <Loading />}

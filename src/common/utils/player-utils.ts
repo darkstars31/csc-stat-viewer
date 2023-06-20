@@ -144,6 +144,7 @@ function calculateAverage(players: PlayerStats[], prop: string){
 
 function calculateMinMax(players: PlayerStats[], prop: keyof PlayerStats, type: 'min' | 'max') {
     const sortedPlayers = _sort(players, prop);
+    if( sortedPlayers.length === 0 ) return [];
     return type === 'max' ? sortedPlayers[0][prop] : sortedPlayers?.reverse()[0][prop];
 }
 
