@@ -5,6 +5,7 @@ import { Link, useRoute } from "wouter";
 import { Loading } from "../common/components/loading";
 import { PlayerRow } from "./franchise/player-row";
 import { TeamFooterTabulation } from "./franchise/team-footer-tabulation";
+import { franchiseImages } from "../common/images/franchise";
 
 export const COLUMNS = 5;
 
@@ -19,11 +20,11 @@ export function Franchise(){
     }
 
     return (
-        <div style={{backgroundImage: `url('https://core.csconfederation.com/images/${currentFranchise?.logo.name}')`, overflow:'auto'}} className={`bg-repeat bg-center bg-fixed`}>
+        <div style={{backgroundImage: `url(${franchiseImages[currentFranchise?.prefix ?? '']})`, overflow:'auto'}} className={`bg-repeat bg-center bg-fixed`}>
             <div className="backdrop-opacity-10 backdrop-brightness-90 bg-black/[.85] overflow-auto">
                 <Container>
                     <div className="float-left h-24 w-24 md:w-48 md:h-48 relative">
-                        <img className="absolute h-full w-full" src={`https://core.csconfederation.com/images/${currentFranchise?.logo.name}`} placeholder="" alt=""/>
+                        <img className="absolute h-full w-full" src={franchiseImages[currentFranchise?.prefix ?? '']} placeholder="" alt=""/>
                     </div>
                     <div className="pt-2 grow">
                         <h2 className="text-5xl font-bold text-white grow text-center">{currentFranchise?.name} - <i>{currentFranchise?.prefix}</i></h2>

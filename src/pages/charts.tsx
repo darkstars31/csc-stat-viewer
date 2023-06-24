@@ -163,54 +163,54 @@ export function Charts() {
         },
         series: [ { 
             name: "Recruit",
-            data: [ getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Recruit"}).lowest["HS"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Recruit"}).average["HS"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Recruit"}).highest["HS"]
+            data: [ getTotalPlayerAverages(players, { tier: "Recruit"}).lowest["hs"],
+                getTotalPlayerAverages(players, { tier: "Recruit"}).average["hs"],
+                getTotalPlayerAverages(players, { tier: "Recruit"}).highest["hs"]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Prospect",
-            data: [ getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Prospect"}).lowest["HS"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Prospect"}).average["HS"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Prospect"}).highest["HS"]
+            data: [ getTotalPlayerAverages(players, { tier: "Prospect"}).lowest["hs"],
+                getTotalPlayerAverages(players, { tier: "Prospect"}).average["hs"],
+                getTotalPlayerAverages(players, { tier: "Prospect"}).highest["hs"]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Contender",
-            data: [ getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Contender"}).lowest["HS"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Contender"}).average["HS"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Contender"}).highest["HS"]
+            data: [ getTotalPlayerAverages(players, { tier: "Contender"}).lowest["hs"],
+                getTotalPlayerAverages(players, { tier: "Contender"}).average["hs"],
+                getTotalPlayerAverages(players, { tier: "Contender"}).highest["hs"]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Challenger",
-            data: [ getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Challenger"}).lowest["HS"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Challenger"}).average["HS"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Challenger"}).highest["HS"]
+            data: [ getTotalPlayerAverages(players, { tier: "Challenger"}).lowest["hs"],
+                getTotalPlayerAverages(players, { tier: "Challenger"}).average["hs"],
+                getTotalPlayerAverages(players, { tier: "Challenger"}).highest["hs"]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Elite",
-            data: [ getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Elite"}).lowest["HS"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Elite"}).average["HS"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Elite"}).highest["HS"]
+            data: [ getTotalPlayerAverages(players, { tier: "Elite"}).lowest["hs"],
+                getTotalPlayerAverages(players, { tier: "Elite"}).average["hs"],
+                getTotalPlayerAverages(players, { tier: "Elite"}).highest["hs"]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Premier",
-            data: [ getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Premier"}).lowest["HS"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Premier"}).average["HS"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Premier"}).highest["HS"]
+            data: [ getTotalPlayerAverages(players, { tier: "Premier"}).lowest["hs"],
+                getTotalPlayerAverages(players, { tier: "Premier"}).average["hs"],
+                getTotalPlayerAverages(players, { tier: "Premier"}).highest["hs"]
             ],
             type: "bar",
             emphasis: emp,
@@ -245,54 +245,54 @@ export function Charts() {
         },
         series: [ { 
             name: "Recruit",
-            data: [ getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Recruit"}).lowest["Util"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Recruit"}).average["Util"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Recruit"}).highest["Util"]
+            data: [ getTotalPlayerAverages(players, { tier: "Recruit"}).lowest["util"],
+                getTotalPlayerAverages(players, { tier: "Recruit"}).average["util"],
+                getTotalPlayerAverages(players, { tier: "Recruit"}).highest["util"]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Prospect",
-            data: [ getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Prospect"}).lowest["Util"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Prospect"}).average["Util"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Prospect"}).highest["Util"]
+            data: [ getTotalPlayerAverages(players, { tier: "Prospect"}).lowest["util"],
+                getTotalPlayerAverages(players, { tier: "Prospect"}).average["util"],
+                getTotalPlayerAverages(players, { tier: "Prospect"}).highest["util"]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Contender",
-            data: [ getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Contender"}).lowest["Util"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Contender"}).average["Util"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Contender"}).highest["Util"]
+            data: [ getTotalPlayerAverages(players, { tier: "Contender"}).lowest["util"],
+                getTotalPlayerAverages(players, { tier: "Contender"}).average["util"],
+                getTotalPlayerAverages(players, { tier: "Contender"}).highest["util"]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Challenger",
-            data: [ getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Challenger"}).lowest["Util"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Challenger"}).average["Util"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Challenger"}).highest["Util"]
+            data: [ getTotalPlayerAverages(players, { tier: "Challenger"}).lowest["util"],
+                getTotalPlayerAverages(players, { tier: "Challenger"}).average["util"],
+                getTotalPlayerAverages(players, { tier: "Challenger"}).highest["util"]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Elite",
-            data: [ getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Elite"}).lowest["Util"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Elite"}).average["Util"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Elite"}).highest["Util"]
+            data: [ getTotalPlayerAverages(players, { tier: "Elite"}).lowest["util"],
+                getTotalPlayerAverages(players, { tier: "Elite"}).average["util"],
+                getTotalPlayerAverages(players, { tier: "Elite"}).highest["util"]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Premier",
-            data: [ getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Premier"}).lowest["Util"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Premier"}).average["Util"],
-                getTotalPlayerAverages(playersWithStats.map( p => p.stats!), { tier: "Premier"}).highest["Util"]
+            data: [ getTotalPlayerAverages(players, { tier: "Premier"}).lowest["util"],
+                getTotalPlayerAverages(players, { tier: "Premier"}).average["util"],
+                getTotalPlayerAverages(players, { tier: "Premier"}).highest["util"]
             ],
             type: "bar",
             emphasis: emp,
@@ -301,7 +301,7 @@ export function Charts() {
     ],
     };
 
-    const getByRole = ( role: string ) => playersWithStats.filter( p => p.stats?.ppR === role);
+    const getByRole = ( role: string ) => playersWithStats.filter( p => p.role === role);
 
     const optionByRole = {
         title: {
@@ -339,117 +339,117 @@ export function Charts() {
         }
     };
 
-    const getByRoleAndTier = ( role: string, tier: string ) => playersWithStats.filter( p => p.stats?.ppR === role && p.tier.name === tier );
-    const getByTier = ( tier: string) => playersWithStats.filter( p => p.tier.name === tier);
-    const optionPlayersInTier = {
-        title: {
-            text: 'Players in Tier and Roles',
-            left: 'center',
-            top: 30,
-        },
-        xAxis: {
-          type: 'category',
-          data: ['Recruit', 'Prospect', 'Contender', 'Challenger', 'Elite', 'Premier']
-        },
-        yAxis: {
-          type: 'value',
-        },
-        legend: [{
-            orient: "vertical",
-            right: -40,
-            top: 100,
-        }],
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              type: 'shadow',
-            }
-          },
-        series: [
-          {
-            name: 'Total Players',
-            data: [getByTier('Recruit').length, 
-                getByTier('Prospect').length, 
-                getByTier('Contender').length, 
-                getByTier('Challenger').length, 
-                getByTier('Elite').length, 
-                getByTier('Premier').length
-            ],
-            type: 'line',
-            smooth: true
-          },
-          {
-            name: 'No Role',
-            type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
-            data: [ getByRoleAndTier('-','Recruit').length,
-                    getByRoleAndTier('-','Prospect').length,
-                    getByRoleAndTier('-','Contender').length,
-                    getByRoleAndTier('-','Challenger').length,
-                    getByRoleAndTier('-','Elite').length,
-                    getByRoleAndTier('-','Premier').length]
-          },
-          {
-            name: 'Rifler',
-            type: 'bar', stack: 'total', label: {show: true}, emphasis: {focus: 'series'},
-            data: [getByRoleAndTier('RIFLER','Recruit').length,
-                    getByRoleAndTier('RIFLER','Prospect').length,
-                    getByRoleAndTier('RIFLER','Contender').length,
-                    getByRoleAndTier('RIFLER','Challenger').length,
-                    getByRoleAndTier('RIFLER','Elite').length,
-                    getByRoleAndTier('RIFLER','Premier').length]
-          },
-          {
-            name: 'Awper',
-            type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
-            data: [getByRoleAndTier('AWPER','Recruit').length,
-                    getByRoleAndTier('AWPER','Prospect').length,
-                    getByRoleAndTier('AWPER','Contender').length,
-                    getByRoleAndTier('AWPER','Challenger').length,
-                    getByRoleAndTier('AWPER','Elite').length,
-                    getByRoleAndTier('AWPER','Premier').length]
-          },
-          {
-            name: 'Support',
-            type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
-            data: [getByRoleAndTier('SUPPORT','Recruit').length,
-                    getByRoleAndTier('SUPPORT','Prospect').length,
-                    getByRoleAndTier('SUPPORT','Contender').length,
-                    getByRoleAndTier('SUPPORT','Challenger').length,
-                    getByRoleAndTier('SUPPORT','Elite').length,
-                    getByRoleAndTier('SUPPORT','Premier').length]
-          },
-          {
-            name: 'Fragger',
-            type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
-            data: [getByRoleAndTier('FRAGGER','Recruit').length,
-                    getByRoleAndTier('FRAGGER','Prospect').length,
-                    getByRoleAndTier('FRAGGER','Contender').length,
-                    getByRoleAndTier('FRAGGER','Challenger').length,
-                    getByRoleAndTier('FRAGGER','Elite').length,
-                    getByRoleAndTier('FRAGGER','Premier').length]
-          },
-          {
-            name: 'Entry',
-            type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
-            data: [getByRoleAndTier('ENTRY','Recruit').length,
-                    getByRoleAndTier('ENTRY','Prospect').length,
-                    getByRoleAndTier('ENTRY','Contender').length,
-                    getByRoleAndTier('ENTRY','Challenger').length,
-                    getByRoleAndTier('ENTRY','Elite').length,
-                    getByRoleAndTier('ENTRY','Premier').length]
-          },
-          {
-            name: 'Lurker',
-            type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
-            data: [getByRoleAndTier('LURKER','Recruit').length,
-                    getByRoleAndTier('LURKER','Prospect').length,
-                    getByRoleAndTier('LURKER','Contender').length,
-                    getByRoleAndTier('LURKER','Challenger').length,
-                    getByRoleAndTier('LURKER','Elite').length,
-                    getByRoleAndTier('LURKER','Premier').length]
-          },
-        ]
-      };
+    // const getByRoleAndTier = ( role: string, tier: string ) => playersWithStats.filter( p => p.stats?.ppR === role && p.tier.name === tier );
+    // const getByTier = ( tier: string) => playersWithStats.filter( p => p.tier.name === tier);
+    // const optionPlayersInTier = {
+    //     title: {
+    //         text: 'Players in Tier and Roles',
+    //         left: 'center',
+    //         top: 30,
+    //     },
+    //     xAxis: {
+    //       type: 'category',
+    //       data: ['Recruit', 'Prospect', 'Contender', 'Challenger', 'Elite', 'Premier']
+    //     },
+    //     yAxis: {
+    //       type: 'value',
+    //     },
+    //     legend: [{
+    //         orient: "vertical",
+    //         right: -40,
+    //         top: 100,
+    //     }],
+    //     tooltip: {
+    //         trigger: 'axis',
+    //         axisPointer: {
+    //           type: 'shadow',
+    //         }
+    //       },
+    //     series: [
+    //       {
+    //         name: 'Total Players',
+    //         data: [getByTier('Recruit').length, 
+    //             getByTier('Prospect').length, 
+    //             getByTier('Contender').length, 
+    //             getByTier('Challenger').length, 
+    //             getByTier('Elite').length, 
+    //             getByTier('Premier').length
+    //         ],
+    //         type: 'line',
+    //         smooth: true
+    //       },
+    //       {
+    //         name: 'No Role',
+    //         type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
+    //         data: [ getByRoleAndTier('-','Recruit').length,
+    //                 getByRoleAndTier('-','Prospect').length,
+    //                 getByRoleAndTier('-','Contender').length,
+    //                 getByRoleAndTier('-','Challenger').length,
+    //                 getByRoleAndTier('-','Elite').length,
+    //                 getByRoleAndTier('-','Premier').length]
+    //       },
+    //       {
+    //         name: 'Rifler',
+    //         type: 'bar', stack: 'total', label: {show: true}, emphasis: {focus: 'series'},
+    //         data: [getByRoleAndTier('RIFLER','Recruit').length,
+    //                 getByRoleAndTier('RIFLER','Prospect').length,
+    //                 getByRoleAndTier('RIFLER','Contender').length,
+    //                 getByRoleAndTier('RIFLER','Challenger').length,
+    //                 getByRoleAndTier('RIFLER','Elite').length,
+    //                 getByRoleAndTier('RIFLER','Premier').length]
+    //       },
+    //       {
+    //         name: 'Awper',
+    //         type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
+    //         data: [getByRoleAndTier('AWPER','Recruit').length,
+    //                 getByRoleAndTier('AWPER','Prospect').length,
+    //                 getByRoleAndTier('AWPER','Contender').length,
+    //                 getByRoleAndTier('AWPER','Challenger').length,
+    //                 getByRoleAndTier('AWPER','Elite').length,
+    //                 getByRoleAndTier('AWPER','Premier').length]
+    //       },
+    //       {
+    //         name: 'Support',
+    //         type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
+    //         data: [getByRoleAndTier('SUPPORT','Recruit').length,
+    //                 getByRoleAndTier('SUPPORT','Prospect').length,
+    //                 getByRoleAndTier('SUPPORT','Contender').length,
+    //                 getByRoleAndTier('SUPPORT','Challenger').length,
+    //                 getByRoleAndTier('SUPPORT','Elite').length,
+    //                 getByRoleAndTier('SUPPORT','Premier').length]
+    //       },
+    //       {
+    //         name: 'Fragger',
+    //         type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
+    //         data: [getByRoleAndTier('FRAGGER','Recruit').length,
+    //                 getByRoleAndTier('FRAGGER','Prospect').length,
+    //                 getByRoleAndTier('FRAGGER','Contender').length,
+    //                 getByRoleAndTier('FRAGGER','Challenger').length,
+    //                 getByRoleAndTier('FRAGGER','Elite').length,
+    //                 getByRoleAndTier('FRAGGER','Premier').length]
+    //       },
+    //       {
+    //         name: 'Entry',
+    //         type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
+    //         data: [getByRoleAndTier('ENTRY','Recruit').length,
+    //                 getByRoleAndTier('ENTRY','Prospect').length,
+    //                 getByRoleAndTier('ENTRY','Contender').length,
+    //                 getByRoleAndTier('ENTRY','Challenger').length,
+    //                 getByRoleAndTier('ENTRY','Elite').length,
+    //                 getByRoleAndTier('ENTRY','Premier').length]
+    //       },
+    //       {
+    //         name: 'Lurker',
+    //         type: 'bar', stack: 'total', label: {show: true},  emphasis: {focus: 'series'},
+    //         data: [getByRoleAndTier('LURKER','Recruit').length,
+    //                 getByRoleAndTier('LURKER','Prospect').length,
+    //                 getByRoleAndTier('LURKER','Contender').length,
+    //                 getByRoleAndTier('LURKER','Challenger').length,
+    //                 getByRoleAndTier('LURKER','Elite').length,
+    //                 getByRoleAndTier('LURKER','Premier').length]
+    //       },
+    //     ]
+    //   };
 
 
     return (
@@ -469,7 +469,7 @@ export function Charts() {
             <div className='grid grid-cols-2'>
                 <ReactECharts option={optionByRole} style={{height: 500}} />
           
-                <ReactECharts option={optionPlayersInTier} style={{height: 500,width: 650}} />
+                {/* <ReactECharts option={optionPlayersInTier} style={{height: 500,width: 650}} /> */}
             </div>
         </Container>
     );

@@ -22,6 +22,7 @@ export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: Franchis
                     {franchisePlayer.name} { team?.captain?.steam64Id === franchisePlayer.steam64Id ? <GiPirateHat size="1.5em" className="inline"/> : ""}
                 </Link>
                 <div>{franchisePlayer.mmr} <span className="text-gray-400">({percentageOfMmrCap}%)</span></div>
+                {/* OLD <div>{player?.stats?.Rating.toFixed(2) ?? "-"}</div> */}
                 <div>{player?.stats?.Rating.toFixed(2) ?? "-"}</div>
                 <div>Contract {player?.contractDuration}</div>
                 <div>

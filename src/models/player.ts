@@ -1,8 +1,9 @@
 import { CscPlayer } from "./csc-player-types";
-import { PlayerStats } from "./player-stats";
+import { CscStats } from "./csc-stats-types";
 
 export type Player = 
     CscPlayer &
     {
-        stats: PlayerStats | null
+        role?: string,
+        stats: CscStats
     }

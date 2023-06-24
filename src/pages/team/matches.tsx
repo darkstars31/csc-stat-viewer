@@ -4,21 +4,11 @@ import { Team } from "../../models/franchise-types";
 import { GrDocumentVideo } from "react-icons/gr"
 import { Link } from "wouter";
 
+import { mapImages } from "../../common/images/maps";
+
 type Props = {
     match: Match
     team?: Team,
-}
-
-type MapImages = Record<string, string>;
-
-export const mapImages: MapImages = {
-    de_vertigo: "https://developer.valvesoftware.com/w/images/d/d5/De_vertigo.png",
-    de_mirage:"https://developer.valvesoftware.com/w/images/6/68/De_mirage.png",
-    de_nuke: "https://developer.valvesoftware.com/w/images/5/57/De_nuke.png",
-    de_anubis: "https://developer.valvesoftware.com/w/images/5/54/De_anubis.png",
-    de_ancient: "https://developer.valvesoftware.com/w/images/9/94/De_ancient.png",
-    de_overpass: "https://developer.valvesoftware.com/w/images/d/dc/De_overpass.png",
-    de_inferno: "https://developer.valvesoftware.com/w/images/b/be/De_inferno.png",
 }
 
 export function MatchCards( { match, team }: Props ) {
@@ -51,7 +41,7 @@ export function MatchCards( { match, team }: Props ) {
             { match.stats.length > 0 &&
             <div className="relative pt-2">
                 <div className="absolute -z-10 w-full">
-                    <img className="object-cover object-center w-16 h-16" src={mapImages[match.stats[0].mapName as keyof MapImages ]} alt=""/>
+                    <img className="object-cover object-center w-16 h-16" src={mapImages[match.stats[0].mapName as keyof typeof mapImages ]} alt={match.stats[0].mapName}/>
                 </div>
                 <div className="text-center z-10">{match.stats[0].mapName.split('_')[1]}</div>
                 <div className="grid grid-cols-1 text-3xl text-center z-10">

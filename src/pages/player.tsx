@@ -12,7 +12,6 @@ import { Link, useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
 import { RoleRadar } from "../common/components/roleRadar";
-import { PlayerStats } from "../models";
 import { PlayerNavigator } from "./player/player-navigator";
 import { PlayerRatings } from "./player/playerRatings";
 import { tiertopincategory } from "../svgs";
@@ -21,24 +20,23 @@ import { nth } from "../common/utils/string-utils";
 import { getTeammates } from "../common/utils/franchise-utils";
 import { RxDiscordLogo } from "react-icons/rx";
 import { SiFaceit } from "react-icons/si";
-import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
-import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
+// import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
+// import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
 
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
     const { players = [], franchises = [], loading, selectedDataOption} = useDataContext();
-    const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const [, params] = useRoute("/players/:tier/:id");
     const tierParam = decodeURIComponent(params?.tier ?? "");
     const nameParam = decodeURIComponent(params?.id ?? "");
     const currentPlayer = players.find( p => p.name === nameParam);
-    const currentPlayerStats = playerStats.find( player => player.Name === nameParam && player.Tier === tierParam);
-    const statsInDifferentTier = playerStats.filter( player => player.Name === nameParam && player.Tier !== tierParam);
-    const linksToDifferentTier = statsInDifferentTier.map( s => { 
-        return <><br /><Link className="text-blue-400" to={`/players/${s.Tier}/${nameParam}`}>{s.Tier}</Link></>;
-    });
-    console.info( linksToDifferentTier);
+    const currentPlayerStats = currentPlayer?.stats;//playerStats.find( player => player.Name === nameParam && currentPlayer?.tier.name === tierParam);
+    // const statsInDifferentTier = playerStats.filter( player => player.Name === nameParam && player.Tier !== tierParam);
+    // const linksToDifferentTier = statsInDifferentTier.map( s => { 
+    //     return <><br /><Link className="text-blue-400" to={`/players/${s.Tier}/${nameParam}`}>{s.Tier}</Link></>;
+    // });
+    //console.info( linksToDifferentTier);
 
     React.useEffect(() => {
         divRef.current?.scrollIntoView();
@@ -46,45 +44,55 @@ export function Player() {
 
     if( loading.isLoadingCscPlayers ){
         return <Container><Loading /></Container>;
-    } else if ( !currentPlayerStats ){
+    } else if ( !currentPlayer?.stats ){
 		return <Container>
 			No {selectedDataOption?.label} stats found for {nameParam} in {tierParam}
             <div className="text-xs mt-4 pl-4">
-                { linksToDifferentTier.length > 0 && <div>This player has stats in a different tier. {linksToDifferentTier}</div> }
+                {/* { linksToDifferentTier.length > 0 && <div>This player has stats in a different tier. {linksToDifferentTier}</div> } */}
             </div>
 		</Container>
 	}
 
-    const playerRatingIndex = getPlayerRatingIndex( currentPlayerStats!, playerStats );
+    const playerRatingIndex = getPlayerRatingIndex( currentPlayer, players );
 
-    const rankingsInAllTiers = statsInDifferentTier.map( s => {
-        const playerRatingIndexInThisTier = getPlayerRatingIndex(s, playerStats);
-        return {
-            tier: s.Tier,
-            ranking: playerRatingIndexInThisTier+1
-        };
-    });
+    // const rankingsInAllTiers = statsInDifferentTier.map( s => {
+    //     const playerRatingIndexInThisTier = getPlayerRatingIndex(s, playerStats);
+    //     return {
+    //         tier: s.Tier,
+    //         ranking: playerRatingIndexInThisTier+1
+    //     };
+    // });
 
     const { 
-        Name, Tier, Team, Rating, Steam, ppR, GP,
-        Kills, Assists, Deaths,
-        "2k": twoKills, "3k": threeKills, "4k": fourKills, "5k": aces,
-        HS, KAST, ADR, "K/R": avgKillsPerRound,
-        "CT #": ctRating, "T #": tRating,
-        "1v1": clutch1v1, "1v2": clutch1v2, "1v3": clutch1v3, "1v4": clutch1v4, "1v5": clutch1v5,
-        Peak, Pit, Form, "CONCY": ratingConsistency,
-        EF, "EF/F": enemiesFlashedPerFlash, "Blind/EF": enemyBlindTime, F_Assists, UD,
-        "X/nade": nadeDmgPerFrag, Util: utilThrownPerMatch,
-        ODR: openDuelPercentage, "oda/R": openDuelsPerRound, "entries/R": TsidedEntryFragsPerRound, "ea/R": avgRoundsOpenDuelOnTside,
-		"trades/R": tradesPerRound, "saves/R": savesPerRound, RWK,
-        ADP, ctADP, tADP,
-        Impact, IWR, KPA,
-		"multi/R": multiKillRound, "clutch/R": clutchPerRound,
-		SuppR, SuppXr, SRate, TRatio,
-        ATD,
-		"lurks/tR": lurksPerTsideRound, "wlp/L": lurkPointsEarned, "AWP/ctr": awpKillsCTside,
-		Rounds, "MIP/r": mvpRounds, "K/ctr": killsCTside,
-        Xdiff, "awp/R": awpKillsPerRound,
+        Team, Rating, GP,
+        kills, assists, deaths,
+        twoK: twoKills, threeK: threeKills, fourK: fourKills, fiveK: aces,
+        hs, kast, adr, kr: avgKillsPerRound,
+        // "CT #": ctRating, "T #": tRating,
+        cl_1: clutch1v1, cl_2: clutch1v2, cl_3: clutch1v3, cl_4: clutch1v4, cl_5: clutch1v5,
+        peak, pit, form, consistency: ratingConsistency,
+        ef, 
+        // "EF/F": enemiesFlashedPerFlash, "Blind/EF": enemyBlindTime, fAssists, utilDmg,
+        // "Xnade": nadeDmgPerFrag, 
+        util: utilThrownPerMatch,
+        odr: openDuelPercentage, "odaR": openDuelsPerRound, 
+        // "entriesR": TsidedEntryFragsPerRound, 
+        // "eaR": avgRoundsOpenDuelOnTside,
+		"tradesR": tradesPerRound, "savesR": savesPerRound, 
+        // RWK,
+        adp, 
+        // ctADP, tADP,
+        impact, 
+        // IWR, kpa,
+		multiR: multiKillRound, clutchR: clutchPerRound,
+		suppR, suppXR, 
+        // sRate, 
+        tRatio,
+        // ATD,
+		// "lurks/tR": lurksPerTsideRound, "wlp/L": lurkPointsEarned, "AWP/ctr": awpKillsCTside,
+		rounds, 
+        // "MIP/r": mvpRounds, "K/ctr": killsCTside,
+         awpR: awpKillsPerRound,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ...playerRest 
     } = currentPlayerStats!;
@@ -92,15 +100,15 @@ export function Player() {
     const teamAndFranchise = currentPlayer?.team?.franchise ? `${currentPlayer?.team?.franchise.name} (${currentPlayer?.team?.franchise.prefix}) > ${currentPlayer?.team?.name}` : teamNameTranslator(currentPlayer);
     const teammates = getTeammates( currentPlayer, players, franchises);
     
-    const numberOneProperties = propertiesCurrentPlayerIsNumberOneFor(currentPlayerStats, playerStats, awardProperties);
-    const top10Properties = propertiesCurrentPlayerIsInTop10For(currentPlayerStats, playerStats, awardProperties);
+    const numberOneProperties = propertiesCurrentPlayerIsNumberOneFor(currentPlayer, players, awardProperties);
+    const top10Properties = propertiesCurrentPlayerIsInTop10For(currentPlayer, players, awardProperties);
 
     return (
         <>
         <div ref={divRef} />
         <Container>
            
-            <PlayerNavigator player={currentPlayerStats} playerIndex={playerRatingIndex} />
+            <PlayerNavigator player={currentPlayer} playerIndex={playerRatingIndex} />
 
             <Stat>
                 <div className="flex space-x-4 pb-2">
@@ -110,11 +118,11 @@ export function Player() {
                     </div>
                     <div className="text-left basis-3/4">
                         <div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
-                            { Name ?? "n/a"}
+                            { currentPlayer.name ?? "n/a"}
                         </div>
                         <div className={"text-[1.1rem] pb-5"}>
                             <i>
-                                <b>{ppR.includes('-')?'RIFLER':ppR}</b>{' — '} 
+                                <b>{currentPlayer.role}</b>{' — '} 
                                 { currentPlayer?.team?.franchise.name ? 
                                     <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
                                     : <span>{teamNameTranslator(currentPlayer)}</span>                         
@@ -123,14 +131,14 @@ export function Player() {
                         </div>
                         <ul className="text-[0.8rem]">
                             <li>
-                                {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{Tier}</i></b>
+                                {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{currentPlayer.tier.name}</i></b>
                                 </li>
-                            { rankingsInAllTiers.map(({tier, ranking}) => (
+                            {/* { rankingsInAllTiers.map(({tier, ranking}) => (
                                 <li key={tier}>
                                     {ranking}{nth(ranking)} Overall in {" "}
                                     <Link className="text-blue-300 italic hover:text-blue-500" href={`/players/${tier}/${Name}`}>{tier}</Link>
                                 </li>
-                            )) }
+                            )) } */}
                         </ul>
 
                     </div>
@@ -178,15 +186,15 @@ export function Player() {
                                 </div>
                             </div>
                         </div>
-                        <PlayerRatings player={currentPlayerStats} />
+                        <PlayerRatings player={currentPlayer} />
                     </div>
                     <div className="justify-center">
-                        <RoleRadar player={currentPlayerStats!}/>         
+                        <RoleRadar player={currentPlayer!}/>         
                     </div>
                 </div>
                 <div className="grid grid-cols-2 w-full">
-                    <TeamSideRatingPie player={currentPlayerStats} />
-                    <KillsAssistsDeathsPie player={currentPlayerStats} />
+                    {/* <TeamSideRatingPie player={currentPlayerStats} /> */}
+                    {/* <KillsAssistsDeathsPie player={currentPlayerStats} /> */}
                 </div>
             </Stat>
 
@@ -210,8 +218,8 @@ export function Player() {
             <br />
             <>
             {/* Creating pairs of arrays from grid-data to display them side-by-side with a divider after unless there are no more arrays */}
-                {Array(Math.ceil(getGridData(currentPlayerStats).length / 2)).fill(0).map((_, i) => {
-                    const pair = getGridData(currentPlayerStats).slice(i * 2, (i + 1) * 2);
+                {Array(Math.ceil(getGridData(currentPlayer).length / 2)).fill(0).map((_, i) => {
+                    const pair = getGridData(currentPlayer).slice(i * 2, (i + 1) * 2);
                     return (
                         <React.Fragment key={`pair-${i}`}>
                             <GridContainer>
@@ -228,7 +236,7 @@ export function Player() {
                                     </div>
                                 ))}
                             </GridContainer>
-                            {i < Math.ceil(getGridData(currentPlayerStats).length / 2) - 1 && <br />}
+                            {i < Math.ceil(getGridData(currentPlayer).length / 2) - 1 && <br />}
                         </React.Fragment>
                     );
                 })}

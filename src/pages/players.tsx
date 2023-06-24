@@ -35,14 +35,14 @@ export function Players() {
     sortedPlayerData = orderBy?.value.includes("Name") ? sortedPlayerData.reverse() : sortedPlayerData;
 
     const filteredByPlayerType = viewPlayerTypeOptions?.length ? sortedPlayerData.filter( player => viewPlayerTypeOptions?.some( type => type.value === player.type)) : playersWithStats;
-    const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.stats?.Tier)) : filteredByPlayerType;
-    const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.stats?.ppR)) : filteredByTier;
+    const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.tier.name)) : filteredByPlayerType;
+    const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.role)) : filteredByTier;
 
     const filteredPlayers = filters.length > 0 ? filteredByRole.filter( player => {
         return filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ) );
     } ) : filteredByRole;
 
-    const playerCards = filteredPlayers?.map( (player: Player, index: number) => <PlayerCard key={`${player.stats?.Tier}-${player.name}`} player={player} index={index} />);
+    const playerCards = filteredPlayers?.map( (player: Player, index: number) => <PlayerCard key={`${player.tier.name}-${player.name}`} player={player} index={index} />);
 
     const addFilter = () => {
         setSearchValue(""); 
@@ -186,9 +186,9 @@ export function Players() {
                     </div>
                 </div>
                 <div className="basis-1/5">
-                    <div className="flex flex-row text-sm m-2">
-                        <label title="Order By" className="p-1 leading-9">
-                            Order By
+                    <div className="flex flex-row text-xs m-2">
+                        <label title="Sort" className="p-1 leading-9">
+                            Sort
                         </label>
                             <Select
                                 className="grow"

@@ -45,7 +45,7 @@ export function RatingBar({
     <div className="relative">
       {label}
       { tooltipMessage && <span className="pl-1"><ToolTip message={tooltipMessage} type="explain"/></span>}
-      {!range && <div className="float-right text-sm inline-block">{stat1}</div>}
+      {!range && <div className="float-right text-sm inline-block">{stat1.toFixed(2)}</div>}
       {message && (
         <ToolTip
           message={message}
