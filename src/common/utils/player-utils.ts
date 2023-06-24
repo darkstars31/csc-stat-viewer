@@ -1,4 +1,6 @@
+import { clamp } from "lodash";
 import { PlayerStats } from "../../models";
+import { CscStats } from "../../models/csc-stats-types";
 import { Player } from "../../models/player";
 
 export const PlayerMappings: Record<string,string> = {
@@ -8,52 +10,51 @@ export const PlayerMappings: Record<string,string> = {
     "ppR": "Role",
     "GP": "Games Played",
     "Rating": "Rating",
-    "K/R": "Kills / Round",
-    "ADR": "Damage / Round",
-    "KAST": "Kill Assist Traded Survived (%)",
-    "ODR": "Opening Duel (%)",
+    "kr": "Kills / Round",
+    "adr": "Damage / Round",
+    "kast": "Kill Assist Traded Survived (%)",
+    "odr": "Opening Duel (%)",
     "Impact": "Impact",
     "CT #": "CT-side Rating",
     "T #": "T-side Rating",
-    "ADP": "Average Death Placement",
-    "UD": "Utility Damage per Match",
-    "EF": "Enemies Flashed per Match",
-    "F_Assists": "Flash Assists per Match",
-    "Util": "Utility Thrown / Match",
-    "HS": "Headshot (%)",
-    "awp/R": "Awp Kills / Round",
-    "multi/R": "Multi-Kills / Round", // points based on difficulty/remaining players
-    "clutch/R": "Clutch-ability", // points based on difficulty/remaining players
-    "SuppR": "Support Rounds",
-    "SuppXr": "Support Damage / Round",
-    "oda/R": "Open Duel Attempts / Round",
-    "entries/R": "Entry Kill on T-side / Round",
-    "trades/R": "Trade Kills / Round",
-    "TRatio": "Deaths Traded Out (%)",
-    "saves/R": "Saves / Round",
-    "SRate": "Rounds Survived (%)",
-    "2k": "2K Rounds",
-    "3k": "3K Rounds",
-    "4k": "4K Rounds",
-    "5k": "Ace Rounds",
-    "1v1": "1v1 Clutches",
-    "1v2": "1v2 Clutches",
-    "1v3": "1v3 Clutches",
-    "1v4": "1v4 Clutches",
-    "1v5": "Ace Clutches",
-    "Rounds": "Total Rounds Played",
-    "Peak": "Single Match Rating Peak",
-    "Pit": "Single Match Rating Pit",
-    "Form": "Avg Rating from last 3 games",
-    "CONCY": "Std Deviation from Rating (Lower is better)",
-    "Kills": "Total Kills",
-    "Assists": "Total Assists",
-    "Deaths": "Total Deaths",
+    "adp": "Average Death Placement",
+    "utilDmg": "Utility Damage per Match",
+    "ef": "Enemies Flashed per Match",
+    "fAssists": "Flash Assists per Match",
+    "util": "Utility Thrown / Match",
+    "hs": "Headshot (%)",
+    "awpR": "Awp Kills / Round",
+    "multiR": "Multi-Kills / Round", // points based on difficulty/remaining players
+    "clutchR": "Clutch-ability", // points based on difficulty/remaining players
+    "suppR": "Support Rounds",
+    "suppXR": "Support Damage / Round",
+    "odaR": "Open Duel Attempts / Round",
+    "entriesR": "Entry Kill on T-side / Round",
+    "tradesR": "Trade Kills / Round",
+    "tRatio": "Deaths Traded Out (%)",
+    "savesR": "Saves / Round",
+    "sRate": "Rounds Survived (%)",
+    "twoK": "2K Rounds",
+    "threeK": "3K Rounds",
+    "fourK": "4K Rounds",
+    "fiveK": "Ace Rounds",
+    "cl_1": "1v1 Clutches",
+    "cl_2": "1v2 Clutches",
+    "cl_3": "1v3 Clutches",
+    "cl_4": "1v4 Clutches",
+    "cl_5": "Ace Clutches",
+    "rounds": "Total Rounds Played",
+    "peak": "Single Match Rating Peak",
+    "pit": "Single Match Rating Pit",
+    "form": "Avg Rating from last 3 games",
+    "consistency": "Std Deviation from Rating (Lower is better)",
+    "kills": "Total Kills",
+    "assists": "Total Assists",
+    "deaths": "Total Deaths",
     "MIP/r": "Most Impactful Player / Round",
     "IWR": "Impact on Rounds Won Ratio",
     "KPA": "Average Kill Impact",
     "RWK": "Rounds with at least 1 Kill",
-    "Xdiff": "Damage given vs. taken",
     "ea/R": "Rounds with Opening Duel on T-side",
     "ATD": "Time to Death",
     "ctADP": "Death Placement CT-side",
@@ -65,7 +66,6 @@ export const PlayerMappings: Record<string,string> = {
     "K/ctr": "CT-side Kills",
     "lurks/tR": "Lurks on T-side / Round",
     "wlp/L": "Lurk Round Points won",
-    "Tier": "Tier",
 }
 
 export const tiers = ["Premier", "EliPrem", "Elite", "Challenger", "Contender", "Prospect", "New Tier"];
@@ -85,21 +85,21 @@ export function _sort<T, K extends keyof T>( items: T[], property: K, n?: number
     const sorted = items.sort( (a,b) => a[property] < b[property] ? 1 : -1).slice(0,n);
     return n ? sorted.slice(0,n) : sorted;
 }
-export const getPlayersInTier = ( player: PlayerStats, allPlayers: PlayerStats[] ) => allPlayers.filter( ap => ap.Tier === player.Tier);
-export const getPlayersInTier3GP = (player: PlayerStats, allPlayers: PlayerStats[]) => allPlayers.filter(ap => ap.Tier === player.Tier && ap.GP > 3);
-export const getPlayersInTierOrderedByRating = ( player: PlayerStats, allPlayers: PlayerStats[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => a.Rating < b.Rating ? 1 : -1);
+export const getPlayersInTier = ( player: Player, allPlayers: Player[] ) => allPlayers.filter( ap => ap.tier.name === player.tier.name );
+export const getPlayersInTier3GP = (player: Player, allPlayers: Player[]) => allPlayers.filter(ap => ap.tier.name === player.tier.name && ap.stats?.GP > 3);
+export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Player[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => a.stats.Rating < b.stats.Rating ? 1 : -1);
 export const getTop10PlayersInTier3GP = (
-    player: PlayerStats,
-    allPlayers: PlayerStats[],
-    property: keyof PlayerStats
+    player: Player,
+    allPlayers: Player[],
+    property: keyof CscStats
 ) => {
     const playersInTier3GP = getPlayersInTier3GP(player, allPlayers);
-    const sortedPlayers = playersInTier3GP.sort((a, b) => (b[property] as any) - (a[property] as any));
+    const sortedPlayers = playersInTier3GP.sort((a, b) => (b.stats[property] as any) - (a.stats[property] as any));
     return sortedPlayers.slice(0, 10);
 };
-export const getPlayerRatingIndex = ( player: PlayerStats, allPlayers: PlayerStats[] ) => {
+export const getPlayerRatingIndex = ( player: Player, allPlayers: Player[] ) => {
     const playersInTierSortedByRating = getPlayersInTierOrderedByRating(player, allPlayers);
-    return playersInTierSortedByRating.findIndex( p => p.Name === player.Name);
+    return playersInTierSortedByRating.findIndex( p => p.name === player.name);
 }
 
 export const getPlayerTeammates = ( player: PlayerStats, allPlayers: PlayerStats[] ) => {
@@ -108,8 +108,8 @@ export const getPlayerTeammates = ( player: PlayerStats, allPlayers: PlayerStats
         .filter( allPlayers => allPlayers.Tier === player.Tier && allPlayers.Team === player.Team && allPlayers.Name !== player.Name);
 }
 
-export const getTotalPlayerAverages = ( combinePlayerData: PlayerStats[], options?: Record<string,unknown> ) => {
-    const players = options?.tier ? combinePlayerData.filter( p => p.Tier === options?.tier) : combinePlayerData;
+export const getTotalPlayerAverages = (Players: Player[], options?: Record<string,unknown> ) => {
+    const players = options?.tier ? Players.filter( p => p.tier.name === options?.tier) : Players;
     const standardDeviation: Record<string, number> = {};
     const average: Record<string, number> = {};
     const lowest: Record<string, any> = {};
@@ -117,11 +117,13 @@ export const getTotalPlayerAverages = ( combinePlayerData: PlayerStats[], option
 
     for (const key in PlayerMappings) {
         if (PlayerMappings.hasOwnProperty(key)) {
-            const statsKey = key as keyof PlayerStats;
-            standardDeviation[key] = calculateStandardDeviation(players, statsKey);
-            average[key] = calculateAverage(players, statsKey);
-            lowest[key] = calculateMinMax(players, statsKey, 'min');
-            highest[key] = calculateMinMax(players, statsKey, 'max');
+            const statsKey = key as keyof CscStats;
+
+            // TODO: FIX
+            standardDeviation[key] = calculateStandardDeviation( [] ?? players, statsKey);
+            average[key] = calculateAverage(players.map( p => p.stats), statsKey);
+            lowest[key] = calculateMinMax(players.map( p => p.stats), statsKey, 'min');
+            highest[key] = calculateMinMax(players.map( p => p.stats), statsKey, 'max');
         }
     }
 
@@ -138,13 +140,30 @@ function calculateStandardDeviation( players: PlayerStats[], prop: string) {
     return Number(Math.sqrt(players.map(p => Math.pow(Number(p[prop as keyof PlayerStats]) - mean, 2)).reduce((a, b) => a + b, 0) / players.length).toFixed(2));
 }
 
-function calculateAverage(players: PlayerStats[], prop: string){
-    return Number((players.reduce(( cumulative, player ) => cumulative + Number(player[prop as keyof PlayerStats]), 0 ) / players.length).toFixed(2));
+function calculateAverage(players: CscStats[], prop: string){
+    return Number((players.reduce(( cumulative, player ) => cumulative + Number(player[prop as keyof (PlayerStats | CscStats)]), 0 ) / players.length).toFixed(2));
 }
 
-function calculateMinMax(players: PlayerStats[], prop: keyof PlayerStats, type: 'min' | 'max') {
+function calculateMinMax(players: CscStats[], prop: keyof CscStats, type: 'min' | 'max') {
     const sortedPlayers = _sort(players, prop);
     if( sortedPlayers.length === 0 ) return [];
     return type === 'max' ? sortedPlayers[0][prop] : sortedPlayers?.reverse()[0][prop];
+}
+
+export function determinePlayerRole( stats: CscStats ){
+    if( !stats?.GP || stats?.GP < 3 ) return 'RIFLER';
+    const roles = {
+        AWPER: clamp(stats["awpR"],0, .5) / .5, // Awper
+        ENTRY: clamp(stats.odr*(stats["odaR"]*3), 0, 1.1) / 1.1, // Entry
+        FRAGGER: clamp(stats["multiR"], 0, 1.3) / 1.3, // Fragger
+        RIFLER: clamp(stats.adr, 0, 230) / 230, // Rifler
+        SUPPORT: clamp((stats.suppR*12)+stats.suppXR, 0, 55) / 55, // Support
+        //clamp(player.stats["wlpL"], 0, 5), // Lurker
+    };
+
+    console.info(roles);
+
+    return Object.entries(roles).reduce( ( role, [key, value]) => value > role[1] ? [key, value] : role, ['', 0])[0];
+    
 }
 

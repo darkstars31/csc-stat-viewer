@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Match } from '../../models/matches-types';
 import { Team } from '../../models/franchise-types';
-import { mapImages } from './matches';
+import { mapImages } from "../../common/images/maps";
 
 type Props = {
     matches: Match[];

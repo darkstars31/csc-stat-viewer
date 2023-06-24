@@ -29,7 +29,7 @@ export function PlayerCard( { player, index}: Props) {
     return (
         <Link
         key={`player-${index}`}
-        to={`/players/${player.stats?.Tier}/${encodeURIComponent(player.name)}`}
+        to={`/players/${player.tier.name}/${encodeURIComponent(player.name)}`}
         >
         <div className="fade-in block bg-midnight2 rounded-xl border border-gray-800 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10">
             <div className="flex flex-row justify-between">
@@ -39,12 +39,13 @@ export function PlayerCard( { player, index}: Props) {
                 <div className="pt-2 text-center grow">
                     <h2 className="text-xl font-bold text-white grow">{player.name}</h2>
                     <div className="text-xs pt-1">
-                        <i><strong>{player.stats?.ppR.includes('-') ? "RIFLER" : player.stats?.ppR}</strong> - {player.team?.franchise.prefix ?? ""} {teamNameTranslated}</i>
+                        <strong>{player.role}</strong>
+                        <i> - {player.team?.franchise.prefix ?? ""} {teamNameTranslated}</i>
                     </div>
                     { player.stats && 
                     <div className="p-1 text-sm text-gray-300">
                         <div className="text-center">
-                            <div>{player.stats.Tier}</div>
+                            <div>{player.tier.name}</div>
                             <div className="grid grid-cols-2 mt-1">
                                 <Tooltip tip="Rating"><div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player.stats.Rating.toFixed(2)}</div></Tooltip>
                                 <Tooltip tip="Match Making Rank"><div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/> {player.mmr}</div></Tooltip>

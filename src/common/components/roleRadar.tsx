@@ -1,11 +1,11 @@
 import { EChartsOption, graphic } from "echarts";
 import * as React from "react";
-import { PlayerStats } from "../../models";
 import { PlayerRadar } from "./charts/radar";
 import { clamp } from "lodash";
+import { Player } from "../../models/player";
 
 type Props = {
-    player: PlayerStats,
+    player: Player,
 }
 
 export function RoleRadar( { player }: Props ){
@@ -31,12 +31,12 @@ export function RoleRadar( { player }: Props ){
                     { 
                         symbol: "none",
                         name: "Role", 
-                        value: [ clamp(player["awp/R"],0, .6), // Awper
-                                clamp(player.ODR*(player["oda/R"]*2), 0, 1.1), // Entry
-                                clamp(player["multi/R"]+player["entries/R"]*4, 0, 1.1), // Fragger
-                                clamp(player.ADR, 0, 220), // Rifler
-                                clamp((player.SuppR*10)+player.SuppXr, 0, 55), // Support
-                                clamp(player["wlp/L"], 0, 5), // Lurker
+                        value: [ clamp(player.stats["awpR"],0, .6), // Awper
+                                clamp(player.stats.odr*(player.stats["odaR"]*2), 0, 1.1), // Entry
+                                clamp(player.stats["multiR"], 0, 1.1), // Fragger
+                                clamp(player.stats.adr, 0, 220), // Rifler
+                                clamp((player.stats.suppR*10)+player.stats.suppXR, 0, 55), // Support
+                                // clamp(player.stats["wlp/L"], 0, 5), // Lurker
                             ],
                         areaStyle: {
                             color: new graphic.RadialGradient(0.1, 0.6, 1, [

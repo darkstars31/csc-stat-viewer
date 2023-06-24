@@ -3,29 +3,29 @@ import { Container } from "../common/components/container";
 import { Input } from "../common/components/input";
 import { useDataContext } from "../DataContext";
 import { PlayerMappings, tiers } from "../common/utils/player-utils";
-import { PlayerStats } from "../models";
 import { Loading } from "../common/components/loading";
 import { Select } from "../common/components/select";
 import { useLocation } from "wouter";
+import { CscStats } from "../models/csc-stats-types";
 
 export function TeamBuilder() {
     const [ location, setLocation ] = useLocation();
     const [ searchValue, setSearchValue ] = React.useState<string>("");
-    const [ squad, setSquad ] = React.useState<PlayerStats[]>([]);
+    const [ squad, setSquad ] = React.useState<CscStats[]>([]);
     const [ filterBy, setFilterBy ] = React.useState<string>("All")
     const { players = [], isLoading } = useDataContext();
-    const playerStats: PlayerStats[] = players.filter( p => p.stats ).map( p => p.stats) as PlayerStats[];
+    const playerStats: CscStats[] = players.filter( p => p.stats ).map( p => p.stats) as CscStats[];
 
     React.useEffect(() => {
         const searchParams = new URLSearchParams(window.location.search);
         const queryPlayers = searchParams.get("players");
         if( queryPlayers ){
             const playersFromQuery = queryPlayers?.split(",").map( string => ({ Tier: string.split("|")[0], Name: string.split("|")[1]}));
-            setSquad( playerStats.filter( player => playersFromQuery?.some( p => p.Tier === player.Tier && p.Name === player.Name)) );
+            setSquad( playerStats.filter( player => playersFromQuery?.some( p => p.Name === player.name)) );
         }
     }, [ playerStats, squad ]);
 
-    const setSquadQueryParams = ( squad: PlayerStats[] ) => squad.map( member => (`${member.Tier}|${encodeURIComponent(member.Name)}`)).join(",");
+    const setSquadQueryParams = ( squad: CscStats[] ) => squad.map( member => (`|${encodeURIComponent(member.name)}`)).join(",");
 
     function remove( index: number ){
         const newSquad = [...squad];
@@ -39,7 +39,7 @@ export function TeamBuilder() {
         const playerProps = Object.keys(PlayerMappings);
         for( let i = 0; i < Object.keys(PlayerMappings).length; i++){
             const prop = playerProps[i];
-            const stat = squad.map( member => member[prop as keyof PlayerStats]);  
+            const stat = squad.map( member => member[prop as keyof CscStats]);  
             gridData.push( {prop: prop, data: [...stat]})
         }
         return gridData;
@@ -86,19 +86,19 @@ export function TeamBuilder() {
                 </form>
             </div>
             <div>
-                {
-                    playerStats.filter( p => !squad.some( s => s.Name === p.Name && s.Tier === p.Tier))
-                    .filter( p => p.Name.toLowerCase().includes(searchValue.toLowerCase()) && searchValue !== "" && (filterBy === p.Tier || filterBy === "All")).slice(0,8)
+                {/* {
+                    playerStats.filter( p => !squad.some( s => s.name === p.name))
+                    .filter( p => p.name.toLowerCase().includes(searchValue.toLowerCase()) && searchValue !== "" && (filterBy === p.Tier || filterBy === "All")).slice(0,8)
                     .map( p =>
                         <button 
                             key={`player-${p.Tier}-${p.Name}`} 
                             className="m-1 p-2" 
-                            onClick={() => { setSquad( (prev: PlayerStats[]) => [...prev!, p]); setSquadQueryParams(squad);}}
+                            onClick={() => { setSquad( (prev: CscStats[]) => [...prev!, p]); setSquadQueryParams(squad);}}
                         >
                             {p.Name}
                         </button>
                         )
-                }
+                } */}
             </div>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
             <div className="pt-24 sticky z-1 text-sm">
