@@ -1,17 +1,42 @@
 {
   "files": {
-    "main.css": "/csc-stat-viewer/static/css/main.e95b897b.css",
-    "main.js": "/csc-stat-viewer/static/js/main.95f73792.js",
+    "main.css": "/csc-stat-viewer/static/css/main.ac2bc84b.css",
+    "main.js": "/csc-stat-viewer/static/js/main.883c8068.js",
     "static/js/200.2ca44ab5.chunk.js": "/csc-stat-viewer/static/js/200.2ca44ab5.chunk.js",
     "static/js/539.97a9fd66.chunk.js": "/csc-stat-viewer/static/js/539.97a9fd66.chunk.js",
+    "static/media/GAS.png": "/csc-stat-viewer/static/media/GAS.2d7416ff8947069d2d9a.png",
+    "static/media/OS.png": "/csc-stat-viewer/static/media/OS.5616c74a661e36306219.png",
+    "static/media/YC.png": "/csc-stat-viewer/static/media/YC.ac735f0a03a96e6be556.png",
+    "static/media/WET.png": "/csc-stat-viewer/static/media/WET.4a61b373e15ff7885165.png",
+    "static/media/HEL.png": "/csc-stat-viewer/static/media/HEL.6893db80567850f9712c.png",
+    "static/media/UPS.png": "/csc-stat-viewer/static/media/UPS.01bb3d4aaed24865a126.png",
+    "static/media/ACA.png": "/csc-stat-viewer/static/media/ACA.ca290893ad36709f7fc3.png",
+    "static/media/HG.png": "/csc-stat-viewer/static/media/HG.eda898cdc7d02469691b.png",
+    "static/media/FRG.png": "/csc-stat-viewer/static/media/FRG.2c8689400171eca664f0.png",
+    "static/media/AP.png": "/csc-stat-viewer/static/media/AP.87542aadf4a23edfc4eb.png",
+    "static/media/De_vertigo.png": "/csc-stat-viewer/static/media/De_vertigo.9072ae7b499a6f7efb50.png",
+    "static/media/NAN.png": "/csc-stat-viewer/static/media/NAN.b9399045f2520ca6db75.png",
+    "static/media/COW.png": "/csc-stat-viewer/static/media/COW.8438e1b2465821e7c039.png",
+    "static/media/AVI.png": "/csc-stat-viewer/static/media/AVI.3dbc09dedcc3903b5557.png",
+    "static/media/De_ancient.png": "/csc-stat-viewer/static/media/De_ancient.671180c8111b68471320.png",
+    "static/media/De_nuke.png": "/csc-stat-viewer/static/media/De_nuke.3e29d9e56d0d2b68b3e1.png",
+    "static/media/De_inferno.png": "/csc-stat-viewer/static/media/De_inferno.be52437e5dcc8b225df1.png",
+    "static/media/SAV.png": "/csc-stat-viewer/static/media/SAV.d8b83cb52b559673b0fa.png",
+    "static/media/De_overpass.png": "/csc-stat-viewer/static/media/De_overpass.9a17c69c8532444897bb.png",
+    "static/media/De_mirage.png": "/csc-stat-viewer/static/media/De_mirage.04c38a84d08d8ea78629.png",
+    "static/media/BS.png": "/csc-stat-viewer/static/media/BS.ead0de70d13e750f676f.png",
+    "static/media/ATL.png": "/csc-stat-viewer/static/media/ATL.70e33e5d30739be8ec67.png",
+    "static/media/De_anubis.png": "/csc-stat-viewer/static/media/De_anubis.262aab62344b232515cf.png",
+    "static/media/ATO.png": "/csc-stat-viewer/static/media/ATO.fcda327f6508187c8218.png",
+    "static/media/H4K.png": "/csc-stat-viewer/static/media/H4K.c92882529721c52de6d1.png",
     "index.html": "/csc-stat-viewer/index.html",
-    "main.e95b897b.css.map": "/csc-stat-viewer/static/css/main.e95b897b.css.map",
-    "main.95f73792.js.map": "/csc-stat-viewer/static/js/main.95f73792.js.map",
+    "main.ac2bc84b.css.map": "/csc-stat-viewer/static/css/main.ac2bc84b.css.map",
+    "main.883c8068.js.map": "/csc-stat-viewer/static/js/main.883c8068.js.map",
     "200.2ca44ab5.chunk.js.map": "/csc-stat-viewer/static/js/200.2ca44ab5.chunk.js.map",
     "539.97a9fd66.chunk.js.map": "/csc-stat-viewer/static/js/539.97a9fd66.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e95b897b.css",
-    "static/js/main.95f73792.js"
+    "static/css/main.ac2bc84b.css",
+    "static/js/main.883c8068.js"
   ]
 }
