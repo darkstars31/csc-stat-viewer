@@ -2,12 +2,11 @@ import { clamp } from "lodash";
 import { PlayerStats } from "../../models";
 import { CscStats } from "../../models/csc-stats-types";
 import { Player } from "../../models/player";
+import { sortBy } from "lodash";
 
 export const PlayerMappings: Record<string,string> = {
-    "Steam": "SteamID",
     "Team": "Team",
     "Name": "Name",
-    "ppR": "Role",
     "GP": "Games Played",
     "Rating": "Rating",
     "kr": "Kills / Round",
@@ -81,13 +80,14 @@ export const teamNameTranslator = ( player?: Player ) => {
     }
 }
 
-export function _sort<T, K extends keyof T>( items: T[], property: K, n?: number ) {
-    const sorted = items.sort( (a,b) => a[property] < b[property] ? 1 : -1).slice(0,n);
-    return n ? sorted.slice(0,n) : sorted;
+export function _sort<T>( items: T[], property: string, n?: number, order?: "asc" | "desc" ) {
+    const sorted = sortBy(items, property);
+    const orderDirection = order === "desc" ? sorted.reverse() : sorted;
+    return n ? orderDirection.slice(0,n) : orderDirection;
 }
 export const getPlayersInTier = ( player: Player, allPlayers: Player[] ) => allPlayers.filter( ap => ap.tier.name === player.tier.name );
 export const getPlayersInTier3GP = (player: Player, allPlayers: Player[]) => allPlayers.filter(ap => ap.tier.name === player.tier.name && ap.stats?.GP > 3);
-export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Player[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => a.stats.Rating < b.stats.Rating ? 1 : -1);
+export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Player[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => { if( !b.stats?.Rating) return -1;  return a.stats?.Rating < b.stats?.Rating ? 1 : -1});
 export const getTop10PlayersInTier3GP = (
     player: Player,
     allPlayers: Player[],
@@ -112,16 +112,18 @@ export const getTotalPlayerAverages = (Players: Player[], options?: Record<strin
     const players = options?.tier ? Players.filter( p => p.tier.name === options?.tier) : Players;
     const standardDeviation: Record<string, number> = {};
     const average: Record<string, number> = {};
+    const median: Record<string, any> = {};
     const lowest: Record<string, any> = {};
     const highest: Record<string, any> = {};
 
     for (const key in PlayerMappings) {
-        if (PlayerMappings.hasOwnProperty(key)) {
+        if ( players[0] && players[0].hasOwnProperty(key) && Boolean(players[0].stats[key as keyof CscStats])) {
             const statsKey = key as keyof CscStats;
 
             // TODO: FIX
             standardDeviation[key] = calculateStandardDeviation( [] ?? players, statsKey);
             average[key] = calculateAverage(players.map( p => p.stats), statsKey);
+            median[key] = calcuateMedian(players.map( p => p.stats), statsKey);
             lowest[key] = calculateMinMax(players.map( p => p.stats), statsKey, 'min');
             highest[key] = calculateMinMax(players.map( p => p.stats), statsKey, 'max');
         }
@@ -150,8 +152,17 @@ function calculateMinMax(players: CscStats[], prop: keyof CscStats, type: 'min' 
     return type === 'max' ? sortedPlayers[0][prop] : sortedPlayers?.reverse()[0][prop];
 }
 
+function calcuateMedian(players: CscStats[], prop: keyof CscStats) {
+    const sortedPlayers = _sort(players, prop);
+    if( sortedPlayers.length === 0 ) return [];
+    if( sortedPlayers.length % 2 === 0 ){
+        return (Number(sortedPlayers[sortedPlayers.length / 2 - 1][prop]) + Number(sortedPlayers[sortedPlayers.length / 2][prop])) / 2;
+    }
+    return Number(sortedPlayers[sortedPlayers.length / 2][prop]);
+}
+
 export function determinePlayerRole( stats: CscStats ){
-    if( !stats?.GP || stats?.GP < 3 ) return 'RIFLER';
+    if( !stats?.GP || stats?.GP < 3 ) return '';
     const roles = {
         AWPER: clamp(stats["awpR"],0, .5) / .5, // Awper
         ENTRY: clamp(stats.odr*(stats["odaR"]*3), 0, 1.1) / 1.1, // Entry
@@ -160,8 +171,6 @@ export function determinePlayerRole( stats: CscStats ){
         SUPPORT: clamp((stats.suppR*12)+stats.suppXR, 0, 55) / 55, // Support
         //clamp(player.stats["wlpL"], 0, 5), // Lurker
     };
-
-    console.info(roles);
 
     return Object.entries(roles).reduce( ( role, [key, value]) => value > role[1] ? [key, value] : role, ['', 0])[0];
     

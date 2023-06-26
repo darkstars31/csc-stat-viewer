@@ -9,7 +9,7 @@ import { PlayerCard } from "./players/player-cards";
 import _get from "lodash/get";
 
 const sortOptionsList = [
-    { label: "Name", value: "stats.Name"}, 
+    { label: "Name", value: "stats.name"}, 
     { label: "Rating", value: "stats.Rating"},
     { label: "MMR", value: "mmr"},
 ];
@@ -32,7 +32,7 @@ export function Players() {
     } );
 
     // eslint-disable-next-line
-    sortedPlayerData = orderBy?.value.includes("Name") ? sortedPlayerData.reverse() : sortedPlayerData;
+    sortedPlayerData = orderBy?.label.includes("Name") ? sortedPlayerData.reverse() : sortedPlayerData;
 
     const filteredByPlayerType = viewPlayerTypeOptions?.length ? sortedPlayerData.filter( player => viewPlayerTypeOptions?.some( type => type.value === player.type)) : playersWithStats;
     const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.tier.name)) : filteredByPlayerType;

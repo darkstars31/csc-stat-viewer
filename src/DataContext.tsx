@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useCscPlayersGraph } from "./dao/cscPlayerGraphQLDao";
-// import { useFetchSeasonData } from "./dao/seasonPlayerStatsDao";
 import { dataConfiguration } from "./dataConfig";
 import { Player } from "./models/player";
 import { useFetchFranchisesGraph } from "./dao/franchisesGraphQLDao";
@@ -33,9 +32,7 @@ const useDataContextProvider = () => {
 	const { data: cscStatsElite = [], isLoading: isLoadingCscStatsElite } = useCscStatsGraph( "Elite", dataConfig?.season );
 	const { data: cscStatsPremier = [], isLoading: isLoadingCscStatsPremier } = useCscStatsGraph( "Premier", dataConfig?.season );
 
-
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
-	// const { data: playerStats = [], isLoading: isLoadingPlayerStats } = useFetchSeasonData(dataConfig!);
 
 	const cscPlayers = [
 		...cscSignedPlayers, 
@@ -53,7 +50,6 @@ const useDataContextProvider = () => {
 		//...cscSpectatorPlayers,
 	];
 
-	const stats = [...cscStatsRecruit, ...cscStatsProspect, ...cscStatsContender, ...cscStatsChallenger, ...cscStatsElite, ...cscStatsPremier];
 	const statsByTier = {
 		Recruit: cscStatsRecruit,
 		Prospect: cscStatsProspect,
@@ -61,23 +57,31 @@ const useDataContextProvider = () => {
 		Challenger: cscStatsChallenger,
 		Elite: cscStatsElite,
 		Premier: cscStatsPremier,
-		Unrated: [],
 	};
 
 	//const players: Player[] = cscPlayers.map( cscPlayer => ({ ...cscPlayer, stats: stats.find( stats => (stats.name === cscPlayer?.name)) }));
 
+	const players: Player[] = cscPlayers?.reduce( (acc,cscPlayer) => {
+		const statsByTier = [
+			{ tier: "Recruit", stats: cscStatsRecruit.find( stats => (stats.name === cscPlayer?.name)) },
+			{ tier: "Prospect", stats:cscStatsProspect.find( stats => (stats.name === cscPlayer?.name)) },
+			{ tier: "Contender", stats:cscStatsContender.find( stats => (stats.name === cscPlayer?.name)) },
+			{ tier: "Challenger", stats:cscStatsChallenger.find( stats => (stats.name === cscPlayer?.name)) },
+			{ tier: "Elite", stats:cscStatsElite.find( stats => (stats.name === cscPlayer?.name)) },
+			{ tier: "Premier", stats:cscStatsPremier.find( stats => (stats.name === cscPlayer?.name)) },
+		].filter( statsWithTier => statsWithTier?.stats );
 
-	const players: Player[] = cscPlayers?.flatMap( cscPlayer => {
-		const hasMulitpleStats = stats.filter( stats => (stats.name === cscPlayer?.name));
-		if( hasMulitpleStats.length > 1) {
-			console.info( "Found multiple stats for player", cscPlayer?.name, hasMulitpleStats );
+		if( statsByTier.length > 0 ){
+			const role = determinePlayerRole( statsByTier.find( s => s.tier === cscPlayer.tier.name)?.stats! );
+			acc.push( { ...cscPlayer, 
+				role, 
+				stats: statsByTier.find( s => s.tier === cscPlayer.tier.name)?.stats!, 
+				statsOutOfTier: statsByTier.filter( statsWithTier => statsWithTier.tier !== cscPlayer.tier.name),
+			});
 		}
-		const foundStats = statsByTier[cscPlayer.tier.name as keyof typeof statsByTier].filter( stats => (stats.name === cscPlayer?.name));
-		const role = determinePlayerRole( foundStats[0] );
-		return foundStats.map( stats => ({ ...cscPlayer, role, stats: stats}));
-	}).filter( p => Boolean(p.stats));
-
-
+		return acc;
+		
+	}, [] as Player[]);
 
 	const isLoadingCscPlayers = [
 		isLoadingSignedCscPlayers,
@@ -100,7 +104,6 @@ const useDataContextProvider = () => {
 		isLoading: isLoadingCscPlayers,
 		loading: {
 			isLoadingCscPlayers: isLoadingCscPlayers,
-			// isLoadingPlayerStats,
 			isLoadingFranchises,
 			stats: {
 				isLoadingCscStatsRecruit,
@@ -111,6 +114,7 @@ const useDataContextProvider = () => {
 				isLoadingCscStatsPremier,
 			}
 		},
+		statsByTier,
 		selectedDataOption, setSelectedDataOption,
 		featureFlags:{
 		},
