@@ -32,11 +32,6 @@ export function Player() {
     const nameParam = decodeURIComponent(params?.id ?? "");
     const currentPlayer = players.find( p => p.name === nameParam);
     const currentPlayerStats = currentPlayer?.stats;//playerStats.find( player => player.Name === nameParam && currentPlayer?.tier.name === tierParam);
-    // const statsInDifferentTier = playerStats.filter( player => player.Name === nameParam && player.Tier !== tierParam);
-    // const linksToDifferentTier = statsInDifferentTier.map( s => { 
-    //     return <><br /><Link className="text-blue-400" to={`/players/${s.Tier}/${nameParam}`}>{s.Tier}</Link></>;
-    // });
-    //console.info( linksToDifferentTier);
 
     React.useEffect(() => {
         divRef.current?.scrollIntoView();
@@ -122,7 +117,7 @@ export function Player() {
                         </div>
                         <div className={"text-[1.1rem] pb-5"}>
                             <i>
-                                <b>{currentPlayer.role}</b>{' — '} 
+                                <b>{currentPlayer.role ? currentPlayer.role : "n/a"}</b>{' — '} 
                                 { currentPlayer?.team?.franchise.name ? 
                                     <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
                                     : <span>{teamNameTranslator(currentPlayer)}</span>                         
@@ -149,6 +144,7 @@ export function Player() {
                         </div>
                     </div>
                 </div>
+                { currentPlayerStats &&
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                     <div className="space-y-2">
                         <div className="p-[2.5%] space-y-4">
@@ -192,11 +188,13 @@ export function Player() {
                         <RoleRadar player={currentPlayer!}/>         
                     </div>
                 </div>
+}
                 <div className="grid grid-cols-2 w-full">
                     {/* <TeamSideRatingPie player={currentPlayerStats} /> */}
                     {/* <KillsAssistsDeathsPie player={currentPlayerStats} /> */}
                 </div>
             </Stat>
+            
 
             { teammates.length > 0 && false && // TODO: fix weird bug in logic that shows same teammate twice
             <div>

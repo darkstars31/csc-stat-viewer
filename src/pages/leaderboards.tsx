@@ -3,11 +3,11 @@ import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
 import { Table } from "../common/components/table";
 import { useDataContext } from "../DataContext";
-//import { _sort } from "../common/utils/player-utils";
+import { _sort } from "../common/utils/player-utils";
 import Select, { SingleValue } from "react-select";
 import { Player } from "../models/player";
 import { CscStats } from "../models/csc-stats-types";
-import _sort from "lodash/sortBy";
+//import _sort from "lodash/sortBy";
 
 function buildTableRow( player: Player, columnName: string, property: keyof CscStats ){
     return { "Player": player.name, "Tier": player.tier.name, [columnName]: player.stats[property]};
@@ -18,29 +18,33 @@ export function LeaderBoards() {
     const [ filterBy, setFilterBy ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: `All`, value: "All"});
     
     // OLD const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats ).filter( s => s!.GP >= 3) as PlayerStats[];
-    const player = players.filter( p => Boolean(p.stats) ).filter( p => p.stats.GP >= 3);
+    const player = players.filter( p => p.stats.GP >= 3);
+
+    console.info( players.length, player.length)
     
     const playerData = filterBy?.value.includes("All") ? player : player.filter( f => f.tier.name.toLowerCase() === filterBy?.value.toLowerCase());
       
-    const gamesPlayed = _sort(playerData, "GP", 5).map( p => buildTableRow(p, "Games Played", "GP"));
-    const kills = _sort(playerData, "stats.kills", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Kills": p.stats.kills}));
+    const gamesPlayed = _sort(playerData, "stats.GP", 5, "desc").map( p => buildTableRow(p, "Games Played", "GP"));
+    const kills = _sort(playerData, "stats.kills", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Kills": p.stats.kills}));
     const killDeathRatio = playerData.sort( (a,b) => (a.stats.kills/a.stats.deaths) < (b.stats.kills/b.stats.deaths) ? 1 : -1).slice(0,5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "K/D Ratio": (p.stats.kills/p.stats.deaths).toFixed(2)}));
     const aces = playerData.sort( (a,b) => (a.stats["fiveK"]) < (b.stats["fiveK"]) ? 1 : -1).slice(0,5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Aces": p.stats["fiveK"] }));
-    const damagePerRound = _sort(playerData, "stats.adr", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Average Damage Per Round": p.stats.adr}));
-    const awpKillsPerRound = _sort(playerData, "stats.awpR", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Awp Kills per Round": p.stats["awpR"]}));
-    const utilDamagePerMatch = _sort(playerData, "stats.utilDmg", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Utility Damage": p.stats.utilDmg}));
-    // const timeToDeath = _sort(playerData, "stats.ATD", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Time til Death (seconds)": p.ATD}));
+    const damagePerRound = _sort(playerData, "stats.adr", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Average Damage Per Round": p.stats.adr.toFixed(2)}));
+    const awpKillsPerRound = _sort(playerData, "stats.awpR", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Awp Kills per Round": p.stats["awpR"].toFixed(2)}));
+    const utilDamagePerMatch = _sort(playerData, "stats.utilDmg", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Utility Damage": p.stats.utilDmg.toFixed(2)}));
+    // const timeToDeath = _sort(playerData, "stats.atd", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Time til Death (seconds)": p.ATD}));
     // const ctRating = _sort(playerData, "ctADP", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Rating": p.ctADP}));
     // const tRating = _sort(playerData, "tADP", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Rating": p.tADP}));
-    const kastPercentage = _sort(playerData, "stats.kast", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "KAST%": p.stats.kast}));
+    const kastPercentage = _sort(playerData, "stats.kast", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "KAST%": p.stats.kast.toFixed(2)}));
     const utilThrownPerMatchX = _sort(playerData, "stats.util");
     const utilThrownPerMatch = utilThrownPerMatchX.map( p => ({ "Player": p.name, "Tier": p.tier.name, "Util/Match": p.stats.util})).splice(0,5);
     const leastUtilThrownPerMatch = utilThrownPerMatchX.reverse().map( p => ({ "Player": p.name, "Tier": p.tier.name, "Least Util/Match": p.stats.util })).splice(0,5);
-    const headshotPercentage = _sort(playerData, "stats.hs", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "HeadShot %": p.stats.hs}));
-    const clutchAbility = _sort(playerData, "stats.clutchR", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Clutch Points per Match": p.stats['clutchR']}));
+    const headshotPercentage = _sort(playerData, "stats.hs", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "HeadShot %": p.stats.hs}));
+    const clutchAbility = _sort(playerData, "stats.clutchR", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Clutch Points per Match": p.stats['clutchR'].toFixed(2)}));
     // const grenadeDamagePerRound = _sort(playerData, "X/nade", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Grenade Damage Per Round": p["Xnade"]}));
     // const flashesPerFlash = _sort(playerData, "EF/F", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Flashes per Flash Thrown": p["EF/F"]}));
-    const openDuels = _sort(playerData, "stats.odr", 5).map( p => ({ "Player": p.stats.name, "Tier": p.tier.name, "Open Duels": p.stats.odr}));
+    const openDuels = _sort(playerData, "stats.odr", 5, "desc").map( p => ({ "Player": p.stats.name, "Tier": p.tier.name, "Open Duels": p.stats.odr.toFixed(2)}));
+
+    // console.info( awpKillsPerRound );
 
 
     const selectClassNames = {
@@ -187,6 +191,10 @@ export function LeaderBoards() {
                         Clutch Points Average per Match
                         <Table rows={clutchAbility}/>
                     </div>
+                    <div className="m-4">
+                        Open Duels Per Round
+                        <Table rows={openDuels}/>
+                    </div>
                     {/* <div className="m-4">
                         Grenade Damage per Round
                         <Table rows={grenadeDamagePerRound}/>
@@ -197,10 +205,10 @@ export function LeaderBoards() {
                         Enemies Flashed per Flash
                         <Table rows={flashesPerFlash}/>
                     </div> */}
-                    <div className="m-4">
+                     {/* <div className="m-4">
                         Grenade Damage per Round
-                        <Table rows={openDuels}/>
-                    </div>
+                        <Table rows={grenadeDamagePerRound}/>
+                    </div> */}
                 </div>   
             </div> }
             { !playerData.length && 

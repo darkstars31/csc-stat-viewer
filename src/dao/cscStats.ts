@@ -69,7 +69,6 @@ const fetchGraph = async ( tier: CscTiers, season?: number ) => await fetch(url,
     })
     .then( async response => {
         return response.json().then( (json: CscStatsQuery) => {
-            console.info( json );
             return json.data.tierSeasonStats;
         });
     } );

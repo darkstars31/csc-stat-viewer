@@ -6,4 +6,8 @@ export type Player =
     {
         role?: string,
         stats: CscStats
+        statsOutOfTier: {
+            stats : CscStats | undefined,
+            tier: string,
+        }[]
     }
