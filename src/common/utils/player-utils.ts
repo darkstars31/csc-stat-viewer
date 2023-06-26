@@ -5,8 +5,7 @@ import { Player } from "../../models/player";
 import { sortBy } from "lodash";
 
 export const PlayerMappings: Record<string,string> = {
-    "Team": "Team",
-    "Name": "Name",
+    "name": "Name",
     "GP": "Games Played",
     "Rating": "Rating",
     "kr": "Kills / Round",
@@ -110,6 +109,7 @@ export const getPlayerTeammates = ( player: PlayerStats, allPlayers: PlayerStats
 
 export const getTotalPlayerAverages = (Players: Player[], options?: Record<string,unknown> ) => {
     const players = options?.tier ? Players.filter( p => p.tier.name === options?.tier) : Players;
+    const playersWithStats = players.filter( p => p.stats );
     const standardDeviation: Record<string, number> = {};
     const average: Record<string, number> = {};
     const median: Record<string, any> = {};
@@ -117,16 +117,17 @@ export const getTotalPlayerAverages = (Players: Player[], options?: Record<strin
     const highest: Record<string, any> = {};
 
     for (const key in PlayerMappings) {
-        if ( players[0] && players[0].hasOwnProperty(key) && Boolean(players[0].stats[key as keyof CscStats])) {
+            if( key === "consistency" ){
+                console.info(players)
+            }
             const statsKey = key as keyof CscStats;
 
             // TODO: FIX
             standardDeviation[key] = calculateStandardDeviation( [] ?? players, statsKey);
-            average[key] = calculateAverage(players.map( p => p.stats), statsKey);
-            median[key] = calcuateMedian(players.map( p => p.stats), statsKey);
-            lowest[key] = calculateMinMax(players.map( p => p.stats), statsKey, 'min');
-            highest[key] = calculateMinMax(players.map( p => p.stats), statsKey, 'max');
-        }
+            average[key] = calculateAverage(playersWithStats.map( p => p.stats), statsKey);
+            median[key] = calcuateMedian(playersWithStats.map( p => p.stats), statsKey);
+            lowest[key] = calculateMinMax(playersWithStats.map( p => p.stats), statsKey, 'min');
+            highest[key] = calculateMinMax(playersWithStats.map( p => p.stats), statsKey, 'max');
     }
 
     return {
@@ -137,13 +138,13 @@ export const getTotalPlayerAverages = (Players: Player[], options?: Record<strin
     }
 }
 
-function calculateStandardDeviation( players: PlayerStats[], prop: string) {
-    const mean = players.map( p => Number(p[prop as keyof PlayerStats])).reduce((a, b) => a + b, 0) / players.length;
-    return Number(Math.sqrt(players.map(p => Math.pow(Number(p[prop as keyof PlayerStats]) - mean, 2)).reduce((a, b) => a + b, 0) / players.length).toFixed(2));
+function calculateStandardDeviation( players: CscStats[], prop: string) {
+    const mean = players.map( p => Number(p[prop as keyof CscStats])).reduce((a, b) => a + b, 0) / players.length;
+    return Number(Math.sqrt(players.map(p => Math.pow(Number(p[prop as keyof CscStats]) - mean, 2)).reduce((a, b) => a + b, 0) / players.length).toFixed(2));
 }
 
 function calculateAverage(players: CscStats[], prop: string){
-    return Number((players.reduce(( cumulative, player ) => cumulative + Number(player[prop as keyof (PlayerStats | CscStats)]), 0 ) / players.length).toFixed(2));
+    return Number((players.reduce(( cumulative, player ) => cumulative + Number(player[prop as keyof CscStats]), 0 ) / players.length).toFixed(2));
 }
 
 function calculateMinMax(players: CscStats[], prop: keyof CscStats, type: 'min' | 'max') {
