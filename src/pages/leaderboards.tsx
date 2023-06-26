@@ -17,10 +17,7 @@ export function LeaderBoards() {
     const { players = [], loading } = useDataContext();
     const [ filterBy, setFilterBy ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: `All`, value: "All"});
     
-    // OLD const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats ).filter( s => s!.GP >= 3) as PlayerStats[];
-    const player = players.filter( p => p.stats.GP >= 3);
-
-    console.info( players.length, player.length)
+    const player = players.filter( p => p.stats?.GP ?? 0 >= 3);
     
     const playerData = filterBy?.value.includes("All") ? player : player.filter( f => f.tier.name.toLowerCase() === filterBy?.value.toLowerCase());
       
