@@ -116,6 +116,7 @@ const useDataContextProvider = () => {
 		},
 		statsByTier,
 		selectedDataOption, setSelectedDataOption,
+		dataConfig,
 		featureFlags:{
 		},
 		errors: [ error ].filter(Boolean),

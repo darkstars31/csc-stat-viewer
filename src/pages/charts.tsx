@@ -3,7 +3,6 @@ import { useDataContext } from '../DataContext';
 import { Container } from '../common/components/container';
 import ReactECharts from "echarts-for-react";
 import { getTotalPlayerAverages } from '../common/utils/player-utils';
-import { Input } from '../common/components/input';
 import { Pill } from '../common/components/pill';
 
 export function Charts() {
@@ -476,7 +475,7 @@ export function Charts() {
         <Container>
            
             <div>
-                <div className='text-center mx-auto max-w-lg'>
+                <div className='text-center mx-auto max-w-lg mt-4'>
                     <form className="flex flex-box h-12 mx-auto" onSubmit={(e)=>{e.preventDefault()}}>
                         <label
                             htmlFor="textInput"

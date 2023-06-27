@@ -1,14 +1,18 @@
 import { EChartsOption } from "echarts";
 import * as React from "react";
 import ReactECharts from "echarts-for-react";
-import { PlayerStats } from "../../models";
+import { Player } from "../../models/player";
+import { useDataContext } from "../../DataContext";
+import { useCscStatsProfileGraph } from "../../dao/cscStatsPlayerSummary";
+import { Loading } from "./loading";
 
 type Props = {
-    player: PlayerStats,
+  player: Player;
 }
 
 export function TeamSideRatingPie( { player }: Props) {
-        
+    const { dataConfig} = useDataContext();
+    const { data: cscPlayerProfile, isLoading } = useCscStatsProfileGraph( player.steam64Id, dataConfig?.season );
         const defaultOptions: EChartsOption = {
             color: ['#4169e1','#ff6347'],
             title: {
@@ -53,8 +57,8 @@ export function TeamSideRatingPie( { player }: Props) {
                   show: true
                 },
                 data: [
-                    { name: "CT", value: player['CT #']},
-                    { name: "T", value: player['T #']},
+                    { name: "CT", value: Number(cscPlayerProfile?.ctRating.toFixed(2))},
+                    { name: "T", value:  Number(cscPlayerProfile?.tRating.toFixed(2))},
                     // { name: "", value: player['CT #'] + player['T #'], 
                     //     itemStyle: { color: 'none'}, 
                     //     label: { show: false }
@@ -65,6 +69,6 @@ export function TeamSideRatingPie( { player }: Props) {
           };
 
     return (
-        <ReactECharts option={defaultOptions} style={{height: "180px",width: "100%"}}/>
+      !isLoading ? <ReactECharts loadingOption={isLoading} option={defaultOptions} style={{height: "180px",width: "100%"}}/> : <div className="mx-auto pt-16"><Loading /></div>
     )
 }

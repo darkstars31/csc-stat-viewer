@@ -1,10 +1,10 @@
 import { EChartsOption } from "echarts";
 import * as React from "react";
 import ReactECharts from "echarts-for-react";
-import { PlayerStats } from "../../models";
+import { Player } from "../../models/player";
 
 type Props = {
-    player: PlayerStats,
+    player: Player,
 }
 
 export function KillsAssistsDeathsPie( { player }: Props) {
@@ -61,9 +61,9 @@ export function KillsAssistsDeathsPie( { player }: Props) {
                   show: true
                 },
                 data: [
-                    { name: "Kills", value: player["Kills"]},
-                    { name: "Assists", value: player['Assists']},
-                    { name: "Deaths", value: player['Deaths']},
+                    { name: "Kills", value: player.stats["kills"]},
+                    { name: "Assists", value: player.stats['assists']},
+                    { name: "Deaths", value: player.stats['deaths']},
 
                 ],
               }

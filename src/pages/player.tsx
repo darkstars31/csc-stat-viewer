@@ -21,13 +21,13 @@ import { getTeammates } from "../common/utils/franchise-utils";
 import { RxDiscordLogo } from "react-icons/rx";
 import { SiFaceit } from "react-icons/si";
 import { FaSteamSquare } from "react-icons/fa";
-// import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
-// import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
+import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
+import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
 
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
-    const { players = [], franchises = [], loading, selectedDataOption} = useDataContext();
+    const { players = [], franchises = [], loading, selectedDataOption } = useDataContext();
     const [, params] = useRoute("/players/:tier/:id");
     const tierParam = decodeURIComponent(params?.tier ?? "");
     const nameParam = decodeURIComponent(params?.id ?? "");
@@ -64,7 +64,6 @@ export function Player() {
         kills, assists, deaths,
         twoK: twoKills, threeK: threeKills, fourK: fourKills, fiveK: aces,
         hs, kast, adr, kr: avgKillsPerRound,
-        // "CT #": ctRating, "T #": tRating,
         cl_1: clutch1v1, cl_2: clutch1v2, cl_3: clutch1v3, cl_4: clutch1v4, cl_5: clutch1v5,
         peak, pit, form, consistency: ratingConsistency,
         ef, 
@@ -143,7 +142,7 @@ export function Player() {
                     </div>
                     <div className="w-full">
                         <div className="flex justify-end">
-                        { currentPlayer?.steam64Id && <div className="hover:cursor-pointer bg-slate-700 mx-1 p-1 rounded w-6 float-left"><a href={`http://steamcommunity.com/id/${currentPlayer.steam64Id}`} target="_blank" rel="noreferrer"><FaSteamSquare /></a></div>}
+                        { currentPlayer?.steam64Id && <div className="hover:cursor-pointer bg-slate-700 mx-1 p-1 rounded w-6 float-left"><a href={`http://steamcommunity.com/profiles/${currentPlayer.steam64Id}`} target="_blank" rel="noreferrer"><FaSteamSquare /></a></div>}
                         { currentPlayer?.discordId && <div className="hover:cursor-pointer bg-blue-700 mx-1 p-1 rounded w-6 float-left"><a href={`https://discordapp.com/users/${currentPlayer.discordId}`} target="_blank" rel="noreferrer"><RxDiscordLogo /></a></div> }
                         { currentPlayer?.faceitName && <div className="hover:cursor-pointer text-orange-500 mx-1 bg-slate-900 p-1 rounded w-6 float-left"><a href={`https://www.faceit.com/en/players/${currentPlayer?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div> }
                         </div>
@@ -195,8 +194,8 @@ export function Player() {
                 </div>
 }
                 <div className="grid grid-cols-2 w-full">
-                    {/* <TeamSideRatingPie player={currentPlayerStats} /> */}
-                    {/* <KillsAssistsDeathsPie player={currentPlayerStats} /> */}
+                    <TeamSideRatingPie player={currentPlayer} />
+                    <KillsAssistsDeathsPie player={currentPlayer} />
                 </div>
             </Stat>
             
