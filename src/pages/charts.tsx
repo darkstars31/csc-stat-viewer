@@ -13,6 +13,7 @@ export function Charts() {
 
     const addFilter = () => {
         const searchValue = inputRef.current!.value; 
+        inputRef.current!.value = "";
         const newFilters = [ ...filters, searchValue ].filter(Boolean);
         setFilters( newFilters );
     }
@@ -87,11 +88,11 @@ export function Charts() {
             }
         ],
         xAxis: {
-            min: .3,
+            min: Number((getTotalPlayerAverages(filteredPlayers).lowest.Rating - 0.05).toFixed(1)),
             splitLine: {
                 lineStyle: {
                   type: 'dashed',
-                  color: `gray`
+                  color: `#383838`
                 }
               }
         },
@@ -99,7 +100,7 @@ export function Charts() {
             splitLine: {
                 lineStyle: {
                   type: 'dashed',
-                  color: `gray`
+                  color: `#383838`
                 }
               }
         },
