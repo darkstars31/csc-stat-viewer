@@ -2,11 +2,10 @@ import * as React from "react";
 import { Player as FranchisePlayer, Team } from "../../models/franchise-types";
 import { useDataContext } from "../../DataContext";
 import { Link } from "wouter";
-import { RxDiscordLogo } from "react-icons/rx";
-import { SiFaceit } from "react-icons/si";
 import { COLUMNS } from "../franchise";
 import { GiPirateHat } from "react-icons/gi";
 import { Mmr } from "../../common/components/mmr";
+import { ExternalPlayerLinks } from "../../common/components/externalPlayerLinks";
 
 
 export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: FranchisePlayer, team: Team}) {
@@ -26,8 +25,7 @@ export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: Franchis
                 <div>{player?.stats?.Rating.toFixed(2) ?? "-"}</div>
                 <div>Contract {player?.contractDuration}</div>
                 <div>
-                    { franchisePlayer.discordId && <div className="hover:cursor-pointer bg-blue-700 p-1 rounded w-6 float-left"><a href={`https://discordapp.com/users/${franchisePlayer.discordId}`} target="_blank" rel="noreferrer"><RxDiscordLogo /></a></div> }
-                    { player?.faceitName && <div className="hover:cursor-pointer text-orange-500 mx-2 bg-slate-900 p-1 rounded w-6 float-left"><a href={`https://www.faceit.com/en/players/${player?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div> }
+                    <ExternalPlayerLinks player={player!} />
                 </div>
             </div>
         </div> );

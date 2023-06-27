@@ -18,12 +18,10 @@ import { tiertopincategory } from "../svgs";
 import { awardProperties, propertiesCurrentPlayerIsInTop10For, propertiesCurrentPlayerIsNumberOneFor } from "../common/utils/awards-utils";
 import { nth } from "../common/utils/string-utils";
 import { getTeammates } from "../common/utils/franchise-utils";
-import { RxDiscordLogo } from "react-icons/rx";
-import { SiFaceit } from "react-icons/si";
-import { FaSteamSquare } from "react-icons/fa";
 import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
 import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
 import { Mmr } from "../common/components/mmr";
+import { ExternalPlayerLinks } from "../common/components/externalPlayerLinks";
 
 
 export function Player() {
@@ -142,11 +140,7 @@ export function Player() {
 
                     </div>
                     <div className="w-full">
-                        <div className="flex justify-end">
-                        { currentPlayer?.steam64Id && <div className="hover:cursor-pointer bg-slate-700 mx-1 p-1 rounded w-6 float-left"><a href={`http://steamcommunity.com/profiles/${currentPlayer.steam64Id}`} target="_blank" rel="noreferrer"><FaSteamSquare /></a></div>}
-                        { currentPlayer?.discordId && <div className="hover:cursor-pointer bg-blue-700 mx-1 p-1 rounded w-6 float-left"><a href={`https://discordapp.com/users/${currentPlayer.discordId}`} target="_blank" rel="noreferrer"><RxDiscordLogo /></a></div> }
-                        { currentPlayer?.faceitName && <div className="hover:cursor-pointer text-orange-500 mx-1 bg-slate-900 p-1 rounded w-6 float-left"><a href={`https://www.faceit.com/en/players/${currentPlayer?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div> }
-                        </div>
+                      <ExternalPlayerLinks player={currentPlayer} />
                     </div>
                 </div>
                 { currentPlayerStats &&
@@ -219,7 +213,7 @@ export function Player() {
                 </div>
             </div> }
             <br />
-            <>
+            <div className="py-2">
             {/* Creating pairs of arrays from grid-data to display them side-by-side with a divider after unless there are no more arrays */}
                 {Array(Math.ceil(getGridData(currentPlayer).length / 2)).fill(0).map((_, i) => {
                     const pair = getGridData(currentPlayer).slice(i * 2, (i + 1) * 2);
@@ -243,7 +237,7 @@ export function Player() {
                         </React.Fragment>
                     );
                 })}
-            </>
+            </div>
             </Container>
         </>
     );

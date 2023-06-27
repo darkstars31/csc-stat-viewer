@@ -128,13 +128,13 @@ export const getGridData = (currentPlayer: Player) => {
             {name: PlayerMappings["rounds"], value: `${rounds}`, rowIndex: 0},
             {name: PlayerMappings["adp"], value: `${adp.toFixed(2)}`, rowIndex: 1},
             // {name: PlayerMappings["ctADP"], value: `${ctADP}`, rowIndex: 0},
+        ],
+        [
             {
                 name: "1v1/2/3/4/5 Clutch Rounds",
                 value: `${clutch1v1} / ${clutch1v2} / ${clutch1v3} / ${clutch1v4} / ${clutch1v5}`,
                 rowIndex: 1
             },
-        ],
-        [
             // {name: PlayerMappings["MIP/r"], value: `${mvpRounds}`, rowIndex: 0},
             // {name: PlayerMappings["K/ctr"], value: `${killsCTside}`, rowIndex: 1},
             // {name: PlayerMappings["tADP"], value: `${tADP}`, rowIndex: 0},
