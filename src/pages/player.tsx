@@ -80,7 +80,6 @@ export function Player() {
         // IWR, kpa,
 		multiR: multiKillRound, clutchR: clutchPerRound,
 		suppR, suppXR, 
-        // sRate, 
         tRatio,
         // ATD,
 		// "lurks/tR": lurksPerTsideRound, "wlp/L": lurkPointsEarned, "AWP/ctr": awpKillsCTside,

@@ -20,11 +20,14 @@ export function MapRecord( { matches, team }: Props) {
             const isHomeTeam = match.home.name === team?.name;
 			const map = match.stats[0].mapName;
 			if( !acc[map] ) acc[map] = { name: map, wins: 0, loss: 0, roundsWon: 0, roundsLost: 0 };
-			match.stats[0].winner.name === team?.name 
+
+            const didCurrentTeamWin = (isHomeTeam && match.stats[0].homeScore > match.stats[0].awayScore ) || ( !isHomeTeam && match.stats[0].homeScore < match.stats[0].awayScore );
+
+            didCurrentTeamWin
                 ? acc[map]["wins"] = acc[map]["wins"]+1 
                 : acc[map]["loss"] = acc[map]["loss"]+1;
-            isHomeTeam ? acc[map]["roundsWon"] = acc[map]["roundsWon"] + match.stats[0].homeScore : acc[map]["roundsWon"] = acc[map]["roundsWon"] + match.stats[0].awayScore;
-            isHomeTeam ? acc[map]["roundsLost"] = acc[map]["roundsLost"] + match.stats[0].awayScore : acc[map]["roundsLost"] = acc[map]["roundsLost"] + match.stats[0].homeScore;
+            didCurrentTeamWin ? acc[map]["roundsWon"] = acc[map]["roundsWon"] + match.stats[0].homeScore : acc[map]["roundsWon"] = acc[map]["roundsWon"] + match.stats[0].awayScore;
+            didCurrentTeamWin ? acc[map]["roundsLost"] = acc[map]["roundsLost"] + match.stats[0].awayScore : acc[map]["roundsLost"] = acc[map]["roundsLost"] + match.stats[0].homeScore;
         }
 		return acc;
 	}, {} as any);

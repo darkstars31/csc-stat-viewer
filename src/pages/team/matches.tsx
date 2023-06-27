@@ -17,8 +17,9 @@ export function MatchCards( { match, team }: Props ) {
         day: new Date(match.scheduledDate).getDate(),
         hour: new Date(match.scheduledDate).getHours() % 12,
     }
-
-    const backgroundColor = match.stats.length > 0 ? match.stats[0].winner.name === team?.name ? "bg-emerald-900": "bg-amber-950": "bg-midnight1";
+    const isHomeTeam = match.home.name === team?.name;
+    const didCurrentTeamWin =  (isHomeTeam && match.stats[0].homeScore > match.stats[0].awayScore) || (!isHomeTeam && match.stats[0].homeScore < match.stats[0].awayScore);
+    const backgroundColor = match.stats.length > 0 ? didCurrentTeamWin  ? "bg-emerald-900": "bg-amber-950": "bg-midnight1";
 
     return (
         <div className={`m-2 p-2 ${backgroundColor} rounded-lg overflow-hidden z-0`}>
@@ -38,7 +39,7 @@ export function MatchCards( { match, team }: Props ) {
                     <Link to={`/franchises/${match.away.franchise.name}/${match.away.name}`}><div className="text-amber-500">{match.away.name}</div></Link>
                 </div>
             </div>
-            { match.stats.length > 0 &&
+            { match.stats.length > 0 ?
             <div className="relative pt-2">
                 <div className="absolute -z-10 w-full">
                     <img className="object-cover object-center w-16 h-16" src={mapImages[match.stats[0].mapName as keyof typeof mapImages ]} alt={match.stats[0].mapName}/>
@@ -53,7 +54,8 @@ export function MatchCards( { match, team }: Props ) {
                 </div>
                 { match.demoUrl && <div className="float-right"><a href={match.demoUrl} title="Download Demo" rel="noreferrer" target="_blank"><GrDocumentVideo className="text-white" /></a></div> }
             </div>
-            }
+            :
+            <div className="text-center py-4 text-sm text-gray-700">Match hasn't been played yet or no stats found</div>}
         </div>
     );
 }

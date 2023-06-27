@@ -29,6 +29,33 @@ export const awardProperties = [
     'util',
     ] as (keyof CscStats)[]; // add properties here
 
+export const awardShortDescriptions = {
+    'hs': "HS%",
+    'ef': "Flashed",
+    'kills': "Kills",
+    'twoK': "2K",
+    'threeK': "3K",
+    'fourK': "4K",
+    'fiveK': "Ace",
+    'cl_1': "1v1 Clutch",
+    'cl_2': "1v2 Clutch",
+    'cl_3': "1v3 Clutch",
+    'cl_4': "1v4 Clutch",
+    'cl_5': "Ace Clutch",
+    'clutchR': "Clutch-ability",
+    'impact': "Impact",
+    'assists': "Assists",
+    'adr': "ADR",
+    'fAssists': "Flash Assists",
+    'tradesR': "Trade Kills",
+    'Xnade': "",
+    'suppR': "Support Rounds",
+    'suppXR': "Support Damage",
+    'kast': "KAST",
+    'utilDmg': "Util Dmg",
+    'util': "Util",
+} as unknown as (keyof CscStats)[]; // add properties here
+
   /* AWARDS logic */
 export const isCurrentPlayerNumberOneForProperty = (
     currentPlayer: Player,

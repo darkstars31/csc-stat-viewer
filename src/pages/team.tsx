@@ -27,7 +27,9 @@ export function Team(){
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph(currentTeam?.id);
 	const teamRecord = matches.reduce((acc, match) => {
 		if( match.stats.length > 0){
-			match.stats[0].winner.name === currentTeam?.name ? acc[0] = acc[0] + 1 : acc[1] = acc[1] + 1;
+			const isHomeTeam = match.home.name === currentTeam?.name;	
+			const didCurrentTeamWin = ( match.stats[0].homeScore > match.stats[0].awayScore ) || ( !isHomeTeam && match.stats[0].homeScore < match.stats[0].awayScore)
+			didCurrentTeamWin ? acc[0] = acc[0] + 1 : acc[1] = acc[1] + 1;
 		}
 		return acc;
 	}, [0,0]);

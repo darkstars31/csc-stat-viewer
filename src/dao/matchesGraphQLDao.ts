@@ -4,10 +4,9 @@ import { Match } from "../models/matches-types";
 const calculateDaysSinceSeasonStart = () => {
   const oneDay = 1000 *60*60*24;
   const currentDate = new Date();
-  const startOfSeasonDate = new Date(2023,5);
+  const startOfSeasonDate = new Date(2023,5,2);
   const diff = currentDate.getTime() - startOfSeasonDate.getTime();
   const diffInDays = Math.round( diff/ oneDay);
-  console.info( diff, diffInDays);
   return diffInDays;
 }
 

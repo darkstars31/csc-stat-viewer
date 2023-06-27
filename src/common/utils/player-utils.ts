@@ -49,21 +49,7 @@ export const PlayerMappings: Record<string,string> = {
     "kills": "Total Kills",
     "assists": "Total Assists",
     "deaths": "Total Deaths",
-    "MIP/r": "Most Impactful Player / Round",
-    "IWR": "Impact on Rounds Won Ratio",
-    "KPA": "Average Kill Impact",
-    "RWK": "Rounds with at least 1 Kill",
     "eaR": "Rounds with Opening Duel on T-side",
-    "ATD": "Time to Death",
-    "ctADP": "Death Placement CT-side",
-    "tADP": "Death Placement T-side",
-    "EF/F": "Enemies Flashed / Flash",
-    "Blind/EF": "Enemy Blind time / Flash",
-    "X/nade": "Damage per Frag thrown",
-    "AWP/ctr": "CT-side Awp Kills / Round",
-    "K/ctr": "CT-side Kills",
-    "lurks/tR": "Lurks on T-side / Round",
-    "wlp/L": "Lurk Round Points won",
 }
 
 export const tiers = ["Premier", "EliPrem", "Elite", "Challenger", "Contender", "Prospect", "New Tier"];
