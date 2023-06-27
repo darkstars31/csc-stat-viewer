@@ -62,6 +62,11 @@ export function Charts() {
             { transform: { type: 'filter', config: { dimension: 2, eq: "Challenger"}}},
             { transform: { type: 'filter', config: { dimension: 2, eq: "Elite"}}},
             { transform: { type: 'filter', config: { dimension: 2, eq: "Premier"}}},
+            { transform: { type: 'ecStat:regression'
+                  // 'linear' by default.
+                  // config: { method: 'linear', formulaOn: 'end'}
+                }
+              }
         ],
         dataZoom: [
             {

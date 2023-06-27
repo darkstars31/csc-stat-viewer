@@ -18,7 +18,7 @@ export function MatchCards( { match, team }: Props ) {
         hour: new Date(match.scheduledDate).getHours() % 12,
     }
     const isHomeTeam = match.home.name === team?.name;
-    const didCurrentTeamWin =  (isHomeTeam && match.stats[0].homeScore > match.stats[0].awayScore) || (!isHomeTeam && match.stats[0].homeScore < match.stats[0].awayScore);
+    const didCurrentTeamWin = (isHomeTeam && match.stats[0]?.homeScore > match.stats[0]?.awayScore) || (!isHomeTeam && match.stats[0]?.homeScore < match.stats[0]?.awayScore);
     const backgroundColor = match.stats.length > 0 ? didCurrentTeamWin  ? "bg-emerald-900": "bg-amber-950": "bg-midnight1";
 
     return (

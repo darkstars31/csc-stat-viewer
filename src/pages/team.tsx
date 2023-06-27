@@ -27,9 +27,11 @@ export function Team(){
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph(currentTeam?.id);
 	const teamRecord = matches.reduce((acc, match) => {
 		if( match.stats.length > 0){
-			const isHomeTeam = match.home.name === currentTeam?.name;	
-			const didCurrentTeamWin = ( match.stats[0].homeScore > match.stats[0].awayScore ) || ( !isHomeTeam && match.stats[0].homeScore < match.stats[0].awayScore)
-			didCurrentTeamWin ? acc[0] = acc[0] + 1 : acc[1] = acc[1] + 1;
+			const isHomeTeam = match.home.name === currentTeam?.name;
+			if( match.stats.length > 0){
+				const didCurrentTeamWin = ( match.stats[0].homeScore > match.stats[0].awayScore ) || ( !isHomeTeam && match.stats[0].homeScore < match.stats[0].awayScore)
+				didCurrentTeamWin ? acc[0] = acc[0] + 1 : acc[1] = acc[1] + 1;
+			}
 		}
 		return acc;
 	}, [0,0]);
@@ -56,6 +58,7 @@ export function Team(){
 								}
 								</div>
 								{ isLoadingMatches && <Loading />}
+								
 								{ matches.length > 0 && 
 									<div className="pt-8">
 										<h2 className="text-2xl font-bold text-white grow text-center">Matches ({teamRecord[0]} - {teamRecord[1]})</h2>
@@ -65,6 +68,7 @@ export function Team(){
 										</div>
 									</div>
 								}	
+								
 							</div>	
 						</div>
 					</Container>
