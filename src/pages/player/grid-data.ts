@@ -69,8 +69,6 @@ export const getGridData = (currentPlayer: Player) => {
         ...playerRest
     } = currentPlayer.stats as CscStats;
 
-    console.info( 'srate',saveRate );
-
     return [
         [
             {name: "Kills  /  Assists  /  Deaths", value: `${kills} / ${assists} / ${deaths}`, rowIndex: 0},
@@ -108,6 +106,7 @@ export const getGridData = (currentPlayer: Player) => {
             {name: PlayerMappings["util"], value: `${utilThrownPerMatch}`, rowIndex: 0},
             {name: PlayerMappings["utilDmg"], value: `${utilDmg.toFixed(2)}`, rowIndex: 1},
             // {name: PlayerMappings["X/nade"], value: `${nadeDmgPerFrag}`, rowIndex: 0},
+
         ],
         [
             // {name: PlayerMappings["Blind/EF"], value: `${enemyBlindTime}s`, rowIndex: 0},

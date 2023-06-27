@@ -88,7 +88,6 @@ export function BoxPlot( { options }: Props) {
             ],
             ...options
           };
-          console.info( defaultOptions.series );
 
     return (
         <ReactECharts option={defaultOptions} style={{height: 150}} />

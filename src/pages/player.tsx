@@ -20,6 +20,7 @@ import { nth } from "../common/utils/string-utils";
 import { getTeammates } from "../common/utils/franchise-utils";
 import { RxDiscordLogo } from "react-icons/rx";
 import { SiFaceit } from "react-icons/si";
+import { FaSteamSquare } from "react-icons/fa";
 // import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
 // import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
 
@@ -126,8 +127,11 @@ export function Player() {
                         </div>
                         <ul className="text-[0.8rem]">
                             <li>
-                                {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{currentPlayer.tier.name}</i></b>
-                                </li>
+                                {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{currentPlayer.tier.name}</i></b> | {currentPlayer.mmr} MMR
+                            </li>
+                            <li>
+                                
+                            </li>
                             {/* { rankingsInAllTiers.map(({tier, ranking}) => (
                                 <li key={tier}>
                                     {ranking}{nth(ranking)} Overall in {" "}
@@ -139,8 +143,9 @@ export function Player() {
                     </div>
                     <div className="w-full">
                         <div className="flex justify-end">
-                        { currentPlayer?.discordId && <div className="hover:cursor-pointer bg-blue-700 p-1 rounded w-6 float-left"><a href={`https://discordapp.com/users/${currentPlayer.discordId}`} target="_blank" rel="noreferrer"><RxDiscordLogo /></a></div> }
-                        { currentPlayer?.faceitName && <div className="hover:cursor-pointer text-orange-500 mx-2 bg-slate-900 p-1 rounded w-6 float-left"><a href={`https://www.faceit.com/en/players/${currentPlayer?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div> }
+                        { currentPlayer?.steam64Id && <div className="hover:cursor-pointer bg-slate-700 mx-1 p-1 rounded w-6 float-left"><a href={`http://steamcommunity.com/id/${currentPlayer.steam64Id}`} target="_blank" rel="noreferrer"><FaSteamSquare /></a></div>}
+                        { currentPlayer?.discordId && <div className="hover:cursor-pointer bg-blue-700 mx-1 p-1 rounded w-6 float-left"><a href={`https://discordapp.com/users/${currentPlayer.discordId}`} target="_blank" rel="noreferrer"><RxDiscordLogo /></a></div> }
+                        { currentPlayer?.faceitName && <div className="hover:cursor-pointer text-orange-500 mx-1 bg-slate-900 p-1 rounded w-6 float-left"><a href={`https://www.faceit.com/en/players/${currentPlayer?.faceitName}`} target="_blank" rel="noreferrer"><SiFaceit /></a></div> }
                         </div>
                     </div>
                 </div>

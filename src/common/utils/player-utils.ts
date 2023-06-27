@@ -12,9 +12,9 @@ export const PlayerMappings: Record<string,string> = {
     "adr": "Damage / Round",
     "kast": "Kill Assist Traded Survived (%)",
     "odr": "Opening Duel (%)",
-    "Impact": "Impact",
-    "CT #": "CT-side Rating",
-    "T #": "T-side Rating",
+    "impact": "Impact",
+    // "CT #": "CT-side Rating",
+    // "T #": "T-side Rating",
     "adp": "Average Death Placement",
     "utilDmg": "Utility Damage per Match",
     "ef": "Enemies Flashed per Match",
@@ -53,7 +53,7 @@ export const PlayerMappings: Record<string,string> = {
     "IWR": "Impact on Rounds Won Ratio",
     "KPA": "Average Kill Impact",
     "RWK": "Rounds with at least 1 Kill",
-    "ea/R": "Rounds with Opening Duel on T-side",
+    "eaR": "Rounds with Opening Duel on T-side",
     "ATD": "Time to Death",
     "ctADP": "Death Placement CT-side",
     "tADP": "Death Placement T-side",
@@ -117,9 +117,6 @@ export const getTotalPlayerAverages = (Players: Player[], options?: Record<strin
     const highest: Record<string, any> = {};
 
     for (const key in PlayerMappings) {
-            if( key === "consistency" ){
-                console.info(players)
-            }
             const statsKey = key as keyof CscStats;
 
             // TODO: FIX

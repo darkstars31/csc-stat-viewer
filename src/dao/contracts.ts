@@ -90,7 +90,6 @@ const fetchSchemaIntrospection = async () => await fetch(`https://core.csconfede
         })
     })
     .then( async response => {
-        console.info( response );
         return response;
     } );
 

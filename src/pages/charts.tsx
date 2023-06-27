@@ -3,16 +3,36 @@ import { useDataContext } from '../DataContext';
 import { Container } from '../common/components/container';
 import ReactECharts from "echarts-for-react";
 import { getTotalPlayerAverages } from '../common/utils/player-utils';
+import { Input } from '../common/components/input';
+import { Pill } from '../common/components/pill';
 
 export function Charts() {
+    const inputRef = React.useRef<HTMLInputElement>(null);
     const { players } = useDataContext();
     const playersWithStats = players.filter( p => p.stats );
+    const [ filters, setFilters ] = React.useState<string[]>([]);
+
+    const addFilter = () => {
+        const searchValue = inputRef.current!.value; 
+        const newFilters = [ ...filters, searchValue ].filter(Boolean);
+        setFilters( newFilters );
+    }
+
+    const removeFilter = ( label: string ) => {
+        const newFilters = filters;
+        delete newFilters[filters.indexOf(label)];
+        setFilters( newFilters.filter(Boolean) );
+    }
+
+    const filteredPlayers = filters.length > 0 ? playersWithStats.filter( player => {
+        return filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ) );
+    } ) : playersWithStats;
 
     if( playersWithStats.length === 0) {
         return <div>Loading</div>;
     }
 
-    const data = playersWithStats.map( p => ( [p.stats?.Rating, p.mmr, p.tier.name, p.name]));
+    const data = filteredPlayers.map( p => ( [p.stats?.Rating, p.mmr, p.tier.name, p.name]));
 
     const emp = {
         focus: 'series',
@@ -301,7 +321,7 @@ export function Charts() {
     ],
     };
 
-    const getByRole = ( role: string ) => playersWithStats.filter( p => p.role === role);
+    const getByRole = ( role: string ) => filteredPlayers.filter( p => p.role === role);
 
     const optionByRole = {
         title: {
@@ -386,7 +406,7 @@ export function Charts() {
                     getByRoleAndTier('','Contender').length,
                     getByRoleAndTier('','Challenger').length,
                     getByRoleAndTier('','Elite').length,
-                    getByRoleAndTier('','Premier').length]
+                    getByRoleAndTier('-','Premier').length]
           },
           {
             name: 'Rifler',
@@ -454,8 +474,36 @@ export function Charts() {
 
     return (
         <Container>
+           
             <div>
-                Did someone say data? (This page is a work in progress)
+                <div className='text-center mx-auto max-w-lg'>
+                    <form className="flex flex-box h-12 mx-auto" onSubmit={(e)=>{e.preventDefault()}}>
+                        <label
+                            htmlFor="textInput"
+                            className={"relative block overflow-hidden rounded-md border border-gray-200 px-3 pt-3 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600 "}
+                            >
+                            <input
+                                ref={inputRef}
+                                placeholder='Filter players by Name'
+                                className="basis-1/2 grow peer h-8 w-full border-none bg-transparent p-0 focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm "
+                                type="text"                                     
+                            />
+                        </label>
+                        <button
+                            type="submit"
+                            className="basis-1/6 ml-4 inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
+                            onClick={addFilter}
+                            >
+                            +Filter
+                        </button>
+                    </form>
+                </div>
+                <div className="pt-4">
+                    {filters.map( filter => 
+                        <Pill key={filter} label={filter} onClick={() => removeFilter(filter)}/>
+                        )
+                    }
+                </div>
             </div>
             <div>
                 <ReactECharts option={optionRatingMMR} style={{height: 600}} />
