@@ -27,7 +27,6 @@ export const awardProperties = [
     'kast',
     'utilDmg',
     'util',
-    'clutchR',
     ] as (keyof CscStats)[]; // add properties here
 
   /* AWARDS logic */
