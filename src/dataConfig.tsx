@@ -13,6 +13,7 @@ export type DataConfiguration = {
 export const dataConfiguration = [
     {
         season: 11,
+        seasonEndDate: "2023-08-01",
         name: "Season 11",
         spreadsheetUrl: googleSheetsUrl("18qgpc4NdPNg4I5Q9lmzaEgUYyxHtq25JKZfTxiQg_lc",334898684),
     },

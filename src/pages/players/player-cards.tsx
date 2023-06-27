@@ -4,6 +4,7 @@ import { Player } from "../../models/player";
 import { teamNameTranslator } from "../../common/utils/player-utils";
 import { BiStats } from "react-icons/bi";
 import { GiMoneyStack } from "react-icons/gi";
+import { Mmr } from "../../common/components/mmr";
 
 type Props = {
     player: Player,
@@ -48,7 +49,7 @@ export function PlayerCard( { player, index}: Props) {
                             <div>{player.tier.name}</div>
                             <div className="grid grid-cols-2 mt-1">
                                 <Tooltip tip="Rating"><div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player.stats.Rating.toFixed(2)}</div></Tooltip>
-                                <Tooltip tip="Match Making Rank"><div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/> {player.mmr}</div></Tooltip>
+                                <Tooltip tip="Match Making Rank"><div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/> <Mmr player={player}/></div></Tooltip>
                             </div>  
                         </div>
                     </div> }

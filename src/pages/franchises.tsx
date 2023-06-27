@@ -6,12 +6,12 @@ import { useKonamiCode } from "../common/hooks/konami";
 import { useDataContext } from "../DataContext";
 import { GiPirateHat } from "react-icons/gi";
 import { franchiseImages } from "../common/images/franchise";
+import { Mmr } from "../common/components/mmr";
 
 
 export function Franchises() {
     const konami = useKonamiCode();
     const { franchises = [], loading } = useDataContext();
-    //const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     
     return (
         <Container>
@@ -46,7 +46,7 @@ export function Franchises() {
                                                 { team.players.map( player => 
                                                     <div key={`${team.tier.name}-${player.name}`} className="m-1 grid grid-cols-2">
                                                         <div>{player.name} { team?.captain?.steam64Id === player.steam64Id ? <GiPirateHat size="1.5em" className="inline"/> : ""}</div>         
-                                                        <div className="text-xs text-gray-500"> {player.mmr} ({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</div>
+                                                        <div className="text-xs text-gray-500"> <Mmr player={player} />({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</div>
                                                     </div>
                                                     )}
                                                 </div>

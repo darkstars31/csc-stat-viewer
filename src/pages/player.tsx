@@ -23,6 +23,7 @@ import { SiFaceit } from "react-icons/si";
 import { FaSteamSquare } from "react-icons/fa";
 import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
 import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
+import { Mmr } from "../common/components/mmr";
 
 
 export function Player() {
@@ -126,7 +127,7 @@ export function Player() {
                         </div>
                         <ul className="text-[0.8rem]">
                             <li>
-                                {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{currentPlayer.tier.name}</i></b> | {currentPlayer.mmr} MMR
+                                {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{currentPlayer.tier.name}</i></b> | <Mmr player={currentPlayer}/> MMR
                             </li>
                             <li>
                                 
