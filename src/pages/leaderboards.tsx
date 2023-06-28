@@ -34,7 +34,7 @@ export function LeaderBoards() {
     const kastPercentage = _sort(playerData, "stats.kast", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "KAST%": p.stats.kast.toFixed(2)}));
     const utilThrownPerMatchX = _sort(playerData, "stats.util");
     const utilThrownPerMatch = utilThrownPerMatchX.map( p => ({ "Player": p.name, "Tier": p.tier.name, "Util/Match": p.stats.util})).splice(0,5);
-    const leastUtilThrownPerMatch = utilThrownPerMatchX.reverse().map( p => ({ "Player": p.name, "Tier": p.tier.name, "Least Util/Match": p.stats.util })).splice(0,5);
+    const leastUtilThrownPerMatch = utilThrownPerMatchX.map( p => ({ "Player": p.name, "Tier": p.tier.name, "Least Util/Match": p.stats.util })).splice(0,5);
     const headshotPercentage = _sort(playerData, "stats.hs", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "HeadShot %": p.stats.hs}));
     const clutchAbility = _sort(playerData, "stats.clutchR", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Clutch Points per Match": p.stats['clutchR'].toFixed(2)}));
     // const grenadeDamagePerRound = _sort(playerData, "X/nade", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Grenade Damage Per Round": p["Xnade"]}));

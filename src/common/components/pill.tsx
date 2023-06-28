@@ -28,8 +28,8 @@ export function Pill( { label, color, onClick }: Props) {
                     className="w-3 h-3"
                     >
                 <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M6 18L18 6M6 6l12 12"
                 />
                 </svg>
