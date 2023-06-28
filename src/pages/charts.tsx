@@ -47,13 +47,26 @@ export function Charts() {
       };
 
     const optionRatingMMR = {
+        backgroundColor: '#090917',
         title: {
-            text: 'Rating and MMR per Tier',
+            text: 'MMR and Rating per Tier',
+            textStyle: {
+                color: '#FFFFFF',
+            },
             left: 'center'
         },
         legend: {
             data: ['Recruit', 'Prospect','Contender', 'Challenger', 'Elite', 'Premier'],
             top: 30
+        },
+        toolbox: {
+          feature: {
+            saveAsImage:{
+                title: "Save Image",
+                show: true,
+                type: 'png',
+            },
+          }  
         },
         dataset: [ { source: data ?? [], },
             { transform: { type: 'filter', config: { dimension: 2, eq: "Recruit"}}},
@@ -70,14 +83,14 @@ export function Charts() {
         ],
         dataZoom: [
             {
-              type: 'inside'
+              type: 'inside',
             },
             {
               type: 'slider',
-              showDataShadow: false,
-              handleIcon:
-                'path://M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-              handleSize: '80%'
+              showDataShadow: true,
+            //   handleIcon:
+            //     'path://M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+              handleSize: '100%'
             },
             {
               type: 'inside',
@@ -86,10 +99,10 @@ export function Charts() {
             {
               type: 'slider',
               orient: 'vertical',
-              showDataShadow: false,
-              handleIcon:
-                'path://M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-              handleSize: '80%'
+              showDataShadow: true,
+            //   handleIcon:
+            //     'path://M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+              handleSize: '100%'
             }
         ],
         xAxis: {
@@ -110,9 +123,11 @@ export function Charts() {
               }
         },
         tooltip: {
+            show: true,
             label: {
                 formatter: function (param: { data: any[]; }) {
-                    return param.data[3];
+                    console.info( param)
+                    return `${param.data[3]}`;
                 },
             }
         },
@@ -122,6 +137,13 @@ export function Charts() {
             datasetIndex: 1,
             type: "scatter",
             emphasis: emp,
+            // tooltip: {
+            //     show: true,
+            //     position: ['50%','50%'],
+            //     formatter: function (param: { data: any[]; }) {
+            //         return `${param.data[3]}<br />Rating: ${param.data[0].toFixed(2)}<br />MMR: ${param.data[1]}`;
+            //     }
+            // }
         },
         { 
             name: "Prospect",
@@ -158,6 +180,13 @@ export function Charts() {
             type: "scatter",
             emphasis: emp,
         },
+        // { 
+        //     name: "Linear Regression",
+        //     symbolsize: 60,
+        //     datasetIndex: 7,
+        //     type: "line",
+        //     emphasis: emp,
+        // },
     ],
   
     };
@@ -479,7 +508,6 @@ export function Charts() {
 
     return (
         <Container>
-           
             <div>
                 <div className='text-center mx-auto max-w-lg mt-4'>
                     <form className="flex flex-box h-12 mx-auto" onSubmit={(e)=>{e.preventDefault()}}>
@@ -507,20 +535,20 @@ export function Charts() {
                         </button>
                     </form>
                 </div>
-                <div className="pt-4">
+                <div className="pt-4 text-center">
                     {filters.map( filter => 
                         <Pill key={filter} label={filter} onClick={() => removeFilter(filter)}/>
                         )
                     }
                 </div>
             </div>
-            <div>
+            <div className='py-4'>
                 <ReactECharts option={optionRatingMMR} style={{height: 600}} />
             </div>
-            <div>
+            <div className='py-4'>
                 <ReactECharts option={optionHeadShotTier} style={{height: 500}} />
             </div>
-            <div>
+            <div className='py-4'>
                 <ReactECharts option={optionUtils} style={{height: 500}} />
             </div>
             <div className='grid grid-cols-2'>

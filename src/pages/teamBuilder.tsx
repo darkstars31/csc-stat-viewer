@@ -7,6 +7,7 @@ import { Loading } from "../common/components/loading";
 import { Select } from "../common/components/select";
 import { useLocation } from "wouter";
 import { CscStats } from "../models/csc-stats-types";
+import { VscWarning } from "react-icons/vsc";
 
 export function TeamBuilder() {
     const [ location, setLocation ] = useLocation();
@@ -55,6 +56,9 @@ export function TeamBuilder() {
 
     return (
         <Container>
+            <div className="mx-auto max-w-7xl px-2 sm:p-4 bg-orange-700 rounded">
+                <VscWarning className="pr-4" /> This feature is in need of repair.
+            </div>
             <h2 className="text-3xl font-bold sm:text-4xl">Team Builder</h2>
             <p className="mt-4 text-gray-300">
                 Compare players, build your team.

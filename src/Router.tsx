@@ -10,14 +10,16 @@ import { Header } from './header-nav/header';
 import { TeamBuilder } from './pages/teamBuilder';
 import { Playground } from './pages/playground';
 import { useDataContext } from './DataContext';
-import { ProgressBar } from './common/components/progress';
+import { Charts } from './pages/charts';
 import { Team } from './pages/team';
 import { Franchise } from './pages/franchise';
-import { Charts } from './pages/charts';
+import { TeamStandings } from './pages/teamStandings';
+import { ProgressBar } from './common/components/progress';
   
 const routes = [
   { path: `/`, component: () => <Home /> },
   { path: `/charts`, component: () => <Charts />},
+  { path: `/standings`, component: () => <TeamStandings />},
   { path: `/franchises`, component: () => <Franchises /> },
   { path: `/franchises/:franchise`, component: () => <Franchise /> },
   { path: `/franchises/:franchise/:team`, component: () => <Team />},

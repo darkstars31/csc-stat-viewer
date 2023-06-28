@@ -8,6 +8,7 @@ import { MatchCards } from "./team/matches";
 import { MapRecord } from "./team/mapRecord";
 import { PlayerRow } from "./franchise/player-row";
 import { franchiseImages } from "../common/images/franchise";
+import { TeamFooterTabulation } from "./franchise/team-footer-tabulation";
 
 
 export function Team(){
@@ -56,6 +57,7 @@ export function Team(){
 									currentTeam?.players?.map( player => <PlayerRow key={player.name} franchisePlayer={player} team={currentTeam} /> )
 									//players?.map( ( player, index ) => <PlayerCard key={player.name} player={player} index={index}/> )								
 								}
+								{ currentTeam && <TeamFooterTabulation team={currentTeam} /> }
 								</div>
 								{ isLoadingMatches && <Loading />}
 								{ matches.length > 0 && 
