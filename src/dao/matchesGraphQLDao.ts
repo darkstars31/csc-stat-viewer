@@ -1,5 +1,6 @@
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useQueries, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { Match } from "../models/matches-types";
+import { Team } from "../models/franchise-types";
 
 const calculateDaysSinceSeasonStart = () => {
   const oneDay = 1000 *60*60*24;
@@ -10,7 +11,7 @@ const calculateDaysSinceSeasonStart = () => {
   return diffInDays;
 }
 
-const fetchMatchesGraph = async ( teamId?: string) => await fetch(`https://core.csconfederation.com/graphql`,
+export const fetchMatchesGraph = async ( teamId?: string) => await fetch(`https://core.csconfederation.com/graphql`,
     { method: "POST", 
         body: JSON.stringify({
                 "operationName": "",
@@ -82,4 +83,12 @@ export function useFetchMatchesGraph( teamId?: string): UseQueryResult<Match[]> 
             enabled: Boolean(teamId),
             staleTime: 1000 * 60 * 60 // 1 second * 60 * 60 = 1 hour
         });
+}
+
+export function useFetchMultipleTeamsMatchesGraph( tier: string, teams: Team[]): UseQueryResult<unknown,unknown>[] {
+    const queries = teams.map( team => 
+      ( { queryKey: ["matches-graph", team.id],
+          queryFn: () => fetchMatchesGraph( team.id ),
+      } ) );
+    return useQueries( { queries } );
 }
