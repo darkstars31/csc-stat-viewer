@@ -2,11 +2,14 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import { Input } from "../common/components/input";
 import { Pill } from "../common/components/pill";
-import Select, { MultiValue, SingleValue } from "react-select";
+import Select, { MultiValue } from "react-select";
 import { useDataContext } from "../DataContext";
 import { Player } from "../models/player";
 import { PlayerCard } from "./players/player-cards";
 import _get from "lodash/get";
+import { PlayerTable } from "./players/player-table";
+import { MdGridView, MdOutlineViewHeadline } from "react-icons/md";
+import { useLocalStorage } from "../common/hooks/localStorage";
 
 const sortOptionsList = [
     { label: "Name", value: "stats.name"}, 
@@ -17,21 +20,20 @@ const sortOptionsList = [
 export function Players() {
     const { players } = useDataContext();
     const playersWithStats = players.filter( p => p.stats );
+    const [ displayStyle, setDisplayStyle ] = useLocalStorage("displayStyle", "cards");
     const [ searchValue, setSearchValue ] = React.useState("");
     const [ filters, setFilters ] = React.useState<string[]>([]);
-    const [ orderBy, setOrderBy ] = React.useState<SingleValue<{label: string;value: string;}>>(sortOptionsList[0]);
+    const [ orderBy, setOrderBy ] = useLocalStorage("orderBy", JSON.stringify(sortOptionsList[0])); // React.useState<SingleValue<{label: string;value: string;}>>(sortOptionsList[0]);
     const [ viewTierOptions, setViewTierOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
     const [ viewPlayerTypeOptions, setViewPlayerTypeOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
     const [ viewPlayerRoleOptions, setViewPlayerRoleOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
 
-
     let sortedPlayerData = playersWithStats.sort( (a,b) => {
-        const itemA = _get(a, orderBy!.value, 0); 
-        const itemB = _get(b, orderBy!.value, 0);
+        const itemA = _get(a, orderBy.value, 0); 
+        const itemB = _get(b, orderBy.value, 0);
         return itemA < itemB ? 1 : -1
     } );
 
-    // eslint-disable-next-line
     sortedPlayerData = orderBy?.label.includes("Name") ? sortedPlayerData.reverse() : sortedPlayerData;
 
     const filteredByPlayerType = viewPlayerTypeOptions?.length ? sortedPlayerData.filter( player => viewPlayerTypeOptions?.some( type => type.value === player.type)) : playersWithStats;
@@ -101,7 +103,7 @@ export function Players() {
             <h2 className="text-3xl font-bold sm:text-4xl">Players</h2>
 
             <p className="mt-4 text-gray-300">
-            Find players, view stats, see how you stack up against your peers.
+                Find players, view stats, see how you stack up against your peers.
             </p>
             <p className="mt-4 text-gray-300">
                 Showing {filteredPlayers.length} of {playersWithStats.length} Players
@@ -193,7 +195,7 @@ export function Players() {
                             <Select
                                 className="grow"
                                 unstyled
-                                defaultValue={sortOptionsList[0]}
+                                defaultValue={orderBy}
                                 isSearchable={false}
                                 classNames={selectClassNames}
                                 options={sortOptionsList}
@@ -202,12 +204,21 @@ export function Players() {
                     </div>
                 </div>
             </div>
-        <div>
             <hr className="h-px my-4 border-0 bg-gray-800" />
+            <div className="m-2 justify-end flex">
+                <button title="Card View" className={`p-2 m-1 rounded border ${displayStyle === "cards" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "cards" )}><MdGridView /></button>
+                <button title="List View" className={`p-2 m-1 rounded border ${displayStyle === "list" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "list" )}><MdOutlineViewHeadline /></button>
+            </div>
+        { displayStyle === "cards" ? <div>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                 { playerCards }
             </div>
         </div>
+        : 
+        <div>
+            <PlayerTable players={filteredPlayers} />
+        </div>
+        }
     </Container>
     );
 }

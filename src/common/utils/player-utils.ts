@@ -159,7 +159,7 @@ function calcuateMedian(players: CscStats[], prop: keyof CscStats) {
 }
 
 export function determinePlayerRole( stats: CscStats ){
-    if( !stats?.GP || stats?.GP < 3 ) return '';
+    if( !stats?.GP || stats?.GP < 3 ) return 'RIFLER';
     const roles = {
         AWPER: clamp(stats["awpR"],0, .5) / .5, // Awper
         ENTRY: clamp(stats.odr*(stats["odaR"]*3), 0, 1.1) / 1.1, // Entry
