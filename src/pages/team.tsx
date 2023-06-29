@@ -22,8 +22,6 @@ export function Team(){
 	const currentFranchise = franchises.find( f => f.name === franchiseName );
 	const currentTeam = currentFranchise?.teams.find( t => t.name === teamName );
 
-	//const players = cscPlayers.filter( cscPlayer => cscPlayer.team?.name === currentTeam?.name );
-
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph(currentTeam?.id);
 	const teamRecord = matches.reduce((acc, match) => {

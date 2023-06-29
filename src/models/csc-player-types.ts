@@ -1,3 +1,5 @@
+import { PlayerTypes } from "../common/utils/player-utils";
+
 export type CscPlayersQuery = {
     data: Data;
 }
@@ -16,7 +18,7 @@ export type CscPlayer = {
     contractDuration?: number,
     tier: CscTier,
     team?: CscTeam,
-    type?: string,
+    type?: PlayerTypes
 }
 
 export type CscTier = {

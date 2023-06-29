@@ -1,8 +1,23 @@
 import { clamp } from "lodash";
-import { PlayerStats } from "../../models";
 import { CscStats } from "../../models/csc-stats-types";
 import { Player } from "../../models/player";
 import { sortBy } from "lodash";
+
+export enum PlayerTypes {
+    SIGNED = 'SIGNED',
+    FREE_AGENT = 'FREE_AGENT',
+    DRAFT_ELIGIBLE = 'DRAFT_ELIGIBLE',
+    PERMANENT_FREE_AGENT = 'PERMANENT_FREE_AGENT',
+    SPECTATOR = 'SPECTATOR',
+    INACTIVE_RESERVE = 'INACTIVE_RESERVE',
+    SIGNED_SUBBED = 'SIGNED_SUBBED',
+    TEMPSIGNED = 'TEMPSIGNED',
+    PERMFA_TEMP_SIGNED = 'PERMFA_TEMP_SIGNED',
+    UNROSTERED_GM = 'UNROSTERED_GM',
+    UNROSTERED_AGM = 'UNROSTERED_AGM',
+    INACTIVE = 'INACTIVE',
+    SIGNED_PROMOTED = 'SIGNED_PROMOTED',
+  }
 
 export const PlayerMappings: Record<string,string> = {
     "name": "Name",
@@ -13,8 +28,6 @@ export const PlayerMappings: Record<string,string> = {
     "kast": "Kill Assist Traded Survived (%)",
     "odr": "Opening Duel (%)",
     "impact": "Impact",
-    // "CT #": "CT-side Rating",
-    // "T #": "T-side Rating",
     "adp": "Average Death Placement",
     "utilDmg": "Utility Damage per Match",
     "ef": "Enemies Flashed per Match",
@@ -87,10 +100,10 @@ export const getPlayerRatingIndex = ( player: Player, allPlayers: Player[] ) => 
     return playersInTierSortedByRating.findIndex( p => p.name === player.name);
 }
 
-export const getPlayerTeammates = ( player: PlayerStats, allPlayers: PlayerStats[] ) => {
+export const getPlayerTeammates = ( player: Player, allPlayers: Player[] ) => {
     return allPlayers
-        .filter( allPlayers => !["DE","FA","PFA"].includes(allPlayers.Team))
-        .filter( allPlayers => allPlayers.Tier === player.Tier && allPlayers.Team === player.Team && allPlayers.Name !== player.Name);
+        .filter( player => !["DE","FA","PFA"].includes(player?.type ?? ''))
+       // .filter( allPlayers => allPlayers.tier === player.Tier && allPlayers.Team === player.Team && allPlayers.Name !== player.Name);
 }
 
 export const getTotalPlayerAverages = (Players: Player[], options?: Record<string,unknown> ) => {

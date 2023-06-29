@@ -46,7 +46,7 @@ export function Franchises() {
                                                 { team.players.map( player => 
                                                     <div key={`${team.tier.name}-${player.name}`} className="m-1 grid grid-cols-2">
                                                         <div>{player.name} { team?.captain?.steam64Id === player.steam64Id ? <GiPirateHat size="1.5em" className="inline"/> : ""}</div>         
-                                                        <div className="text-xs text-gray-500"> <Mmr player={player} />({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</div>
+                                                        <div className="text-xs text-gray-500"> <span className="hidden md:contents"><Mmr player={player} />({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span></div>
                                                     </div>
                                                     )}
                                                 </div>

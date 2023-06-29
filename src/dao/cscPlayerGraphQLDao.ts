@@ -1,13 +1,12 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { CscPlayer, CscPlayersQuery } from "../models";
+import { PlayerTypes } from "../common/utils/player-utils";
 
 const url = `https://core.csconfederation.com/graphql`
 
-type CscPlayerTypes = "SIGNED" | "FREE_AGENT" | "DRAFT_ELIGIBLE" | "PERMANENT_FREE_AGENT" | "SPECTATOR" | "INACTIVE_RESERVE" | "SIGNED_SUBBED" | "TEMPSIGNED" | "PERMFA_TEMP_SIGNED" | "UNROSTERED_GM" | "UNROSTERED_AGM" | "INACTIVE" | "SIGNED_PROMOTED";
-
 const OneHour = 1000 * 60 * 60;
 
-const fetchGraph = async ( playerType: CscPlayerTypes ) => await fetch(url,
+const fetchGraph = async ( playerType: keyof typeof PlayerTypes ) => await fetch(url,
     { method: "POST", 
         body: JSON.stringify({
             "operationName": "",
@@ -48,7 +47,7 @@ const fetchGraph = async ( playerType: CscPlayerTypes ) => await fetch(url,
         });
     } );
 
-export function useCscPlayersGraph( playerType: CscPlayerTypes ): UseQueryResult<CscPlayer[]> {
+export function useCscPlayersGraph( playerType: keyof typeof PlayerTypes ): UseQueryResult<CscPlayer[]> {
     return useQuery( 
         [`cscplayers-${playerType}-graph`], 
         () => fetchGraph( playerType ), 

@@ -13,7 +13,7 @@ export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: Franchis
     const player = players.find( p => p.steam64Id === franchisePlayer.steam64Id);
     const percentageOfMmrCap = (((franchisePlayer.mmr ?? 0)/team.tier.mmrCap)*100).toFixed(1);
     return (
-        <div className=" m-1">
+        <div className="m-8 text-sm lg:text-m lg:m-2">
             <div className={`grid grid-cols-${COLUMNS}`}>
                 <Link className="hover:cursor-pointer hover:text-sky-400 hover:text-sky-400 transition ease-in-out hover:-translate-x-1 duration-300" 
                 key={`${team.tier.name}-${franchisePlayer.name}`} 

@@ -7,7 +7,7 @@ const calculateDaysSinceSeasonStart = () => {
   const currentDate = new Date();
   const startOfSeasonDate = new Date(2023,5,2);
   const diff = currentDate.getTime() - startOfSeasonDate.getTime();
-  const diffInDays = Math.round( diff/ oneDay);
+  const diffInDays = Math.round( diff / oneDay);
   return diffInDays;
 }
 
