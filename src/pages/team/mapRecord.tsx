@@ -26,8 +26,8 @@ export function MapRecord( { matches, team }: Props) {
             didCurrentTeamWin
                 ? acc[map]["wins"] = acc[map]["wins"]+1 
                 : acc[map]["loss"] = acc[map]["loss"]+1;
-            didCurrentTeamWin ? acc[map]["roundsWon"] = acc[map]["roundsWon"] + match.stats[0].homeScore : acc[map]["roundsWon"] = acc[map]["roundsWon"] + match.stats[0].awayScore;
-            didCurrentTeamWin ? acc[map]["roundsLost"] = acc[map]["roundsLost"] + match.stats[0].awayScore : acc[map]["roundsLost"] = acc[map]["roundsLost"] + match.stats[0].homeScore;
+            isHomeTeam ? acc[map]["roundsWon"] = acc[map]["roundsWon"] + match.stats[0].homeScore : acc[map]["roundsWon"] = acc[map]["roundsWon"] + match.stats[0].awayScore;
+            isHomeTeam ? acc[map]["roundsLost"] = acc[map]["roundsLost"] + match.stats[0].awayScore : acc[map]["roundsLost"] = acc[map]["roundsLost"] + match.stats[0].homeScore;
         }
 		return acc;
 	}, {} as any);
