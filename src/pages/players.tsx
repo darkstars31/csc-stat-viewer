@@ -83,6 +83,7 @@ export function Players() {
         { label: `Free Agents`, value: [PlayerTypes.FREE_AGENT,PlayerTypes.TEMPSIGNED]},
         { label: `Draft Eligible`, value: [PlayerTypes.DRAFT_ELIGIBLE]},
         { label: `Perma FA`, value: [PlayerTypes.PERMANENT_FREE_AGENT,PlayerTypes.PERMFA_TEMP_SIGNED]},
+        { label: `Inactive Reserve`, value: [PlayerTypes.INACTIVE_RESERVE]},
     ];
 
     const selectClassNames = {
