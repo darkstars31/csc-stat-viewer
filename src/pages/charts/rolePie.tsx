@@ -13,7 +13,10 @@ export function RolePieChart({ playerData = [] }: Props) {
     const optionByRole = {
         title: {
             text: 'Roles',
-            left: 'center'
+            left: 'center',
+            textStyle: {
+                color: '#FFFFFF',
+            },
         },
         legend: {
             data: ['Awper','Fragger','Entry','Support','Rifler'], // 'Lurker' was removed from stats API vs Spreadsheet

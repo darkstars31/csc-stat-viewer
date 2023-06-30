@@ -14,6 +14,9 @@ export function RoleByTierBarChart({ playerData = [] }: Props) {
             text: 'Players in Tier and Roles',
             left: 'center',
             top: 30,
+            textStyle: {
+              color: '#FFFFFF',
+          },
         },
         xAxis: {
           type: 'category',

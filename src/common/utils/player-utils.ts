@@ -129,6 +129,7 @@ export const getTotalPlayerAverages = (Players: Player[], options?: Record<strin
     return {
         standardDeviation,
         average,
+        median,
         lowest,
         highest,
     }

@@ -33,7 +33,10 @@ export function StatBarByTiers( { statProperty, playerData = [] }: Props) {
     const optionHeadShotTier =  {
         title: {
             text: 'Low, Avg, Highest Headshot Percentage by Tier',
-            left: 'center'
+            left: 'center',
+            textStyle: {
+                color: '#FFFFFF',
+            },
         },
         legend: {
             data: ['Recruit', 'Prospect','Contender', 'Challenger', 'Elite', 'Premier'],
@@ -42,7 +45,7 @@ export function StatBarByTiers( { statProperty, playerData = [] }: Props) {
         xAxis: {
             type: 'category',
             axisTick: { show: false },
-            data: ['Low', 'Avg', 'High',]
+            data: ['Low', 'Median', 'Average', 'High',]
         },
         yAxis: {
             type: "value"
@@ -56,42 +59,42 @@ export function StatBarByTiers( { statProperty, playerData = [] }: Props) {
         },
         series: [ { 
             name: "Recruit",
-            data: [ recruitAverages.lowest[statProperty], recruitAverages.average[statProperty], recruitAverages.highest[statProperty]
+            data: [ recruitAverages.lowest[statProperty], recruitAverages.median[statProperty], recruitAverages.average[statProperty], recruitAverages.highest[statProperty]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Prospect",
-            data: [ prospectAverages.lowest[statProperty], prospectAverages.average[statProperty], prospectAverages.highest[statProperty]
+            data: [ prospectAverages.lowest[statProperty], prospectAverages.median[statProperty], prospectAverages.average[statProperty], prospectAverages.highest[statProperty]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Contender",
-            data: [ contenderAverages.lowest[statProperty], contenderAverages.average[statProperty], contenderAverages.highest[statProperty]
+            data: [ contenderAverages.lowest[statProperty], contenderAverages.median[statProperty], contenderAverages.average[statProperty], contenderAverages.highest[statProperty]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Challenger",
-            data: [ challengerAverages.lowest[statProperty], challengerAverages.average[statProperty], challengerAverages.highest[statProperty]
+            data: [ challengerAverages.lowest[statProperty], challengerAverages.median[statProperty], challengerAverages.average[statProperty], challengerAverages.highest[statProperty]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Elite",
-            data: [ eliteAverages.lowest[statProperty], eliteAverages.average[statProperty], eliteAverages.highest[statProperty]
+            data: [ eliteAverages.lowest[statProperty], eliteAverages.median[statProperty], eliteAverages.average[statProperty], eliteAverages.highest[statProperty]
             ],
             type: "bar",
             emphasis: emp,
         },
         { 
             name: "Premier",
-            data: [ premierAverages.lowest[statProperty], premierAverages.average[statProperty], premierAverages.highest[statProperty]
+            data: [ premierAverages.lowest[statProperty], premierAverages.median[statProperty], premierAverages.average[statProperty], premierAverages.highest[statProperty]
             ],
             type: "bar",
             emphasis: emp,
