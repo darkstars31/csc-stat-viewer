@@ -13,7 +13,6 @@ import { PlayerTypes } from "../../common/utils/player-utils";
 export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: FranchisePlayer, team: Team}) {
     const { players = [] } = useDataContext();
     const player = players.find( p => p.steam64Id === franchisePlayer.steam64Id || p.name === franchisePlayer.name );
-    console.info( franchisePlayer.name, franchisePlayer.steam64Id, player?.type)
     const percentageOfMmrCap = (((franchisePlayer.mmr ?? 0)/team.tier.mmrCap)*100).toFixed(1);
     return (
         <div className="m-8 text-sm lg:text-m lg:m-2">

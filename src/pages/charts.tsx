@@ -126,7 +126,7 @@ export function Charts() {
             show: true,
             label: {
                 formatter: function (param: { data: any[]; }) {
-                    console.info( param)
+
                     return `${param.data[3]}`;
                 },
             }

@@ -10,6 +10,7 @@ import _get from "lodash/get";
 import { PlayerTable } from "./players/player-table";
 import { MdGridView, MdOutlineViewHeadline } from "react-icons/md";
 import { useLocalStorage } from "../common/hooks/localStorage";
+import { PlayerTypes } from "../common/utils/player-utils";
 
 const sortOptionsList = [
     { label: "Name", value: "stats.name"}, 
@@ -25,7 +26,7 @@ export function Players() {
     const [ filters, setFilters ] = React.useState<string[]>([]);
     const [ orderBy, setOrderBy ] = useLocalStorage("orderBy", JSON.stringify(sortOptionsList[0])); // React.useState<SingleValue<{label: string;value: string;}>>(sortOptionsList[0]);
     const [ viewTierOptions, setViewTierOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
-    const [ viewPlayerTypeOptions, setViewPlayerTypeOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
+    const [ viewPlayerTypeOptions, setViewPlayerTypeOptions ] = React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>();
     const [ viewPlayerRoleOptions, setViewPlayerRoleOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
 
     let sortedPlayerData = playersWithStats.sort( (a,b) => {
@@ -36,7 +37,8 @@ export function Players() {
 
     sortedPlayerData = orderBy?.label.includes("Name") ? sortedPlayerData.reverse() : sortedPlayerData;
 
-    const filteredByPlayerType = viewPlayerTypeOptions?.length ? sortedPlayerData.filter( player => viewPlayerTypeOptions?.some( type => type.value === player.type)) : playersWithStats;
+    const viewPlayerTypeOptionsCumulative = viewPlayerTypeOptions?.flatMap( option => option.value);
+    const filteredByPlayerType = viewPlayerTypeOptions?.length ? sortedPlayerData.filter( player => viewPlayerTypeOptionsCumulative?.some( type => type === player.type )) : playersWithStats;
     const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.tier.name)) : filteredByPlayerType;
     const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.role)) : filteredByTier;
 
@@ -77,10 +79,10 @@ export function Players() {
     ];
 
     const viewPlayerTypeList = [
-        { label: `Signed`, value: "SIGNED"},
-        { label: `Free Agents`, value: "FREE_AGENT"},
-        { label: `Draft Eligible`, value: "DRAFT_ELIGIBLE"},
-        { label: `Perma FA`, value: "PERMANENT_FREE_AGENT"},
+        { label: `Signed`, value: [PlayerTypes.SIGNED,PlayerTypes.INACTIVE_RESERVE,PlayerTypes.SIGNED_PROMOTED,PlayerTypes.SIGNED_SUBBED] },
+        { label: `Free Agents`, value: [PlayerTypes.FREE_AGENT,PlayerTypes.TEMPSIGNED]},
+        { label: `Draft Eligible`, value: [PlayerTypes.DRAFT_ELIGIBLE]},
+        { label: `Perma FA`, value: [PlayerTypes.PERMANENT_FREE_AGENT,PlayerTypes.PERMFA_TEMP_SIGNED]},
     ];
 
     const selectClassNames = {
