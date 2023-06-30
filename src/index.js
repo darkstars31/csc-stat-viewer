@@ -9,18 +9,30 @@ import {
     initTE,
 } from "tw-elements";
 import * as Sentry from "@sentry/react";
+const env = process.env.NODE_ENV;
 
 initTE({ Carousel, Chip, Ripple });
 
 Sentry.init({
+  environment: env,
   dsn: "https://179eea2529894294ac431779c30f418f@o4505375554928640.ingest.sentry.io/4505375991398400",
   integrations: [
     new Sentry.BrowserTracing({
       // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
-      tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
+      //tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
     }),
-    new Sentry.Replay(),
+    new Sentry.Replay({
+      maskAllText: false,
+      maskAllInputs: false,
+    }),
   ],
+  beforeSend(event, hint) {
+    // Check if it is an exception, and if so, show the report dialog
+    if (event.exception) {
+      Sentry.showReportDialog({ eventId: event.event_id });
+    }
+    return event;
+  },
   // Performance Monitoring
   tracesSampleRate: 0.6, // Capture 100% of the transactions, reduce in production!
   // Session Replay

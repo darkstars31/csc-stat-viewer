@@ -111,8 +111,8 @@ export function TeamStandings() {
                     <div>Rounds Won:Lost</div>
                     <div>Round Win %</div>
             </div>
-            { sortedTeamRecords.map( (team) => 
-                <div className='grid grid-cols-5 gap-2 m-4'>
+            { sortedTeamRecords.map( (team, index) => 
+                <div key={`${team.name}${index}`} className='grid grid-cols-5 gap-2 m-4'>
                     <div><img className='w-8 h-8 mr-2 float-left' src={franchiseImages[team.franchise.prefix]} alt="" /> {team.name} ({team.franchise.prefix})</div>
                     <div><span className='text-green-400'>{team.teamRecord.wins}</span> : <span className='text-red-400'>{team.teamRecord.losses}</span></div>
                     <div>{(team.teamRecord.wins / (team.teamRecord.wins + team.teamRecord.losses)*100).toFixed(2)}%</div>
