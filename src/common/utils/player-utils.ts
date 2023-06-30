@@ -147,16 +147,16 @@ function calculateAverage(players: CscStats[], prop: string){
 function calculateMinMax(players: CscStats[], prop: keyof CscStats, type: 'min' | 'max') {
     const sortedPlayers = _sort(players, prop);
     if( sortedPlayers.length === 0 ) return [];
-    return type === 'max' ? sortedPlayers.reverse()[0][prop] : sortedPlayers[0][prop];
+    return type === 'max' ? Number(Number(sortedPlayers.reverse()[0][prop]).toFixed(2)) : Number(Number(sortedPlayers[0][prop]).toFixed(2));
 }
 
 function calcuateMedian(players: CscStats[], prop: keyof CscStats) {
     const sortedPlayers = _sort(players.filter( p => Boolean(p)), prop);
     if( sortedPlayers.length === 0 || typeof sortedPlayers[0][prop] !== "number"  ) return undefined;
     if( sortedPlayers.length % 2 === 0 ){
-        return (Number(sortedPlayers[sortedPlayers.length / 2 - 1][prop]) + Number(sortedPlayers[sortedPlayers.length / 2][prop])) / 2;
+        return Number((Number(sortedPlayers[sortedPlayers.length / 2 - 1][prop]) + Number(sortedPlayers[sortedPlayers.length / 2][prop])).toFixed(2)) / 2;
     }
-    return Number(sortedPlayers[Math.floor(sortedPlayers.length / 2)][prop]);
+    return Number(Number(sortedPlayers[Math.floor(sortedPlayers.length / 2)][prop]).toFixed(2));
 }
 
 export function determinePlayerRole( stats: CscStats ){
