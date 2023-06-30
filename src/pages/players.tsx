@@ -11,6 +11,9 @@ import { PlayerTable } from "./players/player-table";
 import { MdGridView, MdOutlineViewHeadline } from "react-icons/md";
 import { useLocalStorage } from "../common/hooks/localStorage";
 import { PlayerTypes } from "../common/utils/player-utils";
+import { PlayerTypeFilter } from "../common/components/filters/playerTypeFilter";
+import { PlayerRolesFilter } from "../common/components/filters/playerRoleFilter";
+import { PlayerTiersFilter } from "../common/components/filters/playerTiersFilter";
 
 const sortOptionsList = [
     { label: "Name", value: "stats.name"}, 
@@ -41,12 +44,10 @@ export function Players() {
     const filteredByPlayerType = viewPlayerTypeOptions?.length ? sortedPlayerData.filter( player => viewPlayerTypeOptionsCumulative?.some( type => type === player.type )) : playersWithStats;
     const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.tier.name)) : filteredByPlayerType;
     const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.role)) : filteredByTier;
+    const filteredBySearchPlayers = filters.length > 0 ? filteredByRole.filter( player => filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ))) : filteredByRole;
 
-    const filteredPlayers = filters.length > 0 ? filteredByRole.filter( player => {
-        return filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ) );
-    } ) : filteredByRole;
-
-    const playerCards = filteredPlayers?.map( (player: Player, index: number) => <PlayerCard key={`${player.tier.name}-${player.name}`} player={player} index={index} />);
+    const playerCards = filteredBySearchPlayers?.map( (player: Player, index: number) => <PlayerCard key={`${player.tier.name}-${player.name}`} player={player} index={index} />);
+    const playerList = <PlayerTable players={filteredBySearchPlayers} />
 
     const addFilter = () => {
         setSearchValue(""); 
@@ -59,32 +60,6 @@ export function Players() {
         delete newFilters[filters.indexOf(label)];
         setFilters( newFilters.filter(Boolean) );
     }
-
-    const viewTiersList = [
-        { label: "Premier", value: "Premier"},
-        { label: "Elite", value: "Elite"},
-        { label: "Challenger", value: "Challenger"},
-        { label: "Contender", value: "Contender"},
-        { label: "Prospect", value: "Prospect"},
-        { label: "Recruit", value: "Recruit"},
-    ];
-
-    const viewRolesList = [
-        { label: "Awper", value: "AWPER"},
-        { label: "Fragger", value: "FRAGGER"},
-        { label: "Rifler", value: "RIFLER"},
-        { label: "Support", value: "SUPPORT"},
-        { label: "Entry", value: "ENTRY"},
-        { label: "Lurker", value: "LURKER"},
-    ];
-
-    const viewPlayerTypeList = [
-        { label: `Signed`, value: [PlayerTypes.SIGNED,PlayerTypes.INACTIVE_RESERVE,PlayerTypes.SIGNED_PROMOTED,PlayerTypes.SIGNED_SUBBED] },
-        { label: `Free Agents`, value: [PlayerTypes.FREE_AGENT,PlayerTypes.TEMPSIGNED]},
-        { label: `Draft Eligible`, value: [PlayerTypes.DRAFT_ELIGIBLE]},
-        { label: `Perma FA`, value: [PlayerTypes.PERMANENT_FREE_AGENT,PlayerTypes.PERMFA_TEMP_SIGNED]},
-        { label: `Inactive Reserve`, value: [PlayerTypes.INACTIVE_RESERVE]},
-    ];
 
     const selectClassNames = {
         placeholder: () => "text-gray-400 bg-inherit",
@@ -109,7 +84,7 @@ export function Players() {
                 Find players, view stats, see how you stack up against your peers.
             </p>
             <p className="mt-4 text-gray-300">
-                Showing {filteredPlayers.length} of {playersWithStats.length} Players
+                Showing {filteredBySearchPlayers.length} of {playersWithStats.length} Players
             </p>
             <form className="flex flex-box h-12 mx-auto" onSubmit={(e)=>{e.preventDefault()}}>
                 <Input
@@ -137,90 +112,43 @@ export function Players() {
         </div>
         <div className="flex flex-col mt-48 md:flex-row md:mt-0 h-12 justify-end">
             <div className="basis-1/3">
-                    <div className="flex flex-row text-xs m-2">
-                        <label title="Player Type" className="p-1 leading-9">
-                            Player Type
-                        </label>
-                            <Select
-                                isMulti
-                                placeholder="All"
-                                isClearable={false}
-                                className="grow"
-                                unstyled
-                                isSearchable={false}
-                                classNames={selectClassNames}
-                                options={viewPlayerTypeList}
-                                onChange={setViewPlayerTypeOptions}
-                            />
-                    </div>
-                </div>
-                <div className="basis-1/3">
-                    <div className="flex flex-row text-xs m-2">
-                        <label title="Tiers" className="p-1 leading-9">
-                            Tiers
-                        </label>
-                            <Select
-                                placeholder="All"
-                                isClearable={false}
-                                isMulti
-                                className="grow"
-                                unstyled
-                                isSearchable={false}
-                                classNames={selectClassNames}
-                                options={viewTiersList}
-                                onChange={setViewTierOptions}
-                            />
-                    </div>
-                </div>
-                <div className="basis-1/5">
-                    <div className="flex flex-row text-xs m-2">
-                        <label title="Tiers" className="p-1 leading-9">
-                            Roles
-                        </label>
-                            <Select
-                                placeholder="All"
-                                isClearable={false}
-                                isMulti
-                                className="grow"
-                                unstyled
-                                isSearchable={false}
-                                classNames={selectClassNames}
-                                options={viewRolesList}
-                                onChange={setViewPlayerRoleOptions}
-                            />
-                    </div>
-                </div>
-                <div className="basis-1/5">
-                    <div className="flex flex-row text-xs m-2">
-                        <label title="Sort" className="p-1 leading-9">
-                            Sort
-                        </label>
-                            <Select
-                                className="grow"
-                                unstyled
-                                defaultValue={orderBy}
-                                isSearchable={false}
-                                classNames={selectClassNames}
-                                options={sortOptionsList}
-                                onChange={setOrderBy}
-                            />
-                    </div>
+                <PlayerTypeFilter onChange={setViewPlayerTypeOptions as typeof React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>} />
+            </div>
+            <div className="basis-1/3">
+                <PlayerTiersFilter onChange={setViewTierOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
+            </div>
+            <div className="basis-1/5">
+                <PlayerRolesFilter onChange={setViewPlayerRoleOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
+            </div>
+            <div className="basis-1/5">
+                <div className="flex flex-row text-xs m-2">
+                    <label title="Sort" className="p-1 leading-9">
+                        Sort
+                    </label>
+                        <Select
+                            className="grow"
+                            unstyled
+                            defaultValue={orderBy}
+                            isSearchable={false}
+                            classNames={selectClassNames}
+                            options={sortOptionsList}
+                            onChange={setOrderBy}
+                        />
                 </div>
             </div>
-            <hr className="h-px my-4 border-0 bg-gray-800" />
-            <div className="m-2 justify-end flex">
-                <button title="Card View" className={`p-2 m-1 rounded border ${displayStyle === "cards" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "cards" )}><MdGridView /></button>
-                <button title="List View" className={`p-2 m-1 rounded border ${displayStyle === "list" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "list" )}><MdOutlineViewHeadline /></button>
-            </div>
+        </div>
+        <hr className="h-px my-4 border-0 bg-gray-800" />
+        <div className="m-2 justify-end flex">
+            <button title="Card View" className={`p-2 m-1 rounded border ${displayStyle === "cards" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "cards" )}><MdGridView /></button>
+            <button title="List View" className={`p-2 m-1 rounded border ${displayStyle === "list" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "list" )}><MdOutlineViewHeadline /></button>
+        </div>
         { displayStyle === "cards" ? <div>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                 { playerCards }
             </div>
         </div>
         : 
-        <div>
-            <PlayerTable players={filteredPlayers} />
-        </div>
+        <div>{ playerList }</div>
         }
     </Container>
     );

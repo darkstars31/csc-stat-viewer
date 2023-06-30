@@ -1,0 +1,108 @@
+import * as React from "react";
+
+import ReactECharts from "echarts-for-react";
+import { getTotalPlayerAverages } from "../../common/utils/player-utils";
+import { Player } from "../../models";
+
+type Props = {
+    statProperty: string;
+    playerData?: Player[];
+}
+
+export function StatBarByTiers( { statProperty, playerData = [] }: Props) {
+
+    const recruitAverages = getTotalPlayerAverages(playerData, { tier: "Recruit"});
+    const prospectAverages = getTotalPlayerAverages(playerData, { tier: "Prospect"});
+    const contenderAverages = getTotalPlayerAverages(playerData, { tier: "Contender"});
+    const challengerAverages = getTotalPlayerAverages(playerData, { tier: "Challenger"});
+    const eliteAverages = getTotalPlayerAverages(playerData, { tier: "Elite"});
+    const premierAverages = getTotalPlayerAverages(playerData, { tier: "Premier"});
+
+    const emp = {
+        focus: 'series',
+        label: {
+            color: '#FFFFFF',
+            show: true,
+            formatter: function (param: { data: any[]; }) {
+                return param.data[3];
+            },
+            position: 'top',
+        }
+      };
+
+    const optionHeadShotTier =  {
+        title: {
+            text: 'Low, Avg, Highest Headshot Percentage by Tier',
+            left: 'center'
+        },
+        legend: {
+            data: ['Recruit', 'Prospect','Contender', 'Challenger', 'Elite', 'Premier'],
+            top: 30
+        },
+        xAxis: {
+            type: 'category',
+            axisTick: { show: false },
+            data: ['Low', 'Avg', 'High',]
+        },
+        yAxis: {
+            type: "value"
+        },
+        tooltip: {
+            label: {
+                formatter: function (param: { data: any[]; }) {
+                    return param.data[3];
+                },
+            }
+        },
+        series: [ { 
+            name: "Recruit",
+            data: [ recruitAverages.lowest[statProperty], recruitAverages.average[statProperty], recruitAverages.highest[statProperty]
+            ],
+            type: "bar",
+            emphasis: emp,
+        },
+        { 
+            name: "Prospect",
+            data: [ prospectAverages.lowest[statProperty], prospectAverages.average[statProperty], prospectAverages.highest[statProperty]
+            ],
+            type: "bar",
+            emphasis: emp,
+        },
+        { 
+            name: "Contender",
+            data: [ contenderAverages.lowest[statProperty], contenderAverages.average[statProperty], contenderAverages.highest[statProperty]
+            ],
+            type: "bar",
+            emphasis: emp,
+        },
+        { 
+            name: "Challenger",
+            data: [ challengerAverages.lowest[statProperty], challengerAverages.average[statProperty], challengerAverages.highest[statProperty]
+            ],
+            type: "bar",
+            emphasis: emp,
+        },
+        { 
+            name: "Elite",
+            data: [ eliteAverages.lowest[statProperty], eliteAverages.average[statProperty], eliteAverages.highest[statProperty]
+            ],
+            type: "bar",
+            emphasis: emp,
+        },
+        { 
+            name: "Premier",
+            data: [ premierAverages.lowest[statProperty], premierAverages.average[statProperty], premierAverages.highest[statProperty]
+            ],
+            type: "bar",
+            emphasis: emp,
+        },
+        
+    ],
+    };
+
+    return (
+        <div className='py-4'>
+            <ReactECharts option={optionHeadShotTier} style={{height: 500}} />
+        </div>
+    );
+}
