@@ -19,7 +19,7 @@ export function PlayerRatings({ player }: Props) {
     const tierPlayerAverages = getTotalPlayerAverages( players, { tier: player?.tier.name} );
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-te-toggle="tooltip"]'));
     const concyWidth = ((1 - (player.stats.consistency/player.stats.rating))*100).toFixed(0);
-    const tierAvgConcy = String(((1 - (tierPlayerAverages.average["consistency"]/tierPlayerAverages.average["Rating"]))*100).toFixed(0));
+    const tierAvgConcy = String(((1 - (tierPlayerAverages.average["consistency"]/tierPlayerAverages.average["rating"]))*100).toFixed(0));
     const gamesPlayedCaption = String('Data from last ' + player.stats.gameCount).concat((player.stats.gameCount>1)?' matches':' match');
     tooltipTriggerList.map((tooltipTriggerEl) => new Tooltip(tooltipTriggerEl));
     return (
@@ -45,7 +45,7 @@ export function PlayerRatings({ player }: Props) {
                 stat1={player.stats.form}
                 stat2={Number(player.stats.rating.toFixed(2))}
                 range={0.05}
-                average={tierPlayerAverages.average["Rating"]}
+                average={tierPlayerAverages.average["rating"]}
                 color="violet"
                 type="default"
             />

@@ -98,7 +98,7 @@ export function Player() {
 
     return (
         <>
-        <div ref={divRef} />
+        <div className="h-2" ref={divRef} />
         <Container>
            
             <PlayerNavigator player={currentPlayer} playerIndex={playerRatingIndex} />

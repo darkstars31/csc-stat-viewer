@@ -49,13 +49,13 @@ export function Router(){
         <Header />
         { loading.isLoadingCscPlayers && <ProgressBar />}
         { !closeNotificationBanner && 
-          <button className='w-full bg-teal-600 text-center' onClick={() => setCloseNotificationBanner("true")}>
+          <button className='w-full h-8 bg-teal-600 text-center' onClick={() => setCloseNotificationBanner("true")}>
             AnalytiKill.com is the new home of CSC Stat Viewer. 
             <AiOutlineCloseCircle className='float-right mr-4' size="1.5em"/>
           </button>
         }
       </div>
-      <div className="overflow-auto">
+      <div className="overflow-auto pt-8">
         <Switch>
           { routes.map( route => <Route key={`route${route.path}`} { ...route} /> ) }
           <Route key="404, Page not found." component={ () => <Container><h1>404</h1></Container>} />
