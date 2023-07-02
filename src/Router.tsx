@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Router as Wouter, Route, Switch } from 'wouter';
+import { Router as Wouter, Route, Switch, useLocation } from 'wouter';
 import { Container } from './common/components/container';
 import { Home } from './pages/home';
 import { Franchises } from './pages/franchises';
@@ -17,6 +17,7 @@ import { TeamStandings } from './pages/teamStandings';
 import { ProgressBar } from './common/components/progress';
 import { useLocalStorage } from './common/hooks/localStorage';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
+import ReactGA from 'react-ga4';
 
 const routes = [
   { path: `/`, component: () => <Charts /> },
@@ -38,6 +39,9 @@ export function Router(){
   //const env : string = process.env.NODE_ENV!;
   const BASE_ROUTE = "";
   const [ closeNotificationBanner, setCloseNotificationBanner ] = useLocalStorage("closeNotificationBanner", "");
+  const [ location ] = useLocation();
+
+  ReactGA.send({ hitType: "pageview", page: location, title: "Whatdo" });
 
   return (
     <Wouter base={BASE_ROUTE}>

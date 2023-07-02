@@ -1,6 +1,8 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import * as Sentry from "@sentry/react";
+import ReactGA from "react-ga4";
 //import reportWebVitals from './reportWebVitals';
 import {
     Carousel,
@@ -8,10 +10,10 @@ import {
     Ripple,
     initTE,
 } from "tw-elements";
-import * as Sentry from "@sentry/react";
+
+ReactGA.initialize("G-EZ2R1EHT34");
 
 const env = process.env.NODE_ENV;
-
 initTE({ Carousel, Chip, Ripple });
 
 Sentry.init({
