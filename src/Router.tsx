@@ -33,8 +33,8 @@ const routes = [
 
 export function Router(){
   const { loading } = useDataContext();
-  const env : string = process.env.NODE_ENV!;
-  const BASE_ROUTE = env.includes("production") ? "/csc-stat-viewer" : "";
+  //const env : string = process.env.NODE_ENV!;
+  const BASE_ROUTE = "";
 
   return (
     <Wouter base={BASE_ROUTE}>

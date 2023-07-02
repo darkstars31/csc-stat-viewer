@@ -1,8 +1,8 @@
 {
   "name": "csc-stat-viewer",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
-  "homepage": "/csc-stat-viewer",
+  "homepage": "/",
   "dependencies": {
     "@headlessui/react": "^1.7.7",
     "@heroicons/react": "^2.0.13",
