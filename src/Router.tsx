@@ -15,9 +15,11 @@ import { Team } from './pages/team';
 import { Franchise } from './pages/franchise';
 import { TeamStandings } from './pages/teamStandings';
 import { ProgressBar } from './common/components/progress';
-  
+import { useLocalStorage } from './common/hooks/localStorage';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
+
 const routes = [
-  { path: `/`, component: () => <Home /> },
+  { path: `/`, component: () => <Charts /> },
   { path: `/charts`, component: () => <Charts />},
   { path: `/standings`, component: () => <TeamStandings />},
   { path: `/franchises`, component: () => <Franchises /> },
@@ -27,7 +29,7 @@ const routes = [
   { path: `/players/:tier/:id`, component: () => <Player /> },
   { path: `/team-builder`, component: () => <TeamBuilder /> },
   { path: `/leaderboards`, component: () => <LeaderBoards /> },
-  { path: `/about`, component: () => <Container><div>About</div></Container> },
+  { path: `/about`, component: () => <Home /> },
   { path: `/playground`, component: () => <Playground /> },
 ];
 
@@ -35,12 +37,19 @@ export function Router(){
   const { loading } = useDataContext();
   //const env : string = process.env.NODE_ENV!;
   const BASE_ROUTE = "";
+  const [ closeNotificationBanner, setCloseNotificationBanner ] = useLocalStorage("closeNotificationBanner", "");
 
   return (
     <Wouter base={BASE_ROUTE}>
       <div className="sticky top-0 z-10">
         <Header />
         { loading.isLoadingCscPlayers && <ProgressBar />}
+        { !closeNotificationBanner && 
+          <button className='w-full bg-teal-600 text-center' onClick={() => setCloseNotificationBanner("true")}>
+            AnalytiKill.com is the new home of CSC Stat Viewer. 
+            <AiOutlineCloseCircle className='float-right mr-4' size="1.5em"/>
+          </button>
+        }
       </div>
       <div className="overflow-auto">
         <Switch>

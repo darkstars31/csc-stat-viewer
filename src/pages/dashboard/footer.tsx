@@ -28,10 +28,8 @@ export function DashboardFooter() {
           <div
             className="p-2 justify-center text-sm"
             >
-            © 2023 Copyright - 
-            <a className="text-whitehite" href="https://tailwind-elements.com/"
-              >Tony "Camps Santi</a
-            >
+            © {new Date().getFullYear()} Copyright - {" "}
+            <a className="text-whitehite" href="https://tonysanti.com/">Tony "Camps" Santi</a>
           </div>
         </footer>
     );

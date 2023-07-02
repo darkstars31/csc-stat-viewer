@@ -4,20 +4,22 @@ import { DashboardFooter } from "./dashboard/footer";
 import { useFetchGitHubContributors } from "../dao/githubRepo";
 import { RxDiscordLogo } from "react-icons/rx"
 import { BsGithub } from "react-icons/bs";
+import { useDataContext } from "../DataContext";
 
 export function Home(){
+    const { dataConfig } = useDataContext();
     const { data: contributors = [] } = useFetchGitHubContributors();
 
     return (
         <>
         <Container>
             <div className="mx-auto max-w-xlg">
-                <h2 className="text-3xl font-bold sm:text-4xl">CSConfederation Statistic Visualizer</h2>
+                <h2 className="text-3xl font-bold sm:text-4xl">AnalytiKill</h2>
                 <p className="mt-4 text-gray-300">
-                    Unofficial stats and analysis tools for the CS:Confederation Draft League
+                    Advanced Statistics, Analysis, and Visualizations for CS:Confederation Draft League
                 </p>
                 <p className="mt-4 text-gray-300">
-                    Season 11 (Combine) Stats now available! Use the dropdown menu in the header to select the data source you're interested in.
+                    Season {dataConfig?.season} Stats now available! Use the dropdown menu in the header to select the data source you're interested in.
                 </p>
                 <p className="mt-4 text-gray-300">
                     <a className="flex flex-row leading-8 text-blue-300" href="https://discord.gg/csc"><RxDiscordLogo className="mr-2" size="2em" /> Join the Discord, become apart of our amazing community.</a>
@@ -43,7 +45,7 @@ export function Home(){
                     <div className="pt-4">
                         <h3>Special Thanks To</h3>
                         <div className="flex flex-row">
-                           yetiF, the Stats Team, the Numbers Team and the entire Staff that volunteer their time to help run CSC, for which this project could not exist without.
+                           yetiF, Stats and Tech Committee, Numbers Team and the entire Staff that volunteer their time to help run CSC, for which this project could not exist without.
                         </div>
                     </div>
                 </div>
