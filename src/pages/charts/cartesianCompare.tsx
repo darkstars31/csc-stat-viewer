@@ -9,7 +9,7 @@ type Props = {
 
 export function CartesianCompare( { playerData = [] }: Props) {
 
-    const data = playerData.map( p => ( [p.stats?.Rating, p.mmr, p.tier.name, p.name]));
+    const data = playerData.map( p => ( [p.stats?.rating, p.mmr, p.tier.name, p.name]));
 
     const seriesSettings = ( datasetIndex: number) => ({
         symbolsize: 60,
@@ -88,7 +88,7 @@ export function CartesianCompare( { playerData = [] }: Props) {
             }
         ],
         xAxis: {
-            min: Number((getTotalPlayerAverages(playerData ?? []).lowest.Rating - 0.05).toFixed(1)),
+            min: Number((getTotalPlayerAverages(playerData ?? []).lowest.rating - 0.05).toFixed(1)),
             splitLine: {
                 lineStyle: {
                   type: 'dashed',

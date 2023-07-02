@@ -26,7 +26,7 @@ const Tooltip = (props: { children: React.ReactNode, tip?: string }) => {
 
 export function PlayerCard( { player, index}: Props) {
     const teamNameTranslated = React.useMemo( () => teamNameTranslator(player), [ player ]);
-
+    if( player.stats === undefined) console.info( player );
     return (
         <Link
         key={`player-${index}`}
@@ -48,7 +48,7 @@ export function PlayerCard( { player, index}: Props) {
                         <div className="text-center">
                             <div>{player.tier.name}</div>
                             <div className="grid grid-cols-2 mt-1">
-                                <Tooltip tip="Rating"><div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player.stats.Rating.toFixed(2)}</div></Tooltip>
+                                <Tooltip tip="Rating"><div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player.stats.rating.toFixed(2)}</div></Tooltip>
                                 <Tooltip tip="Match Making Rank"><div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/> <Mmr player={player}/></div></Tooltip>
                             </div>  
                         </div>

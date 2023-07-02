@@ -22,8 +22,8 @@ export function TeamFooterTabulation( { team }: { team: Team }) {
         <div className={`grid grid-cols-${COLUMNS} text-xs`}>
             <div></div>
             <div>{mmrTeamTotal}/{tierMmrCap} Cap - {((mmrTeamTotal/tierMmrCap)*100).toFixed(0)}%</div>
-            {/* //OLD { playersOnTeam.length > 0 && <div>{(playersOnTeam.reduce((sum, next) => sum+(next?.stats?.Rating ?? 0), 0)/playersOnTeam.length).toFixed(2)} Avg Rating</div> } */}
-            { playersOnTeam.length > 0 && <div>{(playersOnTeam.reduce((sum, next) => sum+(next?.stats?.Rating ?? 0), 0)/playersOnTeam.length).toFixed(2)} Avg Rating</div> }
+
+            { playersOnTeam.length > 0 && <div>{(playersOnTeam.reduce((sum, next) => sum+(next?.stats?.rating ?? 0), 0)/playersOnTeam.length).toFixed(2)} Avg Rating</div> }
 
         </div>
     );

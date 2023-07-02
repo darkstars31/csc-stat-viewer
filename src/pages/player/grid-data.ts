@@ -5,10 +5,10 @@ import { Player } from "../../models/player";
 export const getGridData = (currentPlayer: Player) => {
 
     const {  
-        Rating,
+        rating,
         rounds,
         // ppR,
-        GP,
+        gameCount,
         kills,
         assists,
         deaths,

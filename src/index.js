@@ -9,6 +9,7 @@ import {
     initTE,
 } from "tw-elements";
 import * as Sentry from "@sentry/react";
+
 const env = process.env.NODE_ENV;
 
 initTE({ Carousel, Chip, Ripple });

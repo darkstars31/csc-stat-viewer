@@ -22,7 +22,7 @@ export interface CscStats {
     fiveK: number;
     form: number;
     fourK: number;
-    GP: number;
+    gameCount: number;
     hs: number;
     impact: number;
     kast: number;
@@ -34,7 +34,7 @@ export interface CscStats {
     odr: number;
     peak: number;
     pit: number;
-    Rating: number;
+    rating: number;
     rounds: number;
     saveRate: number;
     savesR: number;

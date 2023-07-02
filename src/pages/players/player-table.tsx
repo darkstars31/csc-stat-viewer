@@ -50,7 +50,7 @@ export function PlayerTable( { players}: Props) {
                                         : 
                                         ""
                                     }</td>
-                                <td className="whitespace-nowrap px-6 py-4">{player.stats?.Rating.toFixed(2)}</td>
+                                <td className="whitespace-nowrap px-6 py-4">{player.stats?.rating.toFixed(2)}</td>
                                 <td className="whitespace-nowrap px-6 py-4"><Mmr player={player}/></td>
                             </tr>
                         </Link>

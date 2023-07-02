@@ -21,8 +21,8 @@ export enum PlayerTypes {
 
 export const PlayerMappings: Record<string,string> = {
     "name": "Name",
-    "GP": "Games Played",
-    "Rating": "Rating",
+    "gameCount": "Games Played",
+    "rating": "Rating",
     "kr": "Kills / Round",
     "adr": "Damage / Round",
     "kast": "Kill Assist Traded Survived (%)",
@@ -84,8 +84,8 @@ export function _sort<T>( items: T[], property: string, n?: number, order?: "asc
     return n ? orderDirection.slice(0,n) : orderDirection;
 }
 export const getPlayersInTier = ( player: Player, allPlayers: Player[] ) => allPlayers.filter( ap => ap.tier.name === player.tier.name );
-export const getPlayersInTier3GP = (player: Player, allPlayers: Player[]) => allPlayers.filter(ap => ap.tier.name === player.tier.name && ap.stats?.GP > 3);
-export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Player[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => { if( !b.stats?.Rating) return -1;  return a.stats?.Rating < b.stats?.Rating ? 1 : -1});
+export const getPlayersInTier3GP = (player: Player, allPlayers: Player[]) => allPlayers.filter(ap => ap.tier.name === player.tier.name && ap.stats?.gameCount > 3);
+export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Player[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => { if( !b.stats?.rating) return -1;  return a.stats?.rating < b.stats?.rating ? 1 : -1});
 export const getTop10PlayersInTier3GP = (
     player: Player,
     allPlayers: Player[],
@@ -160,7 +160,7 @@ function calcuateMedian(players: CscStats[], prop: keyof CscStats) {
 }
 
 export function determinePlayerRole( stats: CscStats ){
-    if( !stats?.GP || stats?.GP < 3 ) return 'RIFLER';
+    if( !stats?.gameCount || stats?.gameCount < 3 ) return 'RIFLER';
     const roles = {
         AWPER: clamp(stats["awpR"],0, .5) / .5, // Awper
         ENTRY: clamp(stats.odr*(stats["odaR"]*3), 0, 1.1) / 1.1, // Entry

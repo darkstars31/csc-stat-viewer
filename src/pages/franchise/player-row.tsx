@@ -30,7 +30,7 @@ export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: Franchis
                     </span>
                 </Link>
                 <div><Mmr player={franchisePlayer} /> <span className="text-gray-400">({percentageOfMmrCap}%)</span></div>
-                <div>{player?.stats?.Rating.toFixed(2) ?? "-"}</div>
+                <div>{player?.stats?.rating.toFixed(2) ?? "-"}</div>
                 <div>Contract {player?.contractDuration}</div>
                 <div>
                     <ExternalPlayerLinks player={player!} />

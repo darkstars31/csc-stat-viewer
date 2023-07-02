@@ -1,18 +1,18 @@
 import * as React from "react";
-import { PlayerStats } from "../../models";
+import { CscStats } from "../../models";
 import { Gauge } from "./charts/gauge";
 
 type Props = {
-    player: PlayerStats
+    player: CscStats
 }
 
 export function PlayerGauge( { player }: Props ) {
     const gaugeData = [
-        { name: "Pit", value: player?.Pit },
-        { value: (player?.CONCY ?? 0).toFixed(2) },
-        { name: "Rating", value: player?.Rating },
-        { value: (player?.CONCY ?? 0).toFixed(2) },
-        { name: "Peak", value: player?.Peak },
+        { name: "Pit", value: player?.pit },
+        { value: (player?.consistency ?? 0).toFixed(2) },
+        { name: "Rating", value: player?.rating },
+        { value: (player?.consistency ?? 0).toFixed(2) },
+        { name: "Peak", value: player?.peak },
     ].map( (item,index) => (
         {   ...item,
             title: { offsetCenter: [`${index*7-14}0%`,'40%']},

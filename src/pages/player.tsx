@@ -59,7 +59,7 @@ export function Player() {
     // });
 
     const { 
-        Team, Rating, GP,
+        Team, rating, gameCount,
         kills, assists, deaths,
         twoK: twoKills, threeK: threeKills, fourK: fourKills, fiveK: aces,
         hs, kast, adr, kr: avgKillsPerRound,

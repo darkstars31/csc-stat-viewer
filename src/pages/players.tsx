@@ -17,7 +17,7 @@ import { PlayerTiersFilter } from "../common/components/filters/playerTiersFilte
 
 const sortOptionsList = [
     { label: "Name", value: "stats.name"}, 
-    { label: "Rating", value: "stats.Rating"},
+    { label: "Rating", value: "stats.rating"},
     { label: "MMR", value: "mmr"},
 ];
 

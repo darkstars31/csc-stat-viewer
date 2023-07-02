@@ -17,11 +17,11 @@ export function LeaderBoards() {
     const { players = [], loading } = useDataContext();
     const [ filterBy, setFilterBy ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: `All`, value: "All"});
     
-    const player = players.filter( p => p.stats?.GP ?? 0 >= 3);
+    const player = players.filter( p => p.stats?.gameCount ?? 0 >= 3);
     
     const playerData = filterBy?.value.includes("All") ? player : player.filter( f => f.tier.name.toLowerCase() === filterBy?.value.toLowerCase());
       
-    const gamesPlayed = _sort(playerData, "stats.GP", 5, "desc").map( p => buildTableRow(p, "Games Played", "GP"));
+    const gamesPlayed = _sort(playerData, "stats.gameCount", 5, "desc").map( p => buildTableRow(p, "Games Played", "gameCount"));
     const kills = _sort(playerData, "stats.kills", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Kills": p.stats.kills}));
     const killDeathRatio = playerData.sort( (a,b) => (a.stats.kills/a.stats.deaths) < (b.stats.kills/b.stats.deaths) ? 1 : -1).slice(0,5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "K/D Ratio": (p.stats.kills/p.stats.deaths).toFixed(2)}));
     const aces = playerData.sort( (a,b) => (a.stats["fiveK"]) < (b.stats["fiveK"]) ? 1 : -1).slice(0,5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Aces": p.stats["fiveK"] }));
