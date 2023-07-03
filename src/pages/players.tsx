@@ -110,7 +110,7 @@ export function Players() {
                 }
             </div>
         </div>
-        <div className="flex flex-col mt-48 md:flex-row md:mt-0 h-12 justify-end">
+        <div className={`flex flex-col mt-48 md:flex-row md:mt-0 h-12 justify-end`}>
             <div className="basis-1/3">
                 <PlayerTypeFilter onChange={setViewPlayerTypeOptions as typeof React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>} />
             </div>
@@ -142,14 +142,16 @@ export function Players() {
             <button title="Card View" className={`p-2 m-1 rounded border ${displayStyle === "cards" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "cards" )}><MdGridView /></button>
             <button title="List View" className={`p-2 m-1 rounded border ${displayStyle === "list" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "list" )}><MdOutlineViewHeadline /></button>
         </div>
-        { displayStyle === "cards" ? <div>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                { playerCards }
+        <div className="pb-24">
+            { displayStyle === "cards" ? <div>
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                    { playerCards }
+                </div>
             </div>
+            : 
+            <div>{ playerList }</div>
+            }
         </div>
-        : 
-        <div>{ playerList }</div>
-        }
     </Container>
     );
 }

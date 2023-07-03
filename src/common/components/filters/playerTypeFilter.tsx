@@ -34,7 +34,7 @@ export function PlayerTypeFilter( { onChange }: Props) {
     return (
         <div className="flex flex-row text-xs m-2">
             <label title="Player Type" className="p-1 leading-9">
-                Player Type
+                Type
             </label>
                 <Select
                     isMulti

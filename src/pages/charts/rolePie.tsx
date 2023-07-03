@@ -23,7 +23,7 @@ export function RolePieChart({ playerData = [] }: Props) {
             top: 30
         },
         series: {
-            radius: ['40%', '70%'],
+            radius: ['24%', '48%'],
             center: ['50%', '50%'],
             type: 'pie',
             roseType: 'radius',
@@ -35,7 +35,7 @@ export function RolePieChart({ playerData = [] }: Props) {
                 show: true,
                 formatter(param: Record<string,unknown>) {
                   // correct the percentage
-                  return param.name + ' (' + param.percent + '%)';
+                  return param.name + '\n' + param.percent + '%';
                 }
               },
             data: [ 

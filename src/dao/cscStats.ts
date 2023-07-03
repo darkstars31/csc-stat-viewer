@@ -1,14 +1,14 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { CscStats, CscStatsQuery } from "../models/csc-stats-types";
+import { appConfig } from "../dataConfig";
 
-const url = `https://stats.csconfederation.com/graphql`
-const cachedUrl = `https://d286fmnshh73ml.cloudfront.net/tier_season_stats`;
+const cachedUrl = `/getTierSeasonStats`;
 
 type CscTiers = "Recruit" | "Prospect" | "Contender" | "Challenger" | "Elite" | "Premier";
 
 const OneHour = 1000 * 60 * 60;
 
-const fetchGraph = async ( tier: CscTiers, season?: number ) => await fetch(url,
+const fetchGraph = async ( tier: CscTiers, season?: number ) => await fetch(appConfig.endpoints.cscGraphQL.stats,
     { method: "POST", 
         body: JSON.stringify({
             "operationName": "getTierSeasonStats",
@@ -74,7 +74,7 @@ const fetchGraph = async ( tier: CscTiers, season?: number ) => await fetch(url,
         });
     } );
 
-const fetchCachedGraph = async (tier: CscTiers, season?: number) => await fetch(`${cachedUrl}/${tier}_season_${season}.json?q=${new Date().toISOString()}`,
+const fetchCachedGraph = async (tier: CscTiers, season?: number) => await fetch(`${appConfig.endpoints.cloudfrontCache}${cachedUrl}/season_${season}_tier_${tier}.json?q=${new Date().getTime()}`,
         {
             method: "GET",    
             headers: {'Content-Type': "application/json" }

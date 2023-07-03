@@ -40,27 +40,27 @@ export function Router(){
   const BASE_ROUTE = "";
   const [ closeNotificationBanner, setCloseNotificationBanner ] = useLocalStorage("closeNotificationBanner", "");
   const [ location ] = useLocation();
-
-  ReactGA.send({ hitType: "pageview", page: location, title: "Whatdo" });
+  
+  ReactGA.send({ hitType: "pageview", page: location, title: 'Page View' });
 
   return (
     <Wouter base={BASE_ROUTE}>
-      <div className="sticky top-0 z-10">
-        <Header />
-        { loading.isLoadingCscPlayers && <ProgressBar />}
+        <div className="sticky top-0 z-10">
+          <Header />
+          { loading.isLoadingCscPlayers && <ProgressBar />}
+        </div>
+        <div className="overflow-auto">
         { !closeNotificationBanner && 
-          <button className='w-full h-8 bg-teal-600 text-center' onClick={() => setCloseNotificationBanner("true")}>
-            AnalytiKill.com is the new home of CSC Stat Viewer. 
-            <AiOutlineCloseCircle className='float-right mr-4' size="1.5em"/>
-          </button>
-        }
-      </div>
-      <div className="overflow-auto pt-8">
-        <Switch>
-          { routes.map( route => <Route key={`route${route.path}`} { ...route} /> ) }
-          <Route key="404, Page not found." component={ () => <Container><h1>404</h1></Container>} />
-        </Switch>
-      </div>
+            <button className='w-full h-8 bg-teal-600 text-center' onClick={() => setCloseNotificationBanner("true")}>
+              analytikill.com is the new home of CSC Stat Viewer. 
+              <AiOutlineCloseCircle className='float-right mr-4' size="1.5em"/>
+            </button>
+          }
+          <Switch>
+            { routes.map( route => <Route key={`route${route.path}`} { ...route} /> ) }
+            <Route key="404, Page not found." component={ () => <Container><h1>404</h1></Container>} />
+          </Switch>
+        </div>
     </Wouter>
   );
 }

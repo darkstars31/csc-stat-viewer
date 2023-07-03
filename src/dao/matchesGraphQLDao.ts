@@ -1,6 +1,7 @@
 import { useQueries, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { Match } from "../models/matches-types";
 import { Team } from "../models/franchise-types";
+import { appConfig } from "../dataConfig";
 
 const calculateDaysSinceSeasonStart = () => {
   const oneDay = 1000 *60*60*24;
@@ -11,7 +12,7 @@ const calculateDaysSinceSeasonStart = () => {
   return diffInDays;
 }
 
-export const fetchMatchesGraph = async ( teamId?: string) => await fetch(`https://core.csconfederation.com/graphql`,
+export const fetchMatchesGraph = async ( teamId?: string) => await fetch(appConfig.endpoints.cscGraphQL.core,
     { method: "POST", 
         body: JSON.stringify({
                 "operationName": "",

@@ -32,8 +32,6 @@ const useDataContextProvider = () => {
 	const { data: cscStatsElite = [], isLoading: isLoadingCscStatsElite } = useCscStatsGraph( "Elite", dataConfig?.season );
 	const { data: cscStatsPremier = [], isLoading: isLoadingCscStatsPremier } = useCscStatsGraph( "Premier", dataConfig?.season );
 
-	console.info( cscStatsProspect );
-
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
 
 	const cscPlayers = [

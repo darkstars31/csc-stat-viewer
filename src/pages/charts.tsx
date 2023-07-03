@@ -13,7 +13,7 @@ export function Charts() {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const { players } = useDataContext();
     const playersWithStats = players.filter( p => p.stats );
-    const [ tab, setTab ] = React.useState<number>(0);
+    const [ currentTab, setCurrentTab ] = React.useState<number>(0);
     const [ filters, setFilters ] = React.useState<string[]>([]);
 
     const statPropertyOptions = [
@@ -25,7 +25,6 @@ export function Charts() {
         { label: "Multi Kill Rounds", value: "multiR"},
         { label: "Kill/Assists/Surivived/Traded", value: "kast"},
         { label: "Trade Kill Ratio", value: "tRatio"},
-
     ];
 
     const [ statPropertySelected, setStatPropertySelected ] = React.useState<SingleValue<{ label: string; value: string;}>>(statPropertyOptions[0]);
@@ -65,6 +64,13 @@ export function Charts() {
         return <Container><Loading /></Container>;
     }
 
+    const tabs = [
+        { label: "MMR and Rating by Tier"},
+        { label: "Stat Bars by Tier"},
+        { label: "Role Distribution"},
+        { label: "Role Distribution By Tier"},
+    ]
+
     return (
         <Container>
             <div>
@@ -100,53 +106,22 @@ export function Charts() {
             </div>
 
             <ul className="mb-5 flex list-none flex-row flex-wrap border-b-0 pl-0" role="tablist" data-te-nav-ref>
-                <li role="presentation">
-                    <button
-                    className={`my-2 block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight hover:isolate hover:border-transparent hover:bg-neutral-700 focus:isolate ${tab === 0 ? "border-primary text-primary dark:border-primary-400 dark:text-primary-400": "text-neutral-500"}`}
-                    data-te-toggle="pill"
-                    role="tab"
-                    aria-selected={tab === 0}
-                    onClick={() => setTab(0)}
-                    >MMR and Rating by Tier</button
-                    >
-                </li>
-                <li role="presentation">
-                    <button
-                    className={`my-2 block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight hover:isolate hover:border-transparent hover:bg-neutral-700 ${tab === 1 ? "border-primary text-primary dark:border-primary-400 dark:text-primary-400": "text-neutral-500"}`}
-                    data-te-toggle="pill"
-                    data-te-nav-active={tab === 1}
-                    role="tab"
-                    aria-selected={tab === 1}
-                    onClick={() => setTab(1)}
-                    >Stat by Tier</button
-                    >
-                </li>
-                <li role="presentation">
-                    <button
-                    className={`my-2 block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight hover:isolate hover:border-transparent hover:bg-neutral-700 ${tab === 2 ? "border-primary text-primary dark:border-primary-400 dark:text-primary-400": "text-neutral-500"}`}
-                    data-te-toggle="pill"
-                    data-te-nav-active={tab === 2}
-                    role="tab"
-                    aria-selected={tab === 2}
-                    onClick={() => setTab(2)}
-                    >RolePieChart</button
-                    >
-                </li>
-                <li role="presentation">
-                    <button
-                    className={`my-2 block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight hover:isolate hover:border-transparent hover:bg-neutral-700 ${tab === 3 ? "border-primary text-primary dark:border-primary-400 dark:text-primary-400": "text-neutral-500"}`}
-                    data-te-toggle="pill"
-                    data-te-nav-active={tab === 3}
-                    role="tab"
-                    aria-selected={tab === 3}
-                    onClick={() => setTab(3)}
-                    >RoleByTierBarChart</button
-                    >
-                </li>
+                { tabs.map( (tab, index) => (
+                     <li role="presentation">
+                     <button
+                     className={`my-2 block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight hover:isolate hover:border-transparent hover:bg-neutral-700 focus:isolate ${index === currentTab ? "border-primary text-primary dark:border-primary-400 dark:text-primary-400": "text-neutral-500"}`}
+                     data-te-toggle="pill"
+                     role="tab"
+                     aria-selected={currentTab === index}
+                     onClick={() => setCurrentTab(index)}
+                     >{tab.label}</button
+                     >
+                 </li>
+                ))}
             </ul>
 
             <div className="mb-6">
-                { tab === 0 && <div
+                { currentTab === 0 && <div
                     className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                     id="tabs-home"
                     role="tabpanel"
@@ -155,7 +130,7 @@ export function Charts() {
                     <CartesianCompare playerData={filteredPlayers} />
                 </div>
                 }
-                { tab === 1 && <div
+                { currentTab === 1 && <div
                     className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                     id="tabs-profile"
                     role="tabpanel"
@@ -172,7 +147,7 @@ export function Charts() {
                     <StatBarByTiers statProperty={statPropertySelected!.value} playerData={playersWithStats} />
                 </div>
                 }
-                { tab === 2 && <div
+                { currentTab === 2 && <div
                     className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                     id="tabs-messages"
                     role="tabpanel"
@@ -180,7 +155,7 @@ export function Charts() {
                     <RolePieChart playerData={playersWithStats} />
                 </div>
                 }
-                { tab === 3 && <div
+                { currentTab === 3 && <div
                     className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                     id="tabs-contact"
                     role="tabpanel"

@@ -1,10 +1,9 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-
-const url = `https://stats.csconfederation.com/graphql`
+import { appConfig } from "../dataConfig";
 
 const OneHour = 1000 * 60 * 60;
 
-const fetchGraph = async ( steamId: string | undefined, season?: number ) => await fetch(url,
+const fetchGraph = async ( steamId: string | undefined, season?: number ) => await fetch(appConfig.endpoints.cscGraphQL.stats,
     { method: "POST", 
         body: JSON.stringify({
             "operationName": "PlayerProfile",

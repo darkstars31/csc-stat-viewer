@@ -9,7 +9,7 @@ const getData = async ( seasonConfig: DataConfiguration ) => await fetch(`${seas
         return papa.parse<PlayerStats>( await response.text(), { header: true, dynamicTyping: true}).data;
     } );
 
-export function useFetchSeasonData( seasonConfig: DataConfiguration ): UseQueryResult<PlayerStats[]> {
+export function useFetchGoogleSheetsSeasonData( seasonConfig: DataConfiguration ): UseQueryResult<PlayerStats[]> {
     return useQuery(
         ["season", seasonConfig.name], 
         () => getData( seasonConfig ), 

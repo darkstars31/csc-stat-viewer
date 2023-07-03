@@ -1,3 +1,14 @@
+export const appConfig = {
+    endpoints: {
+        cscGraphQL: {
+            core: "https://core.csconfederation.com/graphql",
+            stats: "https://stats.csconfederation.com/graphql",
+        },
+        cloudfrontCache: 'https://d286fmnshh73ml.cloudfront.net/csc_api_stats',
+        githubRepository: 'https://api.github.com/repos/darkstars31/csc-stat-viewer',
+    }
+};  
+
 
 const googleSheetsUrl = ( spreadsheetId: string, spreadsheetGuid?: number ) => {
  const queryParams = spreadsheetGuid ? `gid=${spreadsheetGuid}&tqx=out:csv&tq` : "tqx=out:csv&tq";

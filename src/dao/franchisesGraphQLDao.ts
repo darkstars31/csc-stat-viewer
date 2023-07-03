@@ -1,7 +1,8 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { Franchise } from "../models/franchise-types";
+import { appConfig } from "../dataConfig";
 
-const fetchFranchisesGraph = async () => await fetch(`https://core.csconfederation.com/graphql`,
+const fetchFranchisesGraph = async () => await fetch(appConfig.endpoints.cscGraphQL.core,
     { method: "POST", 
         body: JSON.stringify({
                 "operationName": "",

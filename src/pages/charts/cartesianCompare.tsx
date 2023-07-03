@@ -39,7 +39,14 @@ export function CartesianCompare( { playerData = [] }: Props) {
         },
         legend: {
             data: ['Recruit', 'Prospect','Contender', 'Challenger', 'Elite', 'Premier'],
-            top: 30
+            top: 30,
+            // itemStyle: {
+            //   color: '#FFFFFF',
+            // },
+            // lineStyle: {
+            //   color: '#FFFFFF',
+            // },
+            inactiveColor: "#0a0a0a"
         },
         toolbox: {
           feature: {

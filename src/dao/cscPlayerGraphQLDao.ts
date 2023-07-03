@@ -1,12 +1,13 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { CscPlayer, CscPlayersQuery } from "../models";
 import { PlayerTypes } from "../common/utils/player-utils";
-
-const url = `https://core.csconfederation.com/graphql`
+import { appConfig } from "../dataConfig";
 
 const OneHour = 1000 * 60 * 60;
 
-const fetchGraph = async ( playerType: keyof typeof PlayerTypes ) => await fetch(url,
+const cachedEnpointPath = "/CscPlayers";
+
+const fetchGraph = async ( playerType: keyof typeof PlayerTypes ) => await fetch(appConfig.endpoints.cscGraphQL.core,
     { method: "POST", 
         body: JSON.stringify({
             "operationName": "",
@@ -47,10 +48,23 @@ const fetchGraph = async ( playerType: keyof typeof PlayerTypes ) => await fetch
         });
     } );
 
+
+const fetchCachedGraph = async (playerType: keyof typeof PlayerTypes) => 
+    await fetch(`${appConfig.endpoints.cloudfrontCache}${cachedEnpointPath}/playerType_${playerType}.json?q=${new Date().getTime()}`,
+    {
+        method: "GET",    
+        headers: {'Content-Type': "application/json" }
+    }).then( async response => 
+        response.json().then( (json: CscPlayersQuery) => 
+            json.data.players
+    ) ).catch( () => {
+        fetchGraph( playerType );
+    });
+
 export function useCscPlayersGraph( playerType: keyof typeof PlayerTypes ): UseQueryResult<CscPlayer[]> {
     return useQuery( 
         [`cscplayers-${playerType}-graph`], 
-        () => fetchGraph( playerType ), 
+        () => fetchCachedGraph( playerType ), 
         {
             staleTime: OneHour,
         }

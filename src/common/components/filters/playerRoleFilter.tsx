@@ -13,7 +13,7 @@ export function PlayerRolesFilter( { onChange }: Props) {
         { label: "Rifler", value: "RIFLER"},
         { label: "Support", value: "SUPPORT"},
         { label: "Entry", value: "ENTRY"},
-        { label: "Lurker", value: "LURKER"},
+        //{ label: "Lurker", value: "LURKER"},
     ];
 
     const selectClassNames = {
