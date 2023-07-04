@@ -3,12 +3,13 @@ import { useDataContext } from "../DataContext";
 import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
 import { Link, useRoute } from "wouter";
-import { useFetchMatchesGraph } from "../dao/matchesGraphQLDao";
+import { useFetchMatchesGraph, useFetchMultipleMatchInfoGraph } from "../dao/cscMatchesGraphQLDao";
 import { MatchCards } from "./team/matches";
 import { MapRecord } from "./team/mapRecord";
 import { PlayerRow } from "./franchise/player-row";
 import { franchiseImages } from "../common/images/franchise";
 import { TeamFooterTabulation } from "./franchise/team-footer-tabulation";
+import { calculateTeamRecord } from "../common/utils/match-utils";
 
 
 export function Team(){
@@ -24,16 +25,10 @@ export function Team(){
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph(currentTeam?.id);
-	const teamRecord = matches.reduce((acc, match) => {
-		if( match.stats.length > 0){
-			const isHomeTeam = match.home.name === currentTeam?.name;
-			if( match.stats.length > 0) {
-				const didCurrentTeamWin = ( isHomeTeam && match.stats[0].homeScore > match.stats[0].awayScore ) || ( !isHomeTeam && match.stats[0].homeScore < match.stats[0].awayScore);
-				didCurrentTeamWin ? acc[0] = acc[0] + 1 : acc[1] = acc[1] + 1;
-			}
-		}
-		return acc;
-	}, [0,0]);
+	const matchesData = useFetchMultipleMatchInfoGraph(matches.filter( match => match.stats.length > 0).map( match => match.id ));
+	console.info( 'matchData', matchesData.flatMap( matchInfo => matchInfo.data ) );
+
+	const teamRecord = calculateTeamRecord( currentTeam, matches );
 
 	return (
 			<div style={{backgroundImage: `url(${franchiseImages[currentFranchise?.prefix ?? '']})`, overflow:'auto'}} className={`bg-repeat bg-center bg-fixed`}>
@@ -60,7 +55,7 @@ export function Team(){
 								{ isLoadingMatches && <Loading />}
 								{ matches.length > 0 && 
 									<div className="pt-8">
-										<h2 className="text-2xl font-bold text-white grow text-center">Matches ({teamRecord[0]} - {teamRecord[1]})</h2>
+										<h2 className="text-2xl font-bold text-white grow text-center">Matches ({teamRecord.record.wins} - {teamRecord.record.losses})</h2>
 										<MapRecord matches={matches} team={currentTeam} />
 										<div className="grid grid-cols-1 md:grid-cols-4 ">
 											{ matches.map( match => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }

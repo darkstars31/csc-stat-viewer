@@ -7,7 +7,7 @@ import { PlayerRow } from "./franchise/player-row";
 import { TeamFooterTabulation } from "./franchise/team-footer-tabulation";
 import { franchiseImages } from "../common/images/franchise";
 
-export const COLUMNS = 5;
+export const COLUMNS = 4;
 
 export function Franchise(){
     const { franchises = [], loading } = useDataContext();

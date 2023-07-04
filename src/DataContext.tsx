@@ -4,7 +4,7 @@ import { dataConfiguration } from "./dataConfig";
 import { Player } from "./models/player";
 import { useFetchFranchisesGraph } from "./dao/franchisesGraphQLDao";
 import { SingleValue } from "react-select";
-import { useCscStatsGraph } from "./dao/cscStats";
+import { useCscStatsGraph } from "./dao/cscStatsGraphQLDao";
 import { PlayerTypes, determinePlayerRole } from "./common/utils/player-utils";
 
 const useDataContextProvider = () => {

@@ -18,10 +18,10 @@ export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: Franchis
         <div className="m-8 text-sm lg:text-m lg:m-2">
             <div className={`grid grid-cols-${COLUMNS}`}>
                 <Link className="hover:cursor-pointer hover:text-sky-400 hover:text-sky-400 transition ease-in-out hover:-translate-x-1 duration-300" 
-                key={`${team.tier.name}-${franchisePlayer.name}`} 
-                to={`/players/${team.tier.name}/${franchisePlayer.name}`}
+                    key={`${team.tier.name}-${franchisePlayer.name}`} 
+                    to={`/players/${team.tier.name}/${franchisePlayer.name}`}
                 >
-                    <span className="mr-2">{franchisePlayer.name}</span>
+                    <span className="mr-2"><b>{franchisePlayer.name}</b></span>
                     <span>
                         { team?.captain?.steam64Id === franchisePlayer.steam64Id ? <GiPirateHat size="1.5em" className="inline"/> : ""}
                         { player?.type === PlayerTypes.SIGNED_SUBBED ? <GiSubway size="1.5em" className="inline"/> : ""}
@@ -31,8 +31,8 @@ export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: Franchis
                 </Link>
                 <div><Mmr player={franchisePlayer} /> <span className="text-gray-400">({percentageOfMmrCap}%)</span></div>
                 <div>{player?.stats?.rating.toFixed(2) ?? "-"}</div>
-                <div>Contract {player?.contractDuration}</div>
-                <div>
+                {/* <div>Seasons {player?.contractDuration}</div> */}
+                <div className="">
                     <ExternalPlayerLinks player={player!} />
                 </div>
             </div>

@@ -40,7 +40,7 @@ export function Franchises() {
                                         { franchise.teams.map( team =>      
                                             <div key={`${team.tier.name}`}>
                                                 <div className="mx-4 border-b-[1px] border-slate-700 text-center">
-                                                    <strong>{team.name}</strong> <span className="text-gray-400"><i>{team.tier.name} { konami && <span className="text-xs">({team.players.reduce((cum,player) => cum + player.mmr, 0)}/{team.tier.mmrCap})</span>} </i></span>
+                                                    <strong>{team.name}</strong> <span className="text-gray-400"><i>{team.tier.name} { konami && <span className="text-xs"> ({team.players.reduce((cum,player) => cum + player.mmr, 0)}/{team.tier.mmrCap})</span>} </i></span>
                                                 </div>
                                                 <div className="mx-4 px-2">
                                                 { team.players.map( player => 

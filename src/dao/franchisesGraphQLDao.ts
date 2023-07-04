@@ -51,6 +51,18 @@ const fetchFranchisesGraph = async () => await fetch(appConfig.endpoints.cscGrap
         });
     } );
 
+    
+const fetchCachedGraph = async () => await fetch(`${appConfig.endpoints.cloudfrontCache}/CscFranchises/CscFranchises.json?q=${new Date().getTime()}`,
+{
+    method: "GET",    
+    headers: {'Content-Type': "application/json" }
+}).then( async response => 
+    response.json().then( (json) => 
+        json.data.franchises
+) ).catch( () => {
+    fetchFranchisesGraph();
+});
+
 export function useFetchFranchisesGraph(): UseQueryResult<Franchise[]> {
-    return useQuery({ queryKey: ["franchises-graph"], queryFn: fetchFranchisesGraph, staleTime: 1000 * 60 * 60}); // 1 second * 60 * 60 = 1 hour
+    return useQuery({ queryKey: ["franchises-graph"], queryFn: fetchCachedGraph, staleTime: 1000 * 60 * 60}); // 1 second * 60 * 60 = 1 hour
 }

@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { useDataContext } from '../DataContext';
 import { Container } from '../common/components/container';
-import { useFetchMultipleTeamsMatchesGraph } from '../dao/matchesGraphQLDao';
+import { useFetchMultipleTeamsMatchesGraph } from '../dao/cscMatchesGraphQLDao';
 import { sortBy } from 'lodash';
 import { Loading } from '../common/components/loading';
 import { franchiseImages } from '../common/images/franchise';
+import { calculateTeamRecord } from '../common/utils/match-utils';
 
 export function TeamStandings() {
     const { franchises } = useDataContext();
@@ -26,23 +27,12 @@ export function TeamStandings() {
 
     const teamsWithMatchesCalculatedWinLoss = teamsWithMatches.map( (team, index) => {
         const teamMatches = responses[index].data as [];
-        const teamRecord = teamMatches.reduce((teamRecord: { wins: number; losses: number; roundsWon: number; roundsLost: number;}, match: { stats: string | any[]; home: { name: any; }; }) => {
-            if( match.stats.length > 0){
-                const isHomeTeam = match.home.name === team?.name;
-                if( match.stats.length > 0) {
-                    const didCurrentTeamWin = ( isHomeTeam && match.stats[0].homeScore > match.stats[0].awayScore ) || ( !isHomeTeam && match.stats[0].homeScore < match.stats[0].awayScore);
-                    didCurrentTeamWin ? teamRecord.wins = teamRecord.wins + 1 : teamRecord.losses = teamRecord.losses + 1;
-                    isHomeTeam ? teamRecord.roundsWon = teamRecord.roundsWon + match.stats[0].homeScore : teamRecord["roundsWon"] = teamRecord["roundsWon"] + match.stats[0].awayScore;
-                    isHomeTeam ? teamRecord.roundsLost = teamRecord.roundsLost + match.stats[0].awayScore : teamRecord["roundsLost"] = teamRecord["roundsLost"] + match.stats[0].homeScore;
-                }
-            }
-            return teamRecord;
-        }, { wins: 0, losses: 0, roundsWon: 0, roundsLost: 0 });
+        const teamRecord = calculateTeamRecord( team, teamMatches );
 
         return { ...team, matches: responses[index], teamRecord };
     });
 
-    const sortedTeamRecords = sortBy(teamsWithMatchesCalculatedWinLoss, 'teamRecord.wins').reverse();
+    const sortedTeamRecords = sortBy(teamsWithMatchesCalculatedWinLoss, 'teamRecord.record.wins').reverse();
 
     return ( 
         <Container>
@@ -114,10 +104,10 @@ export function TeamStandings() {
             { sortedTeamRecords.map( (team, index) => 
                 <div key={`${team.name}${index}`} className='grid grid-cols-5 gap-2 m-4'>
                     <div><img className='w-8 h-8 mr-2 float-left' src={franchiseImages[team.franchise.prefix]} alt="" /> {team.name} ({team.franchise.prefix})</div>
-                    <div><span className='text-green-400'>{team.teamRecord.wins}</span> : <span className='text-red-400'>{team.teamRecord.losses}</span></div>
-                    <div>{(team.teamRecord.wins / (team.teamRecord.wins + team.teamRecord.losses)*100).toFixed(2)}%</div>
-                    <div><span className='text-green-400'>{team.teamRecord.roundsWon}</span> : <span className='text-red-400'>{team.teamRecord.roundsLost}</span> <span className='text-gray-400 text-xs'>(diff {team.teamRecord.roundsWon - team.teamRecord.roundsLost > 0 ? '+': ''}{team.teamRecord.roundsWon - team.teamRecord.roundsLost})</span></div>
-                    <div>{(team.teamRecord.roundsWon / (team.teamRecord.roundsWon + team.teamRecord.roundsLost)*100).toFixed(2)}%</div>
+                    <div><b><span className='text-green-400'>{team.teamRecord.record.wins}</span> : <span className='text-red-400'>{team.teamRecord.record.losses}</span></b></div>
+                    <div>{(team.teamRecord.record.wins / (team.teamRecord.record.wins + team.teamRecord.record.losses)*100).toFixed(2)}%</div>
+                    <div><span className='text-green-400'>{team.teamRecord.record.roundsWon}</span> : <span className='text-red-400'>{team.teamRecord.record.roundsLost}</span> <span className='text-gray-400 text-xs'>(diff {team.teamRecord.record.roundsWon - team.teamRecord.record.roundsLost > 0 ? '+': ''}{team.teamRecord.record.roundsWon - team.teamRecord.record.roundsLost})</span></div>
+                    <div>{(team.teamRecord.record.roundsWon / (team.teamRecord.record.roundsWon + team.teamRecord.record.roundsLost)*100).toFixed(2)}%</div>
                 </div>
             ) }
             </div>

@@ -5,6 +5,7 @@ import { GrDocumentVideo } from "react-icons/gr"
 import { Link } from "wouter";
 
 import { mapImages } from "../../common/images/maps";
+import { franchiseImages } from "../../common/images/franchise";
 
 type Props = {
     match: Match
@@ -13,13 +14,13 @@ type Props = {
 
 export function MatchCards( { match, team }: Props ) {
     const matchDate = {
-        month : new Date(match.scheduledDate).getMonth(),
+        month : new Date(match.scheduledDate).getMonth()+1,
         day: new Date(match.scheduledDate).getDate(),
         hour: new Date(match.scheduledDate).getHours() % 12,
     }
     const isHomeTeam = match.home.name === team?.name;
     const didCurrentTeamWin = (isHomeTeam && match.stats[0]?.homeScore > match.stats[0]?.awayScore) || (!isHomeTeam && match.stats[0]?.homeScore < match.stats[0]?.awayScore);
-    const backgroundColor = match.stats.length > 0 ? didCurrentTeamWin  ? "bg-emerald-900": "bg-amber-950": "bg-midnight1";
+    const backgroundColor = match.stats.length > 0 ? didCurrentTeamWin  ? "bg-emerald-800": "bg-red-950": "bg-midnight1";
 
     return (
         <div className={`m-2 p-2 ${backgroundColor} rounded-lg overflow-hidden z-0`}>
@@ -31,15 +32,15 @@ export function MatchCards( { match, team }: Props ) {
             </div>
             <div className="cursor-pointer">
                 <div className="grid grid-cols-2 overflow-hidden">
-                    <Link to={`/franchises/${match.home.franchise.name}/${match.home.name}`}><div className="h-16 w-16 mx-auto"><img src={`https://core.csconfederation.com/${match.home.franchise.logo.url}`} alt=""/></div></Link>
-                    <Link to={`/franchises/${match.away.franchise.name}/${match.away.name}`}><div className="h-16 w-16 mx-auto"><img src={`https://core.csconfederation.com/${match.away.franchise.logo.url}`} alt=""/></div></Link>
+                    <Link to={`/franchises/${match.home.franchise.name}/${match.home.name}`}><div className="h-16 w-16 mx-auto"><img src={franchiseImages[match.home.franchise.prefix]} alt=""/></div></Link>
+                    <Link to={`/franchises/${match.away.franchise.name}/${match.away.name}`}><div className="h-16 w-16 mx-auto"><img src={franchiseImages[match.away.franchise.prefix]} alt=""/></div></Link>
                 </div>
                 <div className="grid grid-cols-2 text-center text-sm">
                     <Link to={`/franchises/${match.home.franchise.name}/${match.home.name}`}><div className="text-sky-500">{match.home.name}</div></Link>
                     <Link to={`/franchises/${match.away.franchise.name}/${match.away.name}`}><div className="text-amber-500">{match.away.name}</div></Link>
                 </div>
             </div>
-            { match.stats.length > 0 ?
+            { match.stats.length > 0 &&
             <div className="relative pt-2">
                 <div className="absolute -z-10 w-full">
                     <img className="object-cover object-center w-16 h-16" src={mapImages[match.stats[0].mapName as keyof typeof mapImages ]} alt={match.stats[0].mapName}/>
@@ -54,8 +55,10 @@ export function MatchCards( { match, team }: Props ) {
                 </div>
                 { match.demoUrl && <div className="float-right"><a href={match.demoUrl} title="Download Demo" rel="noreferrer" target="_blank"><GrDocumentVideo className="text-white" /></a></div> }
             </div>
-            :
-            <div className="text-center py-4 text-sm text-gray-700">Match hasn't been played yet or no stats found</div>}
+            }
+            { !match.completedAt &&
+                <div className="text-center py-4 text-sm text-gray-700">Match hasn't been played yet.</div>
+            }
         </div>
     );
 }
