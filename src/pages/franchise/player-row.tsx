@@ -21,6 +21,7 @@ export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: Franchis
                     key={`${team.tier.name}-${franchisePlayer.name}`} 
                     to={`/players/${team.tier.name}/${franchisePlayer.name}`}
                 >
+                    <span className="float-left"><img className="w-8 h-8 mr-2" src={player?.avatarUrl} alt="" /></span>
                     <span className="mr-2"><b>{franchisePlayer.name}</b></span>
                     <span>
                         { team?.captain?.steam64Id === franchisePlayer.steam64Id ? <GiPirateHat size="1.5em" className="inline"/> : ""}

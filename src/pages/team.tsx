@@ -36,7 +36,9 @@ export function Team(){
 					<Container>
 						<div className="m-2 p-2 backdrop-blur-sm">
 						<div className="my-4">
-							<i><Link className="hover:text-blue-400" to={`/franchises`}>Franchises</Link> {">"} <Link className="hover:text-blue-400" to={`/franchises/${currentFranchise?.name}`}>{currentFranchise?.name}</Link></i>
+							<i><Link className="hover:text-blue-400" to={`/franchises`}>Franchises</Link> {"> "} 
+							<Link className="hover:text-blue-400" to={`/franchises/${currentFranchise?.name}`}>{currentFranchise?.name}</Link></i> {"> "} 
+							{currentTeam?.tier.name}
 						</div>
 							{	loading.isLoadingFranchises && <Loading />}
 							<h2 className="text-5xl font-bold text-white grow text-center">{currentTeam?.name}</h2>
