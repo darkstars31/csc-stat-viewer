@@ -2,9 +2,9 @@ import React, { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'; //BellIcon,
 import { Link, useLocation } from 'wouter';
-import Select from "react-select";
-import { useDataContext } from '../DataContext';
-import { dataConfiguration } from "../dataConfig";
+// import Select from "react-select";
+// import { useDataContext } from '../DataContext';
+// import { dataConfiguration } from "../dataConfig";
 import { SiCounterstrike } from 'react-icons/si';
 import { LuBarChart } from 'react-icons/lu';
 
@@ -14,27 +14,27 @@ function classNames(...classes: string[]) {
 }
 
 export function Header() {
-  const { setSelectedDataOption } = useDataContext();
+  // const { setSelectedDataOption } = useDataContext();
 
-  const selectClassNames = {
-    placeholder: () => "text-gray-400 bg-inherit",
-    container: () => "m-1 rounded bg-inherit",
-    control: () => "p-2 rounded-l bg-slate-700",
-    option: () => "p-2 hover:bg-slate-900",
-    input: () => "text-slate-200",
-    menu: () => "bg-slate-900",
-    menuList: () => "bg-slate-700",
-    multiValue: () => "bg-sky-700 p-1 mr-1 rounded",
-    multiValueLabel: () => "text-slate-200",
-    multiValueRemove: () => "text-slate-800 pl-1",
-    singleValue: () => "text-slate-200",
+//   const selectClassNames = {
+//     placeholder: () => "text-gray-400 bg-inherit",
+//     container: () => "m-1 rounded bg-inherit",
+//     control: () => "p-2 rounded-l bg-slate-700",
+//     option: () => "p-2 hover:bg-slate-900",
+//     input: () => "text-slate-200",
+//     menu: () => "bg-slate-900",
+//     menuList: () => "bg-slate-700",
+//     multiValue: () => "bg-sky-700 p-1 mr-1 rounded",
+//     multiValueLabel: () => "text-slate-200",
+//     multiValueRemove: () => "text-slate-800 pl-1",
+//     singleValue: () => "text-slate-200",
     
-};
+// };
 
   const [ location ] = useLocation();
 
   const navigation = [
-    //{ name: 'Home', href: '/', current: location.endsWith("/") },
+    { name: 'Home', href: '/', current: location.endsWith("/") },
     { name: 'Charts', href: '/charts', current: location.endsWith("/charts") },
     { name: 'Standings', href: '/Standings', current: location.endsWith("/Standings") },
     { name: 'Franchises', href: '/franchises', current: location.includes("franchises") },
@@ -44,7 +44,7 @@ export function Header() {
     { name: 'About', href: '/about', current: false },
   ];
 
-  const disableSeasonStatsSelector = location.includes("franchises");
+  // const disableSeasonStatsSelector = location.includes("franchises");
 
   return (
     <Disclosure as="nav" className="bg-midnight2 w-full relative">
@@ -89,7 +89,7 @@ export function Header() {
               <div className="inset-y-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0 basis-1/2 md:basis-1/4 w-full">
                 {/* Profile dropdown */}
                 <Menu as="div" className="grow">                  
-                      { !disableSeasonStatsSelector ? <div className="text-xs grow">
+                      {/* { !disableSeasonStatsSelector ? <div className="text-xs grow">
                         <Select
                                 isDisabled={disableSeasonStatsSelector}
                                 className="grow"
@@ -109,7 +109,7 @@ export function Header() {
                         defaultValue={{ label: "Current Season", value: ""}}
                         classNames={selectClassNames}
                       />
-                      }
+                      } */}
                   
                     {/* <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="sr-only">Open user menu</span>

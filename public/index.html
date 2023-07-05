@@ -27,14 +27,8 @@
     -->
     <title>Analytikill: Advanced CSC Stats & Analysis</title>
     <script>
-      if( process ){
-          const env = process?.env.NODE_ENV;
-          if( env === "production" && window.location.origin !== "https://analytikill.com" ) {
-          window.location.href = "https://analytikill.com";
-        } else 
-        {
-          window.location.href = "https://analytikill.com";
-        }
+      if( window.location === "https://darkstars31.github.io/csc-stat-viewer/" ) {
+        window.location.href = "https://analytikill.com";
       }
     </script>
   </head>
