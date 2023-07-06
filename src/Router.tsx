@@ -18,6 +18,7 @@ import { ProgressBar } from './common/components/progress';
 import { useLocalStorage } from './common/hooks/localStorage';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import ReactGA from 'react-ga4';
+import { ErrorBoundary } from './common/components/errorBoundary';
 
 const routes = [
   { path: `/`, component: () => <Charts /> },
@@ -56,10 +57,12 @@ export function Router(){
               <AiOutlineCloseCircle className='float-right mr-4' size="1.5em"/>
             </button>
           }
-          <Switch>
-            { routes.map( route => <Route key={`route${route.path}`} { ...route} /> ) }
-            <Route key="404, Page not found." component={ () => <Container><h1>404</h1></Container>} />
-          </Switch>
+          <ErrorBoundary>
+            <Switch>
+              { routes.map( route => <Route key={`route${route.path}`} { ...route} /> ) }
+              <Route key="404, Page not found." component={ () => <Container><h1>404</h1></Container>} />
+            </Switch>
+          </ErrorBoundary>
         </div>
     </Wouter>
   );
