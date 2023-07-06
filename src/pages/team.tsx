@@ -25,7 +25,6 @@ export function Team(){
 	const currentTeam = currentFranchise?.teams.find( t => t.name === teamName );
 	const currentTeamStatAggregation = currentTeam?.players.reduce( (acc, player, index) => {
 		const cscPlayerWithStats = cscPlayers.find( p => p.steam64Id === player.steam64Id );
-		//console.info('found cscPlayerWithStats', cscPlayerWithStats)
 		const divisor = index > 0 ? 2 : 1;
 		//acc["rating"] = (acc["rating"] + cscPlayerWithStats?.stats.rating ?? 0) / divisor;
 		acc["ef"] = ( acc["ef"] + cscPlayerWithStats?.stats.ef ?? 0) / divisor;
@@ -34,15 +33,14 @@ export function Team(){
 		acc["utilDmg"] = ( acc["utilDmg"] + cscPlayerWithStats?.stats.utilDmg ?? 0) / divisor;
 		acc["impact"] = ( acc["impact"] + cscPlayerWithStats?.stats.impact ?? 0) / divisor;
 		acc["clutchR"] = ( acc["clutchR"] +cscPlayerWithStats?.stats.clutchR ?? 0) / divisor;
-		console.info('acc rating', acc["rating"]);
 		return acc;
 	}, { 'ef': 0, 'adr': 0, 'kast': 0, 'utilDmg': 0, 'impact': 0, 'clutchR': 0 } as any);
 	//console.info( 'currentTeamStatAggregation', currentTeamStatAggregation);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph(currentTeam?.id);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const matchesData = useFetchMultipleMatchInfoGraph(matches.filter( match => match.stats.length > 0).map( match => match.id ));
-	console.info( 'matchData', matchesData.flatMap( matchInfo => matchInfo.data ) );
 
 	const teamRecord = calculateTeamRecord( currentTeam, matches );
 
@@ -62,7 +60,7 @@ export function Team(){
 								{currentFranchise?.name} - <i>{currentFranchise?.prefix}</i>
 							</div>
 							<div className="flex flex-wrap justify-between">
-								{ Object.entries(currentTeamStatAggregation).map( ([key, value]) => 
+								{ Object.entries(currentTeamStatAggregation ?? []).map( ([key, value]) => 
 									<div className="flex-initial m-2 p-2 text-center">
 										<div><b>{(value as number).toFixed(2)}</b></div>
 										<div className="text-sm">{AwardsMappings[key]}</div>
