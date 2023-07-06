@@ -46,23 +46,25 @@ export function Router(){
 
   return (
     <Wouter base={BASE_ROUTE}>
-        <div className="sticky top-0 z-10">
-          <Header />
-          { loading.isLoadingCscPlayers && <ProgressBar />}
-        </div>
-        <div className="overflow-auto">
-        { !closeNotificationBanner && 
-            <button className='w-full h-8 bg-teal-600 text-center' onClick={() => setCloseNotificationBanner("true")}>
-              analytikill.com is the new home of CSC Stat Viewer. 
-              <AiOutlineCloseCircle className='float-right mr-4' size="1.5em"/>
-            </button>
-          }
-          <ErrorBoundary>
-            <Switch>
-              { routes.map( route => <Route key={`route${route.path}`} { ...route} /> ) }
-              <Route key="404, Page not found." component={ () => <Container><h1>404</h1></Container>} />
-            </Switch>
-          </ErrorBoundary>
+      <div className='relative'>
+          <div className="absolute sticky top-0 z-10">
+            <Header />
+            { loading.isLoadingCscPlayers && <ProgressBar />}
+          </div>
+          <div className="overflow-auto">
+          { !closeNotificationBanner && 
+              <button className='w-full h-8 bg-teal-600 text-center' onClick={() => setCloseNotificationBanner("true")}>
+                analytikill.com is the new home of CSC Stat Viewer. 
+                <AiOutlineCloseCircle className='float-right mr-4' size="1.5em"/>
+              </button>
+            }
+            <ErrorBoundary>
+              <Switch>
+                { routes.map( route => <Route key={`route${route.path}`} { ...route} /> ) }
+                <Route key="404, Page not found." component={ () => <Container><h1>404</h1></Container>} />
+              </Switch>
+            </ErrorBoundary>
+          </div>
         </div>
     </Wouter>
   );

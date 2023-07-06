@@ -142,7 +142,7 @@ export function Players() {
             <button title="Card View" className={`p-2 m-1 rounded border ${displayStyle === "cards" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "cards" )}><MdGridView /></button>
             <button title="List View" className={`p-2 m-1 rounded border ${displayStyle === "list" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "list" )}><MdOutlineViewHeadline /></button>
         </div>
-        <div className="pb-24">
+        <div className="pb-8">
             { displayStyle === "cards" ? <div>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                     { playerCards }

@@ -34,8 +34,8 @@ export function Header() {
   const [ location ] = useLocation();
 
   const navigation = [
-    { name: 'Home', href: '/', current: location.endsWith("/") },
-    { name: 'Charts', href: '/charts', current: location.endsWith("/charts") },
+    //{ name: 'Home', href: '/', current: location.endsWith("/") },
+    { name: 'Charts', href: '/charts', current: location.endsWith("/charts") || location.endsWith("/") },
     { name: 'Standings', href: '/Standings', current: location.endsWith("/Standings") },
     { name: 'Franchises', href: '/franchises', current: location.includes("franchises") },
     { name: 'Players', href: '/players', current: location.includes("players") },
