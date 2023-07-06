@@ -6,7 +6,6 @@ import { Franchises } from './pages/franchises';
 import { Players } from './pages/players';
 import { Player } from './pages/player';
 import { LeaderBoards } from './pages/leaderboards';
-import { Header } from './header-nav/header';
 import { TeamBuilder } from './pages/teamBuilder';
 import { Playground } from './pages/playground';
 import { useDataContext } from './DataContext';
@@ -37,7 +36,6 @@ const routes = [
 
 export function Router(){
   const { loading } = useDataContext();
-  //const env : string = process.env.NODE_ENV!;
   const BASE_ROUTE = "";
   const [ closeNotificationBanner, setCloseNotificationBanner ] = useLocalStorage("closeNotificationBanner", "");
   const [ location ] = useLocation();
@@ -45,19 +43,16 @@ export function Router(){
   ReactGA.send({ hitType: "pageview", page: location, title: 'Page View' });
 
   return (
-    <Wouter base={BASE_ROUTE}>
-      <div className='relative'>
-          <div className="absolute sticky top-0 z-10">
-            <Header />
-            { loading.isLoadingCscPlayers && <ProgressBar />}
-          </div>
-          <div className="overflow-auto">
-          { !closeNotificationBanner && 
-              <button className='w-full h-8 bg-teal-600 text-center' onClick={() => setCloseNotificationBanner("true")}>
-                analytikill.com is the new home of CSC Stat Viewer. 
-                <AiOutlineCloseCircle className='float-right mr-4' size="1.5em"/>
-              </button>
-            }
+    <>
+      { loading.isLoadingCscPlayers && <ProgressBar />}
+      <Wouter base={BASE_ROUTE}>
+        <div>
+            { !closeNotificationBanner && 
+                <button className='w-full h-8 bg-teal-600 text-center' onClick={() => setCloseNotificationBanner("true")}>
+                  analytikill.com is the new home of CSC Stat Viewer. 
+                  <AiOutlineCloseCircle className='float-right mr-4' size="1.5em"/>
+                </button>
+              }
             <ErrorBoundary>
               <Switch>
                 { routes.map( route => <Route key={`route${route.path}`} { ...route} /> ) }
@@ -65,7 +60,7 @@ export function Router(){
               </Switch>
             </ErrorBoundary>
           </div>
-        </div>
-    </Wouter>
+      </Wouter>
+    </>
   );
 }

@@ -7,6 +7,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import { AppLoadingError } from './pages/appLoadingError';
+import { Header } from './header-nav/header';
 
 const queryClient = new QueryClient();
 const env : string = process.env.NODE_ENV!;
@@ -14,11 +15,16 @@ console.info( env );
 
 function App() {
   return (
-    <div className="bg-midnight1 text-white h-screen overflow-hidden">
+    <div className="bg-midnight1 text-white scroll-none">
       <QueryClientProvider client={queryClient}>
         <DataContextProvider>
           <AppLoadingError />
-          <Router />
+            <div className="fixed sticky top-0 z-10">
+              <Header />
+            </div>
+            <div>
+              <Router />
+            </div>
         </DataContextProvider>
       </QueryClientProvider>
     </div>

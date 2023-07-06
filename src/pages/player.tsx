@@ -30,10 +30,10 @@ export function Player() {
     const tierParam = decodeURIComponent(params?.tier ?? "");
     const nameParam = decodeURIComponent(params?.id ?? "");
     const currentPlayer = players.find( p => p.name === nameParam);
-    const currentPlayerStats = currentPlayer?.stats;//playerStats.find( player => player.Name === nameParam && currentPlayer?.tier.name === tierParam);
+    const currentPlayerStats = currentPlayer?.stats;
 
     React.useEffect(() => {
-        divRef.current?.scrollIntoView();
+        window.scrollTo(0,0);
     }, []);
 
     if( loading.isLoadingCscPlayers ){
@@ -49,13 +49,6 @@ export function Player() {
 
     const playerRatingIndex = getPlayerRatingIndex( currentPlayer, players );
 
-    // const rankingsInAllTiers = statsInDifferentTier.map( s => {
-    //     const playerRatingIndexInThisTier = getPlayerRatingIndex(s, playerStats);
-    //     return {
-    //         tier: s.Tier,
-    //         ranking: playerRatingIndexInThisTier+1
-    //     };
-    // });
 
     const { 
         Team, rating, gameCount,
@@ -99,9 +92,7 @@ export function Player() {
         <>
         <div ref={divRef} />
         <Container>
-           
             <PlayerNavigator player={currentPlayer} playerIndex={playerRatingIndex} />
-
             <Stat>
                 <div className="flex space-x-4 pb-2">
                     <div className="object-contain">
@@ -125,15 +116,6 @@ export function Player() {
                             <li>
                                 {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{currentPlayer.tier.name}</i></b> | <Mmr player={currentPlayer}/> MMR
                             </li>
-                            <li>
-                                
-                            </li>
-                            {/* { rankingsInAllTiers.map(({tier, ranking}) => (
-                                <li key={tier}>
-                                    {ranking}{nth(ranking)} Overall in {" "}
-                                    <Link className="text-blue-300 italic hover:text-blue-500" href={`/players/${tier}/${Name}`}>{tier}</Link>
-                                </li>
-                            )) } */}
                         </ul>
 
                     </div>

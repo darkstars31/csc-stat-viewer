@@ -22,7 +22,7 @@ export function TeamStandings() {
     const sortedTeamsInTier = sortBy(teamsInTiers[selectedTier], 'id');
     const responses = useFetchMultipleTeamsMatchesGraph(selectedTier, sortedTeamsInTier);
 
-    if ( responses.some( response => response.isLoading ) ) return <Container><Loading /></Container>;
+    if ( responses.some( response => response.isLoading ) ) return <Container><div className='min-h-screen'><Loading /></div></Container>;
     const teamsWithMatches = sortedTeamsInTier.map( (team, index) => { return { ...team, matches: responses[index] } } );
 
     const teamsWithMatchesCalculatedWinLoss = teamsWithMatches.map( (team, index) => {
@@ -36,6 +36,7 @@ export function TeamStandings() {
 
     return ( 
         <Container>
+        <div className='min-h-screen'>
             <div>
             <h1 className='text-2xl text-center'>Team Standings</h1>
             <div>Click a tier to see the standings.</div>        
@@ -109,6 +110,7 @@ export function TeamStandings() {
                 </div>
             ) }
             </div>
+        </div>
         </Container>
     );
 }
