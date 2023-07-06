@@ -10,6 +10,7 @@ import { PlayerRow } from "./franchise/player-row";
 import { franchiseImages } from "../common/images/franchise";
 import { TeamFooterTabulation } from "./franchise/team-footer-tabulation";
 import { calculateTeamRecord } from "../common/utils/match-utils";
+import { AwardsMappings } from "../common/utils/awards-utils";
 
 
 export function Team(){
@@ -22,6 +23,21 @@ export function Team(){
 
 	const currentFranchise = franchises.find( f => f.name === franchiseName );
 	const currentTeam = currentFranchise?.teams.find( t => t.name === teamName );
+	const currentTeamStatAggregation = currentTeam?.players.reduce( (acc, player, index) => {
+		const cscPlayerWithStats = cscPlayers.find( p => p.steam64Id === player.steam64Id );
+		//console.info('found cscPlayerWithStats', cscPlayerWithStats)
+		const divisor = index > 0 ? 2 : 1;
+		//acc["rating"] = (acc["rating"] + cscPlayerWithStats?.stats.rating ?? 0) / divisor;
+		acc["ef"] = ( acc["ef"] + cscPlayerWithStats?.stats.ef ?? 0) / divisor;
+		acc["adr"] = ( acc["adr"] + cscPlayerWithStats?.stats.adr ?? 0) / divisor;
+		acc["kast"] = ( acc["kast"] + cscPlayerWithStats?.stats.kast ?? 0 ) / divisor;
+		acc["utilDmg"] = ( acc["utilDmg"] + cscPlayerWithStats?.stats.utilDmg ?? 0) / divisor;
+		acc["impact"] = ( acc["impact"] + cscPlayerWithStats?.stats.impact ?? 0) / divisor;
+		acc["clutchR"] = ( acc["clutchR"] +cscPlayerWithStats?.stats.clutchR ?? 0) / divisor;
+		console.info('acc rating', acc["rating"]);
+		return acc;
+	}, { 'ef': 0, 'adr': 0, 'kast': 0, 'utilDmg': 0, 'impact': 0, 'clutchR': 0 } as any);
+	//console.info( 'currentTeamStatAggregation', currentTeamStatAggregation);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph(currentTeam?.id);
@@ -45,6 +61,15 @@ export function Team(){
 							<div className="text-center p-4 text-xl">
 								{currentFranchise?.name} - <i>{currentFranchise?.prefix}</i>
 							</div>
+							<div className="flex flex-wrap justify-between">
+								{ Object.entries(currentTeamStatAggregation).map( ([key, value]) => 
+									<div className="flex-initial m-2 p-2 text-center">
+										<div><b>{(value as number).toFixed(2)}</b></div>
+										<div className="text-sm">{AwardsMappings[key]}</div>
+									</div>
+									)
+								}
+							</div>
 							<div className="p-4 rounded">
 								<hr className="h-px my-4 border-0" />
 								<div>
@@ -59,12 +84,11 @@ export function Team(){
 									<div className="pt-8">
 										<h2 className="text-2xl font-bold text-white grow text-center">Matches ({teamRecord.record.wins} - {teamRecord.record.losses})</h2>
 										<MapRecord matches={matches} team={currentTeam} />
-										<div className="grid grid-cols-1 md:grid-cols-4 ">
+										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
 											{ matches.map( match => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
 										</div>
 									</div>
-								}	
-								
+								}								
 							</div>	
 						</div>
 					</Container>

@@ -34,7 +34,7 @@ export const awardProperties = [
         "gameCount": "Games Played",
         "rating": "Rating",
         "kr": "Kills/r",
-        "adr": "DMG/r",
+        "adr": "ADR",
         "kast": "KAST",
         "odr": "Opening Duel (%)",
         "impact": "Impact",

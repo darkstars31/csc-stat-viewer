@@ -6,12 +6,12 @@ import { useKonamiCode } from "../common/hooks/konami";
 import { useDataContext } from "../DataContext";
 import { GiPirateHat } from "react-icons/gi";
 import { franchiseImages } from "../common/images/franchise";
-import { Mmr } from "../common/components/mmr";
+// import { Mmr } from "../common/components/mmr";
 
 
 export function Franchises() {
     const konami = useKonamiCode();
-    const { franchises = [], loading } = useDataContext();
+    const { franchises = [], players = [], loading } = useDataContext();
     
     return (
         <Container>
@@ -45,8 +45,9 @@ export function Franchises() {
                                                 <div className="mx-4 px-2">
                                                 { team.players.map( player => 
                                                     <div key={`${team.tier.name}-${player.name}`} className="m-1 grid grid-cols-2">
-                                                        <div>{player.name} { team?.captain?.steam64Id === player.steam64Id ? <GiPirateHat size="1.5em" className="inline"/> : ""}</div>         
-                                                        <div className="text-xs text-gray-500"> <span className="hidden md:contents"><Mmr player={player} />({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span></div>
+                                                        <div>{player.name} { team?.captain?.steam64Id === player.steam64Id ? <GiPirateHat size="1.5em" className="inline"/> : ""}</div>      
+                                                        <div>{players.find(p => p.steam64Id === player.steam64Id)?.role}</div>   
+                                                        {/* <div className="text-xs text-gray-500"> <span className="hidden md:contents"><Mmr player={player} />({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span></div> */}
                                                     </div>
                                                     )}
                                                 </div>
