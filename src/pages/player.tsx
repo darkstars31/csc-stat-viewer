@@ -21,7 +21,6 @@ import { Mmr } from "../common/components/mmr";
 import { ExternalPlayerLinks } from "../common/components/externalPlayerLinks";
 import { PlayerAwards } from "./player/playerAwards";
 
-
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
     const { players = [], franchises = [], loading } = useDataContext();
