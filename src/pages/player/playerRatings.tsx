@@ -1,14 +1,8 @@
 import * as React from "react";
 import { useDataContext } from "../../DataContext";
 import { getTotalPlayerAverages } from "../../common/utils/player-utils";
-import {
-    Ripple,
-    initTE,
-    Tooltip,
-} from "tw-elements";
 import {RatingBar} from "./rating-bar";
 import { Player } from "../../models/player";
-initTE({ Ripple });
 
 type Props = {
     player: Player
@@ -17,11 +11,9 @@ export function PlayerRatings({ player }: Props) {
     const { players = [] } = useDataContext();
     //const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const tierPlayerAverages = getTotalPlayerAverages( players, { tier: player?.tier.name} );
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-te-toggle="tooltip"]'));
     const concyWidth = ((1 - (player.stats.consistency/player.stats.rating))*100).toFixed(0);
     const tierAvgConcy = String(((1 - (tierPlayerAverages.average["consistency"]/tierPlayerAverages.average["rating"]))*100).toFixed(0));
     const gamesPlayedCaption = String('Data from last ' + player.stats.gameCount).concat((player.stats.gameCount>1)?' matches':' match');
-    tooltipTriggerList.map((tooltipTriggerEl) => new Tooltip(tooltipTriggerEl));
     return (
         /* Games Played*/
         <div className="w-full m-auto relative flex flex-col bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">

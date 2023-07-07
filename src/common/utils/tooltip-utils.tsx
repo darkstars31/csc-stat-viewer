@@ -141,8 +141,8 @@ const GenericTooltip: React.FC<ToolTipProps> = ({ message }) => {
 
 const AwardTooltip: React.FC<ToolTipProps> = ({ message, awardType, awardMapping}) => {
     const { isHovered, onMouseEnter, onMouseLeave } = useHover();
-    const backgroundColor = awardType === "numberOne" ? "bg-yellow-400" : "bg-success-100";
-    const textColor = awardType === "numberOne" ? "text-neutral-700" : "text-success-700";
+    const backgroundColor = awardType === "numberOne" ? "bg-yellow-400" : "bg-green-100";
+    const textColor = awardType === "numberOne" ? "text-neutral-700" : "text-green-700";
     const whiteSpaceClass = message.length > 25 ? "whitespace-normal min-w-[200px] max-w-full" : "whitespace-nowrap";
 
     return (

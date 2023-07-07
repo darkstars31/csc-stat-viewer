@@ -5,7 +5,7 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 module.exports = {
   content: [
     "./src/**/*.{jsx,tsx,js,ts}", 
-    "./node_modules/tw-elements/dist/js/**/*.js"],
+    ],
   safelist: [
     { pattern: /grid-cols-./ },
     /* ["animate-[fade-out-right_1s_ease-in-out]", "animate-[fade-out-left_1s_ease-in-out]"] */
@@ -35,5 +35,5 @@ module.exports = {
     }),
   },
 },
-  plugins: [require("tw-elements/dist/plugin.cjs")],
+  plugins: [],
 }
