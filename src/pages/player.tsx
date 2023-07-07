@@ -13,7 +13,6 @@ import { Loading } from "../common/components/loading";
 import { RoleRadar } from "../common/components/roleRadar";
 import { PlayerNavigator } from "./player/player-navigator";
 import { PlayerRatings } from "./player/playerRatings";
-import { tiertopincategory } from "../svgs";
 import { AwardsDescriptions, AwardsMappings, awardProperties, propertiesCurrentPlayerIsInTop10For, propertiesCurrentPlayerIsNumberOneFor } from "../common/utils/awards-utils";
 import { nth } from "../common/utils/string-utils";
 import { getTeammates } from "../common/utils/franchise-utils";
@@ -21,7 +20,7 @@ import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
 import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
 import { Mmr } from "../common/components/mmr";
 import { ExternalPlayerLinks } from "../common/components/externalPlayerLinks";
-
+import { ToolTip } from "../common/utils/tooltip-utils";
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
@@ -145,38 +144,37 @@ export function Player() {
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                     <div className="space-y-2">
                         <div className="p-[2.5%] space-y-4">
-                            <div className="space-y-4">
-                                <div className="flex flex-wrap gap-y-4 gap-x-4">
-                                    {
-                                        numberOneProperties.map((property) => (
+                            <div className="flex flex-wrap place-items-center gap-3">
+                                {
+                                    numberOneProperties.map((property) => (
+                                        <div
+                                            key={property}
+                                        >
+                                            <ToolTip
+                                                type="award"
+                                                awardType="numberOne"
+                                                message={`${AwardsDescriptions[property]}`}
+                                                awardMapping={`${AwardsMappings[property]}`}
+                                            />
+                                        </div>
+                                    ))
+                                }
+                                {
+                                    top10Properties
+                                        .filter((property) => !numberOneProperties.includes(property))
+                                        .map((property) => (
                                             <div
                                                 key={property}
-                                                data-te-toggle={"tooltip"}
-                                                title={AwardsDescriptions[property]}
-                                                className="place-items-center flex h-fit w-fit whitespace-nowrap select-none rounded-[0.27rem] bg-yellow-400 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none text-neutral-700"
                                             >
-                                                <button type="button" className="bg-midnight1 w-fit text-sm pointer-events-none transition duration-150 ease-in-out inline-block" disabled/>
-                                                {AwardsMappings[property]} <img className="h-fit w-fit max-w-[30px] pl-1 fill-neutral-700" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/>
+                                                <ToolTip
+                                                    type="award"
+                                                    awardType="top10"
+                                                    message={`${AwardsDescriptions[property]}`}
+                                                    awardMapping={`${AwardsMappings[property]}`}
+                                                    />
                                             </div>
                                         ))
-                                    }
-                                    {
-                                        top10Properties
-                                            .filter((property) => !numberOneProperties.includes(property))
-                                            .map((property) => (
-                                                <div
-                                                    data-te-toggle={"tooltip"}
-                                                    title={AwardsDescriptions[property]}
-                                                    key={property}
-                                                    className="place-items-center flex h-fit w-fit select-none whitespace-nowrap rounded-[0.27rem] bg-success-100 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none text-success-700"
-                                                >
-                                                    <button type="button" className="bg-midnight1 w-fit text-sm pointer-events-none transition duration-150 ease-in-out inline-block" disabled/>
-                                                    {AwardsMappings[property]} Top 10
-                                                    {/* #{index+1} - {PlayerMappings[property]} */}
-                                                </div>
-                                            ))
-                                    }
-                                </div>
+                                }
                             </div>
                         </div>
                         <PlayerRatings player={currentPlayer} />
