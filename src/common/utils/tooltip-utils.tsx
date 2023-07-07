@@ -1,69 +1,186 @@
 import { downarrow, uparrow, updownarrow, questionmark } from "../../svgs";
 import * as React from "react";
+import { tiertopincategory } from "../../svgs";
 
 interface ToolTipProps {
     message: string;
     pos?: string;
-    type: "rating" | "icon" | "explain";
+    type: "rating" | "icon" | "explain" | "generic" | "award";
     stat1?: number;
     stat2?: number;
     range?: number;
+    awardType?: "numberOne" | "top10";
+    awardMapping?: string;
+    property?: string;
 }
-
-function inRange(stat1: number, stat2: number, range: number) {
-    return Math.abs(stat1 - stat2) <= range;
+const iconClass = "h-3 w-3 transition inline-block ease-in-out select-none";
+const useHover = () => {
+    const [isHovered, setIsHovered] = React.useState(false);
+    const onMouseEnter = () => setIsHovered(true);
+    const onMouseLeave = () => setIsHovered(false);
+    return { isHovered, onMouseEnter, onMouseLeave };
 }
+const baseTooltipClass = "z-2000 absolute-top transition-opacity duration-300 ease-in-out absolute top-0 left-0 bg-zinc-500 text-neutral-100 text-center py-1 px-3 text-sm rounded shadow-lg";
+const noWrapClass = "whitespace-nowrap";
+const wideTooltipClass = "min-w-[200px] max-w-full";
+const awardTooltipClass = "bg-zinc-500 text-neutral-100 text-center font-normal";
 
-export function ToolTip({ message, pos, type, stat1, stat2, range }: ToolTipProps) {
-    if (type === "rating") {
-        return (
-            <span
-                className="top-5 h-3 absolute border-l-2 border-neutral-300 rounded-lg"
-        data-te-toggle="tooltip"
-        title={message}
-        style={{ left: pos }}
-    >
-        <button
-            type="button"
-        className="bg-midnight1 text-sm pointer-events-none transition duration-150 ease-in-out inline-block"
-        disabled
-        />
+const RatingTooltip: React.FC<ToolTipProps> = ({ message, pos }) => {
+    const { isHovered, onMouseEnter, onMouseLeave } = useHover();
+    
+    return (
+        <span
+            className="top-5 h-3 absolute border-l-2 border-neutral-300 rounded-lg"
+            style={{ left: pos}}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onTouchStart={onMouseEnter}
+            onTouchEnd={onMouseLeave}
+        >
+            <button
+                type="button"
+                className="bg-midnight1 text-sm pointer-events-none transition duration-150 ease-in-out inline-block"
+                disabled
+            />
+            <div className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} ${noWrapClass} grow`}
+            style={{transform: 'translateX(-50%) translateY(-120%)'}}
+            >
+                {message}
+            </div>
         </span>
     );
-    } else if (type === "icon") {
-        return (
-            <div className="float-right text-sm">
-            <img
-                className="h-3 w-3 transition inline-block ease-in-out select-none"
-        src={
-            inRange(stat1!, stat2!, range!)
-            ? `data:image/svg+xml;utf-8,${updownarrow}`
-            : stat1! > stat2!
-                ? `data:image/svg+xml;utf-8,${uparrow}`
-                : `data:image/svg+xml;utf-8,${downarrow}`
+}
+
+
+const IconTooltip: React.FC<ToolTipProps> = ({ message, stat1, stat2, range }) => {
+    const { isHovered, onMouseEnter, onMouseLeave } = useHover();
+
+    function inRange(stat1: number, stat2: number, range: number) {
+        return Math.abs(stat1 - stat2) <= range;
     }
-        data-te-toggle="tooltip"
-        title={message}
-        alt={""}
-        />
-        {stat2}
+
+    return (
+        <div
+            className="float-right text-sm relative"
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onTouchStart={onMouseEnter}
+            onTouchEnd={onMouseLeave}
+        >
+            <img
+                className={iconClass}
+                src={
+                    inRange(stat1!, stat2!, range!)
+                        ? `data:image/svg+xml;utf-8,${updownarrow}`
+                        : stat1! > stat2!
+                            ? `data:image/svg+xml;utf-8,${uparrow}`
+                            : `data:image/svg+xml;utf-8,${downarrow}`
+                }
+                alt={"Icon showing if recent performance is above or below rating"}
+            />
+            {stat2}
+            <div
+                className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+                ${noWrapClass}
+                `}
+                style={{transform: 'translateX(-50%) translateY(-120%)'}}
+            >
+                {message}
+            </div>
         </div>
     );
-    } else if (type === "explain") {
-        return (
-            <div className="relative inline-block">
-                <img
-                    className="h-3 w-3 transition inline-block ease-in-out select-none"
-                    src={`data:image/svg+xml;utf-8,${questionmark}`}
-                    data-te-toggle="tooltip"
-                    title={message}
-                    alt={""}
-                />
-                <div className="float-right text-sm">
-                    {stat1}
-                </div>
+}
+
+const ExplainTooltip: React.FC<ToolTipProps> = ({ message, stat1 }) => {
+    const { isHovered, onMouseEnter, onMouseLeave } = useHover();
+
+    return (
+        <div className="relative inline-block"
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onTouchStart={onMouseEnter}
+            onTouchEnd={onMouseLeave}
+        >
+            <img
+                className={iconClass}
+                src={`data:image/svg+xml;utf-8,${questionmark}`}
+                alt={"Explanation icon"}
+            />
+            <div className="float-right text-sm">
+                {stat1}
             </div>
-        );
-    }
-    return null;
+            <div className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} ${wideTooltipClass}`}
+            style={{transform: 'translateX(-50%) translateY(-110%)'}}
+            >
+                {message}
+            </div>
+        </div>
+    );
+}
+
+const GenericTooltip: React.FC<ToolTipProps> = ({ message }) => {
+    const { isHovered, onMouseEnter, onMouseLeave } = useHover();
+
+    return (
+        <span
+            className={iconClass}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                onTouchStart={onMouseEnter}
+                onTouchEnd={onMouseLeave}
+                style={{ zIndex: 1000 }}
+        >
+        <span className="bg-gray-500 text-sm pointer-events-none transition duration-150 ease-in-out inline-block" />
+            <div className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+            style={{transform: 'translateX(-50%) translateY(-120%)'}}>
+                {message}
+            </div>
+        </span>
+    );
+};
+
+const AwardTooltip: React.FC<ToolTipProps> = ({ message, awardType, awardMapping}) => {
+    const { isHovered, onMouseEnter, onMouseLeave } = useHover();
+    const backgroundColor = awardType === "numberOne" ? "bg-yellow-400" : "bg-success-100";
+    const textColor = awardType === "numberOne" ? "text-neutral-700" : "text-success-700";
+    const whiteSpaceClass = message.length > 25 ? "whitespace-normal min-w-[200px] max-w-full" : "whitespace-nowrap";
+
+    return (
+        <div
+            className="relative inline-block"
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onTouchStart={onMouseEnter}
+            onTouchEnd={onMouseLeave}
+        >
+            <button type="button" className={`place-items-center flex h-fit w-fit select-none whitespace-nowrap rounded-[0.27rem] 
+                ${backgroundColor} 
+                px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none
+                ${textColor}`
+            } disabled>
+            {awardMapping} {awardType === "numberOne" ? <img className="h-fit w-fit max-w-[30px] pl-1" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/> : "Top 10"}
+                <div className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                style={{transform: 'translate(-50%, -120%)', top: '0', left: '50%'}}>
+                    <div className={`${awardTooltipClass} ${whiteSpaceClass}`}>
+                        {message}
+                    </div>
+                </div>
+            </button>
+        </div>
+    );
+};
+const TooltipComponents: {
+    [key in ToolTipProps['type']]: React.FC<ToolTipProps>
+} = {
+    rating: RatingTooltip,
+    icon: IconTooltip,
+    explain: ExplainTooltip,
+    generic: GenericTooltip,
+    award: AwardTooltip,
+};
+
+export function ToolTip(props: ToolTipProps) {
+    const TooltipComponent = TooltipComponents[props.type];
+    if (!TooltipComponent) return null;
+    return <TooltipComponent {...props} />;
 }
