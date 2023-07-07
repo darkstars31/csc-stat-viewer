@@ -158,7 +158,7 @@ const AwardTooltip: React.FC<ToolTipProps> = ({ message, awardType, awardMapping
                 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none
                 ${textColor}`
             } disabled>
-            {awardMapping} {awardType === "numberOne" ? <img className="h-fit w-fit max-w-[30px] pl-1" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/> : "Top 10"}
+            {awardMapping} {awardType === "numberOne" ? <img className="h-fit w-fit max-w-[30px] pl-1 pointer-events-none" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/> : "Top 10"}
                 <div className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
                 style={{transform: 'translate(-50%, -120%)', top: '0', left: '50%'}}>
                     <div className={`${awardTooltipClass} ${whiteSpaceClass}`}>
