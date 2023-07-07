@@ -3,10 +3,8 @@ import { useDataContext } from "../../DataContext";
 import {Link} from "wouter";
 import { getPlayersInTierOrderedByRating } from "../../common/utils/player-utils";
 import { ImArrowLeft, ImArrowRight } from "react-icons/im";
-import {Chip, Ripple, initTE} from "tw-elements";
 import { useWindowDimensions } from "../../common/hooks/window";
 import { Player } from "../../models/player";
-initTE({ Chip, Ripple });
 
 type Props = {
     player?: Player,
