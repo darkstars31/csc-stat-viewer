@@ -4,7 +4,7 @@ import {
     teamNameTranslator,
     getPlayerRatingIndex,
 } from "../common/utils/player-utils";
-import {getGridData} from "./player/grid-data"
+import { getGridData } from "./player/grid-data"
 import { GridContainer, GridStat } from "./player/grid-container";
 import { Stat } from "./player/stat";
 import { Link, useRoute } from "wouter";
@@ -13,21 +13,20 @@ import { Loading } from "../common/components/loading";
 import { RoleRadar } from "../common/components/roleRadar";
 import { PlayerNavigator } from "./player/player-navigator";
 import { PlayerRatings } from "./player/playerRatings";
-import { tiertopincategory } from "../svgs";
-import { AwardsDescriptions, AwardsMappings, awardProperties, propertiesCurrentPlayerIsInTop10For, propertiesCurrentPlayerIsNumberOneFor } from "../common/utils/awards-utils";
 import { nth } from "../common/utils/string-utils";
 import { getTeammates } from "../common/utils/franchise-utils";
 import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
 import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
 import { Mmr } from "../common/components/mmr";
 import { ExternalPlayerLinks } from "../common/components/externalPlayerLinks";
+import { PlayerAwards } from "./player/playerAwards";
 
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
-    const { players = [], franchises = [], loading, selectedDataOption } = useDataContext();
+    const { players = [], franchises = [], loading } = useDataContext();
     const [, params] = useRoute("/players/:tier/:id");
-    const tierParam = decodeURIComponent(params?.tier ?? "");
+    //const tierParam = decodeURIComponent(params?.tier ?? "");
     const nameParam = decodeURIComponent(params?.id ?? "");
     const currentPlayer = players.find( p => p.name === nameParam);
     const currentPlayerStats = currentPlayer?.stats;
@@ -38,55 +37,24 @@ export function Player() {
 
     if( loading.isLoadingCscPlayers ){
         return <Container><Loading /></Container>;
-    } else if ( !currentPlayer?.stats ){
-		return <Container>
-			No {selectedDataOption?.label} stats found for {nameParam} in {tierParam}
-            <div className="text-xs mt-4 pl-4">
-                {/* { linksToDifferentTier.length > 0 && <div>This player has stats in a different tier. {linksToDifferentTier}</div> } */}
-            </div>
-		</Container>
-	}
+    }
 
-    const playerRatingIndex = getPlayerRatingIndex( currentPlayer, players );
+    if( !currentPlayer ){
+        return <Container>x</Container>;
+    }
 
-
-    const { 
-        Team, rating, gameCount,
-        kills, assists, deaths,
-        twoK: twoKills, threeK: threeKills, fourK: fourKills, fiveK: aces,
-        hs, kast, adr, kr: avgKillsPerRound,
-        cl_1: clutch1v1, cl_2: clutch1v2, cl_3: clutch1v3, cl_4: clutch1v4, cl_5: clutch1v5,
-        peak, pit, form, consistency: ratingConsistency,
-        ef, 
-        // "EF/F": enemiesFlashedPerFlash, "Blind/EF": enemyBlindTime, fAssists, utilDmg,
-        // "Xnade": nadeDmgPerFrag, 
-        util: utilThrownPerMatch,
-        odr: openDuelPercentage, "odaR": openDuelsPerRound, 
-        // "entriesR": TsidedEntryFragsPerRound, 
-        // "eaR": avgRoundsOpenDuelOnTside,
-		"tradesR": tradesPerRound, "savesR": savesPerRound, 
-        // RWK,
-        adp, 
-        // ctADP, tADP,
-        impact, 
-        // IWR, kpa,
-		multiR: multiKillRound, clutchR: clutchPerRound,
-		suppR, suppXR, 
-        tRatio,
-        // ATD,
-		// "lurks/tR": lurksPerTsideRound, "wlp/L": lurkPointsEarned, "AWP/ctr": awpKillsCTside,
-		rounds, 
-        // "MIP/r": mvpRounds, "K/ctr": killsCTside,
-         awpR: awpKillsPerRound,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ...playerRest 
-    } = currentPlayerStats!;
+    // else if ( !currentPlayer?.stats ){
+	// 	return <Container>
+	// 		No {selectedDataOption?.label} stats found for {nameParam} in {tierParam}
+    //         <div className="text-xs mt-4 pl-4">
+    //             {/* { linksToDifferentTier.length > 0 && <div>This player has stats in a different tier. {linksToDifferentTier}</div> } */}
+    //         </div>
+	// 	</Container>
+	// }
 
     const teamAndFranchise = currentPlayer?.team?.franchise ? `${currentPlayer?.team?.franchise.name} (${currentPlayer?.team?.franchise.prefix}) > ${currentPlayer?.team?.name}` : teamNameTranslator(currentPlayer);
     const teammates = getTeammates( currentPlayer, players, franchises);
-    
-    const numberOneProperties = propertiesCurrentPlayerIsNumberOneFor(currentPlayer, players, awardProperties);
-    const top10Properties = propertiesCurrentPlayerIsInTop10For(currentPlayer, players, awardProperties);
+    const playerRatingIndex = getPlayerRatingIndex( currentPlayer, players ) ?? 0;
 
     return (
         <>
@@ -101,11 +69,11 @@ export function Player() {
                     </div>
                     <div className="text-left basis-3/4">
                         <div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
-                            { currentPlayer.name ?? "n/a"}
+                            { currentPlayer?.name ?? "n/a"}
                         </div>
                         <div className={"text-[1.1rem] pb-5"}>
                             <i>
-                                <b>{currentPlayer.role ? currentPlayer.role : "n/a"}</b>{' — '} 
+                                <b>{currentPlayer?.role ? `${currentPlayer?.role} —` : ""}</b> 
                                 { currentPlayer?.team?.franchise.name ? 
                                     <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
                                     : <span>{teamNameTranslator(currentPlayer)}</span>                         
@@ -124,54 +92,22 @@ export function Player() {
                     </div>
                 </div>
                 { currentPlayerStats &&
-                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                    <div className="space-y-2">
-                        <div className="p-[2.5%] space-y-4">
-                            <div className="space-y-4">
-                                <div className="flex flex-wrap gap-y-4 gap-x-4">
-                                    {
-                                        numberOneProperties.map((property) => (
-                                            <div
-                                                key={property}
-                                                data-te-toggle={"tooltip"}
-                                                title={AwardsDescriptions[property]}
-                                                className="place-items-center flex h-fit w-fit whitespace-nowrap select-none rounded-[0.27rem] bg-yellow-400 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none text-neutral-700"
-                                            >
-                                                <button type="button" className="bg-midnight1 w-fit text-sm pointer-events-none transition duration-150 ease-in-out inline-block" disabled/>
-                                                {AwardsMappings[property]} <img className="h-fit w-fit max-w-[30px] pl-1 fill-neutral-700" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/>
-                                            </div>
-                                        ))
-                                    }
-                                    {
-                                        top10Properties
-                                            .filter((property) => !numberOneProperties.includes(property))
-                                            .map((property) => (
-                                                <div
-                                                    data-te-toggle={"tooltip"}
-                                                    title={AwardsDescriptions[property]}
-                                                    key={property}
-                                                    className="place-items-center flex h-fit w-fit select-none whitespace-nowrap rounded-[0.27rem] bg-success-100 px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none text-success-700"
-                                                >
-                                                    <button type="button" className="bg-midnight1 w-fit text-sm pointer-events-none transition duration-150 ease-in-out inline-block" disabled/>
-                                                    {AwardsMappings[property]} Top 10
-                                                    {/* #{index+1} - {PlayerMappings[property]} */}
-                                                </div>
-                                            ))
-                                    }
-                                </div>
+                    <>
+                        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                            <div className="space-y-2">
+                                <PlayerAwards player={currentPlayer} players={players} />
+                                <PlayerRatings player={currentPlayer} />
+                            </div>
+                            <div className="justify-center">
+                                <RoleRadar player={currentPlayer!}/>         
                             </div>
                         </div>
-                        <PlayerRatings player={currentPlayer} />
-                    </div>
-                    <div className="justify-center">
-                        <RoleRadar player={currentPlayer!}/>         
-                    </div>
-                </div>
-}
-                <div className="grid grid-cols-2 w-full">
-                    <TeamSideRatingPie player={currentPlayer} />
-                    <KillsAssistsDeathsPie player={currentPlayer} />
-                </div>
+                        <div className="grid grid-cols-2 w-full">
+                            <TeamSideRatingPie player={currentPlayer} />
+                            <KillsAssistsDeathsPie player={currentPlayer} />
+                        </div>
+                    </>
+                }
             </Stat>
             
 
@@ -191,33 +127,44 @@ export function Player() {
                     )
                 }
                 </div>
-            </div> }
+            </div> 
+            }
             <br />
-            <div className="py-2">
-            {/* Creating pairs of arrays from grid-data to display them side-by-side with a divider after unless there are no more arrays */}
-                {Array(Math.ceil(getGridData(currentPlayer).length / 2)).fill(0).map((_, i) => {
-                    const pair = getGridData(currentPlayer).slice(i * 2, (i + 1) * 2);
-                    return (
-                        <React.Fragment key={`pair-${i}`}>
-                            <GridContainer>
-                                {pair.map((section, sectionIndex) => (
-                                    <div key={`section-${i * 2 + sectionIndex}`} className="grid grid-cols-1 gap-2 p-2 h-fit">
-                                        {section.map(({ name, value, rowIndex }, statIndex) => (
-                                            <GridStat
-                                                key={`stat-${i * 2 + sectionIndex}-${statIndex}`}
-                                                name={name}
-                                                value={value}
-                                                rowIndex={rowIndex}
-                                            />
-                                        ))}
-                                    </div>
-                                ))}
-                            </GridContainer>
-                            {i < Math.ceil(getGridData(currentPlayer).length / 2) - 1 && <br />}
-                        </React.Fragment>
-                    );
-                })}
-            </div>
+            { currentPlayerStats &&
+                <div className="py-2">
+                {/* Creating pairs of arrays from grid-data to display them side-by-side with a divider after unless there are no more arrays */}
+                    {Array(Math.ceil(getGridData(currentPlayer).length / 2)).fill(0).map((_, i) => {
+                        const pair = getGridData(currentPlayer).slice(i * 2, (i + 1) * 2);
+                        return (
+                            <React.Fragment key={`pair-${i}`}>
+                                <GridContainer>
+                                    {pair.map((section, sectionIndex) => (
+                                        <div key={`section-${i * 2 + sectionIndex}`} className="grid grid-cols-1 gap-2 p-2 h-fit">
+                                            {section.map(({ name, value, rowIndex }, statIndex) => (
+                                                <GridStat
+                                                    key={`stat-${i * 2 + sectionIndex}-${statIndex}`}
+                                                    name={name}
+                                                    value={value}
+                                                    rowIndex={rowIndex}
+                                                />
+                                            ))}
+                                        </div>
+                                    ))}
+                                </GridContainer>
+                                {i < Math.ceil(getGridData(currentPlayer).length / 2) - 1 && <br />}
+                            </React.Fragment>
+                        );
+                    })}
+                </div>
+            }
+            { !currentPlayerStats &&
+                <div className="text-center">
+                    <strong><i>This player has no stats in {currentPlayer.tier.name} for the current season.</i></strong>
+                    {currentPlayer.statsOutOfTier?.length > 0 &&
+                        <div className="text-xs">Stats found in another tier and will be visible soon(TM).</div>
+                    }
+                </div>
+            }
             </Container>
         </>
     );

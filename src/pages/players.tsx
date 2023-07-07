@@ -23,7 +23,6 @@ const sortOptionsList = [
 
 export function Players() {
     const { players } = useDataContext();
-    const playersWithStats = players.filter( p => p.stats );
     const [ displayStyle, setDisplayStyle ] = useLocalStorage("displayStyle", "cards");
     const [ searchValue, setSearchValue ] = React.useState("");
     const [ filters, setFilters ] = React.useState<string[]>([]);
@@ -32,7 +31,7 @@ export function Players() {
     const [ viewPlayerTypeOptions, setViewPlayerTypeOptions ] = React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>();
     const [ viewPlayerRoleOptions, setViewPlayerRoleOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
 
-    let sortedPlayerData = playersWithStats.sort( (a,b) => {
+    let sortedPlayerData = players.sort( (a,b) => {
         const itemA = _get(a, orderBy.value, 0); 
         const itemB = _get(b, orderBy.value, 0);
         return itemA < itemB ? 1 : -1
@@ -41,7 +40,7 @@ export function Players() {
     sortedPlayerData = orderBy?.label.includes("Name") ? sortedPlayerData.reverse() : sortedPlayerData;
 
     const viewPlayerTypeOptionsCumulative = viewPlayerTypeOptions?.flatMap( option => option.value);
-    const filteredByPlayerType = viewPlayerTypeOptions?.length ? sortedPlayerData.filter( player => viewPlayerTypeOptionsCumulative?.some( type => type === player.type )) : playersWithStats;
+    const filteredByPlayerType = viewPlayerTypeOptions?.length ? sortedPlayerData.filter( player => viewPlayerTypeOptionsCumulative?.some( type => type === player.type )) : sortedPlayerData;
     const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.tier.name)) : filteredByPlayerType;
     const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.role)) : filteredByTier;
     const filteredBySearchPlayers = filters.length > 0 ? filteredByRole.filter( player => filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ))) : filteredByRole;
@@ -84,7 +83,7 @@ export function Players() {
                 Find players, view stats, see how you stack up against your peers.
             </p>
             <p className="mt-4 text-gray-300">
-                Showing {filteredBySearchPlayers.length} of {playersWithStats.length} Players
+                Showing {filteredBySearchPlayers.length} of {players.length} Players
             </p>
             <form className="flex flex-box h-12 mx-auto" onSubmit={(e)=>{e.preventDefault()}}>
                 <Input

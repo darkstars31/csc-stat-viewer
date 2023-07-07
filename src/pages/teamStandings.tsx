@@ -22,7 +22,18 @@ export function TeamStandings() {
     const sortedTeamsInTier = sortBy(teamsInTiers[selectedTier], 'id');
     const responses = useFetchMultipleTeamsMatchesGraph(selectedTier, sortedTeamsInTier);
 
-    if ( responses.some( response => response.isLoading ) ) return <Container><div className='min-h-screen'><Loading /></div></Container>;
+    if ( responses.some( response => response.isLoading ) ) {
+        return <Container><Loading /></Container>;
+    } else if ( responses.some( response => response.isError ) ) {
+        // TODO: Make better error message, suggest using different portion of app
+        return ( <Container>
+                <div className='my-4 text-center text-l'>
+                    An error occured loading data from the server for franchise standings. Please try again later.
+                </div>          
+            </Container>
+            );
+    }
+
     const teamsWithMatches = sortedTeamsInTier.map( (team, index) => { return { ...team, matches: responses[index] } } );
 
     const teamsWithMatchesCalculatedWinLoss = teamsWithMatches.map( (team, index) => {
@@ -36,7 +47,7 @@ export function TeamStandings() {
 
     return ( 
         <Container>
-        <div className='min-h-screen'>
+        <div>
             <div>
             <h1 className='text-2xl text-center'>Team Standings</h1>
             <div>Click a tier to see the standings.</div>        

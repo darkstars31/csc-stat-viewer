@@ -78,6 +78,8 @@ const useDataContextProvider = () => {
 				stats: statsByTier.find( s => s.tier === cscPlayer.tier.name)?.stats!, 
 				statsOutOfTier: statsByTier.filter( statsWithTier => statsWithTier.tier !== cscPlayer.tier.name),
 			});
+		} else {
+			acc.push( { ...cscPlayer as Player } );
 		}
 		return acc;
 		

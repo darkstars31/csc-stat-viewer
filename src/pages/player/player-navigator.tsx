@@ -9,7 +9,7 @@ import { Player } from "../../models/player";
 initTE({ Chip, Ripple });
 
 type Props = {
-    player: Player,
+    player?: Player,
     playerIndex: number,
 }
 
@@ -17,8 +17,10 @@ export function PlayerNavigator( { player, playerIndex }: Props ) {
     const windowDimensions = useWindowDimensions();
     const pageSize = windowDimensions.width < 600 ? 2 : windowDimensions.width < 1000 ? 4 : 7; // LOL don't do this
     const [ pageCurrent, setPageCurrent ] = React.useState( Math.floor(playerIndex/pageSize)); 
-    console.info(pageCurrent, playerIndex, pageSize, Math.floor(playerIndex/pageSize));
     const { players = [] } = useDataContext();
+    if( !player ) {
+        return null;
+    }
     //const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player, players );
     const pageMax = playerInTierOrderedByRating.length / pageSize;

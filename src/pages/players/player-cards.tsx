@@ -24,9 +24,8 @@ const Tooltip = (props: { children: React.ReactNode, tip?: string }) => {
     );
 }
 
-export function PlayerCard( { player, index}: Props) {
+function MemoizedPlayerCard( { player, index}: Props) {
     const teamNameTranslated = React.useMemo( () => teamNameTranslator(player), [ player ]);
-    if( player.stats === undefined) console.info( player );
     return (
         <Link
         key={`player-${index}`}
@@ -44,21 +43,23 @@ export function PlayerCard( { player, index}: Props) {
                     </div>
                 </div>
                 <div>
-                    { player.stats && 
+                    
                     <div className="p-1 text-sm text-gray-300">
                         <div className="text-center">
-                        <div className="text-xs h-8">
-                        {player.tier.name} <i> - {player.team?.franchise.prefix ?? ""} {teamNameTranslated}</i>
+                            <div className="text-xs h-8">
+                                {player.tier.name} <i> - {player.team?.franchise.prefix ?? ""} {teamNameTranslated}</i>
+                            </div>
+                        </div>                        
+                        <div className="flex justify-center gap-4 py-1">                             
+                                <Tooltip tip="Rating"><div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player.stats?.rating.toFixed(2) ?? 'N/A'}</div></Tooltip>                               
+                            <Tooltip tip="Match Making Rank"><div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/> <Mmr player={player}/></div></Tooltip>              
                         </div>
-                            <div className="flex justify-center gap-4 py-1">
-                                <Tooltip tip="Rating"><div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player.stats.rating.toFixed(2)}</div></Tooltip>
-                                <Tooltip tip="Match Making Rank"><div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/> <Mmr player={player}/></div></Tooltip>
-                            </div>  
-                        </div>
-                    </div> }
+                    </div>  
                 </div>
             </div>
         </div>
     </Link>
     );
 }
+
+export const PlayerCard = React.memo(MemoizedPlayerCard);
