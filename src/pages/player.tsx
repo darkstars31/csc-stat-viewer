@@ -106,7 +106,7 @@ export function Player() {
                             <div className="place-content-center flex flex-col min-w-full min-h-[225px] bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
                                 <RoleRadar player={currentPlayer!}/>         
                             </div>
-                            <div className="place-items-center grid grid-cols-1 md:grid-cols-2 min-w-full min-h-[225px] bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
+                            <div className="place-items-center grid grid-cols-1 md:grid-cols-2 min-w-full min-h-[300px] bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
                                 <TeamSideRatingPie player={currentPlayer} />
                                 <KillsAssistsDeathsPie player={currentPlayer} />
                             </div>
@@ -137,29 +137,28 @@ export function Player() {
             <br />
             { currentPlayerStats &&
                 <div className="py-2">
-                {/* Creating pairs of arrays from grid-data to display them side-by-side with a divider after unless there are no more arrays */}
-                    {Array(Math.ceil(getGridData(currentPlayer).length / 2)).fill(0).map((_, i) => {
-                        const pair = getGridData(currentPlayer).slice(i * 2, (i + 1) * 2);
-                        return (
-                            <React.Fragment key={`pair-${i}`}>
-                                <GridContainer>
-                                    {pair.map((section, sectionIndex) => (
-                                        <div key={`section-${i * 2 + sectionIndex}`} className="grid grid-cols-1 gap-2 p-2 h-fit">
-                                            {section.map(({ name, value, rowIndex }, statIndex) => (
-                                                <GridStat
-                                                    key={`stat-${i * 2 + sectionIndex}-${statIndex}`}
-                                                    name={name}
-                                                    value={value}
-                                                    rowIndex={rowIndex}
-                                                />
-                                            ))}
-                                        </div>
-                                    ))}
-                                </GridContainer>
-                                {i < Math.ceil(getGridData(currentPlayer).length / 2) - 1 && <br />}
-                            </React.Fragment>
-                        );
-                    })}
+                {Array(Math.ceil(getGridData(currentPlayer).length / 2)).fill(0).map((_, i) => {
+                    const pair = getGridData(currentPlayer).slice(i * 2, (i + 1) * 2);
+                    return (
+                        <React.Fragment key={`pair-${i}`}>
+                            <GridContainer>
+                                {pair.map((section, sectionIndex) => (
+                                    <div key={`section-${i * 2 + sectionIndex}`} className="grid grid-cols-1 gap-2 p-2 h-fit">
+                                        {section.map(({ name, value }, statIndex) => (
+                                            <GridStat
+                                                key={`stat-${i * 2 + sectionIndex}-${statIndex}`}
+                                                name={name}
+                                                value={value}
+                                                rowIndex={statIndex} // pass statIndex instead of i
+                                            />
+                                        ))}
+                                    </div>
+                                ))}
+                            </GridContainer>
+                            {i < Math.ceil(getGridData(currentPlayer).length / 2) - 1 && <br />}
+                        </React.Fragment>
+                    );
+                })}
                 </div>
             }
             { !currentPlayerStats &&
