@@ -16,6 +16,7 @@ import { PlayerRatings } from "./player/playerRatings";
 import { nth } from "../common/utils/string-utils";
 import { getTeammates } from "../common/utils/franchise-utils";
 import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
+import { PlayerRatingTrendGraph } from "../common/components/playerRatingGraph";
 import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
 import { Mmr } from "../common/components/mmr";
 import { ExternalPlayerLinks } from "../common/components/externalPlayerLinks";
@@ -91,22 +92,27 @@ export function Player() {
                     </div>
                 </div>
                 { currentPlayerStats &&
-                    <>
-                        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                            <div className="space-y-2">
-                                <PlayerAwards player={currentPlayer} players={players} />
+                    <div className="space-y-2">
+                        <div className="space-y-2">                      
+                            <PlayerAwards player={currentPlayer} players={players} />
+                            <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                                 <PlayerRatings player={currentPlayer} />
+                                <div className="flex flex-col min-h-[225px] bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
+                                    <PlayerRatingTrendGraph player={currentPlayer} />
+                                </div>
                             </div>
-                            <div className="justify-center">
+                        </div>
+                        <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
+                            <div className="place-content-center flex flex-col min-w-full min-h-[225px] bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
                                 <RoleRadar player={currentPlayer!}/>         
                             </div>
+                            <div className="place-items-center grid grid-cols-1 md:grid-cols-2 min-w-full min-h-[225px] bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
+                                <TeamSideRatingPie player={currentPlayer} />
+                                <KillsAssistsDeathsPie player={currentPlayer} />
+                            </div>
                         </div>
-                        <div className="grid grid-cols-2 w-full">
-                            <TeamSideRatingPie player={currentPlayer} />
-                            <KillsAssistsDeathsPie player={currentPlayer} />
-                        </div>
-                    </>
-                }
+                    </div>
+                }            
             </Stat>
             
 

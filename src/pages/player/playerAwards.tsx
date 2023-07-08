@@ -16,35 +16,37 @@ export function PlayerAwards( { player, players }: Props ){
 
     return (
         <div className="p-[2.5%] space-y-4">
-        <div className="space-y-4">
-            <div className="flex flex-wrap gap-y-4 gap-x-4">
+        <div className="flex flex-wrap place-items-center gap-3">
             {
                 numberOneProperties.map((property) => (
-                        <div key={property} >
+                    <div
+                        key={property}
+                    >
+                        <ToolTip
+                            type="award"
+                            awardType="numberOne"
+                            message={`${AwardsDescriptions[property]}`}
+                            awardMapping={`${AwardsMappings[property]}`}
+                        />
+                    </div>
+                ))
+            }
+            {
+                top10Properties
+                    .filter((property) => !numberOneProperties.includes(property))
+                    .map((property) => (
+                        <div
+                            key={property}
+                        >
                             <ToolTip
                                 type="award"
-                                awardType="numberOne"
+                                awardType="top10"
                                 message={`${AwardsDescriptions[property]}`}
                                 awardMapping={`${AwardsMappings[property]}`}
-                            />
+                                />
                         </div>
                     ))
-                }
-                {
-                    top10Properties
-                        .filter((property) => !numberOneProperties.includes(property))
-                        .map((property) => (
-                            <div key={property} >
-                                <ToolTip
-                                    type="award"
-                                    awardType="top10"
-                                    message={`${AwardsDescriptions[property]}`}
-                                    awardMapping={`${AwardsMappings[property]}`}
-                                    />
-                            </div>
-                    ))
-                }
-            </div>
+            }
         </div>
     </div>
     );
