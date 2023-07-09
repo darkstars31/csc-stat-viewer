@@ -6,7 +6,6 @@ import {
 } from "../common/utils/player-utils";
 import { getGridData } from "./player/grid-data"
 import { GridContainer, GridStat } from "./player/grid-container";
-import { Stat } from "./player/stat";
 import { Link, useRoute } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
@@ -21,6 +20,7 @@ import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
 import { Mmr } from "../common/components/mmr";
 import { ExternalPlayerLinks } from "../common/components/externalPlayerLinks";
 import { PlayerAwards } from "./player/playerAwards";
+import { Card } from "../common/components/card";
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
@@ -61,7 +61,7 @@ export function Player() {
         <div ref={divRef} />
         <Container>
             <PlayerNavigator player={currentPlayer} playerIndex={playerRatingIndex} />
-            <Stat>
+            <Card>
                 <div className="flex space-x-4 pb-2">
                     <div className="object-contain">
                         { currentPlayer?.avatarUrl && <img className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
@@ -113,9 +113,7 @@ export function Player() {
                         </div>
                     </div>
                 }            
-            </Stat>
-            
-
+            </Card>
             { teammates.length > 0 && false && // TODO: fix weird bug in logic that shows same teammate twice
             <div>
                 Teammates - {teamAndFranchise}

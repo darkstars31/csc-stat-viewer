@@ -17,7 +17,7 @@ export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: Franchis
     return (
         <div className="text-sm lg:text-m lg:m-2">
             <div className={`grid grid-cols-${COLUMNS}`}>
-                <Link className="hover:cursor-pointer hover:text-sky-400 hover:text-sky-400 transition ease-in-out hover:-translate-x-1 duration-300" 
+                <Link className="hover:cursor-pointer hover:text-sky-400 transition ease-in-out hover:-translate-x-1 duration-300" 
                     key={`${team.tier.name}-${franchisePlayer.name}`} 
                     to={`/players/${team.tier.name}/${franchisePlayer.name}`}
                 >
