@@ -1,7 +1,6 @@
 import * as React from "react";
 import { AwardsDescriptions, AwardsMappings, awardProperties, propertiesCurrentPlayerIsInTop10For, propertiesCurrentPlayerIsNumberOneFor } from "../../common/utils/awards-utils";
 import { Player } from "../../models";
-import { tiertopincategory } from "../../svgs";
 import { ToolTip } from "../../common/utils/tooltip-utils";
 
 type Props = {
