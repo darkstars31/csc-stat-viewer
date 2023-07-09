@@ -6,11 +6,20 @@ import { sortBy } from 'lodash';
 import { Loading } from '../common/components/loading';
 import { franchiseImages } from '../common/images/franchise';
 import { calculateTeamRecord } from '../common/utils/match-utils';
+import { useCscSeasonDivisionsByTier } from '../dao/cscSeasonDivisionsByTierDao';
+import { Team } from '../models/franchise-types';
 
 export function TeamStandings() {
     const { franchises } = useDataContext();
     const [ selectedTier, setSelectedTier ] = React.useState('');
-
+    const { data: season = [], isLoading: isLoadingx} = useCscSeasonDivisionsByTier(11);
+    const divisions = season.find(s => s.tier.name === selectedTier)?.divisions;
+    const teamsInDivision = divisions?.reduce( (acc, division) => {
+        acc[division.name] = division.teams.map( team => team.team.name ) ;
+        return acc;
+    }, {} as any);
+    const confernceList = divisions?.map( division => division.name );
+    
     const teamsInTiers = franchises.reduce( ( acc, franchise) => {
         franchise.teams.forEach( team => {
             if( !acc[team.tier.name] ) acc[team.tier.name] = [];
@@ -37,16 +46,31 @@ export function TeamStandings() {
     const teamsWithMatches = sortedTeamsInTier.map( (team, index) => { return { ...team, matches: responses[index] } } );
 
     const teamsWithMatchesCalculatedWinLoss = teamsWithMatches.map( (team, index) => {
+        const conferenceName = Object.keys(teamsInDivision)?.find( key => teamsInDivision[key].includes( team.name ) );
+        console.info(conferenceName);
         const teamMatches = responses[index].data as [];
         const teamRecord = calculateTeamRecord( team, teamMatches );
 
-        return { ...team, matches: responses[index], teamRecord };
+        return { ...team, matches: responses[index], teamRecord, conferenceName };
     });
 
     const sortedTeamRecords = sortBy(teamsWithMatchesCalculatedWinLoss, 'teamRecord.record.wins').reverse();
     const tierButtonClass = "flex-grow bg-blue-500 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-blue-600 focus:bg-blue-600 focus:outline-none focus:ring-0 active:bg-blue-700";
     const recruitRoundedClass = "rounded-md";
     const otherTierRoundedClass = "rounded-md";
+
+    // const teamsDividedIntoConferences = sortedTeamRecords.reduce( (acc, team: Team ) => {
+
+    //     const conferenceName = teamsInDivision?.find( division => team.name === division.name )
+    //     return acc;
+    // }, {} as any);
+
+
+    const sortedTeamRecordsInConferences = sortedTeamRecords.forEach( (acc, team: Team ) => {
+        acc[team.conferenceName].push(team);
+        return acc;
+    }, {} as any);
+    console.info(sortedTeamRecordsInConferences);
 
     return ( 
         <Container>
@@ -103,18 +127,16 @@ export function TeamStandings() {
             </div>
             <div>
             <div className='text-center m-4 text-2xl'>{selectedTier}</div>
-            <div className='grid grid-cols-4 gap-2 m-4'>
+            <div className='grid grid-cols-3 gap-2 m-4'>
                     <div></div>
                     <div>W : L</div>
                     <div>Rounds W:L</div>
-                    <div>Round Win %</div>
             </div>
             { sortedTeamRecords.map( (team, index) => 
-                <div key={`${team.name}${index}`} className='grid grid-cols-4 gap-2 m-4'>
+                <div key={`${team.name}${index}`} className='grid grid-cols-3 gap-2 m-4'>
                     <div><img className='w-8 h-8 mr-2 float-left' src={franchiseImages[team.franchise.prefix]} alt="" /> {team.name} ({team.franchise.prefix})</div>
                     <div><b><span className='text-green-400'>{team.teamRecord.record.wins}</span> : <span className='text-red-400'>{team.teamRecord.record.losses}</span></b> <span className='text-gray-400 text-xs pl-2'>({(team.teamRecord.record.wins / (team.teamRecord.record.wins + team.teamRecord.record.losses)*100).toFixed(2)}%)</span></div>
-                    <div><span className='text-green-400'>{team.teamRecord.record.roundsWon}</span> : <span className='text-red-400'>{team.teamRecord.record.roundsLost}</span> <span className='text-gray-400 text-xs'>(diff {team.teamRecord.record.roundsWon - team.teamRecord.record.roundsLost > 0 ? '+': ''}{team.teamRecord.record.roundsWon - team.teamRecord.record.roundsLost})</span></div>
-                    <div>{(team.teamRecord.record.roundsWon / (team.teamRecord.record.roundsWon + team.teamRecord.record.roundsLost)*100).toFixed(2)}%</div>
+                    <div><span className='text-green-400'>{team.teamRecord.record.roundsWon}</span> : <span className='text-red-400'>{team.teamRecord.record.roundsLost}</span> <span className='text-gray-400 text-xs'>(diff {team.teamRecord.record.roundsWon - team.teamRecord.record.roundsLost > 0 ? '+': ''}{team.teamRecord.record.roundsWon - team.teamRecord.record.roundsLost}</span> <span className='text-gray-400 text-xs'>{(team.teamRecord.record.roundsWon / (team.teamRecord.record.roundsWon + team.teamRecord.record.roundsLost)*100).toFixed(1)}%)</span></div>
                 </div>
             ) }
             </div>
