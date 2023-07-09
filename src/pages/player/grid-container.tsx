@@ -4,7 +4,7 @@ export const GridContainer = ( { children }: { children: React.ReactNode | React
 
 export function GridStat( { name, value, rowIndex }: { name: string, value: string | number | React.ReactNode, rowIndex: number }){
     return (
-        <div className={`grid grid-cols-2 ${ rowIndex % 2 === 0 ? "bg-midnight1 rounded" : ""}`}>
+        <div className={`grid grid-cols-2 ${ rowIndex % 2 === 1 ? "bg-midnight1 rounded" : ""}`}>
 			<div className={`text-left pl-2`}>
 				{name}
 			</div>
