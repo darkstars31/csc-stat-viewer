@@ -20,7 +20,7 @@ export function RoleRadar( { player }: Props ){
                     { name: "Fragger", max: 1 },
                     { name: "Rifler", max: 200 },
                     { name: "Support", max: 50 },
-                    { name: "Lurker", max: 4 },
+                    //{ name: "Lurker", max: 4 },
                 ]
             },
             series: [ 
