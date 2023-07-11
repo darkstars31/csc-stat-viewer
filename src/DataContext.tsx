@@ -34,6 +34,8 @@ const useDataContextProvider = () => {
 
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
 
+	
+
 	const cscPlayers = [
 		...cscSignedPlayers, 
 		...cscFreeAgentsPlayers, 

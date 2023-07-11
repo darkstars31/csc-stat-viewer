@@ -4,16 +4,14 @@ import { Input } from "../common/components/input";
 import { Pill } from "../common/components/pill";
 import Select, { MultiValue } from "react-select";
 import { useDataContext } from "../DataContext";
-import { Player } from "../models/player";
-import { PlayerCard } from "./players/player-cards";
 import _get from "lodash/get";
-import { PlayerTable } from "./players/player-table";
 import { MdGridView, MdOutlineViewHeadline } from "react-icons/md";
 import { useLocalStorage } from "../common/hooks/localStorage";
 import { PlayerTypes } from "../common/utils/player-utils";
 import { PlayerTypeFilter } from "../common/components/filters/playerTypeFilter";
 import { PlayerRolesFilter } from "../common/components/filters/playerRoleFilter";
 import { PlayerTiersFilter } from "../common/components/filters/playerTiersFilter";
+import { PlayerList } from "./players/player-list";
 
 const sortOptionsList = [
     { label: "Name", value: "stats.name"}, 
@@ -44,9 +42,6 @@ export function Players() {
     const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.tier.name)) : filteredByPlayerType;
     const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.role)) : filteredByTier;
     const filteredBySearchPlayers = filters.length > 0 ? filteredByRole.filter( player => filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ))) : filteredByRole;
-
-    const playerCards = filteredBySearchPlayers?.map( (player: Player, index: number) => <PlayerCard key={`${player.tier.name}-${player.name}`} player={player} index={index} />);
-    const playerList = <PlayerTable players={filteredBySearchPlayers} />
 
     const addFilter = () => {
         setSearchValue(""); 
@@ -124,15 +119,15 @@ export function Players() {
                     <label title="Sort" className="p-1 leading-9">
                         Sort
                     </label>
-                        <Select
-                            className="grow"
-                            unstyled
-                            defaultValue={orderBy}
-                            isSearchable={false}
-                            classNames={selectClassNames}
-                            options={sortOptionsList}
-                            onChange={setOrderBy}
-                        />
+                    <Select
+                        className="grow"
+                        unstyled
+                        defaultValue={orderBy}
+                        isSearchable={false}
+                        classNames={selectClassNames}
+                        options={sortOptionsList}
+                        onChange={setOrderBy}
+                    />
                 </div>
             </div>
         </div>
@@ -142,14 +137,10 @@ export function Players() {
             <button title="List View" className={`p-2 m-1 rounded border ${displayStyle === "list" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "list" )}><MdOutlineViewHeadline /></button>
         </div>
         <div className="pb-8">
-            { displayStyle === "cards" ? <div>
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                    { playerCards }
-                </div>
-            </div>
-            : 
-            <div>{ playerList }</div>
-            }
+            <PlayerList 
+                displayStyle={displayStyle} 
+                players={filteredBySearchPlayers} 
+            />           
         </div>
     </Container>
     );

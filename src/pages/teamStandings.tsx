@@ -9,6 +9,7 @@ import { calculateTeamRecord } from '../common/utils/match-utils';
 import { useCscSeasonDivisionsByTier } from '../dao/cscSeasonDivisionsByTierDao';
 import { Card } from '../common/components/card';
 import { Link } from 'wouter';
+import { Team } from '../models/franchise-types';
 
 
 function TeamRecordRow ({ team, index }: { team: any, index: number }) {
@@ -69,6 +70,7 @@ export function TeamStandings() {
     });
 
     const sortedTeamRecords = sortBy(teamsWithMatchesCalculatedWinLoss, 'teamRecord.record.wins').reverse();
+    // TODO: Custom sort algorithm that accounts for tie-breakers
 
     const sortedTeamRecordsInConferences = sortedTeamRecords.reduce( (acc, team ) => {
         if ( !acc[team.conferenceName]) acc[team.conferenceName] = [];
@@ -111,25 +113,38 @@ export function TeamStandings() {
                 <div className='pt-2'>
                     { responses.some( response => response.isLoading ) ? 
                         <Loading /> 
-                        :
-                        Object.entries(sortedTeamRecordsInConferences).map( ([key, value]) => {
+                        : 
+                        Object.entries(sortedTeamRecordsInConferences).map( ([key, value], index) => {
                             return (
-                                <Card>
-                                    <div className='text-2xl'>
-                                        <i>{key}</i>
+                                <Card key={key}>
+                                    <div className='text-l'>
+                                        <i>{key} Conference</i>
                                     </div>
-                                    <div className='grid grid-cols-3 gap-2 m-4'>
+                                    <div className='grid grid-cols-3 gap-2 mx-4 text-sm'>
                                         <div></div>
                                         <div>W : L</div>
                                         <div>Rounds</div>
                                     </div>
                                     <div>
-                                        {(value as []).map( (team, index) => <TeamRecordRow key={`${index}`} team={team} index={index} />)}
-                                    </div>
+                                        {(value as Team[]).map( (team, index) => 
+                                            <>
+                                                <TeamRecordRow key={`${index}-${team.name}`} team={team} index={index} />
+                                                {
+                                                    Math.ceil(( value as []).length / 2 ) === index+1 && 
+                                                       <span className='text-gray-600 text-xs'><i>Playoff Line</i><div className='-mt-[.8em] ml-20 border-dotted border-b border-gray-500' /></span>
+                                                }
+                                            </>
+                                        )}
+                                    </div>                               
                                 </Card>
                             )
-                            } )     
+                            } )                       
                     }
+                    { selectedTier && <div className='text-center text-xs m-4 text-slate-400'>
+                        * Conference records currently do not take into account tie-breakers. <br />
+                        * Playoff line is estimated and not guaranteed. <br />
+                        * Bo1 Play-Ins not currently shown.
+                        </div>}    
                     { !selectedTier && <div className='text-center text-xl m-4'>Select a tier to get started.</div>}                    
                 </div>       
             </div>

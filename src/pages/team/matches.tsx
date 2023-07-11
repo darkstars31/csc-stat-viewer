@@ -18,12 +18,14 @@ export function MatchCards( { match, team }: Props ) {
         day: new Date(match.scheduledDate).getDate(),
         hour: new Date(match.scheduledDate).getHours() % 12,
     }
+    const isMatchInProgress = !match.completedAt && match.stats.length > 0;
+    const isMatchNotYetPlayed = !match.completedAt && !match.stats.length;
     const isHomeTeam = match.home.name === team?.name;
     const didCurrentTeamWin = (isHomeTeam && match.stats[0]?.homeScore > match.stats[0]?.awayScore) || (!isHomeTeam && match.stats[0]?.homeScore < match.stats[0]?.awayScore);
-    const backgroundColor = match.stats.length > 0 ? didCurrentTeamWin  ? "bg-emerald-800": "bg-red-950": "bg-midnight1";
+    const backgroundColor = match.stats.length > 0 || isMatchInProgress ? didCurrentTeamWin ? "bg-emerald-800" : "bg-red-950" : "bg-midnight1";
 
     return (
-        <div className={`m-2 p-2 ${backgroundColor} rounded-lg overflow-hidden z-0`}>
+        <div className={`m-2 p-2 ${backgroundColor} ${isMatchInProgress ? "border-yellow-500 border-2" : ""} rounded-lg overflow-hidden z-0`}>
             <div className="w-full flex text-sm pb-2">
                 <div className="basis-3/4">{match.matchDay.number} | {matchDate.month}/{matchDate.day} {matchDate.hour}PM</div>
                 <span className="text-gray-700 text-xs text-right w-full">
@@ -56,9 +58,8 @@ export function MatchCards( { match, team }: Props ) {
                 { match.demoUrl && <div className="float-right"><a href={match.demoUrl} title="Download Demo" rel="noreferrer" target="_blank"><GrDocumentVideo className="text-white" /></a></div> }
             </div>
             }
-            { !match.completedAt &&
-                <div className="text-center py-4 text-sm text-gray-700">Match hasn't been played yet.</div>
-            }
+            { isMatchInProgress && <div className="text-center py-4 text-sm text-yellow-500 animate-pulse">Match in progress.</div> }
+            { isMatchNotYetPlayed && <div className="text-center py-4 text-sm text-gray-700">Match hasn't been played yet.</div> }
         </div>
     );
 }

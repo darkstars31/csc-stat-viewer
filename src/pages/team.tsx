@@ -27,12 +27,12 @@ export function Team(){
 		const cscPlayerWithStats = cscPlayers.find( p => p.steam64Id === player.steam64Id );
 		const divisor = index > 0 ? 2 : 1;
 		//acc["rating"] = (acc["rating"] + cscPlayerWithStats?.stats.rating ?? 0) / divisor;
-		acc["ef"] = ( acc["ef"] + cscPlayerWithStats?.stats.ef ?? 0) / divisor;
-		acc["adr"] = ( acc["adr"] + cscPlayerWithStats?.stats.adr ?? 0) / divisor;
-		acc["kast"] = ( acc["kast"] + cscPlayerWithStats?.stats.kast ?? 0 ) / divisor;
-		acc["utilDmg"] = ( acc["utilDmg"] + cscPlayerWithStats?.stats.utilDmg ?? 0) / divisor;
-		acc["impact"] = ( acc["impact"] + cscPlayerWithStats?.stats.impact ?? 0) / divisor;
-		acc["clutchR"] = ( acc["clutchR"] +cscPlayerWithStats?.stats.clutchR ?? 0) / divisor;
+		acc["ef"] = ( acc["ef"] + cscPlayerWithStats?.stats?.ef ?? 0) / divisor;
+		acc["adr"] = ( acc["adr"] + cscPlayerWithStats?.stats?.adr ?? 0) / divisor;
+		acc["kast"] = ( acc["kast"] + cscPlayerWithStats?.stats?.kast ?? 0 ) / divisor;
+		acc["utilDmg"] = ( acc["utilDmg"] + cscPlayerWithStats?.stats?.utilDmg ?? 0) / divisor;
+		acc["impact"] = ( acc["impact"] + cscPlayerWithStats?.stats?.impact ?? 0) / divisor;
+		acc["clutchR"] = ( acc["clutchR"] +cscPlayerWithStats?.stats?.clutchR ?? 0) / divisor;
 		return acc;
 	}, { 'ef': 0, 'adr': 0, 'kast': 0, 'utilDmg': 0, 'impact': 0, 'clutchR': 0 } as any);
 	//console.info( 'currentTeamStatAggregation', currentTeamStatAggregation);
@@ -54,7 +54,7 @@ export function Team(){
 							<Link className="hover:text-blue-400" to={`/franchises/${currentFranchise?.name}`}>{currentFranchise?.name}</Link></i> {"> "} 
 							{currentTeam?.tier.name}
 						</div>
-							{	loading.isLoadingFranchises && <Loading />}
+							{ loading.isLoadingFranchises && <Loading />}
 							<h2 className="text-5xl font-bold text-white grow text-center">{currentTeam?.name}</h2>
 							<div className="text-center p-4 text-xl">
 								{currentFranchise?.name} - <i>{currentFranchise?.prefix}</i>

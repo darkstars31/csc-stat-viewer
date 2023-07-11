@@ -11,20 +11,7 @@ type Props = {
     index: number,
 }
 
-const Tooltip = (props: { children: React.ReactNode, tip?: string }) => {
-    return (
-        <button
-        className="transititext-primary text-primary transition duration-150 ease-in-out hover:text-primary-600 focus:text-primary-600 active:text-primary-700 dark:text-primary-400 dark:hover:text-primary-500 dark:focus:text-primary-500 dark:active:text-primary-600"
-        data-te-toggle="tooltip"
-        data-te-placement="bottom"
-        title={props.tip}
-        >
-            {props.children}
-        </button>
-    );
-}
-
-function MemoizedPlayerCard( { player, index}: Props) {
+export function PlayerCard( { player, index}: Props) {
     const teamNameTranslated = React.useMemo( () => teamNameTranslator(player), [ player ]);
     return (
         <Link
@@ -35,15 +22,14 @@ function MemoizedPlayerCard( { player, index}: Props) {
             <div className="justify-between">
                 <div className="flex flex-row w-full">
                     <div className="mr-4 h-[64px] w-[64px] rounded-tl-xl">
-                        <img className="rounded-tl-xl rounded-br-xl" src={player.avatarUrl} alt=""/>
+                        <img className="rounded-tl-xl rounded-br-xl" loading="lazy" src={player.avatarUrl} alt=""/>
                     </div>
                     <div className="pt-2 text-center grow">
                         <h2 className="text-l md:text-xl font-bold text-white grow"><span className="truncate ...">{player.name}</span></h2>
                         <div className="text-xs text-slate-400 pt-1"><strong>{player.role}</strong></div>
                     </div>
                 </div>
-                <div>
-                    
+                <div>                  
                     <div className="p-1 text-sm text-gray-300">
                         <div className="text-center">
                             <div className="text-xs h-8">
@@ -51,8 +37,8 @@ function MemoizedPlayerCard( { player, index}: Props) {
                             </div>
                         </div>                        
                         <div className="flex justify-center gap-4 py-1">                             
-                                <Tooltip tip="Rating"><div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player.stats?.rating.toFixed(2) ?? 'N/A'}</div></Tooltip>                               
-                            <Tooltip tip="Match Making Rank"><div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/> <Mmr player={player}/></div></Tooltip>              
+                            <div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player.stats?.rating.toFixed(2) ?? 'N/A'}</div>                             
+                            <div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/> <Mmr player={player}/></div>            
                         </div>
                     </div>  
                 </div>
@@ -61,5 +47,3 @@ function MemoizedPlayerCard( { player, index}: Props) {
     </Link>
     );
 }
-
-export const PlayerCard = React.memo(MemoizedPlayerCard);
