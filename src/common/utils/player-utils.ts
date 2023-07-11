@@ -68,7 +68,7 @@ export const PlayerMappings: Record<string,string> = {
 export const tiers = ["Premier", "EliPrem", "Elite", "Challenger", "Contender", "Prospect", "New Tier"];
 
 export const teamNameTranslator = ( player?: Player ) => {
-    const name = player?.team?.name ?? player?.type ?? player?.stats?.Team ?? "";
+    const name = player?.team?.name ?? player?.type ?? "";
     switch( name?.toUpperCase() ){
         case "DRAFT_ELIGIBLE": return "Draft Eligible";
         case "PERMANENT_FREE_AGENT": return "Perm FA";

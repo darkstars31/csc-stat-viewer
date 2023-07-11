@@ -8,16 +8,12 @@ import { Mmr } from "../../common/components/mmr";
 
 type Props = {
     player: Player,
-    index: number,
 }
 
-export function PlayerCard( { player, index}: Props) {
-    const teamNameTranslated = React.useMemo( () => teamNameTranslator(player), [ player ]);
+export function MemoizedPlayerCard( { player }: Props) {
+    const teamNameTranslated = teamNameTranslator(player);
     return (
-        <Link
-        key={`player-${index}`}
-        to={`/players/${player.tier.name}/${encodeURIComponent(player.name)}`}
-        >
+        <Link to={`/players/${player.tier.name}/${encodeURIComponent(player.name)}`}>
         <div className="fade-in block bg-midnight2 rounded-xl border border-gray-800 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10">
             <div className="justify-between">
                 <div className="flex flex-row w-full">
@@ -47,3 +43,5 @@ export function PlayerCard( { player, index}: Props) {
     </Link>
     );
 }
+
+export const PlayerCard = React.memo(MemoizedPlayerCard);

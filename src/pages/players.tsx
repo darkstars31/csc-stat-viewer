@@ -4,7 +4,6 @@ import { Input } from "../common/components/input";
 import { Pill } from "../common/components/pill";
 import Select, { MultiValue } from "react-select";
 import { useDataContext } from "../DataContext";
-import _get from "lodash/get";
 import { MdGridView, MdOutlineViewHeadline } from "react-icons/md";
 import { useLocalStorage } from "../common/hooks/localStorage";
 import { PlayerTypes } from "../common/utils/player-utils";
@@ -14,7 +13,7 @@ import { PlayerTiersFilter } from "../common/components/filters/playerTiersFilte
 import { PlayerList } from "./players/player-list";
 
 const sortOptionsList = [
-    { label: "Name", value: "stats.name"}, 
+    { label: "Name", value: "name"}, 
     { label: "Rating", value: "stats.rating"},
     { label: "MMR", value: "mmr"},
 ];
@@ -29,16 +28,8 @@ export function Players() {
     const [ viewPlayerTypeOptions, setViewPlayerTypeOptions ] = React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>();
     const [ viewPlayerRoleOptions, setViewPlayerRoleOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
 
-    let sortedPlayerData = players.sort( (a,b) => {
-        const itemA = _get(a, orderBy.value, 0); 
-        const itemB = _get(b, orderBy.value, 0);
-        return itemA < itemB ? 1 : -1
-    } );
-
-    sortedPlayerData = orderBy?.label.includes("Name") ? sortedPlayerData.reverse() : sortedPlayerData;
-
     const viewPlayerTypeOptionsCumulative = viewPlayerTypeOptions?.flatMap( option => option.value);
-    const filteredByPlayerType = viewPlayerTypeOptions?.length ? sortedPlayerData.filter( player => viewPlayerTypeOptionsCumulative?.some( type => type === player.type )) : sortedPlayerData;
+    const filteredByPlayerType = viewPlayerTypeOptions?.length ? players.filter( player => viewPlayerTypeOptionsCumulative?.some( type => type === player.type )) : players;
     const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.tier.name)) : filteredByPlayerType;
     const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.role)) : filteredByTier;
     const filteredBySearchPlayers = filters.length > 0 ? filteredByRole.filter( player => filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ))) : filteredByRole;
@@ -73,7 +64,6 @@ export function Players() {
     <Container>
         <div className="mx-auto max-w-lg text-center">
             <h2 className="text-3xl font-bold sm:text-4xl">Players</h2>
-
             <p className="mt-4 text-gray-300">
                 Find players, view stats, see how you stack up against your peers.
             </p>
@@ -138,6 +128,7 @@ export function Players() {
         </div>
         <div className="pb-8">
             <PlayerList 
+                orderBy={orderBy}
                 displayStyle={displayStyle} 
                 players={filteredBySearchPlayers} 
             />           

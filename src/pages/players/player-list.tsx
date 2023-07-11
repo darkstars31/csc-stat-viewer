@@ -2,23 +2,38 @@ import * as React from "react";
 import { PlayerCard } from "./player-cards";
 import { Player } from "../../models";
 import { PlayerTable } from "./player-table";
+import _get from "lodash/get";
 
 type Props = {
+    orderBy: {label: string;value: string;};
     displayStyle: string;
     players: Player[];
 }
 
-export function MemoizedPlayerList( { displayStyle, players }: Props){
-    const playerCards = players?.map( (player: Player, index: number) => <PlayerCard key={`${player.tier.name}-${player.name}`} player={player} index={index} />);
+export function MemoizedPlayerList( { orderBy, displayStyle, players }: Props){
 
-    return (
-        displayStyle === "cards" ? 
+    let sortedPlayerData = players.sort( (a,b) => {
+        const itemA = _get(a, orderBy.value, 0); 
+        const itemB = _get(b, orderBy.value, 0);
+        return itemA < itemB ? 1 : -1;
+    } );
+
+    sortedPlayerData = orderBy?.label.includes("Name") ? sortedPlayerData.reverse() : sortedPlayerData;
+
+    if( displayStyle === "cards" ){
+        const playerCards = [];
+        for( const player of sortedPlayerData ){
+            playerCards.push( <PlayerCard key={`${player.name}`} player={player} />);
+        }
+
+        return (
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                 { playerCards }
             </div>
-            :
-            <PlayerTable players={players} />
-    );
+        );
+    } else {
+        return <PlayerTable players={sortedPlayerData} />
+    }
 }
 
 export const PlayerList = React.memo(MemoizedPlayerList);
