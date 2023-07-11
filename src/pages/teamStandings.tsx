@@ -36,7 +36,7 @@ export function TeamStandings() {
     const teamsInDivision = divisions?.reduce( (acc, division) => {
         acc[division.name] = division.teams.map( team => team.team.name ) ;
         return acc;
-    }, {} as any);
+    }, {} as Record<string, string[]>);
     
     const teamsInTiers = franchises.reduce( ( acc, franchise) => {
         franchise.teams.forEach( team => {
@@ -62,17 +62,34 @@ export function TeamStandings() {
     const teamsWithMatches = sortedTeamsInTier.map( (team, index) => { return { ...team, matches: responses[index] } } );
 
     const teamsWithMatchesCalculatedWinLoss = teamsWithMatches.map( (team, index) => {
-        const conferenceName = Object.keys(teamsInDivision)?.find( key => teamsInDivision[key].includes( team.name ) );
+        const conferenceName = Object.keys(teamsInDivision ?? {}).find( key => teamsInDivision![key].includes( team.name ) );
+        const conferenceTeams = teamsInDivision![conferenceName ?? ''];
         const teamMatches = responses[index].data as [];
-        const teamRecord = calculateTeamRecord( team, teamMatches );
+        const teamRecord = calculateTeamRecord( team, teamMatches, conferenceTeams );
 
         return { ...team, matches: responses[index], teamRecord, conferenceName };
     });
 
-    const sortedTeamRecords = sortBy(teamsWithMatchesCalculatedWinLoss, 'teamRecord.record.wins').reverse();
+    //const sortedTeamRecords = sortBy(teamsWithMatchesCalculatedWinLoss, 'teamRecord.record.wins').reverse();
     // TODO: Custom sort algorithm that accounts for tie-breakers
+    const tieBreakers: string[] = [];
+    const sortedTeamRecords = teamsWithMatchesCalculatedWinLoss.sort( (a,b) => {
+        if( a.teamRecord?.record.wins !== b.teamRecord?.record.wins && a.conferenceName === b.conferenceName ) {
+            return b.teamRecord?.record.wins - a.teamRecord?.record.wins;
+        } else if ( a.teamRecord?.record.wins === b.teamRecord?.record.wins && a.conferenceName === b.conferenceName ) {
+            if( a.teamRecord?.record.conferenceWins !== b.teamRecord?.record.conferenceWins) {
+                return b.teamRecord?.record.conferenceWins - a.teamRecord?.record.conferenceWins;
+            } else {        
+                const teamAHasDefeatedTeamB = a.teamRecord?.record.teamsDefeated?.includes( b.name );
+                tieBreakers.push( `${teamAHasDefeatedTeamB ? a.name : b.name} defeated ${!teamAHasDefeatedTeamB ? a.name : b.name} in conference ${a.conferenceName}` );
+                return teamAHasDefeatedTeamB ? -1 : 1;
+            }
+        } else {
+            return b.teamRecord?.record.wins - a.teamRecord?.record.wins;
+        }
+    });
 
-    const sortedTeamRecordsInConferences = sortedTeamRecords.reduce( (acc, team ) => {
+    const sortedTeamRecordsInConferences = sortedTeamRecords.reduce( ( acc, team ) => {
         if ( !acc[team.conferenceName]) acc[team.conferenceName] = [];
         acc[team.conferenceName].push(team);
         return acc;
@@ -88,6 +105,8 @@ export function TeamStandings() {
         { name: "Elite"},
         { name: "Premier"},
     ];
+
+    console.info( tieBreakers );
 
     return ( 
         <Container>
@@ -141,7 +160,7 @@ export function TeamStandings() {
                             } )                       
                     }
                     { selectedTier && <div className='text-center text-xs m-4 text-slate-400'>
-                        * Conference records currently do not take into account tie-breakers. <br />
+                        * Tie-Breakers partially-implemented: Conference Record, Head-to-Head <br />
                         * Playoff line is estimated and not guaranteed. <br />
                         * Bo1 Play-Ins not currently shown.
                         </div>}    

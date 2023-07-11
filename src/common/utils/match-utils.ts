@@ -13,13 +13,14 @@ export const getTeamRecord = ( team?: Team, matches?: Match[] ) => matches?.redu
     return acc;
 }, { wins: 0, losses: 0 });
 
-export const calculateTeamRecord = (team?: Team, matches?: Match[]) => matches?.reduce((acc, match) => {
+export const calculateTeamRecord = (team?: Team, matches?: Match[], conferncesTeams?: string[]) => matches?.reduce((acc, match) => {
     if( match.stats.length > 0 ) {
         const isHomeTeam = match.home.name === team?.name;
         const map = match.stats[0].mapName;
+        const isSameConference = conferncesTeams?.includes(match.home.name) && conferncesTeams?.includes(match.away.name);
 
         if( !acc.record ) { 
-            acc.record = { wins: 0, losses: 0, roundsWon: 0, roundsLost: 0 };
+            acc.record = { wins: 0, losses: 0, conferenceWins: 0, conferenceLosses: 0, roundsWon: 0, roundsLost: 0, teamsDefeated: [] };
             acc.maps = [];
         }
 
@@ -30,11 +31,18 @@ export const calculateTeamRecord = (team?: Team, matches?: Match[]) => matches?.
         const didCurrentTeamWin = (isHomeTeam && match.stats[0].homeScore > match.stats[0].awayScore ) || ( !isHomeTeam && match.stats[0].homeScore < match.stats[0].awayScore );
 
         if( didCurrentTeamWin ) {
+            acc.record.teamsDefeated.push( isHomeTeam ? match.away.name : match.home.name);
             acc.record.wins += 1;
             acc.maps[map]["wins"] += 1;
         } else {
             acc.record.losses += 1;
             acc.maps[map]["loss"] += +1;
+        }
+
+        if( isSameConference && didCurrentTeamWin ) {
+            acc.record.conferenceWins += 1;
+        } else {
+            acc.record.conferenceLosses += 1;
         }
 
         if( isHomeTeam ){
