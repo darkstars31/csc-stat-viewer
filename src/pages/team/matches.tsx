@@ -44,17 +44,22 @@ export function MatchCards( { match, team }: Props ) {
             </div>
             { match.stats.length > 0 &&
             <div className="relative pt-2">
+                 {  match.stats.filter( matchStats => matchStats.homeScore + matchStats.awayScore > 0).map( matchStats =>
+                 <>
                 <div className="absolute -z-10 w-full">
-                    <img className="object-cover object-center w-16 h-16" src={mapImages[match.stats[0].mapName as keyof typeof mapImages ]} alt={match.stats[0].mapName}/>
+                    <img className="object-cover object-center w-16 h-16" src={mapImages[matchStats.mapName as keyof typeof mapImages ]} alt={matchStats.mapName}/>
                 </div>
-                <div className="text-center z-10">{match.stats[0].mapName.split('_')[1]}</div>
-                <div className="grid grid-cols-1 text-3xl text-center z-10">
-                    <div>
-                        <span className={`${match.stats[0].homeScore > match.stats[0].awayScore} ? "text-green-400 : "text-red-400"`}>{match.stats[0].homeScore}</span>
-                        : 
-                        <span className={`${match.stats[0].homeScore > match.stats[0].awayScore} ? "text-green-400 : "text-red-400"`}>{match.stats[0].awayScore}</span>
-                    </div>
-                </div>
+                        <div className="text-center z-10">{matchStats.mapName.split('_')[1]}</div>
+                        <div className="grid grid-cols-1 text-3xl text-center z-10">
+                            <div>                     
+                                <span className={`${matchStats.homeScore > matchStats.awayScore} ? "text-green-400 : "text-red-400"`}>{matchStats.homeScore}</span>
+                                : 
+                                <span className={`${matchStats.homeScore > matchStats.awayScore} ? "text-green-400 : "text-red-400"`}>{matchStats.awayScore}</span>                               
+                            </div>
+                        </div>
+                    </>
+                    )
+                }
                 { match.demoUrl && <div className="float-right"><a href={match.demoUrl} title="Download Demo" rel="noreferrer" target="_blank"><GrDocumentVideo className="text-white" /></a></div> }
             </div>
             }

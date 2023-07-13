@@ -39,7 +39,9 @@ export function Team(){
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph(currentTeam?.id);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const regularSeasonMatches = matches.filter( match => match.stats.length === 1 );
+	const playoffMatches = matches.filter( match => match.stats.length > 1 );
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars 
 	const matchesData = useFetchMultipleMatchInfoGraph(matches.filter( match => match.stats.length > 0).map( match => match.id ));
 
 	const teamRecord = calculateTeamRecord( currentTeam, matches );
@@ -78,13 +80,23 @@ export function Team(){
 								{ currentTeam && <TeamFooterTabulation team={currentTeam} /> }
 								</div>
 								{ isLoadingMatches && <Loading />}
-								{ matches.length > 0 && 
-									<div className="pt-8">
-										<h2 className="text-2xl font-bold text-white grow text-center">Matches ({teamRecord.record.wins} - {teamRecord.record.losses})</h2>
-										<MapRecord matches={matches} team={currentTeam} />
+								
+								{ playoffMatches.length > 0 && 
+									<div className="pt-8 relative">
+										<div className="-rotate-90 absolute bottom-[5em] text-2xl pb-16 bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent"><b>PLAY-OFFS</b></div>
+										<MapRecord matches={playoffMatches} team={currentTeam} />											
+										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ml-16">
+											{ playoffMatches.map( match => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
+										</div>											
+									</div>
+								}
+								{ regularSeasonMatches.length > 0 && 
+									<div className="pt-8">								
+										<h2 className="text-2xl font-bold text-white grow text-center">Regular Season ({teamRecord.record.wins} - {teamRecord.record.losses})</h2>
+										<MapRecord matches={regularSeasonMatches} team={currentTeam} />											
 										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
-											{ matches.map( match => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
-										</div>
+											{ regularSeasonMatches.map( match => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
+										</div>											
 									</div>
 								}								
 							</div>	

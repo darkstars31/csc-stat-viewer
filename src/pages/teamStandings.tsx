@@ -22,8 +22,19 @@ function TeamRecordRow ({ team, index }: { team: any, index: number }) {
                     {team.name} ({team.franchise.prefix})
                 </Link>
             </div>
-            <div><b><span className='text-green-400'>{team.teamRecord.record.wins}</span> : <span className='text-red-400'>{team.teamRecord.record.losses}</span></b> <span className='text-gray-400 text-xs pl-2'>({(team.teamRecord.record.wins / (team.teamRecord.record.wins + team.teamRecord.record.losses)*100).toFixed(2)}%)</span></div>
+            <div>
+                <b>
+                    <span className='text-green-400'>{team.teamRecord.record.wins}</span> : <span className='text-red-400'>{team.teamRecord.record.losses}</span>
+                </b> 
+                <span className='text-gray-400 text-xs pl-2'>
+                    ({(team.teamRecord.record.wins / (team.teamRecord.record.wins + team.teamRecord.record.losses)*100).toFixed(2)}%)
+                </span>
+                <div className='text-gray-400 text-xs pl-2'>
+                    (Conf. {team.teamRecord.record.conferenceWins}:{team.teamRecord.record.conferenceLosses})
+                </div>
+            </div>
             <div><span className='text-green-400'>{team.teamRecord.record.roundsWon}</span> : <span className='text-red-400'>{team.teamRecord.record.roundsLost}</span> <span className='text-gray-400 text-xs'>(diff {team.teamRecord.record.roundsWon - team.teamRecord.record.roundsLost > 0 ? '+': ''}{team.teamRecord.record.roundsWon - team.teamRecord.record.roundsLost}</span> <span className='text-gray-400 text-xs'>{(team.teamRecord.record.roundsWon / (team.teamRecord.record.roundsWon + team.teamRecord.record.roundsLost)*100).toFixed(1)}%)</span></div>
+            {/* <div><span className='text-green-400'>{team.teamRecord.record.conferenceWins}</span> : <span className='text-red-400'>{team.teamRecord.record.conferenceLosses}</span></div> */}
         </div>
     );
 }
@@ -70,23 +81,32 @@ export function TeamStandings() {
         return { ...team, matches: responses[index], teamRecord, conferenceName };
     });
 
+    //console.info(teamsWithMatchesCalculatedWinLoss);
+
     //const sortedTeamRecords = sortBy(teamsWithMatchesCalculatedWinLoss, 'teamRecord.record.wins').reverse();
     // TODO: Custom sort algorithm that accounts for tie-breakers
     const tieBreakers: string[] = [];
-    const sortedTeamRecords = teamsWithMatchesCalculatedWinLoss.sort( (a,b) => {
-        if( a.teamRecord?.record.wins !== b.teamRecord?.record.wins && a.conferenceName === b.conferenceName ) {
-            return b.teamRecord?.record.wins - a.teamRecord?.record.wins;
-        } else if ( a.teamRecord?.record.wins === b.teamRecord?.record.wins && a.conferenceName === b.conferenceName ) {
-            if( a.teamRecord?.record.conferenceWins !== b.teamRecord?.record.conferenceWins) {
-                return b.teamRecord?.record.conferenceWins - a.teamRecord?.record.conferenceWins;
-            } else {        
+    const sortedTeamRecords = teamsWithMatchesCalculatedWinLoss.sort( ( a, b ) => {
+        const isSameConference = a.conferenceName === b.conferenceName;
+        const isRecordSame = a.teamRecord?.record.wins === b.teamRecord?.record.wins;
+        const isConferenceRecordSame = a.teamRecord?.record.conferenceWins === b.teamRecord?.record.conferenceWins;
+
+        // if( a.name.includes('Neon') && b.name.includes('Holy') || a.name.includes('Holy') && b.name.includes('Neon')) {
+        //     console.info( a, b,'isRecordSame', isRecordSame, 'isConferenceRecordSame', isConferenceRecordSame);
+        // }
+
+        if( isSameConference && isRecordSame ) {
+            if( isConferenceRecordSame ) {
                 const teamAHasDefeatedTeamB = a.teamRecord?.record.teamsDefeated?.includes( b.name );
-                tieBreakers.push( `${teamAHasDefeatedTeamB ? a.name : b.name} defeated ${!teamAHasDefeatedTeamB ? a.name : b.name} in conference ${a.conferenceName}` );
+                //console.info( a.name, teamAHasDefeatedTeamB ? 'beats' : 'lost', b.name ); 
                 return teamAHasDefeatedTeamB ? -1 : 1;
+            } else {
+                return b.teamRecord?.record.conferenceWins - a.teamRecord?.record.conferenceWins;
             }
-        } else {
-            return b.teamRecord?.record.wins - a.teamRecord?.record.wins;
         }
+        
+        return b.teamRecord?.record.wins - a.teamRecord?.record.wins;
+        
     });
 
     const sortedTeamRecordsInConferences = sortedTeamRecords.reduce( ( acc, team ) => {
@@ -105,8 +125,6 @@ export function TeamStandings() {
         { name: "Elite"},
         { name: "Premier"},
     ];
-
-    console.info( tieBreakers );
 
     return ( 
         <Container>
@@ -142,7 +160,7 @@ export function TeamStandings() {
                                     <div className='grid grid-cols-3 gap-2 mx-4 text-sm'>
                                         <div></div>
                                         <div>W : L</div>
-                                        <div>Rounds</div>
+                                        <div>Rounds</div>                                       
                                     </div>
                                     <div>
                                         {(value as Team[]).map( (team, index) => 
@@ -158,9 +176,19 @@ export function TeamStandings() {
                                 </Card>
                             )
                             } )                       
-                    }
+                    }                   
+                    <div className='m-4'>
+                        <li>
+                            {tieBreakers.length > 0 &&
+                                tieBreakers.map( (tieBreaker, index) =>
+                                    <ul>{tieBreaker}</ul>
+                               )
+                            }
+                        </li>
+                    </div>                   
                     { selectedTier && <div className='text-center text-xs m-4 text-slate-400'>
                         * Tie-Breakers partially-implemented: Conference Record, Head-to-Head <br />
+                        * Unofficial Standings, could contain inaccuracies. <br />
                         * Playoff line is estimated and not guaranteed. <br />
                         * Bo1 Play-Ins not currently shown.
                         </div>}    

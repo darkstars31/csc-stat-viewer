@@ -15,46 +15,49 @@ export const getTeamRecord = ( team?: Team, matches?: Match[] ) => matches?.redu
 
 export const calculateTeamRecord = (team?: Team, matches?: Match[], conferncesTeams?: string[]) => matches?.reduce((acc, match) => {
     if( match.stats.length > 0 ) {
-        const isHomeTeam = match.home.name === team?.name;
-        const map = match.stats[0].mapName;
-        const isSameConference = conferncesTeams?.includes(match.home.name) && conferncesTeams?.includes(match.away.name);
+        for( const matchStat of match.stats ) {
+            if( matchStat.awayScore + matchStat.homeScore === 0 ) continue;
+            const isHomeTeam = match.home.name === team?.name;
+            const map = matchStat.mapName;
+            const isSameConference = conferncesTeams?.includes(match.home.name) && conferncesTeams?.includes(match.away.name);
 
-        if( !acc.record ) { 
-            acc.record = { wins: 0, losses: 0, conferenceWins: 0, conferenceLosses: 0, roundsWon: 0, roundsLost: 0, teamsDefeated: [] };
-            acc.maps = [];
-        }
+            if( !acc.record ) { 
+                acc.record = { wins: 0, losses: 0, conferenceWins: 0, conferenceLosses: 0, roundsWon: 0, roundsLost: 0, teamsDefeated: [] };
+                acc.maps = [];
+            }
 
-        if( !acc.maps[map] ) {
-            acc.maps[map] = { name: map, wins: 0, loss: 0, roundsWon: 0, roundsLost: 0 };
-        }
+            if( !acc.maps[map] ) {
+                acc.maps[map] = { name: map, wins: 0, loss: 0, roundsWon: 0, roundsLost: 0 };
+            }
 
-        const didCurrentTeamWin = (isHomeTeam && match.stats[0].homeScore > match.stats[0].awayScore ) || ( !isHomeTeam && match.stats[0].homeScore < match.stats[0].awayScore );
+            const didCurrentTeamWin = (isHomeTeam && matchStat.homeScore > matchStat.awayScore ) || ( !isHomeTeam && matchStat.homeScore < matchStat.awayScore );
 
-        if( didCurrentTeamWin ) {
-            acc.record.teamsDefeated.push( isHomeTeam ? match.away.name : match.home.name);
-            acc.record.wins += 1;
-            acc.maps[map]["wins"] += 1;
-        } else {
-            acc.record.losses += 1;
-            acc.maps[map]["loss"] += +1;
-        }
+            if( didCurrentTeamWin ) {
+                acc.record.teamsDefeated.push( isHomeTeam ? match.away.name : match.home.name);
+                acc.record.wins += 1;
+                acc.maps[map]["wins"] += 1;
+            } else {
+                acc.record.losses += 1;
+                acc.maps[map]["loss"] += +1;
+            }
 
-        if( isSameConference && didCurrentTeamWin ) {
-            acc.record.conferenceWins += 1;
-        } else {
-            acc.record.conferenceLosses += 1;
-        }
+            if( isSameConference && didCurrentTeamWin ) {
+                acc.record.conferenceWins += 1;
+            } else {
+                acc.record.conferenceLosses += 1;
+            }
 
-        if( isHomeTeam ){
-            acc.record.roundsWon += match.stats[0].homeScore;
-            acc.record.roundsLost += match.stats[0].awayScore;
-            acc.maps[map]["roundsWon"] += match.stats[0].homeScore
-            acc.maps[map]["roundsLost"] += match.stats[0].awayScore
-        } else {
-            acc.record.roundsWon += match.stats[0].awayScore;
-            acc.record.roundsLost += match.stats[0].homeScore;
-            acc.maps[map]["roundsWon"] += match.stats[0].awayScore;
-            acc.maps[map]["roundsLost"] += match.stats[0].homeScore;
+            if( isHomeTeam ){
+                acc.record.roundsWon += matchStat.homeScore;
+                acc.record.roundsLost += matchStat.awayScore;
+                acc.maps[map]["roundsWon"] += matchStat.homeScore
+                acc.maps[map]["roundsLost"] += matchStat.awayScore
+            } else {
+                acc.record.roundsWon += matchStat.awayScore;
+                acc.record.roundsLost += matchStat.homeScore;
+                acc.maps[map]["roundsWon"] += matchStat.awayScore;
+                acc.maps[map]["roundsLost"] += matchStat.homeScore;
+            }
         }
     }
     return acc;
