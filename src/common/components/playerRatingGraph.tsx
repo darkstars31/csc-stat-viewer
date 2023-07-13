@@ -59,7 +59,9 @@ export function PlayerRatingTrendGraph({ player }: Props) {
     },
     xAxis: {
       type: "category",
-      data: sortedCscPlayerProfile?.map((match) => match.match.matchDay),
+      data: sortedCscPlayerProfile?.map((match) => 
+         match.match.matchDay ? match.match.matchDay : match.match.matchDay
+      ),
       boundaryGap: false,
       minorSplitLine: {
         show: false,

@@ -1,6 +1,7 @@
 import * as React from "react";
 import Select, { MultiValue } from "react-select";
 import { PlayerTypes } from "../../utils/player-utils";
+import { useDataContext } from "../../../DataContext";
 
 type Props = {
     //onChange: React.Dispatch<React.SetStateAction<MultiValue<{label: string;value: PlayerTypes[];}>>>;
@@ -8,12 +9,14 @@ type Props = {
 }
 
 export function PlayerTypeFilter( { onChange }: Props) {
+    const { players } = useDataContext();
+    const isDraftEligibleDisabled = !players.some( player => player.type === PlayerTypes.DRAFT_ELIGIBLE);
 
     const selectClassNames = {
         placeholder: () => "text-gray-400 bg-inherit",
         container: () => "m-1 rounded bg-inherit",
         control: () => "p-2 rounded-l bg-slate-700",
-        option: () => "p-2 hover:bg-slate-900",
+        option: (state : { isDisabled: boolean }) => `${state.isDisabled ? 'text-gray-500' : ''} p-2 hover:bg-slate-900`,
         input: () => "text-slate-200",
         menu: () => "bg-slate-900",
         menuList: () => "bg-slate-700",
@@ -26,7 +29,7 @@ export function PlayerTypeFilter( { onChange }: Props) {
     const viewPlayerTypeList = [
         { label: `Signed`, value: [PlayerTypes.SIGNED,PlayerTypes.INACTIVE_RESERVE,PlayerTypes.SIGNED_PROMOTED,PlayerTypes.SIGNED_SUBBED] },
         { label: `Free Agents`, value: [PlayerTypes.FREE_AGENT,PlayerTypes.TEMPSIGNED]},
-        { label: `Draft Eligible`, value: [PlayerTypes.DRAFT_ELIGIBLE]},
+        { label: `Draft Eligible`, value: [PlayerTypes.DRAFT_ELIGIBLE], isDisabled: isDraftEligibleDisabled },
         { label: `Perma FA`, value: [PlayerTypes.PERMANENT_FREE_AGENT,PlayerTypes.PERMFA_TEMP_SIGNED]},
         { label: `Inactive Reserve`, value: [PlayerTypes.INACTIVE_RESERVE]},
     ];

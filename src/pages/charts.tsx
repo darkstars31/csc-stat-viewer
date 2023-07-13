@@ -7,14 +7,29 @@ import { StatBarByTiers } from './charts/statBarByTiers';
 import { Loading } from '../common/components/loading';
 import { RolePieChart } from './charts/rolePie';
 import { RoleByTierBarChart } from './charts/rolesByTier';
-import Select, { SingleValue } from "react-select";
+import Select, { MultiValue, SingleValue } from "react-select";
+import { PlayerTypes } from '../common/utils/player-utils';
+import { PlayerTypeFilter } from '../common/components/filters/playerTypeFilter';
+import { PlayerTiersFilter } from '../common/components/filters/playerTiersFilter';
+import { PlayerRolesFilter } from '../common/components/filters/playerRoleFilter';
 
 export function Charts() {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const { players } = useDataContext();
     const playersWithStats = players.filter( p => p.stats );
     const [ currentTab, setCurrentTab ] = React.useState<number>(0);
+
     const [ filters, setFilters ] = React.useState<string[]>([]);
+    const [ viewTierOptions, setViewTierOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
+    const [ viewPlayerTypeOptions, setViewPlayerTypeOptions ] = React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>();
+    const [ viewPlayerRoleOptions, setViewPlayerRoleOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
+
+    const viewPlayerTypeOptionsCumulative = viewPlayerTypeOptions?.flatMap( option => option.value);
+    const filteredByPlayerType = viewPlayerTypeOptions?.length ? playersWithStats.filter( player => viewPlayerTypeOptionsCumulative?.some( type => type === player.type )) : playersWithStats;
+    const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.tier.name)) : filteredByPlayerType;
+    const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.role)) : filteredByTier;
+    const filteredBySearchPlayers = filters.length > 0 ? filteredByRole.filter( player => filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ))) : filteredByRole;
+
 
     const statPropertyOptions = [
         { label: "HeadShot %", value: "hs"},
@@ -56,9 +71,9 @@ export function Charts() {
         setFilters( newFilters.filter(Boolean) );
     }
 
-    const filteredPlayers = filters.length > 0 ? playersWithStats.filter( player => {
-        return filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ) );
-    } ) : playersWithStats;
+    // const filteredPlayers = filters.length > 0 ? playersWithStats.filter( player => {
+    //     return filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ) );
+    // } ) : playersWithStats;
 
     if( playersWithStats.length === 0) {
         return <Container><Loading /></Container>;
@@ -104,6 +119,17 @@ export function Charts() {
                     { filters.map( filter => <Pill key={filter} label={filter} onClick={() => removeFilter(filter)}/>) }
                 </div>
             </div>
+            <div className={`flex flex-col mt-48 md:flex-row md:mt-0 h-12 justify-end`}>
+            <div className="basis-1/3">
+                <PlayerTypeFilter onChange={setViewPlayerTypeOptions as typeof React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>} />
+            </div>
+            <div className="basis-1/3">
+                <PlayerTiersFilter onChange={setViewTierOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
+            </div>
+            <div className="basis-1/5">
+                <PlayerRolesFilter onChange={setViewPlayerRoleOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
+            </div>        
+        </div>
 
             <ul className="mb-5 flex list-none flex-row flex-wrap border-b-0 pl-0" role="tablist" data-te-nav-ref>
                 { tabs.map( (tab, index) => (
@@ -127,7 +153,7 @@ export function Charts() {
                     role="tabpanel"
                     aria-labelledby="tabs-home-tab"
                     data-te-tab-active>
-                    <CartesianCompare playerData={filteredPlayers} />
+                    <CartesianCompare playerData={filteredBySearchPlayers} />
                 </div>
                 }
                 { currentTab === 1 && <div
@@ -144,7 +170,7 @@ export function Charts() {
                         options={statPropertyOptions}
                         onChange={setStatPropertySelected}
                     />  
-                    <StatBarByTiers statProperty={statPropertySelected!.value} playerData={playersWithStats} />
+                    <StatBarByTiers statProperty={statPropertySelected!.value} playerData={filteredBySearchPlayers} />
                 </div>
                 }
                 { currentTab === 2 && <div
@@ -152,7 +178,7 @@ export function Charts() {
                     id="tabs-messages"
                     role="tabpanel"
                     aria-labelledby="tabs-profile-tab">
-                    <RolePieChart playerData={playersWithStats} />
+                    <RolePieChart playerData={filteredBySearchPlayers} />
                 </div>
                 }
                 { currentTab === 3 && <div
@@ -160,7 +186,7 @@ export function Charts() {
                     id="tabs-contact"
                     role="tabpanel"
                     aria-labelledby="tabs-contact-tab">
-                    <RoleByTierBarChart playerData={playersWithStats} />
+                    <RoleByTierBarChart playerData={filteredBySearchPlayers} />
                 </div>
                 }
             </div>
