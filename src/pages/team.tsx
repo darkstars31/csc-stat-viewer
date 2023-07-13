@@ -83,9 +83,7 @@ export function Team(){
 								
 								{ playoffMatches.length > 0 && 
 									<div className="pt-8 relative">
-										<div className="-rotate-90 absolute bottom-[5em] text-2xl pb-16 bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent"><b>PLAY-OFFS</b></div>
-										<MapRecord matches={playoffMatches} team={currentTeam} />											
-										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ml-16">
+										<div className="-rotate-90 absolute bottom-[5em] text-2xl pb-16 bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent"><b>PLAY-OFFS</b></div>										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ml-16">
 											{ playoffMatches.map( match => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
 										</div>											
 									</div>

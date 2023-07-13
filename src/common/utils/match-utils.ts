@@ -15,6 +15,7 @@ export const getTeamRecord = ( team?: Team, matches?: Match[] ) => matches?.redu
 
 export const calculateTeamRecord = (team?: Team, matches?: Match[], conferncesTeams?: string[]) => matches?.reduce((acc, match) => {
     if( match.stats.length > 0 ) {
+        const isPlayoffMatch = match.stats.length > 1;
         for( const matchStat of match.stats ) {
             if( matchStat.awayScore + matchStat.homeScore === 0 ) continue;
             const isHomeTeam = match.home.name === team?.name;
@@ -22,7 +23,7 @@ export const calculateTeamRecord = (team?: Team, matches?: Match[], conferncesTe
             const isSameConference = conferncesTeams?.includes(match.home.name) && conferncesTeams?.includes(match.away.name);
 
             if( !acc.record ) { 
-                acc.record = { wins: 0, losses: 0, conferenceWins: 0, conferenceLosses: 0, roundsWon: 0, roundsLost: 0, teamsDefeated: [] };
+                acc.record = { wins: 0, losses: 0, conferenceWins: 0, conferenceLosses: 0, roundsWon: 0, roundsLost: 0, teamsDefeated: [], playoffs: { wins: 0, losses: 0} };
                 acc.maps = [];
             }
 
@@ -32,32 +33,40 @@ export const calculateTeamRecord = (team?: Team, matches?: Match[], conferncesTe
 
             const didCurrentTeamWin = (isHomeTeam && matchStat.homeScore > matchStat.awayScore ) || ( !isHomeTeam && matchStat.homeScore < matchStat.awayScore );
 
-            if( didCurrentTeamWin ) {
-                acc.record.teamsDefeated.push( isHomeTeam ? match.away.name : match.home.name);
-                acc.record.wins += 1;
-                acc.maps[map]["wins"] += 1;
+            if( !isPlayoffMatch ) {
+                if( didCurrentTeamWin ) {
+                    acc.record.teamsDefeated.push( isHomeTeam ? match.away.name : match.home.name);
+                    acc.record.wins += 1;
+                    acc.maps[map]["wins"] += 1;
+                } else {
+                    acc.record.losses += 1;
+                    acc.maps[map]["loss"] += +1;
+                }
+    
+                if( isSameConference && didCurrentTeamWin ) {
+                    acc.record.conferenceWins += 1;
+                } else {
+                    acc.record.conferenceLosses += 1;
+                }
+    
+                if( isHomeTeam ){
+                    acc.record.roundsWon += matchStat.homeScore;
+                    acc.record.roundsLost += matchStat.awayScore;
+                    acc.maps[map]["roundsWon"] += matchStat.homeScore
+                    acc.maps[map]["roundsLost"] += matchStat.awayScore
+                } else {
+                    acc.record.roundsWon += matchStat.awayScore;
+                    acc.record.roundsLost += matchStat.homeScore;
+                    acc.maps[map]["roundsWon"] += matchStat.awayScore;
+                    acc.maps[map]["roundsLost"] += matchStat.homeScore;
+                }
             } else {
-                acc.record.losses += 1;
-                acc.maps[map]["loss"] += +1;
-            }
-
-            if( isSameConference && didCurrentTeamWin ) {
-                acc.record.conferenceWins += 1;
-            } else {
-                acc.record.conferenceLosses += 1;
-            }
-
-            if( isHomeTeam ){
-                acc.record.roundsWon += matchStat.homeScore;
-                acc.record.roundsLost += matchStat.awayScore;
-                acc.maps[map]["roundsWon"] += matchStat.homeScore
-                acc.maps[map]["roundsLost"] += matchStat.awayScore
-            } else {
-                acc.record.roundsWon += matchStat.awayScore;
-                acc.record.roundsLost += matchStat.homeScore;
-                acc.maps[map]["roundsWon"] += matchStat.awayScore;
-                acc.maps[map]["roundsLost"] += matchStat.homeScore;
-            }
+                if( didCurrentTeamWin ){
+                    acc.record.playoffs.wins += 1;
+                } else {
+                    acc.record.playoffs.losses += 1;
+                }
+            }  
         }
     }
     return acc;

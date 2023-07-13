@@ -42,6 +42,7 @@ function TeamRecordRow ({ team, index }: { team: any, index: number }) {
 export function TeamStandings() {
     const { franchises } = useDataContext();
     const [ selectedTier, setSelectedTier ] = React.useState('');
+    const [ showConferences, setShowConferences ] = React.useState(true);
     const { data: season = [] } = useCscSeasonDivisionsByTier(11);
     const divisions = season.find(s => s.tier.name === selectedTier)?.divisions;
     const teamsInDivision = divisions?.reduce( (acc, division) => {
@@ -81,12 +82,11 @@ export function TeamStandings() {
         return { ...team, matches: responses[index], teamRecord, conferenceName };
     });
 
-    //console.info(teamsWithMatchesCalculatedWinLoss);
-
-    //const sortedTeamRecords = sortBy(teamsWithMatchesCalculatedWinLoss, 'teamRecord.record.wins').reverse();
     // TODO: Custom sort algorithm that accounts for tie-breakers
     const tieBreakers: string[] = [];
-    const sortedTeamRecords = teamsWithMatchesCalculatedWinLoss.sort( ( a, b ) => {
+    const sortedTeamRecordsByTier = sortBy(teamsWithMatchesCalculatedWinLoss, "teamRecord.record.wins");
+
+    const sortedTeamRecords = sortedTeamRecordsByTier.sort( ( a, b ) => {
         const isSameConference = a.conferenceName === b.conferenceName;
         const isRecordSame = a.teamRecord?.record.wins === b.teamRecord?.record.wins;
         const isConferenceRecordSame = a.teamRecord?.record.conferenceWins === b.teamRecord?.record.conferenceWins;
@@ -109,28 +109,46 @@ export function TeamStandings() {
         
     });
 
-    const sortedTeamRecordsInConferences = sortedTeamRecords.reduce( ( acc, team ) => {
+    const sortedTeamRecordsInConferences = showConferences ? sortedTeamRecords.reduce( ( acc, team ) => {
         if ( !acc[team.conferenceName]) acc[team.conferenceName] = [];
         acc[team.conferenceName].push(team);
         return acc;
-    }, {} as any);
+        
+    }, {} as any) 
+    : 
+    // eslint-disable-next-line no-useless-computed-key
+    { ['']: sortedTeamRecords };
 
-    const tierButtonClass = "rounded-md flex-grow px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-blue-400 focus:bg-blue-400 focus:outline-none focus:ring-0 active:bg-blue-300";
+    const tierButtonClass = "rounded-md flex-grow px-6 pb-2 pt-2.5 text-sm font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-blue-400 focus:bg-blue-400 focus:outline-none focus:ring-0 active:bg-blue-300";
 
     const tiers = [
-        { name: "Recruit"},
-        { name: "Prospect"},
-        { name: "Contender"},
-        { name: "Challenger"},
-        { name: "Elite"},
-        { name: "Premier"},
+        { name: "Recruit", color: 'red'},
+        { name: "Prospect", color: 'orange'},
+        { name: "Contender", color: 'yellow'},
+        { name: "Challenger", color: 'green'},
+        { name: "Elite", color: 'blue'},
+        { name: "Premier", color: 'purple'},
     ];
 
     return ( 
         <Container>
             <div>
                 <div>
-                <h1 className='text-2xl text-center'>Team Standings</h1>    
+                <h1 className='text-2xl text-center my-4'>Team Standings</h1>    
+                <div className="mb-[0.125rem] block min-h-[1.5rem] pl-[1.5rem]">
+                    <input
+                        className="relative float-left -ml-[1.5rem] mr-[6px] mt-[0.15rem] h-[1.125rem] w-[1.125rem] appearance-none rounded-[0.25rem] border-[0.125rem] border-solid border-neutral-300 outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                        type="checkbox"
+                        value=""
+                        onChange={ () => setShowConferences(!showConferences) }
+                        id="checkboxChecked"
+                        checked={ showConferences } />
+                    <label
+                        className="inline-block pl-[0.15rem] hover:cursor-pointer"
+                        htmlFor="checkboxChecked">
+                        Show Conferences
+                    </label>
+                    </div>
                     <div
                         className="justify-center flex flex-wrap rounded-md shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out bg-blue-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-blue-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-blue-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                         role="group">
@@ -139,7 +157,7 @@ export function TeamStandings() {
                                 <button key={tier.name} 
                                     type="button" 
                                     onClick={() => setSelectedTier(tier.name)} 
-                                    className={`${selectedTier === tier.name ? 'bg-blue-500' : 'bg-blue-700'} ${tierButtonClass}`}
+                                    className={`${selectedTier === tier.name ? 'bg-blue-500' : 'bg-blue-700'} text-${tier.color}-400 ${tierButtonClass}`}
                                 >
                                     {tier.name}
                                 </button>                     
@@ -150,13 +168,14 @@ export function TeamStandings() {
                 <div className='pt-2'>
                     { responses.some( response => response.isLoading ) ? 
                         <Loading /> 
-                        : 
+                        :
                         Object.entries(sortedTeamRecordsInConferences).map( ([key, value], index) => {
                             return (
                                 <Card key={key}>
-                                    <div className='text-l'>
+                                    { key && <div className='text-l'>
                                         <i>{key} Conference</i>
                                     </div>
+                                    }
                                     <div className='grid grid-cols-3 gap-2 mx-4 text-sm'>
                                         <div></div>
                                         <div>W : L</div>
@@ -166,26 +185,26 @@ export function TeamStandings() {
                                         {(value as Team[]).map( (team, index) => 
                                             <>
                                                 <TeamRecordRow key={`${index}-${team.name}`} team={team} index={index} />
-                                                {
+                                                { key &&
                                                     Math.ceil(( value as []).length / 2 ) === index+1 && 
-                                                       <span className='text-gray-600 text-xs'><i>Playoff Line</i><div className='-mt-[.8em] ml-20 border-dotted border-b border-gray-500' /></span>
+                                                    <span className='text-gray-600 text-xs'><i>Playoff Line</i><div className='-mt-[.8em] ml-20 border-dotted border-b border-gray-500' /></span>
                                                 }
                                             </>
                                         )}
                                     </div>                               
                                 </Card>
                             )
-                            } )                       
+                            }
+                        )                       
                     }                   
-                    <div className='m-4'>
+                    { tieBreakers.length > 0 && <div className='m-4'>
                         <li>
                             {tieBreakers.length > 0 &&
                                 tieBreakers.map( (tieBreaker, index) =>
-                                    <ul>{tieBreaker}</ul>
-                               )
+                                    <ul>{tieBreaker}</ul> )
                             }
                         </li>
-                    </div>                   
+                    </div> }           
                     { selectedTier && <div className='text-center text-xs m-4 text-slate-400'>
                         * Tie-Breakers partially-implemented: Conference Record, Head-to-Head <br />
                         * Unofficial Standings, could contain inaccuracies. <br />
