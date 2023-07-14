@@ -5,18 +5,31 @@ import { Pill } from "../common/components/pill";
 import Select, { MultiValue } from "react-select";
 import { useDataContext } from "../DataContext";
 import { MdGridView, MdOutlineViewHeadline } from "react-icons/md";
+import { TbDatabaseExport } from "react-icons/tb";
 import { useLocalStorage } from "../common/hooks/localStorage";
 import { PlayerTypes } from "../common/utils/player-utils";
 import { PlayerTypeFilter } from "../common/components/filters/playerTypeFilter";
 import { PlayerRolesFilter } from "../common/components/filters/playerRoleFilter";
 import { PlayerTiersFilter } from "../common/components/filters/playerTiersFilter";
 import { PlayerList } from "./players/player-list";
+import { Player } from "../models";
+import Papa from "papaparse";
 
 const sortOptionsList = [
     { label: "Name", value: "name"}, 
     { label: "Rating", value: "stats.rating"},
     { label: "MMR", value: "mmr"},
 ];
+
+const exportAsCsv = ( players: Player[]) => {
+    var csv = Papa.unparse(players.filter( p => Boolean(p.stats)).map( p => p.stats ));
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.setAttribute('href', url)
+    a.setAttribute('download', 'PlayersWithStats.csv');
+    a.click()
+};
 
 export function Players() {
     const { players } = useDataContext();
@@ -123,6 +136,7 @@ export function Players() {
         </div>
         <hr className="h-px my-4 border-0 bg-gray-800" />
         <div className="m-2 justify-end flex">
+            <button title="Export Stats as CSV" className={`p-2 m-1 rounded border bg-indigo-600 border-indigo-600`} onClick={ () => exportAsCsv(filteredBySearchPlayers) }><TbDatabaseExport /></button>
             <button title="Card View" className={`p-2 m-1 rounded border ${displayStyle === "cards" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "cards" )}><MdGridView /></button>
             <button title="List View" className={`p-2 m-1 rounded border ${displayStyle === "list" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "list" )}><MdOutlineViewHeadline /></button>
         </div>
