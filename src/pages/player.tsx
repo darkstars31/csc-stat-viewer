@@ -21,6 +21,7 @@ import { Mmr } from "../common/components/mmr";
 import { ExternalPlayerLinks } from "../common/components/externalPlayerLinks";
 import { PlayerAwards } from "./player/playerAwards";
 import { Card } from "../common/components/card";
+import { useFetchFaceitPlayerData } from "../dao/faceitApiDao";
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
@@ -30,6 +31,8 @@ export function Player() {
     const nameParam = decodeURIComponent(params?.id ?? "");
     const currentPlayer = players.find( p => p.name === nameParam);
     const currentPlayerStats = currentPlayer?.stats;
+    const { data: faceitPlayer = [] } = useFetchFaceitPlayerData( currentPlayer );
+    console.info( faceitPlayer );
 
     React.useEffect(() => {
         window.scrollTo(0,0);
