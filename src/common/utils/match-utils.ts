@@ -38,15 +38,15 @@ export const calculateTeamRecord = (team?: Team, matches?: Match[], conferncesTe
                     acc.record.teamsDefeated.push( isHomeTeam ? match.away.name : match.home.name);
                     acc.record.wins += 1;
                     acc.maps[map]["wins"] += 1;
+                    if(isSameConference) {
+                        acc.record.conferenceWins += 1;
+                    }
                 } else {
                     acc.record.losses += 1;
                     acc.maps[map]["loss"] += +1;
-                }
-    
-                if( isSameConference && didCurrentTeamWin ) {
-                    acc.record.conferenceWins += 1;
-                } else {
-                    acc.record.conferenceLosses += 1;
+                    if( isSameConference ) {
+                        acc.record.conferenceLosses += 1;
+                    }
                 }
     
                 if( isHomeTeam ){

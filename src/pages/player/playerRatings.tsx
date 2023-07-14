@@ -34,7 +34,7 @@ export function PlayerRatings({ player }: Props) {
             <RatingBar
                 label="Rating"
                 message={`Recent Form: ${player.stats.form.toFixed(2)}`}
-                stat1={player.stats.form}
+                stat1={Number(player.stats.rating.toFixed(2))}
                 stat2={Number(player.stats.rating.toFixed(2))}
                 range={0.05}
                 average={tierPlayerAverages.average["rating"]}

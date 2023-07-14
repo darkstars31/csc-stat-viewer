@@ -9,7 +9,7 @@ import {
 import { AppLoadingError } from './pages/appLoadingError';
 import { Header } from './header-nav/header';
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 const env : string = process.env.NODE_ENV!;
 console.info( env );
 

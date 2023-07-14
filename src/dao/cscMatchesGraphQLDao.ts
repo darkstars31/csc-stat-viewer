@@ -133,7 +133,7 @@ export const fetchIndividualMatchInfoGraph = async ( matchId: string ) => await 
       });
 
 
-export function useFetchMatchesGraph( teamId?: string): UseQueryResult<Match[]> {
+export function useFetchMatchesGraph( teamId?: string ): UseQueryResult<Match[]> {
   return useQuery( 
       ["matches-graph", teamId], 
       () => fetchMatchesGraph( teamId ), {
