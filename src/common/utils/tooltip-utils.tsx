@@ -3,7 +3,8 @@ import * as React from "react";
 import { tiertopincategory } from "../../svgs";
 
 interface ToolTipProps {
-    message: string;
+    message: string | React.ReactElement;
+    children?: React.ReactNode;
     pos?: string;
     type: "rating" | "icon" | "explain" | "generic" | "award";
     stat1?: number;
@@ -118,7 +119,7 @@ const ExplainTooltip: React.FC<ToolTipProps> = ({ message, stat1 }) => {
     );
 }
 
-const GenericTooltip: React.FC<ToolTipProps> = ({ message }) => {
+const GenericTooltip: React.FC<ToolTipProps> = ({ message, children }) => {
     const { isHovered, onMouseEnter, onMouseLeave } = useHover();
 
     return (
@@ -131,6 +132,7 @@ const GenericTooltip: React.FC<ToolTipProps> = ({ message }) => {
                 style={{ zIndex: 1000 }}
         >
         <span className="bg-gray-500 text-sm pointer-events-none transition duration-150 ease-in-out inline-block" />
+            { children }
             <div className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
             style={{transform: 'translateX(-50%) translateY(-120%)'}}>
                 {message}
@@ -143,7 +145,7 @@ const AwardTooltip: React.FC<ToolTipProps> = ({ message, awardType, awardMapping
     const { isHovered, onMouseEnter, onMouseLeave } = useHover();
     const backgroundColor = awardType === "numberOne" ? "bg-yellow-400" : "bg-green-100";
     const textColor = awardType === "numberOne" ? "text-neutral-700" : "text-green-700";
-    const whiteSpaceClass = message.length > 25 ? "whitespace-normal min-w-[200px] max-w-full" : "whitespace-nowrap";
+    const whiteSpaceClass = typeof message === "string" && message.length > 25 ? "whitespace-normal min-w-[200px] max-w-full" : "whitespace-nowrap";
 
     return (
         <div
