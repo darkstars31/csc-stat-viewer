@@ -8,15 +8,21 @@ import { BsLifePreserver } from "react-icons/bs";
 import { Mmr } from "../../common/components/mmr";
 import { ExternalPlayerLinks } from "../../common/components/externalPlayerLinks";
 import { PlayerTypes } from "../../common/utils/player-utils";
+import { useFetchFaceitPlayerData } from "../../dao/faceitApiDao";
+import { Player } from "../../models";
+import { IoDocumentTextOutline } from "react-icons/io5";
+import { FaceitRank } from "../../common/components/faceitRank";
+import { BiStats } from "react-icons/bi";
 
-
-export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: FranchisePlayer, team: Team}) {
+export function PlayerRow( { franchisePlayer, team, extraDetails }: {franchisePlayer: FranchisePlayer, team: Team, extraDetails?: boolean} ) {
     const { players = [] } = useDataContext();
     const player = players.find( p => p.steam64Id === franchisePlayer.steam64Id || p.name === franchisePlayer.name );
     const percentageOfMmrCap = (((franchisePlayer.mmr ?? 0)/team.tier.mmrCap)*100).toFixed(1);
+    const { data: faceitPlayer } = useFetchFaceitPlayerData( extraDetails ? player : {} as Player );
+
     return (
         <div className="text-sm lg:text-m lg:m-2">
-            <div className={`grid grid-cols-${COLUMNS}`}>
+            <div className={`grid grid-cols-${COLUMNS+2}`}>
                 <Link className="hover:cursor-pointer hover:text-sky-400 transition ease-in-out hover:-translate-x-1 duration-300" 
                     key={`${team.tier.name}-${franchisePlayer.name}`} 
                     to={`/players/${team.tier.name}/${franchisePlayer.name}`}
@@ -31,8 +37,9 @@ export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: Franchis
                     </span>
                 </Link>
                 <div><Mmr player={franchisePlayer} /> <span className="text-gray-400">({percentageOfMmrCap}%)</span></div>
-                <div>{player?.stats?.rating.toFixed(2) ?? "-"}</div>
-                {/* <div>Seasons {player?.contractDuration}</div> */}
+                <div><div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player?.stats?.rating.toFixed(2) ?? "-"}</div></div>
+                { extraDetails && <div className="w-7 h-7"><FaceitRank rank={faceitPlayer?.games?.csgo?.skill_level ?? 0} /></div> }
+                <div>{player?.contractDuration}<IoDocumentTextOutline className="inline mx-1" /></div>
                 <div className="">
                     <ExternalPlayerLinks player={player!} />
                 </div>

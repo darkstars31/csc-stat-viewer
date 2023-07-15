@@ -22,6 +22,7 @@ import { ExternalPlayerLinks } from "../common/components/externalPlayerLinks";
 import { PlayerAwards } from "./player/playerAwards";
 import { Card } from "../common/components/card";
 import { useFetchFaceitPlayerData } from "../dao/faceitApiDao";
+import { FaceitRank } from "../common/components/faceitRank";
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
@@ -31,8 +32,7 @@ export function Player() {
     const nameParam = decodeURIComponent(params?.id ?? "");
     const currentPlayer = players.find( p => p.name === nameParam);
     const currentPlayerStats = currentPlayer?.stats;
-    const { data: faceitPlayer = [] } = useFetchFaceitPlayerData( currentPlayer );
-    console.info( faceitPlayer );
+    const { data: faceitPlayer } = useFetchFaceitPlayerData( currentPlayer );
 
     React.useEffect(() => {
         window.scrollTo(0,0);
@@ -76,7 +76,7 @@ export function Player() {
                         </div>
                         <div className={"text-[1.1rem] pb-5"}>
                             <i>
-                                <b>{currentPlayer?.role ? `${currentPlayer?.role} —` : ""}</b> 
+                                <b>{currentPlayer?.role ? `${currentPlayer?.role} — ` : ""}</b>
                                 { currentPlayer?.team?.franchise.name ? 
                                     <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
                                     : <span>{teamNameTranslator(currentPlayer)}</span>                         
@@ -86,6 +86,7 @@ export function Player() {
                         <ul className="text-[0.8rem]">
                             <li>
                                 {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{currentPlayer.tier.name}</i></b> | <Mmr player={currentPlayer}/> MMR
+                                <br /> <div className="w-7 h-7"><FaceitRank rank={faceitPlayer?.games?.csgo?.skill_level ?? 0} /></div>
                             </li>
                         </ul>
 

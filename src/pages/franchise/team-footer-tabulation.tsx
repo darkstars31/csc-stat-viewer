@@ -19,7 +19,7 @@ export function TeamFooterTabulation( { team }: { team: Team }) {
     }, [] );
 
     return (
-        <div className={`grid grid-cols-${COLUMNS} text-xs`}>
+        <div className={`grid grid-cols-${COLUMNS+2} text-xs`}>
             <div></div>
             <div>{mmrTeamTotal}/{tierMmrCap} Cap - {((mmrTeamTotal/tierMmrCap)*100).toFixed(0)}%</div>
 

@@ -84,7 +84,7 @@ export function Team(){
 								<hr className="h-px my-4 border-0" />
 								<div>
 								{
-									currentTeam?.players?.map( player => <PlayerRow key={player.name} franchisePlayer={player} team={currentTeam} /> )
+									currentTeam?.players?.map( player => <PlayerRow key={player.name} franchisePlayer={player} team={currentTeam} extraDetails /> )
 									//players?.map( ( player, index ) => <PlayerCard key={player.name} player={player} index={index}/> )								
 								}
 								{ currentTeam && <TeamFooterTabulation team={currentTeam} /> }

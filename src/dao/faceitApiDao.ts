@@ -1,5 +1,6 @@
 import { Player } from "../models";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { FaceitApiTypes } from "../models/faceit-api-types";
 
 const faceitClientApiKey = '75acc11a-2205-4595-8c59-8adbbaf7a1cb';
 
@@ -14,7 +15,7 @@ const getData = async ( faceitName?: string ) => await fetch(`https://open.facei
         return response.json();
     } );
 
-export function useFetchFaceitPlayerData( player?: Player ): UseQueryResult<any[]> {
+export function useFetchFaceitPlayerData( player?: Player ): UseQueryResult<FaceitApiTypes> {
     return useQuery(
         ["faceitPlayerData", player?.faceitName ], 
         () => getData( player?.faceitName ), 
