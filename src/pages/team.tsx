@@ -60,7 +60,7 @@ export function Team(){
 			<div style={{backgroundImage: `url(${franchiseImages[currentFranchise?.prefix ?? '']})`, overflow:'auto'}} className={`bg-repeat bg-center bg-fixed`}>
 				<div className="backdrop-opacity-10 backdrop-brightness-90 bg-black/[.85] overflow-auto">
 					<Container>
-						<div className="m-2 p-2 bg-opacity-50 bg-black">
+						<div className="m-2 p-2 bg-opacity-60 bg-black rounded-lg">
 						<div className="my-4">
 							<i><Link className="hover:text-blue-400" to={`/franchises`}>Franchises</Link> {"> "} 
 							<Link className="hover:text-blue-400" to={`/franchises/${currentFranchise?.name}`}>{currentFranchise?.name}</Link></i> {"> "} 

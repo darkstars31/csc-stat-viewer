@@ -1,4 +1,4 @@
-import faceitRank0 from "../../assets/images/faceitRanks/faceit1.svg";
+import faceitRank0 from "../../assets/images/faceitRanks/faceit0.svg";
 import faceitRank1 from "../../assets/images/faceitRanks/faceit1.svg";
 import faceitRank2 from "../../assets/images/faceitRanks/faceit2.svg";
 import faceitRank3 from "../../assets/images/faceitRanks/faceit3.svg";

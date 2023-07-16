@@ -1,7 +1,7 @@
 import React from "react";
 import { faceitRankImages } from "../images/faceitRanks";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { useFetchFaceitPlayerData } from "../../dao/faceitApiDao";
+import { useFetchSearchFaceitPlayers } from "../../dao/faceitApiDao";
 import { Player } from "../../models";
 
 type Props = {
@@ -9,10 +9,10 @@ type Props = {
 }
 
 export const FaceitRank = ( { player }: Props ) => {
-    const { data: faceitPlayer, isLoading } = useFetchFaceitPlayerData( player );
-    const faceitRank = faceitRankImages[faceitPlayer?.games?.csgo?.skill_level ?? 0] as unknown as string;
+    const { data: faceitSearchPlayer = undefined, isLoading: isLoadingFaceitSearch } = useFetchSearchFaceitPlayers( player );
+    const faceitRank = faceitRankImages[faceitSearchPlayer?.items[0]?.games[0]?.skill_level ?? 0] as unknown as string;
     
-    if( isLoading ){
+    if( isLoadingFaceitSearch ){
         return (
             <div className="animate-spin h-[1em] w-[1em] m-1"><AiOutlineLoading3Quarters /></div>
         );

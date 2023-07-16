@@ -21,7 +21,10 @@ export function MatchCards( { match, team }: Props ) {
     const isMatchInProgress = !match.completedAt && match.stats.length > 0;
     const isMatchNotYetPlayed = !match.completedAt && !match.stats.length;
     const isHomeTeam = match.home.name === team?.name;
-    const didCurrentTeamWin = (isHomeTeam && match.stats[0]?.homeScore > match.stats[0]?.awayScore) || (!isHomeTeam && match.stats[0]?.homeScore < match.stats[0]?.awayScore);
+    const matchDayWins = match.stats.map( stats => 
+            (isHomeTeam && stats?.homeScore > stats?.awayScore) || (!isHomeTeam && stats?.homeScore < stats?.awayScore) ? true : undefined
+        ).filter(Boolean).length;
+    const didCurrentTeamWin = matchDayWins / match.stats.length > 0.5;
     const backgroundColor = match.stats.length > 0 || isMatchInProgress ? didCurrentTeamWin ? "bg-emerald-800" : "bg-red-950" : "bg-midnight1";
 
     return (
