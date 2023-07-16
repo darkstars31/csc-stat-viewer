@@ -38,14 +38,14 @@ export function useFetchFaceitPlayerData( faceitId?: string ): UseQueryResult<Fa
     );
 }
 
-export function useFetchSearchFaceitPlayers( player?: Player ): UseQueryResult<{ items: { player_id: string, nickname: string, games: { skill_level: number }[] }[]}> {
+export function useFetchSearchFaceitPlayers( player?: Player, isDisabled?: boolean ): UseQueryResult<{ items: { player_id: string, nickname: string, games: { skill_level: number }[] }[]}> {
     return useQuery(
         ["faceitPlayerSearch", player?.steam64Id ], 
         () => searchPlayers( player?.steam64Id ), 
         {
             staleTime: 1000 * 60 * 60, // 1 second * 60 * 60 = 1 hour
-            enabled: Boolean(player?.steam64Id),
-            onError: () => {},
+            enabled: !!player?.steam64Id,
+            onError: (e) => { console.info( e ) },
         }
     );
 }

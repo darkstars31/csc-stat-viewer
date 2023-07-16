@@ -3,21 +3,22 @@ import { Match } from "../models/matches-types";
 import { Team } from "../models/franchise-types";
 import { appConfig } from "../dataConfig";
 
-const calculateDaysSinceSeasonStart = () => {
-  const oneDay = 1000 *60*60*24;
-  const currentDate = new Date();
-  const startOfSeasonDate = new Date(2023,5,2);
-  const diff = currentDate.getTime() - startOfSeasonDate.getTime();
-  const diffInDays = Math.round( diff / oneDay);
-  return diffInDays;
-}
+// CSC Removed daysAgo on the query for this graph
+// const calculateDaysSinceSeasonStart = () => {
+//   const oneDay = 1000 *60*60*24;
+//   const currentDate = new Date();
+//   const startOfSeasonDate = new Date(2023,5,2);
+//   const diff = currentDate.getTime() - startOfSeasonDate.getTime();
+//   const diffInDays = Math.round( diff / oneDay);
+//   return diffInDays;
+// }
 
-export const fetchMatchesGraph = async ( teamId?: string) => await fetch(appConfig.endpoints.cscGraphQL.core,
+export const fetchMatchesGraph = async ( teamId?: string, season: number = 11) => await fetch(appConfig.endpoints.cscGraphQL.core,
     { method: "POST", 
         body: JSON.stringify({
                 "operationName": "",
-                "query": `query matches ( $teamId: String!, $daysAgo: Int) {
-                    matches (teamId: $teamId, daysAgo: $daysAgo) {
+                "query": `query matches ( $teamId: String!, $season: Int!) {
+                    matches (teamId: $teamId, season: $season) {
                         id
                         scheduledDate
                         completedAt
@@ -64,7 +65,7 @@ export const fetchMatchesGraph = async ( teamId?: string) => await fetch(appConf
                 ,
                 "variables": {
                     "teamId": teamId,
-                    "daysAgo": calculateDaysSinceSeasonStart()
+                    "season": season,
                 }      
             }),
             headers: {
@@ -133,10 +134,10 @@ export const fetchIndividualMatchInfoGraph = async ( matchId: string ) => await 
       });
 
 
-export function useFetchMatchesGraph( teamId?: string ): UseQueryResult<Match[]> {
+export function useFetchMatchesGraph( season?: number, teamId?: string ): UseQueryResult<Match[]> {
   return useQuery( 
       ["matches-graph", teamId], 
-      () => fetchMatchesGraph( teamId ), {
+      () => fetchMatchesGraph( teamId, season ), {
           enabled: Boolean(teamId),
           staleTime: 1000 * 60 * 60 // 1 second * 60 * 60 = 1 hour
       });

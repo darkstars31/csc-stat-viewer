@@ -13,6 +13,7 @@ import { FaceitRank } from "../../common/components/faceitRank";
 import { BiStats } from "react-icons/bi";
 
 export function PlayerRow( { franchisePlayer, team, extraDetails }: {franchisePlayer: FranchisePlayer, team: Team, extraDetails?: boolean} ) {
+    console.info( extraDetails );
     const { players = [] } = useDataContext();
     const player = players.find( p => p.steam64Id === franchisePlayer.steam64Id || p.name === franchisePlayer.name );
     const percentageOfMmrCap = (((franchisePlayer.mmr ?? 0)/team.tier.mmrCap)*100).toFixed(1);
@@ -37,9 +38,10 @@ export function PlayerRow( { franchisePlayer, team, extraDetails }: {franchisePl
                 <div><div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player?.stats?.rating.toFixed(2) ?? "-"}</div></div>
                 { extraDetails && <div className="w-7 h-7"><FaceitRank player={player} /></div> }
                 <div>{player?.contractDuration}<IoDocumentTextOutline className="inline mx-1" /></div>
-                <div className="">
+                <div>{player?.role}</div>
+                { extraDetails && <div className="">
                     <ExternalPlayerLinks player={player!} />
-                </div>
+                </div>}
             </div>
         </div> );
 }

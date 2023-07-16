@@ -41,7 +41,7 @@ export function Franchise(){
                                     </Link>
                                     <div className="mx-4 px-2">
                                     { team.players.map( player => 
-                                       <PlayerRow key={`${team.tier.name}-${player.name}`} franchisePlayer={player} team={team} />
+                                       <PlayerRow key={`${team.tier.name}-${player.name}`} franchisePlayer={player} team={team} extraDetails={false} />
                                         )}
                                     </div>
                                     <TeamFooterTabulation team={team} />

@@ -16,7 +16,7 @@ import { queryClient } from "../App";
 
 export function Team(){
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { franchises = [], players: cscPlayers = [], loading } = useDataContext();
+	const { franchises = [], players: cscPlayers = [], dataConfig, loading } = useDataContext();
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [, params] = useRoute("/franchises/:franchiseName/:teamName");
 	const franchiseName = decodeURIComponent(params?.franchiseName ?? "");
@@ -48,7 +48,7 @@ export function Team(){
 	//console.info( 'currentTeamStatAggregation', currentTeamStatAggregation);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph( currentTeam?.id );
+	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph( dataConfig?.season ,currentTeam?.id );
 	const regularSeasonMatches = matches.filter( match => match.stats.length === 1 );
 	const playoffMatches = matches.filter( match => match.stats.length > 1 );
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars 
