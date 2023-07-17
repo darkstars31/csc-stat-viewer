@@ -166,8 +166,8 @@ export function CartesianCompare( { playerData = [] }: Props) {
               type: 'dashed',
             },
             data: [
-              [Number((getTotalPlayerAverages(playerData ?? []).lowest.rating - 0.05).toFixed(1)),linearRegressionLinex(0)],
-              [Number((getTotalPlayerAverages(playerData ?? []).highest.rating + 0.05).toFixed(1)),linearRegressionLinex(1.5)],
+              [Number((getTotalPlayerAverages(playerData ?? []).lowest.rating - 0.05).toFixed(1)),linearRegressionLinex(Number((getTotalPlayerAverages(playerData ?? []).lowest.rating - 0.05).toFixed(1)))],
+              [Number((getTotalPlayerAverages(playerData ?? []).highest.rating + 0.05).toFixed(1)),linearRegressionLinex(Number((getTotalPlayerAverages(playerData ?? []).highest.rating + 0.05).toFixed(1)))],
             ],
             type: "line",
             //emphasis: emp,
