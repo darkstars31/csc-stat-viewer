@@ -26,6 +26,7 @@
     "react-icons": "^4.10.1",
     "react-scripts": "^5.0.1",
     "react-select": "^5.7.3",
+    "simple-statistics": "^7.8.3",
     "web-vitals": "^3.3.2",
     "wouter": "^2.11.0"
   },
@@ -34,7 +35,6 @@
     "build": "react-scripts build && cp ./build/index.html ./build/404.html",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-    
   },
   "eslintConfig": {
     "extends": [

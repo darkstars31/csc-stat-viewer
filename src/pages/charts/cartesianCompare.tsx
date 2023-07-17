@@ -2,6 +2,7 @@ import * as React from "react";
 import { getTotalPlayerAverages } from "../../common/utils/player-utils";
 import { Player } from "../../models";
 import ReactECharts from "echarts-for-react";
+import { linearRegression, linearRegressionLine } from "simple-statistics";
 
 type Props = {
     playerData?: Player[];
@@ -10,6 +11,12 @@ type Props = {
 export function CartesianCompare( { playerData = [] }: Props) {
 
     const data = playerData.map( p => ( [p.stats?.rating, p.mmr, p.tier.name, p.name]));
+    const x = playerData.map( p => ( [p.stats.rating!, p.mmr!]));
+    console.info(x)
+    const linearRegressionExpression = linearRegression( x );
+    const linearRegressionLinex = linearRegressionLine( linearRegressionExpression );
+
+    console.info(linearRegressionExpression, linearRegressionLinex, linearRegressionLinex(0), linearRegressionLinex(1.5));
 
     const seriesSettings = ( datasetIndex: number) => ({
         symbolsize: 60,
@@ -38,15 +45,19 @@ export function CartesianCompare( { playerData = [] }: Props) {
             left: 'center'
         },
         legend: {
-            data: ['Recruit', 'Prospect','Contender', 'Challenger', 'Elite', 'Premier'],
+            data: ['Recruit', 'Prospect','Contender', 'Challenger', 'Elite', 'Premier', 'Linear Regression'],
             top: 30,
+            textStyle: {
+              color: "#fff",
+              fontSize: 12,
+            },
             // itemStyle: {
             //   color: '#FFFFFF',
             // },
             // lineStyle: {
             //   color: '#FFFFFF',
             // },
-            inactiveColor: "#0a0a0a"
+            inactiveColor: "gray"
         },
         toolbox: {
           feature: {
@@ -95,6 +106,7 @@ export function CartesianCompare( { playerData = [] }: Props) {
             }
         ],
         xAxis: {
+            max: Number((getTotalPlayerAverages(playerData ?? []).highest.rating + 0.05).toFixed(1)),
             min: Number((getTotalPlayerAverages(playerData ?? []).lowest.rating - 0.05).toFixed(1)),
             splitLine: {
                 lineStyle: {
@@ -104,6 +116,7 @@ export function CartesianCompare( { playerData = [] }: Props) {
               }
         },
         yAxis: {
+
             splitLine: {
                 lineStyle: {
                   type: 'dashed',
@@ -145,13 +158,20 @@ export function CartesianCompare( { playerData = [] }: Props) {
         { 
             name: "Premier", ...seriesSettings(6),
         },
-        // { 
-        //     name: "Linear Regression",
-        //     symbolsize: 60,
-        //     datasetIndex: 7,
-        //     type: "line",
-        //     emphasis: emp,
-        // },
+        { 
+            name: "Linear Regression",
+            color: "purple",
+            symbolsize: 60,
+            lineStyle: {
+              type: 'dashed',
+            },
+            data: [
+              [Number((getTotalPlayerAverages(playerData ?? []).lowest.rating - 0.05).toFixed(1)),linearRegressionLinex(0)],
+              [Number((getTotalPlayerAverages(playerData ?? []).highest.rating + 0.05).toFixed(1)),linearRegressionLinex(1.5)],
+            ],
+            type: "line",
+            //emphasis: emp,
+        },
     ],
   
     };
