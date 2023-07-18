@@ -174,3 +174,23 @@ export function determinePlayerRole( stats: CscStats ){
     
 }
 
+export const calculateImpactApproximate = ( killsPerRound: number, assistsPerRound: number) => 
+    (2.13 * killsPerRound) + (0.42 * assistsPerRound) - 0.41;
+
+export function calculateHltvTwoPointOApproximationFromStats( stats: CscStats ) {
+    const { kast, kr: killsPerRound, deaths, adr, assists, rounds } = stats;
+    return calculateHltvTwoPointOApproximation( kast, killsPerRound, deaths, adr, assists, rounds );
+}
+
+export function calculateHltvTwoPointOApproximation( kast: number, killsPerRound: number, deaths: number, adr: number, assists: number, rounds: number ) {
+    const calculatedImpact = calculateImpactApproximate( killsPerRound, assists/rounds );
+
+    const xkast = (0.0073 * (kast*100));
+    const xkillsPerRound = (0.3591 * killsPerRound);
+    const xdeathsPerRound = (-0.5329 * (deaths/rounds));
+    const ximpact = (0.2372 * calculatedImpact);
+    const xavgDmgPerRround = (0.0032 * adr);
+
+    return xkast + xkillsPerRound + xdeathsPerRound + ximpact + xavgDmgPerRround + 0.1587;
+}
+

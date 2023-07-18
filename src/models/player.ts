@@ -5,6 +5,7 @@ export type Player =
     CscPlayer &
     {
         role?: string,
+        hltvTwoPointO: number | undefined,
         stats: CscStats
         statsOutOfTier: {
             stats : CscStats | undefined,

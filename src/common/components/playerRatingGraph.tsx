@@ -5,6 +5,7 @@ import { Player } from "../../models/player";
 import { useDataContext } from "../../DataContext";
 import { useCscStatsProfileTrendGraph } from "../../dao/cscProfileTrendGraph";
 import { Loading } from "./loading";
+import { calculateHltvTwoPointOApproximation } from "../utils/player-utils";
 
 type Props = {
   player: Player;
@@ -40,20 +41,24 @@ export function PlayerRatingTrendGraph({ player }: Props) {
       padding: [12, 0, 0, 24],
     },
     legend: {
-      data: ["Rating", "Impact", "KAST", "ADR", "EF", "UtilDmg"],
-      padding: [0, 0, 12, 0],
+      data: ["Rating", "HLTV", "Impact", "KAST", "ADR", "EF", "UtilDmg", "HS%", "DMG", "SideRating"],
+      padding: [0, 0, 8, 0],
       textStyle: {
         color: "#fff",
         fontSize: 12,
       },
       icon: "roundRect",
       selected: {
-        Rating: true, 
+        Rating: true,
+        HLTV: false,
         Impact: false,
         ADR: false,
         EF: false,
         KAST: false,
         UtilDmg: false,
+        "HS%": false,
+        DMG: false,
+        SideRating: false,
       },
       bottom: "0",
     },
@@ -107,7 +112,36 @@ export function PlayerRatingTrendGraph({ player }: Props) {
           label: { 
             show: false,
           },
-
+          data: [{
+            type: "average",
+            name: "Avg"
+          }]
+        }
+      },
+      {
+        name: "HLTV",
+        type: "line",
+        animationEasing: "quarticIn",
+        data: sortedCscPlayerProfile?.map((match) => calculateHltvTwoPointOApproximation( match.kast, match.KR, match.deaths, match.adr, match.assists, match.rounds).toFixed(2)),
+        smooth: true,
+        lineStyle: {
+          width: 1,
+          color: "orange",
+          type: "dashed",
+        },
+        itemStyle: {
+          color: "orange",
+        },
+        symbol: "dot",
+        symbolSize: 6,
+        showSymbol: true,
+        markLine: {
+          symbol: "none",
+          animation: true,
+          animationEasing: "cubicIn",
+          label: { 
+            show: false,
+          },
           data: [{
             type: "average",
             name: "Avg"
@@ -263,6 +297,102 @@ export function PlayerRatingTrendGraph({ player }: Props) {
             name: "Avg"
           }]
         }
+      },
+      // {
+      //   name: "HS%",
+      //   type: "line",
+      //   animationEasing: "quarticIn",
+      //   data: sortedCscPlayerProfile?.map((match) => match.hs),
+      //   smooth: true,
+      //   lineStyle: {
+      //     width: 2,
+      //     color: "#ffe100",
+      //     type: "solid",
+      //   },
+      //   itemStyle: {
+      //     color: "#ffe100",
+      //   },
+      //   symbol: "circle",
+      //   symbolSize: 6,
+      //   showSymbol: true,
+      //   markLine: {
+      //     symbol: "none",
+      //     animation: true,
+      //     animationEasing: "cubicIn",
+      //     label: { 
+      //       show: false,
+      //     },
+      //     data: [{
+      //       type: "average",
+      //       name: "Avg"
+      //     }]
+      //   }
+      // },
+      {
+        name: "DMG",
+        type: "line",
+        animationEasing: "quarticIn",
+        data: sortedCscPlayerProfile?.map((match) => match.damage),
+        smooth: true,
+        lineStyle: {
+          width: 2,
+          color: "red",
+          type: "solid",
+        },
+        itemStyle: {
+          color: "red",
+        },
+        symbol: "circle",
+        symbolSize: 6,
+        showSymbol: true,
+        markLine: {
+          symbol: "none",
+          animation: true,
+          animationEasing: "cubicIn",
+          label: { 
+            show: false,
+          },
+          data: [{
+            type: "average",
+            name: "Avg"
+          }]
+        }
+      },
+      {
+        name: "SideRating",
+        type: "line",
+        animationEasing: "quarticIn",
+        data: sortedCscPlayerProfile?.map((match) => match.ctRating.toFixed(2)),
+        smooth: true,
+        lineStyle: {
+          width: 2,
+          color: "#30b3ff",
+          type: "dashed",
+        },
+        itemStyle: {
+          color: "#30b3ff",
+        },
+        symbol: "circle",
+        symbolSize: 6,
+        showSymbol: true,
+      },
+      {
+        name: "SideRating",
+        type: "line",
+        animationEasing: "quarticIn",
+        data: sortedCscPlayerProfile?.map((match) => match.TRating.toFixed(2)),
+        smooth: true,
+        lineStyle: {
+          width: 2,
+          color: "#ff3072",
+          type: "dashed",
+        },
+        itemStyle: {
+          color: "#ff3072",
+        },
+        symbol: "circle",
+        symbolSize: 6,
+        showSymbol: true,
       },
     ],
     animation: true,

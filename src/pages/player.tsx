@@ -85,7 +85,8 @@ export function Player() {
                             <li>
                                 {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{currentPlayer.tier.name}</i></b>
                                 <br /> <Mmr player={currentPlayer}/> MMR 
-                                <div className="w-7 h-7"> <FaceitRank player={currentPlayer} /></div>
+                                <span className="flex leading-7"><div className="w-7 h-7"> <FaceitRank player={currentPlayer} /></div><span className="ml-2 bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">~{currentPlayer.hltvTwoPointO?.toFixed(2)} HLTV</span></span>
+
                             </li>
                         </ul>
 

@@ -5,7 +5,7 @@ import { Player } from "./models/player";
 import { useFetchFranchisesGraph } from "./dao/franchisesGraphQLDao";
 import { SingleValue } from "react-select";
 import { useCscStatsGraph } from "./dao/cscStatsGraphQLDao";
-import { PlayerTypes, determinePlayerRole } from "./common/utils/player-utils";
+import { PlayerTypes, calculateHltvTwoPointOApproximationFromStats, determinePlayerRole } from "./common/utils/player-utils";
 
 const useDataContextProvider = () => {
 	const [ selectedDataOption, setSelectedDataOption ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: dataConfiguration[0].name, value: dataConfiguration[0].name });
@@ -73,9 +73,11 @@ const useDataContextProvider = () => {
 
 		if( statsByTier.length > 0 ){
 			const role = determinePlayerRole( statsByTier.find( s => s.tier === cscPlayer.tier.name)?.stats! );
-			acc.push( { ...cscPlayer, 
+			const stats = statsByTier.find( s => s.tier === cscPlayer.tier.name)?.stats!;
+			acc.push( { ...cscPlayer,
+				hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
 				role, 
-				stats: statsByTier.find( s => s.tier === cscPlayer.tier.name)?.stats!, 
+				stats, 
 				statsOutOfTier: statsByTier.filter( statsWithTier => statsWithTier.tier !== cscPlayer.tier.name),
 			});
 		} else {

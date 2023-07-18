@@ -28,10 +28,18 @@ const fetchPlayerGraph = async ( steamId: string | undefined, season?: number ) 
                     ) {
                         rating
                         impactRating
+                        damage
                         adr
+                        deaths
+                        rounds
+                        KR
+                        assists
+                        hs
                         ef
                         kast
                         utilDmg
+                        TRating
+                        ctRating
                         match {
                             matchDay
                             __typename
@@ -62,10 +70,18 @@ const fetchPlayerGraph = async ( steamId: string | undefined, season?: number ) 
     interface PlayerMatchStats {
     rating: number;
     impactRating: number;
+    damage: number;
     adr: number;
     ef: number;
+    hs: number;
     kast: number;
     utilDmg: number;
+    rounds: number;
+    KR: number;
+    assists: number;
+    deaths: number;
+    TRating: number;
+    ctRating: number;
     match: Match;
     __typename: string;
         }

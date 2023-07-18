@@ -10,7 +10,7 @@ type Props = {
 
 export const FaceitRank = ( { player }: Props ) => {
     const { data: faceitSearchPlayer = undefined, isLoading: isLoadingFaceitSearch } = useFetchSearchFaceitPlayers( player );
-    const faceitRank = faceitRankImages[faceitSearchPlayer?.items[0]?.games[0]?.skill_level ?? 0] as unknown as string;
+    const faceitRank = faceitRankImages[faceitSearchPlayer?.items[0]?.games.find( g => g.name === "csgo")?.skill_level ?? 0] as unknown as string;
     
     if( isLoadingFaceitSearch ){
         return (

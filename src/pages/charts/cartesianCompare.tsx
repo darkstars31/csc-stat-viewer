@@ -11,12 +11,14 @@ type Props = {
 export function CartesianCompare( { playerData = [] }: Props) {
 
     const data = playerData.map( p => ( [p.stats?.rating, p.mmr, p.tier.name, p.name]));
-    const x = playerData.map( p => ( [p.stats.rating!, p.mmr!]));
-    console.info(x)
-    const linearRegressionExpression = linearRegression( x );
-    const linearRegressionLinex = linearRegressionLine( linearRegressionExpression );
+    const playerTotalStats = getTotalPlayerAverages(playerData ?? []);
 
-    console.info(linearRegressionExpression, linearRegressionLinex, linearRegressionLinex(0), linearRegressionLinex(1.5));
+    const ratingMmrPairs = playerData.map( p => ( [p.stats.rating!, p.mmr!]));
+    const linearRegressionFunction = linearRegression( ratingMmrPairs );
+    const linearRegressionLineFunction = linearRegressionLine( linearRegressionFunction );
+
+    const highest = playerTotalStats.highest.rating ? Number((playerTotalStats?.highest.rating + 0.05).toFixed(2)) : 0;
+    const lowest = playerTotalStats.lowest.rating ? Number((playerTotalStats?.lowest.rating - 0.05).toFixed(2)) : 0;
 
     const seriesSettings = ( datasetIndex: number) => ({
         symbolsize: 60,
@@ -106,8 +108,8 @@ export function CartesianCompare( { playerData = [] }: Props) {
             }
         ],
         xAxis: {
-            max: Number((getTotalPlayerAverages(playerData ?? []).highest.rating + 0.05).toFixed(1)),
-            min: Number((getTotalPlayerAverages(playerData ?? []).lowest.rating - 0.05).toFixed(1)),
+            max: highest,
+            min: lowest,
             splitLine: {
                 lineStyle: {
                   type: 'dashed',
@@ -162,12 +164,13 @@ export function CartesianCompare( { playerData = [] }: Props) {
             name: "Linear Regression",
             color: "purple",
             symbolsize: 60,
+            animationEasing: "cubicIn",
             lineStyle: {
               type: 'dashed',
             },
             data: [
-              [Number((getTotalPlayerAverages(playerData ?? []).lowest.rating - 0.05).toFixed(1)),linearRegressionLinex(Number((getTotalPlayerAverages(playerData ?? []).lowest.rating - 0.05).toFixed(1)))],
-              [Number((getTotalPlayerAverages(playerData ?? []).highest.rating + 0.05).toFixed(1)),linearRegressionLinex(Number((getTotalPlayerAverages(playerData ?? []).highest.rating + 0.05).toFixed(1)))],
+              [lowest, linearRegressionLineFunction(lowest)],
+              [highest, linearRegressionLineFunction(highest)],
             ],
             type: "line",
             //emphasis: emp,

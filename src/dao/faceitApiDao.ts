@@ -38,7 +38,7 @@ export function useFetchFaceitPlayerData( faceitId?: string ): UseQueryResult<Fa
     );
 }
 
-export function useFetchSearchFaceitPlayers( player?: Player, isDisabled?: boolean ): UseQueryResult<{ items: { player_id: string, nickname: string, games: { skill_level: number }[] }[]}> {
+export function useFetchSearchFaceitPlayers( player?: Player, isDisabled?: boolean ): UseQueryResult<{ items: { player_id: string, nickname: string, games: { name: string, skill_level: number }[] }[]}> {
     return useQuery(
         ["faceitPlayerSearch", player?.steam64Id ], 
         () => searchPlayers( player?.steam64Id ), 
