@@ -23,10 +23,11 @@ export function Table( { rows, header = true }: Props ){
 
                 <tbody className="divide-y divide-gray-200">
                 { rows.map( (row,rowIndex) => 
-                    <tr key={rowIndex} className={`text-yellow-${rowIndex}00`}>
+                //  <tr key={rowIndex} > className={`text-yellow-${rowIndex}00`}></tr>
+                    <tr key={rowIndex}>
                     { Object.entries(row).map( ([key,value], colIndex) =>
                         <td key={key+colIndex} className={`whitespace-nowrap px-4 py-2 font-medium`}>
-                            <div data-row-col={`${rowIndex},${colIndex}`} className={ colIndex === 0 ? `text-white-${rowIndex+5}00` : ''}>
+                            <div data-row-col={`${rowIndex},${colIndex}`} className={ colIndex === 0 ? `text-white-${rowIndex+1}00` : ''}>
                                 {value ?? "n/a"}
                             </div>
                         </td>

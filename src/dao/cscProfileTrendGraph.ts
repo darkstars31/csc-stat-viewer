@@ -32,9 +32,8 @@ const fetchPlayerGraph = async ( steamId: string | undefined, season?: number ) 
                         adr
                         deaths
                         rounds
-                        KR
                         assists
-                        hs
+                        KR
                         ef
                         kast
                         utilDmg
@@ -73,11 +72,10 @@ const fetchPlayerGraph = async ( steamId: string | undefined, season?: number ) 
     damage: number;
     adr: number;
     ef: number;
-    hs: number;
+    KR: number;
     kast: number;
     utilDmg: number;
     rounds: number;
-    KR: number;
     assists: number;
     deaths: number;
     TRating: number;

@@ -73,13 +73,13 @@ const IconTooltip: React.FC<ToolTipProps> = ({ message, stat1, stat2, range }) =
                 src={
                     inRange(stat1!, stat2!, range!)
                         ? `data:image/svg+xml;utf-8,${updownarrow}`
-                        : stat1! > stat2!
+                        : stat2! > stat1!
                             ? `data:image/svg+xml;utf-8,${uparrow}`
                             : `data:image/svg+xml;utf-8,${downarrow}`
                 }
                 alt={"Icon showing if recent performance is above or below rating"}
             />
-            {stat2}
+            {stat1}
             <div
                 className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
                 ${noWrapClass}
@@ -123,21 +123,20 @@ const GenericTooltip: React.FC<ToolTipProps> = ({ message, children }) => {
     const { isHovered, onMouseEnter, onMouseLeave } = useHover();
 
     return (
-        <span
-            className={iconClass}
+        <div
+            className={"relative inline-block"}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
                 onTouchStart={onMouseEnter}
-                onTouchEnd={onMouseLeave}
-                style={{ zIndex: 1000 }}
+                onTouchEnd={onMouseLeave}           
         >
-        <span className="bg-gray-500 text-sm pointer-events-none transition duration-150 ease-in-out inline-block" />
-            { children }
-            <div className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-            style={{transform: 'translateX(-50%) translateY(-120%)'}}>
-                {message}
-            </div>
-        </span>
+            {children}  
+                <div className={`${baseTooltipClass} ${wideTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                style={{transform: 'translateX(-25%) translateY(-110%)', zIndex: 1000}}
+                >
+                    {message}
+                </div>
+        </div>
     );
 };
 

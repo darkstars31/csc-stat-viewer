@@ -76,6 +76,7 @@ export function PlayerRatingTrendGraph({ player }: Props) {
       }
     },
     yAxis: {
+      min: 0.2,
       type: "value",
       minorSplitLine: {
         show: false,
@@ -125,14 +126,14 @@ export function PlayerRatingTrendGraph({ player }: Props) {
         data: sortedCscPlayerProfile?.map((match) => calculateHltvTwoPointOApproximation( match.kast, match.KR, match.deaths, match.adr, match.assists, match.rounds).toFixed(2)),
         smooth: true,
         lineStyle: {
-          width: 1,
+          width: 2,
           color: "orange",
-          type: "dashed",
+          type: "solid",
         },
         itemStyle: {
           color: "orange",
         },
-        symbol: "dot",
+        symbol: "circle",
         symbolSize: 6,
         showSymbol: true,
         markLine: {

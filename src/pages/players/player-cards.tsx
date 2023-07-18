@@ -32,9 +32,9 @@ export function MemoizedPlayerCard( { player }: Props) {
                                 {player.tier.name} <i> - {player.team?.franchise.prefix ?? ""} {teamNameTranslated}</i>
                             </div>
                         </div>                        
-                        <div className="flex justify-center gap-4 py-1">                             
+                        <div className="flex justify-center gap-4 py-1">
                             <div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player.stats?.rating.toFixed(2) ?? 'N/A'}</div>                             
-                            <div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/> <Mmr player={player}/></div>            
+                            <div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/> <Mmr player={player}/></div>          
                         </div>
                     </div>  
                 </div>

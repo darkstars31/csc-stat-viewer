@@ -22,6 +22,7 @@ import { ExternalPlayerLinks } from "../common/components/externalPlayerLinks";
 import { PlayerAwards } from "./player/playerAwards";
 import { Card } from "../common/components/card";
 import { FaceitRank } from "../common/components/faceitRank";
+import { ToolTip } from "../common/utils/tooltip-utils";
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
@@ -84,8 +85,21 @@ export function Player() {
                         <ul className="text-[0.8rem]">
                             <li>
                                 {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{currentPlayer.tier.name}</i></b>
-                                <br /> <Mmr player={currentPlayer}/> MMR 
-                                <span className="flex leading-7"><div className="w-7 h-7"> <FaceitRank player={currentPlayer} /></div><span className="ml-2 bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">~{currentPlayer.hltvTwoPointO?.toFixed(2)} HLTV</span></span>
+                                <br /> <Mmr player={currentPlayer}/> MMR
+                                <div>
+                                    <span className="flex leading-7">
+                                        <ToolTip type="generic" message="FACEIT Rank">
+                                            <div className="w-7 h-7">
+                                                <FaceitRank player={currentPlayer} />
+                                            </div>
+                                        </ToolTip>
+                                        <ToolTip type="generic" message="HLTV2.0 Rating formula w/ <1% margin of error.">
+                                            <span className="ml-2 bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">
+                                                ~{currentPlayer.hltvTwoPointO?.toFixed(2)} HLTV
+                                            </span>
+                                        </ToolTip>
+                                    </span>
+                                </div> 
 
                             </li>
                         </ul>
