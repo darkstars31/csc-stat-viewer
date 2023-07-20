@@ -3,6 +3,7 @@ import { useDataContext } from '../DataContext';
 import { Container } from '../common/components/container';
 import { Pill } from '../common/components/pill';
 import { CartesianCompare } from './charts/cartesianCompare';
+import { CorrelationByTier } from './charts/correlationByTier';
 import { StatBarByTiers } from './charts/statBarByTiers';
 import { Loading } from '../common/components/loading';
 import { RolePieChart } from './charts/rolePie';
@@ -29,7 +30,6 @@ export function Charts() {
     const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.tier.name)) : filteredByPlayerType;
     const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.role)) : filteredByTier;
     const filteredBySearchPlayers = filters.length > 0 ? filteredByRole.filter( player => filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ))) : filteredByRole;
-
 
     const statPropertyOptions = [
         { label: "HeadShot %", value: "hs"},
@@ -84,6 +84,7 @@ export function Charts() {
         { label: "Stat Bars by Tier"},
         { label: "Role Distribution"},
         { label: "Role Distribution By Tier"},
+        { label: "Correlations by Tier"}
     ]
 
     return (
@@ -188,6 +189,15 @@ export function Charts() {
                     aria-labelledby="tabs-contact-tab">
                     <RoleByTierBarChart playerData={filteredBySearchPlayers} />
                 </div>
+                }
+                {
+                    currentTab === 4 && <div
+                    className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                    id="tabs-correlation"
+                    role="tabpanel"
+                    aria-labelledby="tabs-correlation-tab">
+                    <CorrelationByTier playerData={filteredBySearchPlayers} />
+                    </div>
                 }
             </div>
         </Container>
