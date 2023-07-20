@@ -27,21 +27,28 @@ function mean(arr) {
 
 
 onmessage = (event) => {
-    const { playerData, tier, statsKeys, ratingKey } = event.data;
+    const { playerData, tiers, statsKeys, ratingKey } = event.data;
   
-    // Filter the player data inside the worker
-    const filteredPlayers = playerData.filter(player => player.tier.name === tier);
+    const result = tiers.map((tier) => {
+      const filteredPlayers = playerData.filter(
+        (player) => player.tier.name === tier
+      );
   
-    const coefficients = statsKeys.map((stat) => {
-      const ratings = filteredPlayers.map((p) => ratingKey === 'mmr' ? p.mmr : p.stats.rating);
-      const statValues = filteredPlayers.map((p) => p.stats[stat]);
+      const coefficients = statsKeys.map((stat) => {
+        const ratings = filteredPlayers.map((p) =>
+          ratingKey === "mmr" ? p.mmr : p.stats.rating
+        );
+        const statValues = filteredPlayers.map((p) => p.stats[stat]);
   
-      if (ratings.length < 2 || statValues.length < 2) {
-        return 0;
-      }
-      return correlation(ratings, statValues);
+        if (ratings.length < 2 || statValues.length < 2) {
+          return undefined;
+        }
+        return correlation(ratings, statValues);
+      });
+  
+      return [tier, coefficients];
     });
   
-    postMessage(coefficients);
+    postMessage(result);
   };
   

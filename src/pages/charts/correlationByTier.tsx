@@ -89,33 +89,58 @@ export function CorrelationByTier({ playerData = [] }: Props) {
 
   useEffect(() => {
     (async () => {
-      const data: CorrelationData = await Promise.all(TIERS.map(async (tier) => {
-        const worker = new Worker('./correlation-worker.js');
+      const NUM_WORKERS = navigator.hardwareConcurrency || 4;
   
-        worker.postMessage({ playerData, tier, statsKeys: playerStatsKeys, ratingKey: selectedRating });
+      const chunkSize = Math.ceil(TIERS.length / NUM_WORKERS);
+      const chunks = Array.from({ length: NUM_WORKERS }, (_, i) =>
+        TIERS.slice(i * chunkSize, i * chunkSize + chunkSize)
+      );
   
-        const coefficients = await new Promise<any[]>((resolve, reject) => {
-          const onMessage = (e: MessageEvent) => {
-            worker.removeEventListener('message', onMessage);
-            worker.terminate();
-            resolve(e.data);
-          };
-          const onError = (e: ErrorEvent) => {
-            worker.removeEventListener('error', onError);
-            worker.terminate();
-            reject(e.message);
-          };
+      const workers = chunks.map((chunk, i) => {
+        const worker = new Worker("./correlation-worker.js");
   
-          worker.addEventListener('message', onMessage);
-          worker.addEventListener('error', onError);
+        worker.postMessage({
+          playerData,
+          tiers: chunk,
+          statsKeys: playerStatsKeys,
+          ratingKey: selectedRating,
         });
   
-        return [tier, coefficients];
-      }));
+        return worker;
+      });
   
-      setCorrelationData(data);
+      const results = await Promise.all(
+        workers.map(
+          (worker) =>
+            new Promise<CorrelationData>((resolve, reject) => {
+              const onMessage = (e: MessageEvent) => {
+                worker.removeEventListener("message", onMessage);
+                worker.terminate();
+                if (Array.isArray(e.data) && e.data.every(
+                  (item) => Array.isArray(item) && item.length === 2 && typeof item[0] === "string" && Array.isArray(item[1]) && item[1].every(
+                    (subItem) => typeof subItem === "number" || subItem === undefined
+                  )
+                )) {
+                  resolve(e.data);
+                } else {
+                  reject(new Error("Invalid data format from worker."));
+                }
+              };
+              const onError = (e: ErrorEvent) => {
+                worker.removeEventListener("error", onError);
+                worker.terminate();
+                reject(e.message);
+              };
+      
+              worker.addEventListener("message", onMessage);
+              worker.addEventListener("error", onError);
+            })
+        )
+      );
+      
+      setCorrelationData(results.flat() as CorrelationData);
     })();
-  }, [playerData, playerStatsKeys, selectedRating]); 
+  }, [playerData, playerStatsKeys, selectedRating]);
 
   
 
