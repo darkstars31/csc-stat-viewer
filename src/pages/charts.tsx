@@ -84,7 +84,7 @@ export function Charts() {
         { label: "Stat Bars by Tier"},
         { label: "Role Distribution"},
         { label: "Role Distribution By Tier"},
-        { label: "Correlation Coefficient"}
+        { label: "Correlations by Tier"}
     ]
 
     return (
