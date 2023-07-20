@@ -6,8 +6,11 @@ import { useFetchFranchisesGraph } from "./dao/franchisesGraphQLDao";
 import { SingleValue } from "react-select";
 import { useCscStatsGraph } from "./dao/cscStatsGraphQLDao";
 import { PlayerTypes, calculateHltvTwoPointOApproximationFromStats, determinePlayerRole } from "./common/utils/player-utils";
+import { DiscordUser } from "./models/discord-users";
 
 const useDataContextProvider = () => {
+	const [ discordUser, setDiscordUser ] = React.useState<DiscordUser | null>(null);
+	console.info( discordUser)
 	const [ selectedDataOption, setSelectedDataOption ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: dataConfiguration[0].name, value: dataConfiguration[0].name });
 	const dataConfig = dataConfiguration.find( item => selectedDataOption?.value === item.name);
 
@@ -103,6 +106,7 @@ const useDataContextProvider = () => {
 	].some(Boolean);
 
     return {
+		discordUser, setDiscordUser,
         players: players,
 		franchises: cscFranchises,
 		isLoading: isLoadingCscPlayers,

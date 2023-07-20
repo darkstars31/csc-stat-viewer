@@ -14,10 +14,12 @@ import { Team } from './pages/team';
 import { Franchise } from './pages/franchise';
 import { TeamStandings } from './pages/teamStandings';
 import { ProgressBar } from './common/components/progress';
-import { useLocalStorage } from './common/hooks/localStorage';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
 import ReactGA from 'react-ga4';
 import { ErrorBoundary } from './common/components/errorBoundary';
+import { Login } from './pages/login';
+import { LoginCallBack } from './pages/cb';
+import { discordFetchUser } from './dao/oAuth';
+import cookie from 'js-cookie';
 
 const routes = [
   { path: `/`, component: () => <Charts /> },
@@ -32,13 +34,28 @@ const routes = [
   { path: `/leaderboards`, component: () => <LeaderBoards /> },
   { path: `/about`, component: () => <Home /> },
   { path: `/playground`, component: () => <Playground /> },
+  { path: `/login`, component: () => <Login /> },
+  { path: `/cb`, component: () => <LoginCallBack /> }
 ];
 
 export function Router(){
-  const { loading } = useDataContext();
+  const { loading, discordUser, setDiscordUser } = useDataContext();
   const BASE_ROUTE = "";
-  const [ closeNotificationBanner, setCloseNotificationBanner ] = useLocalStorage("closeNotificationBanner", "");
   const [ location ] = useLocation();
+
+  React.useEffect( () => {
+    const fetchUser = async () => {
+		const accessToken = cookie.get( "access_token" );
+			if( accessToken && discordUser === null ){
+				const user = await discordFetchUser( accessToken );
+				if( user ){
+					setDiscordUser( user );
+				}
+		  }
+    }
+
+	fetchUser();
+  }, [ discordUser, setDiscordUser] );
   
   ReactGA.send({ hitType: "pageview", page: location, title: 'Page View' });
 
@@ -47,12 +64,6 @@ export function Router(){
       { loading.isLoadingCscPlayers && <ProgressBar />}
       <Wouter base={BASE_ROUTE}>
         <div>
-            { !closeNotificationBanner && 
-                <button className='w-full h-8 bg-teal-600 text-center' onClick={() => setCloseNotificationBanner("true")}>
-                  analytikill.com is the new home of CSC Stat Viewer. 
-                  <AiOutlineCloseCircle className='float-right mr-4' size="1.5em"/>
-                </button>
-              }
             <ErrorBoundary>
               <Switch>
                 { routes.map( route => <Route key={`route${route.path}`} { ...route} /> ) }

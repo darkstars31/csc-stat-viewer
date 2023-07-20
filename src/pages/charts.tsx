@@ -89,6 +89,21 @@ export function Charts() {
     return (
         <Container>
             <div>
+                
+            <ul className="mb-5 flex justify-center list-none flex-row flex-wrap border-b-0 pl-0" role="tablist" data-te-nav-ref>
+                { tabs.map( (tab, index) => (
+                     <li role="presentation" key={index}>
+                     <button
+                     className={`my-2 block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight hover:isolate hover:border-transparent hover:bg-neutral-700 focus:isolate ${index === currentTab ? "border-primary text-primary dark:border-primary-400 dark:text-primary-400": "text-neutral-500"}`}
+                     data-te-toggle="pill"
+                     role="tab"
+                     aria-selected={currentTab === index}
+                     onClick={() => setCurrentTab(index)}
+                     >{tab.label}</button
+                     >
+                 </li>
+                ))}
+            </ul>
                 <div className='text-center mx-auto max-w-lg mt-4'>
                     <form className="flex flex-box h-12 mx-auto" onSubmit={(e)=>{e.preventDefault()}}>
                         <label
@@ -130,21 +145,6 @@ export function Charts() {
                 <PlayerRolesFilter onChange={setViewPlayerRoleOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
             </div>        
         </div>
-
-            <ul className="mb-5 flex list-none flex-row flex-wrap border-b-0 pl-0" role="tablist" data-te-nav-ref>
-                { tabs.map( (tab, index) => (
-                     <li role="presentation" key={index}>
-                     <button
-                     className={`my-2 block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight hover:isolate hover:border-transparent hover:bg-neutral-700 focus:isolate ${index === currentTab ? "border-primary text-primary dark:border-primary-400 dark:text-primary-400": "text-neutral-500"}`}
-                     data-te-toggle="pill"
-                     role="tab"
-                     aria-selected={currentTab === index}
-                     onClick={() => setCurrentTab(index)}
-                     >{tab.label}</button
-                     >
-                 </li>
-                ))}
-            </ul>
 
             <div className="mb-6">
                 { currentTab === 0 && <div

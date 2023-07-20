@@ -14,6 +14,7 @@ const env : string = process.env.NODE_ENV!;
 console.info( env );
 
 function App() {
+
   return (
     <div className="bg-midnight1 text-white scroll-none">
       <QueryClientProvider client={queryClient}>

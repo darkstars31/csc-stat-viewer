@@ -3,10 +3,12 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'; //BellIcon,
 import { Link, useLocation } from 'wouter';
 // import Select from "react-select";
-// import { useDataContext } from '../DataContext';
+import { useDataContext } from '../DataContext';
 // import { dataConfiguration } from "../dataConfig";
 import { SiCounterstrike } from 'react-icons/si';
 import { LuBarChart } from 'react-icons/lu';
+import { RxDiscordLogo } from 'react-icons/rx';
+import { discordSignOut } from '../dao/oAuth';
 
 
 function classNames(...classes: string[]) {
@@ -14,7 +16,8 @@ function classNames(...classes: string[]) {
 }
 
 export function Header() {
-  // const { setSelectedDataOption } = useDataContext();
+   const { discordUser, players } = useDataContext();
+   const currentLoggedInPlayer = players.find( p => p.discordId === discordUser?.id );
 
 //   const selectClassNames = {
 //     placeholder: () => "text-gray-400 bg-inherit",
@@ -110,15 +113,29 @@ export function Header() {
                         classNames={selectClassNames}
                       />
                       } */}
+
+                    { !discordUser && 
+						<button 
+							className="flex px-2 py-1 rounded bg-blue-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+							onClick={() => {
+								window.location.href = "/login";
+							}}
+							>
+							<RxDiscordLogo className="h-8 w-8" aria-hidden="true" />
+							<span className='leading-8 ml-2'>Login</span>
+                    	</button>
+					}    
                   
-                    {/* <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                      <span className="sr-only">Open user menu</span>
-                      <img
-                        className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt=""
-                      />
-                    </Menu.Button> */}              
+                    { discordUser && 
+						<Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+						<span className="sr-only">Open user menu</span>
+						<img
+							className="h-8 w-8 rounded-full"
+							src={`https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.webp`}
+							alt=""
+						/>
+						</Menu.Button>
+					}         
                   <Transition
                     as={Fragment}
                     enter="transition ease-out duration-100"
@@ -129,37 +146,46 @@ export function Header() {
                     leaveTo="transform opacity-0 scale-95"
                   >
                     <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <Menu.Item>
+					<Menu.Item>
                         {({ active }) => (
-                          <Link to="#">
-                            <button
-                              className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                            >
-                              Your Profile
-                            </button>
-                          </Link>
+                              <span className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
+								{discordUser?.global_name}
+							</span>
                         )}
                       </Menu.Item>
+					            { currentLoggedInPlayer && 
+                        <><Menu.Item>
+                          {({ active }) => (
+                            <Link to={`/players/${currentLoggedInPlayer?.tier.name}/${currentLoggedInPlayer?.name}`}>
+                              <button
+                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                              >
+                                My Stats
+                              </button>
+                            </Link>
+                          )}
+                        </Menu.Item><Menu.Item>
+                            {({ active }) => (
+                              <Link to={`/franchises/${currentLoggedInPlayer?.team?.franchise.name}/${currentLoggedInPlayer?.team?.name}`}>
+                                <button
+                                  className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                >
+                                  My Team
+                                </button>
+                              </Link>
+                            )}
+                          </Menu.Item></>
+                      }
                       <Menu.Item>
                         {({ active }) => (
-                          <Link to="#">
                             <button
-                              className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                            >
-                              Settings
-                            </button>
-                          </Link>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <Link to="#">
-                            <button
-                              className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                            >
+                              	className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+								onClick={() => {
+									discordSignOut();
+								}}
+							>
                               Sign out
                             </button>
-                          </Link>
                         )}
                       </Menu.Item>
                     </Menu.Items>
