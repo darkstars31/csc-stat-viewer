@@ -10,7 +10,6 @@ import { DiscordUser } from "./models/discord-users";
 
 const useDataContextProvider = () => {
 	const [ discordUser, setDiscordUser ] = React.useState<DiscordUser | null>(null);
-	console.info( discordUser)
 	const [ selectedDataOption, setSelectedDataOption ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: dataConfiguration[0].name, value: dataConfiguration[0].name });
 	const dataConfig = dataConfiguration.find( item => selectedDataOption?.value === item.name);
 

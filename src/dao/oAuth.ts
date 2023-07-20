@@ -1,9 +1,12 @@
 import cookie from 'js-cookie';
 
-export const discordLogin = (code: string) => 
+export const discordLoginCallback = (code: string) => 
     fetch( "https://tonysanti.com/prx/discordlogin/login", {
         method: "POST",
-        body: JSON.stringify({ code }),                                 
+        body: JSON.stringify({ 
+            code,
+            redirect_uri: window.location.origin
+        }),                                 
         headers: {
             "Content-Type": "application/json",
         }
@@ -27,6 +30,14 @@ export const discordFetchUser = async ( access_token: string ) => {
     }).catch( err => {
         console.log( err );
     });
+}
+
+
+export function discordLogin() {
+    const env : string = process.env.NODE_ENV!;
+    const discordClientId = "1131226870357172347";
+    const DISCORD_REDIRECT_URL = env === "production" ? `https://analytikill.com` : "http://localhost:3000";
+    window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${DISCORD_REDIRECT_URL}%2Fcb&response_type=code&scope=identify`;
 }
 
 export const discordSignOut = () => {

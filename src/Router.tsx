@@ -16,7 +16,6 @@ import { TeamStandings } from './pages/teamStandings';
 import { ProgressBar } from './common/components/progress';
 import ReactGA from 'react-ga4';
 import { ErrorBoundary } from './common/components/errorBoundary';
-import { Login } from './pages/login';
 import { LoginCallBack } from './pages/cb';
 import { discordFetchUser } from './dao/oAuth';
 import cookie from 'js-cookie';
@@ -34,7 +33,6 @@ const routes = [
   { path: `/leaderboards`, component: () => <LeaderBoards /> },
   { path: `/about`, component: () => <Home /> },
   { path: `/playground`, component: () => <Playground /> },
-  { path: `/login`, component: () => <Login /> },
   { path: `/cb`, component: () => <LoginCallBack /> }
 ];
 

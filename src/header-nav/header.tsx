@@ -8,7 +8,7 @@ import { useDataContext } from '../DataContext';
 import { SiCounterstrike } from 'react-icons/si';
 import { LuBarChart } from 'react-icons/lu';
 import { RxDiscordLogo } from 'react-icons/rx';
-import { discordSignOut } from '../dao/oAuth';
+import { discordLogin, discordSignOut } from '../dao/oAuth';
 
 
 function classNames(...classes: string[]) {
@@ -115,16 +115,16 @@ export function Header() {
                       } */}
 
                     { !discordUser && 
-						<button 
-							className="flex px-2 py-1 rounded bg-blue-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-							onClick={() => {
-								window.location.href = "/login";
-							}}
-							>
-							<RxDiscordLogo className="h-8 w-8" aria-hidden="true" />
-							<span className='leading-8 ml-2'>Login</span>
-                    	</button>
-					}    
+                      <button 
+                        className="flex px-2 py-1 rounded bg-blue-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                        onClick={() => {
+                          discordLogin();
+                        }}
+                        >
+                        <RxDiscordLogo className="h-7 w-7" aria-hidden="true" />
+                        <span className='leading-8 ml-2'>Login</span>
+                                </button>
+                    }    
                   
                     { discordUser && 
 						<Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
@@ -174,7 +174,19 @@ export function Header() {
                                 </button>
                               </Link>
                             )}
-                          </Menu.Item></>
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <Link to={`/franchises/${currentLoggedInPlayer?.team?.franchise.name}`}>
+                                <button
+                                  className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                >
+                                  My Franchise
+                                </button>
+                              </Link>
+                            )}
+                          </Menu.Item>
+                          </>
                       }
                       <Menu.Item>
                         {({ active }) => (
