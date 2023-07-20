@@ -179,13 +179,13 @@ export function CorrelationByTier({ playerData = [] }: Props) {
     <div className="py-4">
       <div className="flex space-x-4 mb-4">
         <button 
-          className={`px-4 py-2 mx-1 rounded-lg ${selectedRating === 'mmr' ? 'bg-white text-blue-500' : 'bg-blue-500 text-white border border-blue-500'}`}
+          className={`px-4 py-2 mx-1 rounded-lg ${selectedRating === 'mmr' ? 'bg-midnight1 text-white border border-blue-500' : 'bg-midnight2 text-blue-500'}`}
           onClick={() => handleRatingChange('mmr')}
         >
           MMR
         </button>
         <button 
-          className={`px-4 py-2 mx-1 rounded-lg ${selectedRating === 'rating' ? 'bg-white text-blue-500' : 'bg-blue-500 text-white border border-blue-500'}`}
+          className={`px-4 py-2 mx-1 rounded-lg ${selectedRating === 'rating' ? 'bg-midnight1 text-white border border-blue-500' : 'bg-midnight2 text-blue-500'}`}
           onClick={() => handleRatingChange('rating')}
         >
           Rating
