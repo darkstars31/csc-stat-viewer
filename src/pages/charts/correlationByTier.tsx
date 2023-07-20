@@ -1,0 +1,203 @@
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { Player, CscStats } from "../../models";
+import ReactECharts from "echarts-for-react";
+
+type Props = {
+  playerData?: Player[];
+};
+
+type BarData = {
+  value: number;
+  itemStyle: {
+    color: string;
+  };
+};
+type TooltipParams = {
+  axisValueLabel: string;
+  value: number;
+}[];
+type ChartOption = {
+  title: {
+    text: string;
+    left: string;
+    textStyle: {
+      align: string;
+      color: string;
+    };
+  };
+  xAxis: {
+    type: "category";
+    data: string[];
+    axisLabel: {
+      interval: number;
+      rotate: number;
+    };
+  };
+  yAxis: {
+    type: "value";
+    name: string;
+  };
+  tooltip: {
+    trigger: "axis";
+    formatter: (params: any) => string; 
+    };
+  grid: {
+    left: string;
+    right: string;
+    top: string;
+    bottom: string;
+    containLabel: boolean;
+  };
+  series: {
+    type: "bar";
+    data: BarData[];
+  }[];
+};
+
+
+type CorrelationData = [string, (number | undefined)[]][];
+
+const CHART_HEIGHT = 300;
+const RED_THRESHOLD = 0.7;
+const ORANGE_THRESHOLD = 0.5;
+const YELLOW_THRESHOLD = 0.3;
+const TIERS = ["Recruit", "Prospect", "Contender", "Challenger", "Elite", "Premier"];
+
+
+export function CorrelationByTier({ playerData = [] }: Props) {
+  const [options, setOptions] = useState<ChartOption[]>([]);
+  const [correlationData, setCorrelationData] = useState<CorrelationData>([]);
+  const [selectedRating, setSelectedRating] = useState('mmr');
+
+  const handleRatingChange = (rating: string) => {
+    setSelectedRating(rating);
+  };
+
+  const getBarColor = useCallback((coefficient: number, red: number, orange: number, yellow: number): string => {
+    if (coefficient >= red || coefficient <= -red) return 'red';
+    if (coefficient >= orange || coefficient <= -orange) return 'orange';
+    if (coefficient >= yellow || coefficient <= -yellow) return 'yellow';
+    return 'green';
+  }, []);
+
+  const playerStatsKeys = useMemo(() => {
+    if (playerData.length > 0 && playerData[0].stats) {
+      return Object.keys(playerData[0].stats) as (keyof CscStats)[];
+    }
+    return [];
+  }, [playerData]);
+
+  useEffect(() => {
+    (async () => {
+      const data: CorrelationData = await Promise.all(TIERS.map(async (tier) => {
+        const worker = new Worker('./correlation-worker.js');
+  
+        worker.postMessage({ playerData, tier, statsKeys: playerStatsKeys, ratingKey: selectedRating });
+  
+        const coefficients = await new Promise<any[]>((resolve, reject) => {
+          const onMessage = (e: MessageEvent) => {
+            worker.removeEventListener('message', onMessage);
+            worker.terminate();
+            resolve(e.data);
+          };
+          const onError = (e: ErrorEvent) => {
+            worker.removeEventListener('error', onError);
+            worker.terminate();
+            reject(e.message);
+          };
+  
+          worker.addEventListener('message', onMessage);
+          worker.addEventListener('error', onError);
+        });
+  
+        return [tier, coefficients];
+      }));
+  
+      setCorrelationData(data);
+    })();
+  }, [playerData, playerStatsKeys, selectedRating]); 
+
+  
+
+
+
+  useEffect(() => {
+    const newOptions: ChartOption[] = playerStatsKeys.map((stat, statIndex) => {
+      if (stat !== "rating") {
+        const correlationCoefficients: BarData[] = correlationData.map(([tier, coefficients]): BarData | undefined => {
+          const coefficient = coefficients[statIndex];
+          if (typeof coefficient === 'number') {
+            return {
+              value: coefficient,
+              itemStyle: { color: getBarColor(coefficient, RED_THRESHOLD, ORANGE_THRESHOLD, YELLOW_THRESHOLD) }
+            };
+          }
+          return undefined;
+        }).filter((barData): barData is BarData => barData !== undefined);
+
+        return {
+          title: { 
+            text: `Correlation Coefficient - ${selectedRating === 'mmr' ? selectedRating.toUpperCase() : selectedRating.charAt(0).toUpperCase() + selectedRating.slice(1)} and ${stat}`,
+            left: '5%', 
+            textStyle: {
+              align: 'center',
+              color: '#FFFFFF', 
+            },
+          },
+          xAxis: {
+            type: "category",
+            data: TIERS,
+            axisLabel: {
+              interval: 0, 
+              rotate: 45 
+            }
+          },
+          yAxis: { type: "value", name: "" },
+          tooltip: {
+            trigger: "axis",
+            formatter: function(params: TooltipParams) {
+              return `${params[0].axisValueLabel}: ${params[0].value.toFixed(2)}`;
+            }
+          },            
+          grid: { 
+            left: "5%", 
+            right: "5%", 
+            top: "20%", 
+            bottom: "5%", 
+            containLabel: true 
+          },
+          series: [{ type: "bar", data: correlationCoefficients }]
+        };
+      }
+      return null;
+    }).filter((option): option is ChartOption => option !== null);
+
+    setOptions(newOptions);
+  }, [correlationData, getBarColor, playerStatsKeys, selectedRating]);
+
+  return (
+    <div className="py-4">
+      <div className="flex space-x-4 mb-4">
+        <button 
+          className={`px-4 py-2 mx-1 rounded-lg ${selectedRating === 'mmr' ? 'bg-white text-blue-500' : 'bg-blue-500 text-white border border-blue-500'}`}
+          onClick={() => handleRatingChange('mmr')}
+        >
+          MMR
+        </button>
+        <button 
+          className={`px-4 py-2 mx-1 rounded-lg ${selectedRating === 'rating' ? 'bg-white text-blue-500' : 'bg-blue-500 text-white border border-blue-500'}`}
+          onClick={() => handleRatingChange('rating')}
+        >
+          Rating
+        </button>
+      </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        {options.map((option) => (
+          <div key={`chart-${option.title.text}`} className="my-4">
+            <ReactECharts option={option} style={{ height: CHART_HEIGHT }} notMerge={true} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
