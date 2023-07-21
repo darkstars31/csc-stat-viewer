@@ -95,6 +95,7 @@ export function Charts() {
                 { tabs.map( (tab, index) => (
                      <li role="presentation" key={index}>
                      <button
+                     id={tab.label}
                      className={`my-2 block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight hover:isolate hover:border-transparent hover:bg-neutral-700 focus:isolate ${index === currentTab ? "border-primary text-primary dark:border-primary-400 dark:text-primary-400": "text-neutral-500"}`}
                      data-te-toggle="pill"
                      role="tab"

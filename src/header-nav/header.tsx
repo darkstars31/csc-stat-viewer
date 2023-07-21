@@ -116,13 +116,13 @@ export function Header() {
 
                     { !discordUser && 
                       <button 
-                        className="flex px-2 py-1 rounded bg-blue-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                        className="flex p-2 rounded hover:bg-blue-600 bg-blue-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                         onClick={() => {
                           discordLogin();
                         }}
                         >
-                        <RxDiscordLogo className="h-7 w-7" aria-hidden="true" />
-                        <span className='leading-8 ml-2'>Login</span>
+                        <RxDiscordLogo size="1.5em" aria-hidden="true" />
+                        <span className='ml-2'>Login</span>
                                 </button>
                     }    
                   

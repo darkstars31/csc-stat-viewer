@@ -1,4 +1,6 @@
 import cookie from 'js-cookie';
+import ReactGA from "react-ga4";
+import * as Sentry from "@sentry/browser";
 
 export const discordLoginCallback = (code: string) => 
     fetch( "https://tonysanti.com/prx/discordlogin/login", {
@@ -26,7 +28,10 @@ export const discordFetchUser = async ( access_token: string ) => {
             "Authorization": `Bearer ${ access_token }`
         }
     }).then( async res => {
-        return await res.json();
+        const user = await res.json();
+        ReactGA.set({ discordId: user.id, discordUsername: user.username });
+        Sentry.setUser({ discordId: user.id, discordUsername: user.username });
+        return user;
     }).catch( err => {
         console.log( err );
     });
@@ -43,5 +48,6 @@ export function discordLogin() {
 export const discordSignOut = () => {
     cookie.remove( "access_token" );
     cookie.remove( "refresh_token" );
+    Sentry.setUser(null);
     window.location.href = "/";
 }
