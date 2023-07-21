@@ -74,6 +74,14 @@ export function Charts() {
     // const filteredPlayers = filters.length > 0 ? playersWithStats.filter( player => {
     //     return filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ) );
     // } ) : playersWithStats;
+    React.useEffect(() => {
+        if (currentTab === 4) {
+            setViewPlayerTypeOptions([{ label: "Signed", value: [PlayerTypes.SIGNED,PlayerTypes.INACTIVE_RESERVE,PlayerTypes.SIGNED_PROMOTED,PlayerTypes.SIGNED_SUBBED] }]);
+        } else {
+            setViewPlayerTypeOptions([]); 
+        }
+    }, [currentTab]);
+      
 
     if( playersWithStats.length === 0) {
         return <Container><Loading /></Container>;
@@ -138,7 +146,10 @@ export function Charts() {
             </div>
             <div className={`flex flex-col mt-48 md:flex-row md:mt-0 h-12 justify-end`}>
             <div className="basis-1/3">
-                <PlayerTypeFilter onChange={setViewPlayerTypeOptions as typeof React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>} />
+                <PlayerTypeFilter 
+                    onChange={setViewPlayerTypeOptions as typeof React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>} 
+                    selectedOptions={viewPlayerTypeOptions}
+                />
             </div>
             <div className="basis-1/3">
                 <PlayerTiersFilter onChange={setViewTierOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />

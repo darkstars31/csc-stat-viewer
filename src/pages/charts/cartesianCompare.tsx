@@ -125,15 +125,20 @@ export function CartesianCompare( { playerData = [] }: Props) {
             }
         ],
         xAxis: {
-            max: highest,
-            min: lowest,
-            splitLine: {
-                lineStyle: {
-                  type: 'dashed',
-                  color: `#383838`
-                }
+          max: highest,
+          min: lowest,
+          splitLine: {
+              lineStyle: {
+                type: 'dashed',
+                color: `#383838`
               }
-        },
+          },
+          axisLabel: {
+              formatter: function(value: number) {
+                  return value.toFixed(2);
+              }
+          }
+      },
         yAxis: {
 
             splitLine: {
