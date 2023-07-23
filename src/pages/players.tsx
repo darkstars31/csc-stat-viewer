@@ -118,7 +118,7 @@ export function Players() {
                 <PlayerRolesFilter onChange={setViewPlayerRoleOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
             </div>
             <div className="basis-1/5">
-                <div className="flex flex-row text-xs m-2">
+                <div className="flex flex-row text-xs my-2 mx-1">
                     <label title="Sort" className="p-1 leading-9">
                         Sort
                     </label>
