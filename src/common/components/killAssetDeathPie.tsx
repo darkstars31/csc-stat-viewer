@@ -58,7 +58,8 @@ export function KillsAssistsDeathsPie( { player }: Props) {
                   }
                 },
                 labelLine: { 
-                  show: true
+                  show: true,
+                  length: 5,
                 },
                 data: [
                     { name: "Kills", value: player.stats["kills"]},
@@ -71,6 +72,6 @@ export function KillsAssistsDeathsPie( { player }: Props) {
           };
 
     return (
-        <ReactECharts option={defaultOptions} style={{height: "180px",width: "100%"}}/>
+        <ReactECharts option={defaultOptions} className="w-full md:w-1/2" style={{height: "180px"}}/>
     )
 }

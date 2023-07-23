@@ -218,7 +218,7 @@ export function CorrelationByTier({ playerData = [] }: Props) {
         <Containers.StandardBoxRow>
           {options.map((option) => (
             <Containers.StandardContentBox key={`chart-${option.title.text}`}>
-              <ReactECharts option={option} style={{ height: CHART_HEIGHT }} notMerge={true} />
+              <ReactECharts option={option} className="w-full" style={{ height: CHART_HEIGHT }} notMerge={true} />
             </Containers.StandardContentBox>
           ))}
         </Containers.StandardBoxRow>

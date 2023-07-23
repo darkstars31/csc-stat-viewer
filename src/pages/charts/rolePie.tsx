@@ -53,7 +53,7 @@ export function RolePieChart({ playerData = [] }: Props) {
     return (
         <>
             <Containers.StandardContentBox>
-                <ReactECharts option={optionByRole} style={{height: 500}} />
+                <ReactECharts option={optionByRole}  className="w-full"  style={{height: 500}} />
             </Containers.StandardContentBox>
         </>
     );

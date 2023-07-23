@@ -14,7 +14,7 @@ export function PlayerAwards( { player, players }: Props ){
     const top10Properties = propertiesCurrentPlayerIsInTop10For(player, players, awardProperties);
 
     return (
-        <div className="p-[2.5%] space-y-4">
+        <div className="px-[2.5%] space-y-4">
         <div className="flex flex-wrap place-items-center gap-3">
             {
                 numberOneProperties.map((property) => (

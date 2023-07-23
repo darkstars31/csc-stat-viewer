@@ -6,9 +6,8 @@ export function StandardContentBox({
     children: React.ReactNode;
   }) {
     return (
-      <section className="place-content-center flex flex-col p-2 my-3 min-h-[225px] bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
+      <section className="place-content-center flex lg:flex-row flex-col flex-wrap p-1 min-w-full min-h-[225px] my-3 h-fill bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
         {children}
       </section>
     );
   }
-  

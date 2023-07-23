@@ -196,7 +196,7 @@ export function CartesianCompare( { playerData = [] }: Props) {
     return (
         <>
             <Containers.StandardContentBox>
-              <ReactECharts option={optionRatingMMR} style={{height: 600}} />
+              <ReactECharts option={optionRatingMMR} className="w-full pr-4" style={{height: 600}} />
             </Containers.StandardContentBox>
             <Containers.ChartButtonBoundingBox>
               <Containers.ChartButtonBox>

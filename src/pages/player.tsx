@@ -113,23 +113,23 @@ export function Player() {
                 </div>
                 { currentPlayerStats &&
                     <div className="space-y-2">
-                        <div className="space-y-2">                      
-                            <PlayerAwards player={currentPlayer} players={players} />
-                            <Containers.StandardBoxRow>
+                        <PlayerAwards player={currentPlayer} players={players} />
+                        <Containers.StandardBoxRow>
+                            <Containers.StandardContentBox>
                                 <PlayerRatings player={currentPlayer} />
-                                <Containers.StandardContentBox>
-                                    <PlayerRatingTrendGraph player={currentPlayer} />
-                                </Containers.StandardContentBox>
-                            </Containers.StandardBoxRow>
-                        </div>
+                            </Containers.StandardContentBox>
+                            <Containers.StandardContentBox>
+                                <PlayerRatingTrendGraph player={currentPlayer} />
+                            </Containers.StandardContentBox>
+                        </Containers.StandardBoxRow>
                         <Containers.StandardBoxRow>
                             <Containers.StandardContentBox>
                                 <RoleRadar player={currentPlayer!}/>         
                             </Containers.StandardContentBox>
-                            <Containers.TeamSideRatingBox>
+                            <Containers.StandardContentBox>
                                 <TeamSideRatingPie player={currentPlayer} />
                                 <KillsAssistsDeathsPie player={currentPlayer} />
-                            </Containers.TeamSideRatingBox>
+                            </Containers.StandardContentBox>
                         </Containers.StandardBoxRow>
                     </div>
                 }            

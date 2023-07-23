@@ -202,7 +202,7 @@ export function RoleByTierBarChart({ playerData = [] }: Props) {
             </Containers.ChartButtonBox>
           </Containers.ChartButtonBoundingBox>
           <Containers.StandardContentBox>
-            <ReactECharts key={showProportions ? 'proportions' : 'totals'} option={optionPlayersInTier} style={{ height: 500 }} />
+            <ReactECharts key={showProportions ? 'proportions' : 'totals'}  className="w-full pr-4"  option={optionPlayersInTier} style={{ height: 500 }} />
           </Containers.StandardContentBox>
         </>
       );      

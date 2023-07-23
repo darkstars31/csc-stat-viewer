@@ -107,7 +107,7 @@ export function StatBarByTiers( { statProperty, playerData = [] }: Props) {
     return (
         <>
             <Containers.StandardContentBox>
-                <ReactECharts option={optionHeadShotTier} style={{height: 500}} />
+                <ReactECharts option={optionHeadShotTier}  className="w-full"  style={{height: 500}} />
             </Containers.StandardContentBox>
         </>
     );
