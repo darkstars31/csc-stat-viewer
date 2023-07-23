@@ -70,7 +70,7 @@ export function PlayerRatings({ player }: Props) {
             /> */}
             {/* Warning Not Enough Data */}
             {player.stats.gameCount < 3 &&
-                <div className="relative pt-[5%] text-center">
+                <div className="relative text-center">
                     <div className="text-yellow-500 inline-block text-[0.8rem] w-[90%] italic">
                         Less than 3 matches played. Stats shown may not provide an accurate picture of player skill or consistency
                     </div>
