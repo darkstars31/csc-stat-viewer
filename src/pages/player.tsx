@@ -20,9 +20,11 @@ import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
 import { Mmr } from "../common/components/mmr";
 import { ExternalPlayerLinks } from "../common/components/externalPlayerLinks";
 import { PlayerAwards } from "./player/playerAwards";
-import { Card } from "../common/components/card";
 import { FaceitRank } from "../common/components/faceitRank";
 import { ToolTip } from "../common/utils/tooltip-utils";
+import * as Containers from "../common/components/containers";
+
+
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
@@ -63,7 +65,7 @@ export function Player() {
         <div ref={divRef} />
         <Container>
             <PlayerNavigator player={currentPlayer} playerIndex={playerRatingIndex} />
-            <Card>
+            <Containers.StandardBackgroundPage>
                 <div className="flex space-x-4 pb-2">
                     <div className="object-contain">
                         { currentPlayer?.avatarUrl && <img className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
@@ -113,25 +115,25 @@ export function Player() {
                     <div className="space-y-2">
                         <div className="space-y-2">                      
                             <PlayerAwards player={currentPlayer} players={players} />
-                            <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
+                            <Containers.StandardBoxRow>
                                 <PlayerRatings player={currentPlayer} />
-                                <div className="flex flex-col min-h-[225px] bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
+                                <Containers.StandardContentBox>
                                     <PlayerRatingTrendGraph player={currentPlayer} />
-                                </div>
-                            </div>
+                                </Containers.StandardContentBox>
+                            </Containers.StandardBoxRow>
                         </div>
-                        <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
-                            <div className="place-content-center flex flex-col min-w-full min-h-[225px] bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
+                        <Containers.StandardBoxRow>
+                            <Containers.StandardContentBox>
                                 <RoleRadar player={currentPlayer!}/>         
-                            </div>
-                            <div className="place-items-center grid grid-cols-1 md:grid-cols-2 min-w-full min-h-[300px] bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
+                            </Containers.StandardContentBox>
+                            <Containers.TeamSideRatingBox>
                                 <TeamSideRatingPie player={currentPlayer} />
                                 <KillsAssistsDeathsPie player={currentPlayer} />
-                            </div>
-                        </div>
+                            </Containers.TeamSideRatingBox>
+                        </Containers.StandardBoxRow>
                     </div>
                 }            
-            </Card>
+            </Containers.StandardBackgroundPage>
             { teammates.length > 0 && false && // TODO: fix weird bug in logic that shows same teammate twice
             <div>
                 Teammates - {teamAndFranchise}
