@@ -399,6 +399,29 @@ export function PlayerRatingTrendGraph({ player }: Props) {
     animation: true,
     tooltip: {
       trigger: "axis",
+      formatter: function (params) {
+        let tooltipText = '';
+        if (Array.isArray(params)) {
+          params.forEach(param => {
+            let coloredDot = `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${param.color};"></span>`;
+            if (param.seriesName === "SideRating") {
+              if (param.color === '#30b3ff') {
+                tooltipText += `${coloredDot} CT Side: ${param.data} <br/>`;
+              } else if (param.color === '#ff3072') {
+                tooltipText += `${coloredDot} T Side: ${param.data} <br/>`;
+              } else {
+                tooltipText += `${coloredDot} ${param.seriesName}: ${param.data} <br/>`;
+              }
+            } else {
+              tooltipText += `${coloredDot} ${param.seriesName}: ${param.data} <br/>`;
+            }
+          });
+        } else {
+          let coloredDot = `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${params.color};"></span>`;
+          tooltipText += `${coloredDot} ${params.seriesName}: ${params.data} <br/>`;
+        }
+        return tooltipText;
+      },
     },
   };
 
