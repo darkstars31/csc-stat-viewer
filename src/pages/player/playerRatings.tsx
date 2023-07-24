@@ -16,8 +16,8 @@ export function PlayerRatings({ player }: Props) {
     const gamesPlayedCaption = String('Data from last ' + player.stats.gameCount).concat((player.stats.gameCount>1)?' matches':' match');
     return (
         /* Games Played*/
-        <div className="w-full m-auto relative flex flex-col bg-midnight1 rounded-lg shadow-md shadow-black/20 dark:shadow-black/40">
-            <div className="p-[5%] space-y-4">
+        <>
+            <div className="px-[5%] space-y-4 w-full">
                 <div className="relative text-neutral-700 text-sm text-left italic font-bold">
                     {gamesPlayedCaption}
                 </div>
@@ -70,13 +70,13 @@ export function PlayerRatings({ player }: Props) {
             /> */}
             {/* Warning Not Enough Data */}
             {player.stats.gameCount < 3 &&
-                <div className="relative pt-[5%] text-center">
+                <div className="relative text-center">
                     <div className="text-yellow-500 inline-block text-[0.8rem] w-[90%] italic">
                         Less than 3 matches played. Stats shown may not provide an accurate picture of player skill or consistency
                     </div>
                 </div>
             }
             </div>
-        </div>
+        </>
     );
 }

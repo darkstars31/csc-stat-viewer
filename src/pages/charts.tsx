@@ -13,6 +13,8 @@ import { PlayerTypes } from '../common/utils/player-utils';
 import { PlayerTypeFilter } from '../common/components/filters/playerTypeFilter';
 import { PlayerTiersFilter } from '../common/components/filters/playerTiersFilter';
 import { PlayerRolesFilter } from '../common/components/filters/playerRoleFilter';
+import * as Containers from "../common/components/containers";
+  
 
 export function Charts() {
     const inputRef = React.useRef<HTMLInputElement>(null);
@@ -144,74 +146,78 @@ export function Charts() {
                     { filters.map( filter => <Pill key={filter} label={filter} onClick={() => removeFilter(filter)}/>) }
                 </div>
             </div>
-            <div className={`flex flex-col mt-48 md:flex-row md:mt-0 h-12 justify-end`}>
-            <div className="basis-1/3">
-                <PlayerTypeFilter 
-                    onChange={setViewPlayerTypeOptions as typeof React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>} 
-                    selectedOptions={viewPlayerTypeOptions}
-                />
-            </div>
-            <div className="basis-1/3">
-                <PlayerTiersFilter onChange={setViewTierOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
-            </div>
-            <div className="basis-1/5">
-                <PlayerRolesFilter onChange={setViewPlayerRoleOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
-            </div>        
-        </div>
-
-            <div className="mb-6">
-                { currentTab === 0 && <div
-                    className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-                    id="tabs-home"
-                    role="tabpanel"
-                    aria-labelledby="tabs-home-tab"
-                    data-te-tab-active>
-                    <CartesianCompare playerData={filteredBySearchPlayers} />
-                </div>
-                }
-                { currentTab === 1 && <div
-                    className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-                    id="tabs-profile"
-                    role="tabpanel"
-                    aria-labelledby="tabs-profile-tab">
-                    <Select
-                        className="grow"
-                        unstyled
-                        defaultValue={statPropertyOptions[0]}
-                        isSearchable={false}
-                        classNames={selectClassNames}
-                        options={statPropertyOptions}
-                        onChange={setStatPropertySelected}
-                    />  
-                    <StatBarByTiers statProperty={statPropertySelected!.value} playerData={filteredBySearchPlayers} />
-                </div>
-                }
-                { currentTab === 2 && <div
-                    className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-                    id="tabs-messages"
-                    role="tabpanel"
-                    aria-labelledby="tabs-profile-tab">
-                    <RolePieChart playerData={filteredBySearchPlayers} />
-                </div>
-                }
-                { currentTab === 3 && <div
-                    className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-                    id="tabs-contact"
-                    role="tabpanel"
-                    aria-labelledby="tabs-contact-tab">
-                    <RoleByTierBarChart playerData={filteredBySearchPlayers} />
-                </div>
-                }
-                {
-                    currentTab === 4 && <div
-                    className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-                    id="tabs-correlation"
-                    role="tabpanel"
-                    aria-labelledby="tabs-correlation-tab">
-                    <CorrelationByTier playerData={filteredBySearchPlayers} />
+            <Containers.StandardBackgroundPage>
+                <Containers.StandardContentThinBox>
+                    <div className="basis-1/3">
+                        <PlayerTypeFilter 
+                            onChange={setViewPlayerTypeOptions as typeof React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>} 
+                            selectedOptions={viewPlayerTypeOptions}
+                        />
                     </div>
-                }
-            </div>
+                    <div className="basis-1/3">
+                        <PlayerTiersFilter onChange={setViewTierOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
+                    </div>
+                    <div className="basis-1/3">
+                        <PlayerRolesFilter onChange={setViewPlayerRoleOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
+                    </div>     
+                </Containers.StandardContentThinBox>
+            
+                <div className=""> 
+                    { currentTab === 0 && <div
+                        className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                        id="tabs-home"
+                        role="tabpanel"
+                        aria-labelledby="tabs-home-tab"
+                        data-te-tab-active>
+                        <CartesianCompare playerData={filteredBySearchPlayers} />
+                    </div>
+                    }
+                    { currentTab === 1 && <div
+                        className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                        id="tabs-profile"
+                        role="tabpanel"
+                        aria-labelledby="tabs-profile-tab">
+                        <StatBarByTiers statProperty={statPropertySelected!.value} playerData={filteredBySearchPlayers} />
+                        <Containers.ChartButtonBoundingBox>
+                            <Select
+                                className="flex-grow-0 w-1/2"
+                                unstyled
+                                defaultValue={statPropertyOptions[0]}
+                                isSearchable={false}
+                                classNames={selectClassNames}
+                                options={statPropertyOptions}
+                                onChange={setStatPropertySelected}
+                            />  
+                        </Containers.ChartButtonBoundingBox>
+                    </div>
+                    }
+                    { currentTab === 2 && <div
+                        className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                        id="tabs-messages"
+                        role="tabpanel"
+                        aria-labelledby="tabs-profile-tab">
+                        <RolePieChart playerData={filteredBySearchPlayers} />
+                    </div>
+                    }
+                    { currentTab === 3 && <div
+                        className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                        id="tabs-contact"
+                        role="tabpanel"
+                        aria-labelledby="tabs-contact-tab">
+                        <RoleByTierBarChart playerData={filteredBySearchPlayers} />
+                    </div>
+                    }
+                    {
+                        currentTab === 4 && <div
+                        className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                        id="tabs-correlation"
+                        role="tabpanel"
+                        aria-labelledby="tabs-correlation-tab">
+                        <CorrelationByTier playerData={filteredBySearchPlayers} />
+                        </div>
+                    }
+                </div>
+            </Containers.StandardBackgroundPage>
         </Container>
     );
 }

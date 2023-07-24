@@ -58,7 +58,7 @@ export function RatingBar({
       <div className="h-1 bg-midnight2 rounded-lg">
         <div className={`${gradientClass} rounded-lg`} style={{ width }} />
       </div>
-      {average && (
+      {average && type !== "concy" && (
         <ToolTip
           message={`Tier Average: ${average}`}
           pos={`${(average / 2) * 100}%`}

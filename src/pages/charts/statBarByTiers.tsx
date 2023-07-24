@@ -3,6 +3,7 @@ import * as React from "react";
 import ReactECharts from "echarts-for-react";
 import { getTotalPlayerAverages } from "../../common/utils/player-utils";
 import { Player } from "../../models";
+import * as Containers from "../../common/components/containers";
 
 type Props = {
     statProperty: string;
@@ -104,8 +105,10 @@ export function StatBarByTiers( { statProperty, playerData = [] }: Props) {
     };
 
     return (
-        <div className='py-4'>
-            <ReactECharts option={optionHeadShotTier} style={{height: 500}} />
-        </div>
+        <>
+            <Containers.StandardContentBox>
+                <ReactECharts option={optionHeadShotTier}  className="w-full"  style={{height: 500}} />
+            </Containers.StandardContentBox>
+        </>
     );
 }

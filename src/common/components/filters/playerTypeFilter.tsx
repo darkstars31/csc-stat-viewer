@@ -38,7 +38,7 @@ export const PlayerTypeFilter = React.memo(({ onChange, selectedOptions }: Props
 
 
     return (
-        <div className="flex flex-row text-xs m-2">
+        <div className="flex flex-row text-xs my-2 mx-1">
             <label title="Player Type" className="p-1 leading-9">
                 Type
             </label>

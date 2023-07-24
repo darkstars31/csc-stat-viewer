@@ -69,6 +69,6 @@ export function TeamSideRatingPie( { player }: Props) {
           };
 
     return (
-      !isLoading ? <ReactECharts loadingOption={isLoading} option={defaultOptions} style={{height: "180px",width: "100%"}}/> : <div className="mx-auto pt-16"><Loading /></div>
+      !isLoading ? <ReactECharts loadingOption={isLoading} className="w-full md:w-1/2" option={defaultOptions} style={{height: "180px"}}/> : <div className="mx-1 pt-16"><Loading /></div>
     )
 }

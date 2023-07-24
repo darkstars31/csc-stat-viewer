@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Player, CscStats } from "../../models";
 import ReactECharts from "echarts-for-react";
+import * as Containers from "../../common/components/containers";
+
 
 type Props = {
   playerData?: Player[];
@@ -20,6 +22,7 @@ type ChartOption = {
   title: {
     text: string;
     left: string;
+    top: string;
     textStyle: {
       align: string;
       color: string;
@@ -162,8 +165,9 @@ export function CorrelationByTier({ playerData = [] }: Props) {
 
         return {
           title: { 
-            text: `Correlation Coefficient - ${selectedRating === 'mmr' ? selectedRating.toUpperCase() : selectedRating.charAt(0).toUpperCase() + selectedRating.slice(1)} and ${stat}`,
-            left: '5%', 
+            text: `Correlation - ${selectedRating === 'mmr' ? selectedRating.toUpperCase() : selectedRating.charAt(0).toUpperCase() + selectedRating.slice(1)} and ${stat}`,
+            left: '5%',
+            top: '5%', 
             textStyle: {
               align: 'center',
               color: '#FFFFFF', 
@@ -201,28 +205,23 @@ export function CorrelationByTier({ playerData = [] }: Props) {
   }, [correlationData, getBarColor, playerStatsKeys, selectedRating]);
 
   return (
-    <div className="py-4">
-      <div className="flex space-x-4 mb-4">
-        <button 
-          className={`px-4 py-2 mx-1 rounded-lg ${selectedRating === 'mmr' ? 'bg-midnight1 text-white border border-blue-500' : 'bg-midnight2 text-blue-500'}`}
-          onClick={() => handleRatingChange('mmr')}
-        >
+    <>
+      <Containers.ChartButtonBoundingBox>
+        <Containers.ChartButtonBox isSelected={selectedRating === 'mmr'} onClick={() => handleRatingChange('mmr')}>
           MMR
-        </button>
-        <button 
-          className={`px-4 py-2 mx-1 rounded-lg ${selectedRating === 'rating' ? 'bg-midnight1 text-white border border-blue-500' : 'bg-midnight2 text-blue-500'}`}
-          onClick={() => handleRatingChange('rating')}
-        >
+        </Containers.ChartButtonBox>
+        <Containers.ChartButtonBox isSelected={selectedRating === 'rating'} onClick={() => handleRatingChange('rating')}>
           Rating
-        </button>
-      </div>
-      <div className="grid gap-4 md:grid-cols-2">
-        {options.map((option) => (
-          <div key={`chart-${option.title.text}`} className="my-4">
-            <ReactECharts option={option} style={{ height: CHART_HEIGHT }} notMerge={true} />
-          </div>
-        ))}
-      </div>
-    </div>
+        </Containers.ChartButtonBox>
+      </Containers.ChartButtonBoundingBox>
+      
+        <Containers.StandardBoxRow>
+          {options.map((option) => (
+            <Containers.StandardContentBox key={`chart-${option.title.text}`}>
+              <ReactECharts option={option} className="w-full" style={{ height: CHART_HEIGHT }} notMerge={true} />
+            </Containers.StandardContentBox>
+          ))}
+        </Containers.StandardBoxRow>
+    </>
   );
 }

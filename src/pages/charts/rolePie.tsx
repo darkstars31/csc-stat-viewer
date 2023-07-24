@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Player } from "../../models";
 import ReactECharts from "echarts-for-react";
+import * as Containers from "../../common/components/containers";
 
 type Props = {
     playerData?: Player[]
@@ -50,7 +51,11 @@ export function RolePieChart({ playerData = [] }: Props) {
     };
 
     return (
-        <ReactECharts option={optionByRole} style={{height: 500}} />
+        <>
+            <Containers.StandardContentBox>
+                <ReactECharts option={optionByRole}  className="w-full"  style={{height: 500}} />
+            </Containers.StandardContentBox>
+        </>
     );
 
 }
