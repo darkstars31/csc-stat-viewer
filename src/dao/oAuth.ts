@@ -3,7 +3,7 @@ import ReactGA from "react-ga4";
 import * as Sentry from "@sentry/browser";
 
 export const discordLoginCallback = (code: string) => 
-    fetch( "https://tonysanti.com/prx/discordlogin/login", {
+    fetch( "https://tonysanti.com/prx/discord/login", {
         method: "POST",
         body: JSON.stringify({ 
             code,
@@ -16,6 +16,7 @@ export const discordLoginCallback = (code: string) =>
         const json = await res.json();
         cookie.set( "access_token", json.access_token, { expires: 7 } );
         cookie.set( "refresh_token", json.refresh_token );
+        cookie.set( "jwt", json.jwt );
         return json;
     }
 );
@@ -34,6 +35,7 @@ export const discordFetchUser = async ( access_token: string ) => {
         return user;
     }).catch( err => {
         console.log( err );
+        return err;
     });
 }
 
