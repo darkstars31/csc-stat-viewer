@@ -3,7 +3,7 @@ import ReactGA from "react-ga4";
 import * as Sentry from "@sentry/browser";
 
 export const discordLoginCallback = (code: string) => 
-    fetch( "https://tonysanti.com/prx/discord/login", {
+    fetch( "https://tonysanti.com/prx/csc-stat-api/discord/login", {
         method: "POST",
         body: JSON.stringify({ 
             code,
