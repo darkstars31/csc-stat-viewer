@@ -1,24 +1,14 @@
 import * as React from 'react';
 import { Router as Wouter, Route, Switch, useLocation } from 'wouter';
 import { Container } from './common/components/container';
-import { Home } from './pages/home';
-import { Franchises } from './pages/franchises';
-import { Players } from './pages/players';
-import { Player } from './pages/player';
-import { LeaderBoards } from './pages/leaderboards';
-import { TeamBuilder } from './pages/teamBuilder';
-import { Playground } from './pages/playground';
+import { Home, LoginCallBack, Charts, LeaderBoards, Franchises, Franchise, Players, Player, Profile, Playground, TeamStandings, Team, TeamBuilder } from './pages';
 import { useDataContext } from './DataContext';
-import { Charts } from './pages/charts';
-import { Team } from './pages/team';
-import { Franchise } from './pages/franchise';
-import { TeamStandings } from './pages/teamStandings';
 import { ProgressBar } from './common/components/progress';
 import ReactGA from 'react-ga4';
 import { ErrorBoundary } from './common/components/errorBoundary';
-import { LoginCallBack } from './pages/cb';
 import { discordFetchUser } from './dao/oAuth';
 import cookie from 'js-cookie';
+
 
 const routes = [
   { path: `/`, component: () => <Charts /> },
@@ -33,6 +23,7 @@ const routes = [
   { path: `/leaderboards`, component: () => <LeaderBoards /> },
   { path: `/about`, component: () => <Home /> },
   { path: `/playground`, component: () => <Playground /> },
+  { path: `/profile`, component: () => <Profile /> },
   { path: `/cb`, component: () => <LoginCallBack /> }
 ];
 
