@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useFetchTwitchStreamData } from "./dao/cscStatApiDao";
+import { useFetchTwitchStreamData } from "./dao/StatApiDao";
 
 export type Notification = {
 	id: number | string;

@@ -104,6 +104,26 @@ const useDataContextProvider = () => {
 		isLoadingSignPromoted,
 	].some(Boolean);
 
+	// const tierNumber = {
+	// 	Recruit: 1,
+	// 	Prospect: 2,
+	// 	Contender: 3,
+	// 	Challenger: 4,
+	// 	Elite: 5,
+	// 	Premier: 6,
+	// }
+
+	// TODO: Creates a CSV for expiring contracts at end of season - Move this somewhere else for the next of next season
+	// const x = players.filter( p => p.contractDuration === 1).map( p => ({ tier: p.tier?.name, name: p.name, team: p.team?.name ?? "None"}) );
+	// const y = x.sort( (a,b) => tierNumber[b.tier as keyof typeof tierNumber] - tierNumber[a.tier as keyof typeof tierNumber] );
+	// const blob = new Blob([papa.unparse(y)], { type: 'text/csv' });
+    // const url = window.URL.createObjectURL(blob)
+    // const a = document.createElement('a')
+    // a.setAttribute('href', url)
+    // a.setAttribute('download', 'PlayersWithStats.csv');
+    // a.click()
+
+
     return {
 		discordUser, setDiscordUser,
         players: players,

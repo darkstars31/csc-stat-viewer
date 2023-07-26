@@ -2,8 +2,15 @@ import cookie from 'js-cookie';
 import ReactGA from "react-ga4";
 import * as Sentry from "@sentry/browser";
 
+
+const isProduction = process.env.NODE_ENV === "production";
+const useLocalApi = false;
+const discordLoginCallbackUri = !isProduction && useLocalApi 
+    ? "http://localhost:3001"
+    : "https://tonysanti.com/prx/csc-stat-api";
+
 export const discordLoginCallback = (code: string) => 
-    fetch( "https://tonysanti.com/prx/csc-stat-api/discord/login", {
+    fetch( `${discordLoginCallbackUri}/discord/login`, {
         method: "POST",
         body: JSON.stringify({ 
             code,

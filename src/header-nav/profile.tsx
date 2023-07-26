@@ -47,15 +47,20 @@ export function HeaderProfile() {
                 leaveTo="transform opacity-0 scale-95"
             >
                 <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <Menu.Item>
-                        {({ active }) => (
-                            <span className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
-                                {discordUser?.global_name}
-                            </span>
-                        )}
-                    </Menu.Item>
                     {currentLoggedInPlayer &&
-                        <><Menu.Item>
+                        <>
+                         <Menu.Item>
+                            {({ active }) => (
+                                <Link to={`/profile`}>
+                                    <button
+                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                    >
+                                        My Profile
+                                    </button>
+                                </Link>
+                            )}
+                        </Menu.Item>
+                        <Menu.Item>
                             {({ active }) => (
                                 <Link to={`/players/${currentLoggedInPlayer?.tier.name}/${currentLoggedInPlayer?.name}`}>
                                     <button
@@ -65,7 +70,8 @@ export function HeaderProfile() {
                                     </button>
                                 </Link>
                             )}
-                        </Menu.Item><Menu.Item>
+                        </Menu.Item>
+                        <Menu.Item>
                                 {({ active }) => (
                                     <Link to={`/franchises/${currentLoggedInPlayer?.team?.franchise.name}/${currentLoggedInPlayer?.team?.name}`}>
                                         <button
