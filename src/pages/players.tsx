@@ -30,7 +30,7 @@ const exportAsCsv = ( players: Player[]) => {
             const stats = Object.keys(rest)
                 .reduce( (acc, k) => {
                     const value = rest[k as keyof typeof rest];
-                    acc[k] = typeof value === "number" ? value.toFixed(2) : value;
+                    acc[k] = typeof value === "number" && !Number.isInteger(value) ? value.toFixed(2) : value;
                     return acc
                 }, {} as any);
             return ({ name: p.name, tier: p.tier.name, role: p.role, mmr: p.mmr, rating: p.stats.rating, ...stats });
