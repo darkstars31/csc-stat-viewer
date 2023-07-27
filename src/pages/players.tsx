@@ -21,8 +21,22 @@ const sortOptionsList = [
     { label: "MMR", value: "mmr"},
 ];
 
+
 const exportAsCsv = ( players: Player[]) => {
-    var csv = Papa.unparse(players.filter( p => Boolean(p.stats)).map( p => p.stats ));
+    const playerData = players.filter( p => Boolean(p.stats))
+        .map( p => {
+            // Hack to remove properties from stats and include player first class properties
+            const { name, team, __typename, rating, ...rest } = p.stats; 
+            const stats = Object.keys(rest)
+                .reduce( (acc, k) => {
+                    const value = rest[k as keyof typeof rest];
+                    acc[k] = typeof value === "number" ? value.toFixed(2) : value;
+                    return acc
+                }, {} as any);
+            return ({ name: p.name, tier: p.tier.name, role: p.role, mmr: p.mmr, rating: p.stats.rating, ...stats });
+            }
+        );
+    var csv = Papa.unparse(  playerData );
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')

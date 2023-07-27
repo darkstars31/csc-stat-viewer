@@ -6,17 +6,40 @@ import { LuConstruction } from 'react-icons/lu';
 import { useDataContext } from '../DataContext';
 import { useFetchPlayerProfile } from '../dao/StatApiDao';
 import { Loading } from '../common/components/loading';
+//import cookie from 'js-cookie';
+//import { queryClient } from '../App';
+//import { useDebounce } from '../common/hooks/debounce';
 
 export function Profile() {
     const { discordUser } = useDataContext();
     const { data: profile, isLoading } = useFetchPlayerProfile(discordUser?.id);
-    
     const [ profileSettings, setProfileSettings ] = React.useState({
         isIGL: profile?.isIGL ?? false,
-        twitch_username: profile?.twitch_username || "",
+        twitchUsername: profile?.twitch_username || "",
     })
 
+    //const debouncedProfileSettings = useDebounce( profileSettings, 500);
+
     const isDevelopment = process.env.NODE_ENV !== "production";
+
+    // React.useEffect(() => {
+    //     if( isLoading ) return;
+    //     if( JSON.stringify(debouncedProfileSettings) !== JSON.stringify(profile) ){
+    //         fetch( "https://tonysanti.com/prx/csc-stat-api/profile",
+    //         {
+    //             method: "POST",
+    //             body: JSON.stringify( profileSettings ),
+    //             headers: {
+    //                 "Authorization": "Bearer " + cookie.get("jwt"),
+    //                 "Content-Type": "application/json",
+    //             }
+    //         }).then( () => queryClient.invalidateQueries(["profile", discordUser?.id]));
+    //     }
+    // }, [ debouncedProfileSettings ])
+
+    const onChange = ( key: string, value: string | number | boolean ) => {
+        setProfileSettings( { ...profileSettings, [key]: value });
+    }
 
     return (
         <Container>
@@ -30,7 +53,7 @@ export function Profile() {
                                 className="inline-block"
                                 type="checkbox"
                                 value=""
-                                onChange={ () => setProfileSettings( { ...profileSettings, isIGL: !profileSettings.isIGL }) }
+                                onChange={ () => onChange( "isIGL", !profileSettings.isIGL) }
                                 id="checkboxChecked"
                                 checked={ profileSettings.isIGL } 
                             />
@@ -47,8 +70,8 @@ export function Profile() {
                                 label=""
                                 placeHolder="Twitch Username"
                                 type="text"
-                                onChange={ ( e ) => setProfileSettings( { ...profileSettings, twitch_username: e.currentTarget.value })}
-                                value={profileSettings.twitch_username}
+                                onChange={ ( e ) => onChange( "twitchUsername", e.currentTarget.value.trim())}
+                                value={profileSettings.twitchUsername}
                             />
                         </div>
                         </>

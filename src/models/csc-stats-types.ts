@@ -40,12 +40,13 @@ export interface CscStats {
     savesR: number;
     suppR: number;
     suppXR: number;
-    Team: string;
+    team: string;
     threeK: number;
     tradesR: number;
     tRatio: number;
     twoK: number;
     util: number;
     utilDmg: number;
+    __typename: string;
   }
   
