@@ -1,7 +1,13 @@
 import * as React from 'react';
 import { Router as Wouter, Route, Switch, useLocation } from 'wouter';
 import { Container } from './common/components/container';
-import { Home, LoginCallBack, Charts, LeaderBoards, Franchises, Franchise, Players, Player, Profile, Playground, TeamStandings, Team, TeamBuilder } from './pages';
+import { 
+  Home, LoginCallBack, Charts, 
+  LeaderBoards, Franchises, Franchise, 
+  Players, Player, Profile, 
+  Playground, TeamStandings, Team, 
+  TeamBuilder, ExportData
+} from './pages';
 import { useDataContext } from './DataContext';
 import { ProgressBar } from './common/components/progress';
 import ReactGA from 'react-ga4';
@@ -12,8 +18,10 @@ import cookie from 'js-cookie';
 
 const routes = [
   { path: `/`, component: () => <Charts /> },
+  { path: `/about`, component: () => <Home /> },
+  { path: `/cb`, component: () => <LoginCallBack /> },
   { path: `/charts`, component: () => <Charts />},
-  { path: `/standings`, component: () => <TeamStandings />},
+  { path: `/export`, component: () => <ExportData /> },
   { path: `/franchises`, component: () => <Franchises /> },
   { path: `/franchises/:franchise`, component: () => <Franchise /> },
   { path: `/franchises/:franchise/:team`, component: () => <Team />},
@@ -21,10 +29,9 @@ const routes = [
   { path: `/players/:tier/:id`, component: () => <Player /> },
   { path: `/team-builder`, component: () => <TeamBuilder /> },
   { path: `/leaderboards`, component: () => <LeaderBoards /> },
-  { path: `/about`, component: () => <Home /> },
   { path: `/playground`, component: () => <Playground /> },
   { path: `/profile`, component: () => <Profile /> },
-  { path: `/cb`, component: () => <LoginCallBack /> }
+  { path: `/standings`, component: () => <TeamStandings />},
 ];
 
 export function Router(){

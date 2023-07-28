@@ -20,7 +20,7 @@ export function PlayerTiersFilter( { onChange }: Props) {
         placeholder: () => "text-gray-400 bg-inherit",
         container: () => "m-1 rounded bg-inherit",
         control: () => "p-2 rounded-l bg-slate-700",
-        option: () => "p-2 hover:bg-slate-900",
+        option: () => "p-2 hover:bg-slate-900 z-10",
         input: () => "text-slate-200",
         menu: () => "bg-slate-900",
         menuList: () => "bg-slate-700",

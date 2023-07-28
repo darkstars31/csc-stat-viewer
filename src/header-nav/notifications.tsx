@@ -32,7 +32,7 @@ export function HeaderNotifications() {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
             >
-                <Menu.Items className="absolute -right-8 mt-2 w-80 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Items className="absolute -right-8 mt-2 w-80 md:w-96 z-20 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     {notifications.length === 0 && 
                     <Menu.Item>
                         {({ active }) => (
@@ -46,7 +46,7 @@ export function HeaderNotifications() {
                             <Menu.Item key={notification.id}>
                                 {({ active }) => (
                                     <span className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-900')}>
-                                        <a className='flex flex-row' href={`https://www.twitch.tv/${notification.title}`} target='_blank' rel="noreferrer">
+                                        <a className='flex flex-row' href={`https://www.twitch.tv/${notification.href}`} target='_blank' rel="noreferrer">
                                             <div>
                                                 <img src={notification.imageUrl} rel="noreferrer" alt="" />
                                             </div>

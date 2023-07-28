@@ -6,6 +6,7 @@ export type Notification = {
 	title: string;
 	subText: string;
 	imageUrl: string;
+	href: string;
 }
 
 
@@ -14,7 +15,7 @@ const useNotificationsContextProvider = () => {
 
 	const notifications: Notification[] = [
 		// This is a test notification, only uncomment in development { id: 0, imageUrl: "", title: "Test Notification", subText: "This is subtext" },
-		...twitchStreams.flatMap( stream => ({ id: stream.id, title: stream.user_name.concat(" is Live"), subText: stream.title, imageUrl: stream.thumbnail_url.replace("{width}", "160").replace("{height}", "90") })),
+		...twitchStreams.flatMap( stream => ({ id: stream.id, title: stream.user_name.concat(" is Live"), href: stream.user_name, subText: stream.title, imageUrl: stream.thumbnail_url.replace("{width}", "160").replace("{height}", "90") })),
 	];
 
 	return {
