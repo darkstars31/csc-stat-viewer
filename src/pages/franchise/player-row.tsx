@@ -13,7 +13,6 @@ import { FaceitRank } from "../../common/components/faceitRank";
 import { BiStats } from "react-icons/bi";
 
 export function PlayerRow( { franchisePlayer, team, extraDetails }: {franchisePlayer: FranchisePlayer, team: Team, extraDetails?: boolean} ) {
-    console.info( extraDetails );
     const { players = [] } = useDataContext();
     const player = players.find( p => p.steam64Id === franchisePlayer.steam64Id || p.name === franchisePlayer.name );
     const percentageOfMmrCap = (((franchisePlayer.mmr ?? 0)/team.tier.mmrCap)*100).toFixed(1);

@@ -13,6 +13,7 @@ interface ToolTipProps {
     awardType?: "numberOne" | "top10";
     awardMapping?: string;
     property?: string;
+    classNames?: string[]
 }
 const iconClass = "h-3 w-3 transition inline-block ease-in-out select-none";
 const useHover = () => {
@@ -21,7 +22,7 @@ const useHover = () => {
     const onMouseLeave = () => setIsHovered(false);
     return { isHovered, onMouseEnter, onMouseLeave };
 }
-const baseTooltipClass = "z-2000 absolute-top transition-opacity duration-300 ease-in-out absolute top-0 left-0 bg-zinc-500 text-neutral-100 text-center py-1 px-3 text-sm rounded shadow-lg";
+const baseTooltipClass = "absolute-top transition-opacity duration-300 ease-in-out absolute top-0 left-0 text-neutral-100 text-center py-1 px-3 text-sm rounded";
 const noWrapClass = "whitespace-nowrap";
 const wideTooltipClass = "min-w-[200px] max-w-full";
 const awardTooltipClass = "bg-zinc-500 text-neutral-100 text-center font-normal";
@@ -119,8 +120,10 @@ const ExplainTooltip: React.FC<ToolTipProps> = ({ message, stat1 }) => {
     );
 }
 
-const GenericTooltip: React.FC<ToolTipProps> = ({ message, children }) => {
+const GenericTooltip: React.FC<ToolTipProps> = ({ message, children, classNames }) => {
     const { isHovered, onMouseEnter, onMouseLeave } = useHover();
+
+    const childrenIsString = typeof message === "string";
 
     return (
         <div
@@ -129,10 +132,9 @@ const GenericTooltip: React.FC<ToolTipProps> = ({ message, children }) => {
                 onMouseLeave={onMouseLeave}
                 onTouchStart={onMouseEnter}
                 onTouchEnd={onMouseLeave}           
-        >
+        >     
             {children}  
-                <div className={`${baseTooltipClass} ${wideTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-                style={{transform: 'translateX(-25%) translateY(-110%)', zIndex: 1000}}
+                <div className={`${baseTooltipClass} ${wideTooltipClass} -translate-x-1/4 translate-y-[-110%] ${classNames?.join(' ')} z-50 ${childrenIsString ? 'bg-zinc-500 shadow-lg' : ''} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
                 >
                     {message}
                 </div>

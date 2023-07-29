@@ -87,7 +87,7 @@ export function ExportData() {
                 }
             </div>
         </div>
-        <div className={`flex flex-col mt-48 md:flex-row md:mt-0 h-12 justify-end z-10`}>
+        <div className={`flex flex-col mt-48 md:flex-row md:mt-0 h-12 justify-end`}>
             <div className="basis-1/3">
                 <PlayerTypeFilter onChange={setViewPlayerTypeOptions as typeof React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>} />
             </div>

@@ -1,3 +1,5 @@
+import { Team } from "./franchise-types";
+
 export type Matches = {
     data: Data;
 }
@@ -11,11 +13,22 @@ export type Match = {
     scheduledDate: Date;
     completedAt:   Date;
     demoUrl:       string;
+    lobby:         Lobby;
     matchDay:      MatchDay;
     home:          Away;
     away:          Away;
     dathostServer: DathostServer;
     stats:         Stat[];
+}
+
+export type Lobby = {
+    id: string;
+    mapBans: MapBan[];
+}
+
+export type MapBan = {
+    map: string;
+    team: Team;
 }
 
 export type Away = {

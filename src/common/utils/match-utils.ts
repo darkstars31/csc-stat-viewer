@@ -13,6 +13,30 @@ export const getTeamRecord = ( team?: Team, matches?: Match[] ) => matches?.redu
     return acc;
 }, { wins: 0, losses: 0 });
 
+export const calculateMapBans = (team?: Team, matches?: Match[]) => {
+    const mapBans = matches
+        ?.filter( match => match.stats.length === 1 )
+        ?.flatMap( match => match.lobby.mapBans );
+
+    const totalMapBans = mapBans?.reduce((acc, mapBan, index) => {
+        const map = mapBan.map;
+
+        if( !acc[map] ) {
+            acc[map] = { banFor: 0, banAgainst: 0 };
+        }
+
+        if( mapBan.team.name === team?.name){
+            acc[map].banFor += 1;
+        } else {
+            acc[map].banAgainst += 1;
+        }
+
+        return acc;
+    }, {} as any);
+
+    return totalMapBans;
+}
+
 export const calculateTeamRecord = (team?: Team, matches?: Match[], conferncesTeams?: string[]) => matches?.reduce((acc, match) => {
     if( match.stats.length > 0 ) {
         const isPlayoffMatch = match.stats.length > 1;

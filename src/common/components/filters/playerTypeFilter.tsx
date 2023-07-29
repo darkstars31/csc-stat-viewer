@@ -2,6 +2,7 @@ import * as React from "react";
 import Select, { MultiValue } from "react-select";
 import { PlayerTypes } from "../../utils/player-utils";
 import { useDataContext } from "../../../DataContext";
+import { selectClassNames } from "../../utils/select-utils";
 
 interface Props {
     //onChange: React.Dispatch<React.SetStateAction<MultiValue<{label: string;value: PlayerTypes[];}>>>;
@@ -13,20 +14,6 @@ export const PlayerTypeFilter = React.memo(({ onChange, selectedOptions }: Props
 
     const { players } = useDataContext();
     const isDraftEligibleDisabled = !players.some( player => player.type === PlayerTypes.DRAFT_ELIGIBLE);
-
-    const selectClassNames = {
-        placeholder: () => "text-gray-400 bg-inherit",
-        container: () => "m-1 rounded bg-inherit z-10",
-        control: () => "p-2 rounded-l bg-slate-700",
-        option: (state : { isDisabled: boolean }) => `${state.isDisabled ? 'text-gray-500' : ''} p-2 hover:bg-slate-900`,
-        input: () => "text-slate-200",
-        menu: () => "bg-slate-900",
-        menuList: () => "bg-slate-700 ",
-        multiValue: () => "bg-sky-700 p-1 mr-1 rounded",
-        multiValueLabel: () => "text-slate-200",
-        multiValueRemove: () => "text-slate-800 pl-1",
-        singleValue: () => "text-slate-200",
-    };
     
     const viewPlayerTypeList = React.useMemo(() => ([
         { label: `Signed`, value: [PlayerTypes.SIGNED,PlayerTypes.INACTIVE_RESERVE,PlayerTypes.SIGNED_PROMOTED,PlayerTypes.SIGNED_SUBBED] },

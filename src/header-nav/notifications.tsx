@@ -32,7 +32,7 @@ export function HeaderNotifications() {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
             >
-                <Menu.Items className="absolute -right-8 mt-2 w-80 md:w-96 z-20 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Items className="absolute -right-8 mt-2 w-80 sm:w-96 md:w-96 lg:w-96 z-20 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     {notifications.length === 0 && 
                     <Menu.Item>
                         {({ active }) => (

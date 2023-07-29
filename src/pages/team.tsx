@@ -9,9 +9,10 @@ import { MapRecord } from "./team/mapRecord";
 import { PlayerRow } from "./franchise/player-row";
 import { franchiseImages } from "../common/images/franchise";
 import { TeamFooterTabulation } from "./franchise/team-footer-tabulation";
-import { calculateTeamRecord } from "../common/utils/match-utils";
+import { calculateMapBans, calculateTeamRecord } from "../common/utils/match-utils";
 import { AwardsMappings } from "../common/utils/awards-utils";
 import { queryClient } from "../App";
+//import { MapBans } from "./team/mapBans";
 
 
 export function Team(){
@@ -55,6 +56,8 @@ export function Team(){
 	//const matchesData = useFetchMultipleMatchInfoGraph(matches.filter( match => match.stats.length > 0).map( match => match.id ));
 
 	const teamRecord = calculateTeamRecord( currentTeam, matches );
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const totalMapBans = calculateMapBans( currentTeam, matches );
 
 	return (
 			<div style={{backgroundImage: `url(${franchiseImages[currentFranchise?.prefix ?? '']})`, overflow:'auto'}} className={`bg-repeat bg-center bg-fixed`}>
@@ -117,9 +120,10 @@ export function Team(){
 												>Auto Refresh (1 min)</label>
 											</div>
 										}
-										<MapRecord matches={regularSeasonMatches} team={currentTeam} />											
+										<MapRecord matches={regularSeasonMatches} team={currentTeam} />
+										{/* <MapBans mapBans={totalMapBans} />										 */}
 										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
-											{ regularSeasonMatches.map( match => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
+											{ regularSeasonMatches.map( (match) => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
 										</div>											
 									</div>
 								}								

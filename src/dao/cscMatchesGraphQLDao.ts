@@ -13,16 +13,27 @@ import { appConfig } from "../dataConfig";
 //   return diffInDays;
 // }
 
-export const fetchMatchesGraph = async ( teamId?: string, season: number = 11) => await fetch(appConfig.endpoints.cscGraphQL.core,
-    { method: "POST", 
-        body: JSON.stringify({
-                "operationName": "",
-                "query": `query matches ( $teamId: String!, $season: Int!) {
+export const fetchMatchesGraph = async (teamId?: string, season: number = 11) => await fetch(appConfig.endpoints.cscGraphQL.core,
+	{
+		method: "POST",
+		body: JSON.stringify({
+			"operationName": "",
+			"query": `query matches ( $teamId: String!, $season: Int!) {
                     matches (teamId: $teamId, season: $season) {
                         id
                         scheduledDate
                         completedAt
                         demoUrl
+						lobby {
+							id
+							mapBans {
+							  map
+							  team {
+								id
+								name
+							  }
+							}
+						  }
                         matchDay {
                           number
                         }
@@ -62,27 +73,28 @@ export const fetchMatchesGraph = async ( teamId?: string, season: number = 11) =
                         }
                       }
                 }`
-                ,
-                "variables": {
-                    "teamId": teamId,
-                    "season": season,
-                }      
-            }),
-            headers: {
-                'content-type': "application/json"
-            }   
-        })
-    .then( async response => {
-        return response.json().then( json => {
-            return json.data.matches;
-        });
-    } );
+			,
+			"variables": {
+				"teamId": teamId,
+				"season": season,
+			}
+		}),
+		headers: {
+			'content-type': "application/json"
+		}
+	})
+	.then(async response => {
+		return response.json().then(json => {
+			return json.data.matches;
+		});
+	});
 
-export const fetchIndividualMatchInfoGraph = async ( matchId: string ) => await fetch(appConfig.endpoints.cscGraphQL.stats,
-  { method: "POST", 
-        body: JSON.stringify({
-                "operationName": "ScoreboardQuery",
-                "query": `query ScoreboardQuery($matchId: String!) {
+export const fetchIndividualMatchInfoGraph = async (matchId: string) => await fetch(appConfig.endpoints.cscGraphQL.stats,
+	{
+		method: "POST",
+		body: JSON.stringify({
+			"operationName": "ScoreboardQuery",
+			"query": `query ScoreboardQuery($matchId: String!) {
                   findManyMatch(where: {matchId: {startsWith: $matchId}}, orderBy: {matchId: asc}) {
                     mapName
                     matchId
@@ -119,42 +131,45 @@ export const fetchIndividualMatchInfoGraph = async ( matchId: string ) => await 
                     }
                   }
                 }`
-                ,
-                "variables": {
-                    "matchId": matchId,                }      
-            }),
-            headers: {
-                'content-type': "application/json"
-            }   
-        })
-    .then( async response => {
-        return response.json().then( json => {
-            return json.data.findManyMatch;
-        });
-      });
+			,
+			"variables": {
+				"matchId": matchId,
+			}
+		}),
+		headers: {
+			'content-type': "application/json"
+		}
+	})
+	.then(async response => {
+		return response.json().then(json => {
+			return json.data.findManyMatch;
+		});
+	});
 
 
-export function useFetchMatchesGraph( season?: number, teamId?: string ): UseQueryResult<Match[]> {
-  return useQuery( 
-      ["matches-graph", teamId], 
-      () => fetchMatchesGraph( teamId, season ), {
-          enabled: Boolean(teamId),
-          staleTime: 1000 * 60 * 60 // 1 second * 60 * 60 = 1 hour
-      });
+export function useFetchMatchesGraph(season?: number, teamId?: string): UseQueryResult<Match[]> {
+	return useQuery(
+		["matches-graph", teamId],
+		() => fetchMatchesGraph(teamId, season), {
+		enabled: Boolean(teamId),
+		staleTime: 1000 * 60 * 60 // 1 second * 60 * 60 = 1 hour
+	});
 }
 
-export function useFetchMultipleTeamsMatchesGraph( tier: string, teams: Team[]): UseQueryResult<unknown,unknown>[] {
-    const queries = teams.map( team => 
-      ( { queryKey: ["matches-graph", team.id],
-          queryFn: () => fetchMatchesGraph( team.id ),
-      } ) );
-    return useQueries( { queries } );
+export function useFetchMultipleTeamsMatchesGraph(tier: string, teams: Team[]): UseQueryResult<unknown, unknown>[] {
+	const queries = teams.map(team =>
+	({
+		queryKey: ["matches-graph", team.id],
+		queryFn: () => fetchMatchesGraph(team.id),
+	}));
+	return useQueries({ queries });
 }
 
-export function useFetchMultipleMatchInfoGraph( matchIds: string[]): UseQueryResult<unknown,unknown>[] {
-    const queries = matchIds.map( matchId =>
-      ( { queryKey: ["match-info-graph", matchId],
-          queryFn: () => fetchIndividualMatchInfoGraph( matchId ),        
-      } ) );
-    return useQueries( { queries } );
+export function useFetchMultipleMatchInfoGraph(matchIds: string[]): UseQueryResult<unknown, unknown>[] {
+	const queries = matchIds.map(matchId =>
+	({
+		queryKey: ["match-info-graph", matchId],
+		queryFn: () => fetchIndividualMatchInfoGraph(matchId),
+	}));
+	return useQueries({ queries });
 }

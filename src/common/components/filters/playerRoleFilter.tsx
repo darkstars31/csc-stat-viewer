@@ -1,5 +1,6 @@
 import * as React from "react";
 import Select, { MultiValue } from "react-select";
+import { selectClassNames } from "../../utils/select-utils";
 
 type Props = {
     onChange: typeof React.useState<MultiValue<{label: string;value: string;}>>;
@@ -15,20 +16,6 @@ export function PlayerRolesFilter( { onChange }: Props) {
         { label: "Entry", value: "ENTRY"},
         //{ label: "Lurker", value: "LURKER"},
     ];
-
-    const selectClassNames = {
-        placeholder: () => "text-gray-400 bg-inherit",
-        container: () => "m-1 rounded bg-inherit z-10",
-        control: () => "p-2 rounded-l bg-slate-700",
-        option: () => "p-2 hover:bg-slate-900",
-        input: () => "text-slate-200",
-        menu: () => "bg-slate-900",
-        menuList: () => "bg-slate-700",
-        multiValue: () => "bg-sky-700 p-1 mr-1 rounded",
-        multiValueLabel: () => "text-slate-200",
-        multiValueRemove: () => "text-slate-800 pl-1",
-        singleValue: () => "text-slate-200",
-    };
 
     return (
         <div className="flex flex-row text-xs my-2 mx-1">
