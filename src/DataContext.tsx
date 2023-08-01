@@ -78,7 +78,8 @@ const useDataContextProvider = () => {
 			const stats = statsByTier.find( s => s.tier === cscPlayer.tier.name)?.stats!;
 			acc.push( { ...cscPlayer,
 				hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
-				role, 
+				role,
+				mmr: undefined,
 				stats, 
 				statsOutOfTier: statsByTier.filter( statsWithTier => statsWithTier.tier !== cscPlayer.tier.name),
 			});

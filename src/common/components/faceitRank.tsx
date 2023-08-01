@@ -1,7 +1,7 @@
 import React from "react";
 import { faceitRankImages } from "../images/faceitRanks";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { useFetchSearchFaceitPlayers } from "../../dao/faceitApiDao";
+import { useFetchFaceItPlayerWithCache } from "../../dao/faceitApiDao";
 import { Player } from "../../models";
 
 type Props = {
@@ -9,8 +9,9 @@ type Props = {
 }
 
 export const FaceitRank = ( { player }: Props ) => {
-    const { data: faceitSearchPlayer = undefined, isLoading: isLoadingFaceitSearch } = useFetchSearchFaceitPlayers( player );
-    const faceitRank = faceitRankImages[faceitSearchPlayer?.items[0]?.games.find( g => g.name === "csgo")?.skill_level ?? 0] as unknown as string;
+    const { data: faceitSearchPlayer = undefined, isLoading: isLoadingFaceitSearch } = useFetchFaceItPlayerWithCache( player );
+    const faceitRank = faceitRankImages[faceitSearchPlayer?.rank ?? 0 as keyof typeof faceitRankImages];
+    console.info( faceitSearchPlayer );
     
     if( isLoadingFaceitSearch ){
         return (
@@ -22,7 +23,7 @@ export const FaceitRank = ( { player }: Props ) => {
         //     message={"taco"}
         //     type="generic"
         // >
-            <img src={faceitRank} alt="" />
+            <img src={faceitRank as unknown as string} alt="" />
         // </ToolTip>
     );
 }
