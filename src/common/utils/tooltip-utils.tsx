@@ -82,7 +82,8 @@ const IconTooltip: React.FC<ToolTipProps> = ({ message, stat1, stat2, range }) =
             />
             {stat1}
             <div
-                className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+                className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none '}
+                bg-zinc-500 shadow-lg
                 ${noWrapClass}
                 `}
                 style={{transform: 'translateX(-50%) translateY(-120%)'}}
@@ -111,7 +112,7 @@ const ExplainTooltip: React.FC<ToolTipProps> = ({ message, stat1 }) => {
             <div className="float-right text-sm">
                 {stat1}
             </div>
-            <div className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} ${wideTooltipClass}`}
+            <div className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} ${wideTooltipClass} bg-zinc-500 shadow-lg'`}
             style={{transform: 'translateX(-50%) translateY(-110%)'}}
             >
                 {message}
@@ -162,7 +163,7 @@ const AwardTooltip: React.FC<ToolTipProps> = ({ message, awardType, awardMapping
                 ${textColor}`
             } disabled>
             {awardMapping} {awardType === "numberOne" ? <img className="h-fit w-fit max-w-[30px] pl-1 pointer-events-none" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/> : "Top 10"}
-                <div className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                <div className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} bg-zinc-500 shadow-lg'`}
                 style={{transform: 'translate(-50%, -120%)', top: '0', left: '50%'}}>
                     <div className={`${awardTooltipClass} ${whiteSpaceClass}`}>
                         {message}

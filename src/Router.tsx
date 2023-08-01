@@ -65,7 +65,7 @@ export function Router(){
         <div>
         { !closeNotificationBanner && 
                 <button className='w-full h-8 bg-teal-600 text-center' onClick={() => setCloseNotificationBanner("true")}>
-                  MMR is disabled until numbers are public. 
+                  MMR is unavailable until the draft. 
                   <AiOutlineCloseCircle className='float-right mr-4' size="1.5em"/>
                 </button>
               }
