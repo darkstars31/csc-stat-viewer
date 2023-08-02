@@ -2,6 +2,7 @@ import { useQueries, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { Match } from "../models/matches-types";
 import { Team } from "../models/franchise-types";
 import { appConfig } from "../dataConfig";
+import { MatchScoreboard } from "../models/match-scoreboard-types";
 
 // CSC Removed daysAgo on the query for this graph
 // const calculateDaysSinceSeasonStart = () => {
@@ -165,7 +166,7 @@ export function useFetchMultipleTeamsMatchesGraph(tier: string, teams: Team[]): 
 	return useQueries({ queries });
 }
 
-export function useFetchMultipleMatchInfoGraph(matchIds: string[]): UseQueryResult<unknown, unknown>[] {
+export function useFetchMultipleMatchInfoGraph(matchIds: string[]): UseQueryResult<MatchScoreboard[]>[] {
 	const queries = matchIds.map(matchId =>
 	({
 		queryKey: ["match-info-graph", matchId],

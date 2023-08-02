@@ -7,6 +7,11 @@ import { Link } from "wouter";
 import { mapImages } from "../../common/images/maps";
 import { franchiseImages } from "../../common/images/franchise";
 import { ToolTip } from "../../common/utils/tooltip-utils";
+import { useFetchMultipleMatchInfoGraph } from "../../dao/cscMatchesGraphQLDao";
+import { Round } from "../../models/match-scoreboard-types";
+import { IoMdTimer } from "react-icons/io";
+import { IoCut, IoSkullSharp } from "react-icons/io5";
+import { GiTimeDynamite } from "react-icons/gi";
 
 type Props = {
     match: Match
@@ -14,17 +19,113 @@ type Props = {
 }
 
 const mapBanPopover = ( matchMapBans : MapBan[] ) => (
-    <div className="z-40 w-48 bg-midnight2 m-1 p-1 rounded-lg text-xs">
-        <div className="grid grid-cols-2">
-            <div>{matchMapBans[0].team.name}</div>
-            <div>{matchMapBans[1].team.name}</div>
-            {matchMapBans.map( mapBan => (
-                        <div className="text-sm"><img className="w-12 h-12 mx-auto" src={mapImages[mapBan.map]} alt=""/></div>
-            ))}
-        </div>
-        <div className="text-center">Map Ban Order</div>
+        <div className="z-40 w-48 bg-midnight2 m-1 p-1 rounded-lg text-xs">
+        { matchMapBans.length > 0 ? 
+            <div>
+                <div className="grid grid-cols-2">
+                    <div>{matchMapBans[0].team.name}</div>
+                    <div>{matchMapBans[1].team.name}</div>
+                    {matchMapBans.map( mapBan => (
+                                <div className="text-sm"><img className="w-12 h-12 mx-auto" src={mapImages[mapBan.map]} alt=""/></div>
+                    ))}
+                </div>
+                <div className="text-center">Map Ban Order</div>
+            </div>
+        :
+        <div>Map ban information unavailable.</div>
+    }
     </div>
 )
+
+const roundWinner = ( side: string, round: Round ) => {
+    let winType = <IoMdTimer size="2em" />;
+    if( round.endDueToBombEvent ) {
+        winType = <GiTimeDynamite size="2em" className="rotate-45" />
+    }
+    if( round.winTeamDmg === 500) {
+        winType = <IoSkullSharp size="2em" />
+    }
+    if( round.defuser !== "0") {
+        winType = <IoCut size="2em" className="-rotate-45" />;
+    }
+
+    return (
+        <div className={`rounded-full w-8 h-8 p-1 ${side === "CT" ? "bg-sky-500" : "bg-rose-500"}`}>
+            {winType}
+        </div>
+    );
+}
+
+const ScoreboardPopover = ( matchId : string ) => {
+    const winnerEnum: Record<number, string> = {
+        3: "CT",
+        2: "T"
+    }
+    const matches = useFetchMultipleMatchInfoGraph([matchId]);
+    console.info(matches);
+    const match = matches.find( m => m.data?.at(0)?.matchId === matchId)?.data?.at(0);
+    const rounds = match?.rounds.slice(0, -1);
+    console.info(match);
+    const firstHalf = rounds?.slice(0, 15);
+    const secondHalf = rounds?.slice(15, 30);
+    const overtime = rounds?.slice(30) ?? [];
+
+    const ctTeam = match?.rounds.find( r => r.winnerENUM === 3)?.winnerClanName;
+    const tTeam = match?.rounds.find( r => r.winnerENUM === 2)?.winnerClanName;
+    
+    console.info( ctTeam, tTeam);
+
+    
+    return (
+        <div className="z-40 w-[41em] bg-midnight2 m-2 p-2 rounded-lg text-xs w-full">
+            <div className="flex flex-row justify-between px-4">
+                <div className="text-sky-500"><strong>{ctTeam}</strong></div>
+                <div>Start Side</div>
+                <div className="text-rose-500"><strong>{tTeam}</strong></div>
+            </div>
+            <div className="flex flex-row">
+            {
+                firstHalf?.map( ( round, index ) =>
+                        <div>
+                            {index+1} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
+                        </div> 
+                )
+            }
+            </div>
+            <div className='text-gray-600 text-xs w-full p-1'>
+                    <i>Half</i>
+                    <div className='-mt-[.5em] border-dotted border-b border-gray-500' />
+            </div>
+            <div className="flex flex-row justify-between px-4">
+                <div className="text-sky-500"><strong>{tTeam}</strong></div>
+                <div className="text-rose-500"><strong>{ctTeam}</strong></div>
+            </div>
+            <div className="flex flex-row">
+            {
+            secondHalf?.map( ( round, index ) =>
+                    <div>
+                        {index+16} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
+                    </div>
+                )
+            }
+            </div>
+            { overtime.length > 0 && <div className='text-gray-600 text-xs w-full p-1'>
+                    <i>Overtime</i>
+                    <div className='-mt-[.5em] border-dotted border-b border-gray-500' />
+            </div>
+            }
+            <div className="flex flex-row">
+            { overtime?.map( ( round, index ) =>
+                    <div>
+                        {index+31} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
+                    </div>
+                )
+            }
+            </div>
+            { !rounds && <div>Round information unavailable.</div> }
+        </div>
+    );
+}
 
 export function MatchCards( { match, team }: Props ) {
     const matchDate = {
@@ -81,7 +182,13 @@ export function MatchCards( { match, team }: Props ) {
                     )
                 }
                 <div className="flex flex-row justify-end text-xs gap-2">
-                    { !isPlayoffMatch && <ToolTip type="generic" classNames={["-translate-x-48"]} message={ mapBanPopover( match.lobby.mapBans ) }>
+                    { !isPlayoffMatch && 
+                    <ToolTip type="generic" classNames={["-translate-x-96","right-4"]} message={ScoreboardPopover( match.id ) }>
+                        <span className="text-gray-900">Scoreline</span>
+                    </ToolTip>
+                    }
+                    { !isPlayoffMatch && 
+                    <ToolTip type="generic" classNames={["-translate-x-48"]} message={ mapBanPopover( match.lobby.mapBans ) }>
                         <span className="text-gray-900">Bans</span>
                     </ToolTip>
                     }
