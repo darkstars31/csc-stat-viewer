@@ -25,7 +25,6 @@ import { ToolTip } from "../common/utils/tooltip-utils";
 import * as Containers from "../common/components/containers";
 
 
-
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
     const { players = [], franchises = [], loading } = useDataContext();
@@ -90,11 +89,7 @@ export function Player() {
                                 <br /> <Mmr player={currentPlayer}/> MMR
                                 <div>
                                     <span className="flex leading-7">
-                                        <ToolTip type="generic" message="FACEIT Rank">
-                                            <div className="w-7 h-7">
-                                                <FaceitRank player={currentPlayer} />
-                                            </div>
-                                        </ToolTip>
+                                        <FaceitRank player={currentPlayer} />
                                         <ToolTip type="generic" message="HLTV2.0 Rating formula w/ <1% margin of error.">
                                             <span className="ml-2 bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">
                                                 ~{currentPlayer.hltvTwoPointO?.toFixed(2)} HLTV

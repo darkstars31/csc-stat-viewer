@@ -77,7 +77,7 @@ const ScoreboardPopover = ( matchId : string ) => {
 
     
     return (
-        <div className="z-40 w-[41em] bg-midnight2 m-2 p-2 rounded-lg text-xs w-full">
+        <div className="z-40 w-[31rem] bg-midnight2 m-2 p-2 rounded-lg text-xs w-full">
             <div className="flex flex-row justify-between px-4">
                 <div className="text-sky-500"><strong>{ctTeam}</strong></div>
                 <div>Start Side</div>
