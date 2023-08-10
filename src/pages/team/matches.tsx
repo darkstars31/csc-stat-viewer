@@ -73,11 +73,8 @@ const ScoreboardPopover = ( matchId : string ) => {
     const ctTeam = match?.rounds.find( r => r.winnerENUM === 3)?.winnerClanName;
     const tTeam = match?.rounds.find( r => r.winnerENUM === 2)?.winnerClanName;
     
-    console.info( ctTeam, tTeam);
-
-    
     return (
-        <div className="z-40 w-[31rem] bg-midnight2 m-2 p-2 rounded-lg text-xs w-full">
+        <div className="z-40 w-[31rem] bg-midnight2 m-2 p-2 rounded-lg text-xs">
             <div className="flex flex-row justify-between px-4">
                 <div className="text-sky-500"><strong>{ctTeam}</strong></div>
                 <div>Start Side</div>

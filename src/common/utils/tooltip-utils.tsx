@@ -35,6 +35,8 @@ const RatingTooltip: React.FC<ToolTipProps> = ({ message, pos }) => {
             className="top-5 h-3 absolute border-l-2 border-neutral-300 rounded-lg"
             style={{ left: pos}}
             onMouseEnter={onMouseEnter}
+            onMouseOver={onMouseEnter}
+            onMouseOut={onMouseLeave}
             onMouseLeave={onMouseLeave}
             onTouchStart={onMouseEnter}
             onTouchEnd={onMouseLeave}
@@ -150,18 +152,18 @@ const AwardTooltip: React.FC<ToolTipProps> = ({ message, awardType, awardMapping
     const whiteSpaceClass = typeof message === "string" && message.length > 25 ? "whitespace-normal min-w-[200px] max-w-full" : "whitespace-nowrap";
 
     return (
-        <div
-            className="relative inline-block"
+        <div className="relative inline-block">
+            <button type="button" className={`place-items-center flex w-fit select-none whitespace-nowrap rounded-[0.27rem] 
+                ${backgroundColor} 
+                px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none
+                ${textColor}
+                ${ awardType === "numberOne" ? "h-7" : "h-4" }`
+            } 
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             onTouchStart={onMouseEnter}
             onTouchEnd={onMouseLeave}
-        >
-            <button type="button" className={`place-items-center flex h-fit w-fit select-none whitespace-nowrap rounded-[0.27rem] 
-                ${backgroundColor} 
-                px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none
-                ${textColor}`
-            } disabled>
+            >
             {awardMapping} {awardType === "numberOne" ? <img className="h-fit w-fit max-w-[30px] pl-1 pointer-events-none" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/> : "Top 10"}
                 <div className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} bg-zinc-500 shadow-lg'`}
                 style={{transform: 'translate(-50%, -120%)', top: '0', left: '50%'}}>
