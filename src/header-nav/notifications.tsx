@@ -10,7 +10,6 @@ function classNames(...classes: string[]) {
 export function HeaderNotifications() {
 
     const { notifications } = useNotificationsContext();
-    console.info(notifications);
 
     return (
         <Menu as="div" className="relative inline-block">
