@@ -40,10 +40,10 @@ function TeamRecordRow ({ team, index }: { team: any, index: number }) {
 }
 
 export function TeamStandings() {
-    const { franchises } = useDataContext();
+    const { franchises, dataConfig } = useDataContext();
     const [ selectedTier, setSelectedTier ] = React.useState('');
     const [ showConferences, setShowConferences ] = React.useState(true);
-    const { data: season = [] } = useCscSeasonDivisionsByTier(11);
+    const { data: season = [] } = useCscSeasonDivisionsByTier(dataConfig?.season);
     const divisions = season.find(s => s.tier.name === selectedTier)?.divisions;
     const teamsInDivision = divisions?.reduce( (acc, division) => {
         acc[division.name] = division.teams.map( team => team.team.name ) ;

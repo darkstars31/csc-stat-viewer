@@ -17,6 +17,7 @@ export enum PlayerTypes {
     UNROSTERED_AGM = 'UNROSTERED_AGM',
     INACTIVE = 'INACTIVE',
     SIGNED_PROMOTED = 'SIGNED_PROMOTED',
+    EXPIRED = 'EXPIRED',
   }
 
 export const PlayerMappings: Record<string,string> = {

@@ -9,7 +9,8 @@ type Props = {
 
 export function Mmr( { player }: Props) {
     const { dataConfig } = useDataContext();
-    const date = new Date( dataConfig?.seasonEndDate ?? "");
-    const isInSeason = date > new Date();
+    const seasonStartDate = new Date( dataConfig?.seasonStartDate ?? "");
+    const seasonEndDate = new Date( dataConfig?.seasonEndDate ?? "");
+    const isInSeason = seasonEndDate > new Date() && seasonStartDate < new Date();
     return <span>{ isInSeason ? player.mmr : "???"}</span> ;
 }

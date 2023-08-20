@@ -25,14 +25,15 @@ const useDataContextProvider = () => {
 	const { data: cscUnrosteredAGMPlayers = [], isLoading: isLoadingUnrosteredAGMPlayers } = useCscPlayersGraph( PlayerTypes.UNROSTERED_AGM);
 	const { data: cscSignedPromotedPlayers = [], isLoading: isLoadingSignPromoted } = useCscPlayersGraph( PlayerTypes.SIGNED_PROMOTED );
 	const { data: cscInactivePlayers = [], isLoading: isLoadingInactivePlayers } = useCscPlayersGraph( PlayerTypes.INACTIVE );
+	const { data: cscExpiredPlayers = [], isLoading: isLoadingExpiredPlayers } = useCscPlayersGraph( PlayerTypes.EXPIRED );
 	//const { data: cscSpectatorPlayers = [] } = useCscPlayersGraph( "SPECTATOR" );
 
-	const { data: cscStatsRecruit = [], isLoading: isLoadingCscStatsRecruit } = useCscStatsGraph( "Recruit", dataConfig?.season );
-	const { data: cscStatsProspect = [], isLoading: isLoadingCscStatsProspect } = useCscStatsGraph( "Prospect", dataConfig?.season );
-	const { data: cscStatsContender = [], isLoading: isLoadingCscStatsContender } = useCscStatsGraph( "Contender", dataConfig?.season );
-	const { data: cscStatsChallenger = [], isLoading: isLoadingCscStatsChallenger } = useCscStatsGraph( "Challenger", dataConfig?.season );
-	const { data: cscStatsElite = [], isLoading: isLoadingCscStatsElite } = useCscStatsGraph( "Elite", dataConfig?.season );
-	const { data: cscStatsPremier = [], isLoading: isLoadingCscStatsPremier } = useCscStatsGraph( "Premier", dataConfig?.season );
+	const { data: cscStatsRecruit = [], isLoading: isLoadingCscStatsRecruit } = useCscStatsGraph( "Recruit", dataConfig?.season, "Combine" );
+	const { data: cscStatsProspect = [], isLoading: isLoadingCscStatsProspect } = useCscStatsGraph( "Prospect", dataConfig?.season, "Combine" );
+	const { data: cscStatsContender = [], isLoading: isLoadingCscStatsContender } = useCscStatsGraph( "Contender", dataConfig?.season, "Combine" );
+	const { data: cscStatsChallenger = [], isLoading: isLoadingCscStatsChallenger } = useCscStatsGraph( "Challenger", dataConfig?.season, "Combine" );
+	const { data: cscStatsElite = [], isLoading: isLoadingCscStatsElite } = useCscStatsGraph( "Elite", dataConfig?.season, "Combine" );
+	const { data: cscStatsPremier = [], isLoading: isLoadingCscStatsPremier } = useCscStatsGraph( "Premier", dataConfig?.season, "Combine" );
 
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
 
@@ -49,6 +50,7 @@ const useDataContextProvider = () => {
 		...cscInactivePlayers,
 		...cscUnrosteredAGMPlayers,
 		...cscSignedPromotedPlayers,
+		...cscExpiredPlayers,
 		//...cscSpectatorPlayers,
 	];
 
@@ -79,7 +81,6 @@ const useDataContextProvider = () => {
 			acc.push( { ...cscPlayer,
 				hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
 				role,
-				mmr: undefined,
 				stats, 
 				statsOutOfTier: statsByTier.filter( statsWithTier => statsWithTier.tier !== cscPlayer.tier.name),
 			});
@@ -103,6 +104,7 @@ const useDataContextProvider = () => {
 		isLoadingInactivePlayers,
 		isLoadingUnrosteredAGMPlayers,
 		isLoadingSignPromoted,
+		isLoadingExpiredPlayers,
 	].some(Boolean);
 
 	// const tierNumber = {
@@ -124,9 +126,9 @@ const useDataContextProvider = () => {
     // a.setAttribute('download', 'PlayersWithStats.csv');
     // a.click()
 
-
     return {
 		discordUser, setDiscordUser,
+		loggedinUser: players.find( p => p.discordId === discordUser?.id),
         players: players,
 		franchises: cscFranchises,
 		isLoading: isLoadingCscPlayers,

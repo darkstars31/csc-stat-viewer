@@ -6,12 +6,12 @@ import { Link, useRoute } from "wouter";
 import { useFetchMatchesGraph } from "../dao/cscMatchesGraphQLDao";
 import { MatchCards } from "./team/matches";
 import { MapRecord } from "./team/mapRecord";
-import { PlayerRow } from "./franchise/player-row";
 import { franchiseImages } from "../common/images/franchise";
 import { TeamFooterTabulation } from "./franchise/team-footer-tabulation";
 import { calculateMapBans, calculateTeamRecord } from "../common/utils/match-utils";
 import { AwardsMappings } from "../common/utils/awards-utils";
 import { queryClient } from "../App";
+import { TeamPlayerCards } from "./team/playerCards";
 //import { MapBans } from "./team/mapBans";
 
 
@@ -86,10 +86,15 @@ export function Team(){
 							<div className="p-4 rounded">
 								<hr className="h-px my-4 border-0" />
 								<div>
-								{
+								{/* {
 									currentTeam?.players?.map( player => <PlayerRow key={player.name} franchisePlayer={player} team={currentTeam} extraDetails /> )
 									//players?.map( ( player, index ) => <PlayerCard key={player.name} player={player} index={index}/> )								
+								} */}
+								<div className="flex flex-row justify-between gap-4 flex-wrap pt-4">
+								{
+									currentTeam?.players?.map( player => <TeamPlayerCards key={player.name} franchisePlayer={player} team={currentTeam} /> )
 								}
+								</div>
 								{ currentTeam && <TeamFooterTabulation team={currentTeam} /> }
 								</div>
 								{ isLoadingMatches && <Loading />}							
