@@ -7,20 +7,20 @@ import { useLocation } from 'wouter';
 
 
 export function LoginCallBack() {
-    const { setDiscordUser } = useDataContext();
-    const [, setLocation ] = useLocation();    
+    const { discordUser, setDiscordUser } = useDataContext();
+    const [, setLocation ] = useLocation();
 
-    React.useEffect( () => {
-        const queryParams = new URLSearchParams(window.location.search);
-        const code = queryParams.get("code");
-        if( code ){
-            ( async () => {
-                const { discordUser } = await discordLoginCallback(code);
-                setDiscordUser(discordUser);
-                setLocation("/");
-            })();
-        }
-    }, [ setDiscordUser, setLocation ] );
+    console.info( discordUser );
+
+    const queryParams = new URLSearchParams(window.location.search);
+    const code = queryParams.get("code");
+    if( code ){
+        setLocation("/");
+        ( async () => {
+            const { discordUser } = await discordLoginCallback(code);
+            setDiscordUser(discordUser);
+        })();
+    }
 
     return (
         <Container>
