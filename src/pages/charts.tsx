@@ -18,7 +18,7 @@ import * as Containers from "../common/components/containers";
 
 export function Charts() {
     const inputRef = React.useRef<HTMLInputElement>(null);
-    const { players } = useDataContext();
+    const { players, dataConfig, isLoading } = useDataContext();
     const playersWithStats = players.filter( p => p.stats );
     const [ currentTab, setCurrentTab ] = React.useState<number>(3);
 
@@ -84,9 +84,12 @@ export function Charts() {
         }
     }, [currentTab]);
       
+    if( isLoading ) {
+        return <Container><Loading /></Container>;
+    }
 
     if( playersWithStats.length === 0) {
-        return <Container><Loading /></Container>;
+        return <Container><i>No Players with stats for season {dataConfig?.season} yet.. Check back later</i></Container>;
     }
 
     const tabs = [

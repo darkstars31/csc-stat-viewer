@@ -12,8 +12,8 @@ const fetchGraph = async ( tier: CscTiers, season?: number, matchType?: string )
     { method: "POST", 
         body: JSON.stringify({
             "operationName": "getTierSeasonStats",
-            "query": `query getTierSeasonStats($tier: String!, $season: Int!) {
-                tierSeasonStats(tier: $tier, season: $season) {
+            "query": `query getTierSeasonStats($tier: String!, $season: Int!, $matchType: String!) {
+                tierSeasonStats(tier: $tier, season: $season, matchType: $matchType) {
                     adp
                     adr
                     assists
