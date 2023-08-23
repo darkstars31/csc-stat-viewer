@@ -25,7 +25,8 @@ const faceitPopover = ( faceitSearchPlayer: { id: number, faceit_identifier: str
 
 export const FaceitRank = ( { player }: Props ) => {
     const { data: faceitSearchPlayer = undefined, isLoading: isLoadingFaceitSearch } = useFetchFaceItPlayerWithCache( player );
-    const faceitRank = faceitRankImages[faceitSearchPlayer?.rank ?? 0 as keyof typeof faceitRankImages];
+    const isParrish = player?.name.toLowerCase().includes( "parrish" );
+    const faceitRank = isParrish ? faceitRankImages[11] : faceitRankImages[faceitSearchPlayer?.rank ?? 0 as keyof typeof faceitRankImages];
     
     if( isLoadingFaceitSearch ){
         return (

@@ -17,7 +17,7 @@ export function LeaderBoards() {
     const { players = [], loading } = useDataContext();
     const [ filterBy, setFilterBy ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: `All`, value: "All"});
     
-    const player = players.filter( p => p.stats?.gameCount ?? 0 >= 3);
+    const player = players.filter( p => (p.stats?.gameCount ?? 0) >= 3);
     
     const playerData = filterBy?.value.includes("All") ? player : player.filter( f => f.tier.name.toLowerCase() === filterBy?.value.toLowerCase());
       
