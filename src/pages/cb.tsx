@@ -18,7 +18,9 @@ export function LoginCallBack() {
         setLocation("/");
         ( async () => {
             const { discordUser } = await discordLoginCallback(code);
-            setDiscordUser(discordUser);
+            if( discordUser?.id ) {
+                setDiscordUser(discordUser);
+            }
         })();
     }
 
