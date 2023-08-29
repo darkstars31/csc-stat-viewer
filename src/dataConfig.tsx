@@ -4,8 +4,10 @@ export const appConfig = {
             core: "https://core.csconfederation.com/graphql",
             stats: "https://stats.csconfederation.com/graphql",
         },
+        analytikill: "https://tonysanti.com/prx/csc-stat-api",
         cloudfrontCache: 'https://d286fmnshh73ml.cloudfront.net/csc_api_stats',
         githubRepository: 'https://api.github.com/repos/darkstars31/csc-stat-viewer',
+
     }
 };  
 
