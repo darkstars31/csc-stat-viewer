@@ -25,7 +25,7 @@ const useDataContextProvider = () => {
 	const { data: cscUnrosteredAGMPlayers = [], isLoading: isLoadingUnrosteredAGMPlayers } = useCscPlayersGraph( PlayerTypes.UNROSTERED_AGM);
 	const { data: cscSignedPromotedPlayers = [], isLoading: isLoadingSignPromoted } = useCscPlayersGraph( PlayerTypes.SIGNED_PROMOTED );
 	const { data: cscInactivePlayers = [], isLoading: isLoadingInactivePlayers } = useCscPlayersGraph( PlayerTypes.INACTIVE );
-	const { data: cscExpiredPlayers = [], isLoading: isLoadingExpiredPlayers } = useCscPlayersGraph( PlayerTypes.EXPIRED );
+	const { data: cscExpiredPlayers = [], isLoading: isLoadingExpiredPlayers } = useCscPlayersGraph( PlayerTypes.EXPIRED, { skipCache: true} );
 	//const { data: cscSpectatorPlayers = [] } = useCscPlayersGraph( "SPECTATOR" );
 
 	const { data: cscStatsRecruit = [], isLoading: isLoadingCscStatsRecruit } = useCscStatsGraph( "Recruit", dataConfig?.season, "Combine" );
@@ -82,7 +82,7 @@ const useDataContextProvider = () => {
 				hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
 				role,
 				stats, 
-				statsOutOfTier: statsByTier.filter( statsWithTier => statsWithTier.tier !== cscPlayer.tier.name),
+				statsOutOfTier: statsByTier.length > 0 ? statsByTier.filter( statsWithTier => statsWithTier.tier !== cscPlayer.tier.name) : null,
 			});
 		} else {
 			acc.push( { ...cscPlayer as Player } );

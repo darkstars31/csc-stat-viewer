@@ -24,6 +24,18 @@ import { FaceitRank } from "../common/components/faceitRank";
 import { ToolTip } from "../common/utils/tooltip-utils";
 import * as Containers from "../common/components/containers";
 
+// TODO: figure out a better way to handle this
+// const getStatsFallback = ( currentPlayer: PlayerWithStats | undefined ) => {
+
+//     if( currentPlayer?.stats ) {
+//         return currentPlayer?.stats;
+//     }
+//     if( currentPlayer?.statsOutOfTier?.at(0)?.stats ) {
+//         console.info( currentPlayer?.statsOutOfTier.at(0)?.stats );
+//         return currentPlayer?.statsOutOfTier?.at(0)?.stats;
+//     }
+//     return undefined;
+// }
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
@@ -111,7 +123,7 @@ export function Player() {
                         <PlayerAwards player={currentPlayer} players={players} />
                         <Containers.StandardBoxRow>
                             <Containers.StandardContentBox>
-                                <PlayerRatings player={currentPlayer} />
+                                <PlayerRatings player={currentPlayer} stats={currentPlayerStats} />
                             </Containers.StandardContentBox>
                             <Containers.StandardContentBox>
                                 <PlayerRatingTrendGraph player={currentPlayer} />
@@ -119,11 +131,11 @@ export function Player() {
                         </Containers.StandardBoxRow>
                         <Containers.StandardBoxRow>
                             <Containers.StandardContentBox>
-                                <RoleRadar player={currentPlayer!}/>         
+                                <RoleRadar stats={currentPlayerStats!}/>         
                             </Containers.StandardContentBox>
                             <Containers.StandardContentBox>
                                 <TeamSideRatingPie player={currentPlayer} />
-                                <KillsAssistsDeathsPie player={currentPlayer} />
+                                <KillsAssistsDeathsPie stats={currentPlayerStats} />
                             </Containers.StandardContentBox>
                         </Containers.StandardBoxRow>
                     </div>
@@ -150,8 +162,8 @@ export function Player() {
             <br />
             { currentPlayerStats &&
                 <div className="py-2">
-                {Array(Math.ceil(getGridData(currentPlayer).length / 2)).fill(0).map((_, i) => {
-                    const pair = getGridData(currentPlayer).slice(i * 2, (i + 1) * 2);
+                {Array(Math.ceil(getGridData(currentPlayerStats).length / 2)).fill(0).map((_, i) => {
+                    const pair = getGridData(currentPlayerStats).slice(i * 2, (i + 1) * 2);
                     return (
                         <React.Fragment key={`pair-${i}`}>
                             <GridContainer>
@@ -168,7 +180,7 @@ export function Player() {
                                     </div>
                                 ))}
                             </GridContainer>
-                            {i < Math.ceil(getGridData(currentPlayer).length / 2) - 1 && <br />}
+                            {i < Math.ceil(getGridData(currentPlayerStats).length / 2) - 1 && <br />}
                         </React.Fragment>
                     );
                 })}
@@ -177,7 +189,7 @@ export function Player() {
             { !currentPlayerStats &&
                 <div className="text-center">
                     <strong><i>This player has no stats in {currentPlayer.tier.name} for the current season.</i></strong>
-                    {currentPlayer.statsOutOfTier?.length > 0 &&
+                    {currentPlayer.statsOutOfTier !== null &&
                         <div className="text-xs">Stats found in another tier and will be visible soon(TM).</div>
                     }
                 </div>

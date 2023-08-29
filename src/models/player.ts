@@ -10,5 +10,5 @@ export type Player =
         statsOutOfTier: {
             stats : CscStats | undefined,
             tier: string,
-        }[]
+        }[] | null | undefined
     }

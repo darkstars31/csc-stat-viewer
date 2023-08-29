@@ -1,13 +1,13 @@
 import { EChartsOption } from "echarts";
 import * as React from "react";
 import ReactECharts from "echarts-for-react";
-import { Player } from "../../models/player";
+import { CscStats } from "../../models";
 
 type Props = {
-    player: Player,
+    stats: CscStats,
 }
 
-export function KillsAssistsDeathsPie( { player }: Props) {
+export function KillsAssistsDeathsPie( { stats }: Props) {
         
         const defaultOptions: EChartsOption = {
             color: ['#2dd4bf', '#fde047', '#ff6347'],
@@ -62,9 +62,9 @@ export function KillsAssistsDeathsPie( { player }: Props) {
                   length: 5,
                 },
                 data: [
-                    { name: "Kills", value: player.stats["kills"]},
-                    { name: "Assists", value: player.stats['assists']},
-                    { name: "Deaths", value: player.stats['deaths']},
+                    { name: "Kills", value: stats["kills"]},
+                    { name: "Assists", value: stats['assists']},
+                    { name: "Deaths", value: stats['deaths']},
 
                 ],
               }

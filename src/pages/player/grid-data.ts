@@ -1,8 +1,7 @@
 import {PlayerMappings} from "../../common/utils/player-utils";
 import { CscStats } from "../../models/csc-stats-types";
-import { Player } from "../../models/player";
 
-export const getGridData = (currentPlayer: Player) => {
+export const getGridData = (currentStats: CscStats) => {
 
     const {  
         rating,
@@ -67,7 +66,7 @@ export const getGridData = (currentPlayer: Player) => {
         // awpR: awpKillsPerRound,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ...playerRest
-    } = currentPlayer.stats as CscStats;
+    } = currentStats as CscStats;
 
     return [
         [

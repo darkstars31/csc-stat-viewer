@@ -5,7 +5,7 @@ import { appConfig } from "../dataConfig";
 
 const OneHour = 1000 * 60 * 60;
 
-// const cachedEnpointPath = "/CscPlayers";
+const cachedEnpointPath = "/CscPlayers";
 
 const fetchGraph = async ( playerType: keyof typeof PlayerTypes ) => await fetch(appConfig.endpoints.cscGraphQL.core,
     { method: "POST", 
@@ -49,23 +49,25 @@ const fetchGraph = async ( playerType: keyof typeof PlayerTypes ) => await fetch
         });
     } );
 
-// TODO: Get a Cached version of this endpoint
-// const fetchCachedGraph = async (playerType: keyof typeof PlayerTypes) => 
-//     await fetch(`${appConfig.endpoints.cloudfrontCache}${cachedEnpointPath}/playerType_${playerType}.json?q=${new Date().getTime()}`,
-//     {
-//         method: "GET",    
-//         headers: {'Content-Type': "application/json" }
-//     }).then( async response => 
-//         response.json().then( (json: CscPlayersQuery) => 
-//             json.data.players
-//     ) ).catch( () => {
-//         fetchGraph( playerType );
-//     });
 
-export function useCscPlayersGraph( playerType: keyof typeof PlayerTypes ): UseQueryResult<CscPlayer[]> {
+const fetchCachedGraph = async (playerType: keyof typeof PlayerTypes) => 
+    await fetch(`${appConfig.endpoints.cloudfrontCache}${cachedEnpointPath}/playerType_${playerType}.json?q=${new Date().getTime()}`,
+    {
+        method: "GET",    
+        headers: {'Content-Type': "application/json" }
+    }).then( async response => 
+        response.json().then( (json: CscPlayersQuery) => 
+            json.data.players
+    ) ).catch( () => {
+        fetchGraph( playerType );
+    });
+
+export function useCscPlayersGraph( playerType: keyof typeof PlayerTypes, options?: Record<string, unknown> ): UseQueryResult<CscPlayer[]> {
     return useQuery( 
         [`cscplayers-${playerType}-graph`], 
-        () => fetchGraph( playerType ), 
+        () => options?.skipCache 
+            ? fetchGraph( playerType ) 
+            : fetchCachedGraph( playerType ), 
         {
             staleTime: OneHour,
         }
