@@ -12,8 +12,6 @@ type Props = {
 export const StatsOutOfTier = ( { stats }: Props ) => {
     const [ isExpanded, setIsExpanded ] = React.useState(false);
     const tier = tiers.find( t => t.name === stats.tier)
-
-    console.info(stats)
     
     return (
         <div className={`width-full border rounded-md border-${tier?.color}-600`}>
