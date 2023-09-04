@@ -62,7 +62,7 @@ export function HeaderProfile() {
                         </Menu.Item>
                         <Menu.Item>
                             {({ active }) => (
-                                <Link to={`/players/${currentLoggedInPlayer?.tier.name}/${currentLoggedInPlayer?.name}`}>
+                                <Link to={`/players/${currentLoggedInPlayer?.name}`}>
                                     <button
                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                     >

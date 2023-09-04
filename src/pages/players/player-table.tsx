@@ -30,7 +30,7 @@ export function MemoizedPlayerTable( { players}: Props) {
                 </thead>
                 <tbody>
                     { players.map( (player, index) => (
-                        <Link key={`${player.name}`} to={`/players/${player.tier.name}/${encodeURIComponent(player.name)}`}>
+                        <Link key={`${player.name}`} to={`/players/${encodeURIComponent(player.name)}`}>
                             <tr key={'player-' + index} className="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600">
                                 <td className="whitespace-nowrap px-6 py-4 font-medium">{index+1}</td>
                                 <td className="whitespace-nowrap px-6 py-4">                           

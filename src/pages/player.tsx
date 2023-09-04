@@ -23,6 +23,8 @@ import { PlayerAwards } from "./player/playerAwards";
 import { FaceitRank } from "../common/components/faceitRank";
 import { ToolTip } from "../common/utils/tooltip-utils";
 import * as Containers from "../common/components/containers";
+import { StatsOutOfTier } from "./player/statsOutOfTier";
+import { tiers } from "../common/constants/tiers";
 
 // TODO: figure out a better way to handle this
 // const getStatsFallback = ( currentPlayer: PlayerWithStats | undefined ) => {
@@ -40,8 +42,7 @@ import * as Containers from "../common/components/containers";
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
     const { players = [], franchises = [], loading } = useDataContext();
-    const [, params] = useRoute("/players/:tier/:id");
-    //const tierParam = decodeURIComponent(params?.tier ?? "");
+    const [, params] = useRoute("/players/:id");
     const nameParam = decodeURIComponent(params?.id ?? "");
     const currentPlayer = players.find( p => p.name === nameParam);
     const currentPlayerStats = currentPlayer?.stats;
@@ -97,7 +98,7 @@ export function Player() {
                         </div>
                         <ul className="text-[0.8rem]">
                             <li>
-                                {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{currentPlayer.tier.name}</i></b>
+                                {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <span className={`text-${tiers.find( t => t.name === currentPlayer.tier.name )?.color}-500`}><b><i>{currentPlayer.tier.name}</i></b></span>
                                 <br /> <Mmr player={currentPlayer}/> MMR
                                 <div>
                                     <span className="flex leading-7">
@@ -146,7 +147,7 @@ export function Player() {
                 Teammates - {teamAndFranchise}
                 <div className="grid grid-cols-1 md:grid-cols-5">
                 { teammates.map( teammate => 
-                        <Link key={`closeby-${teammate.name}`} to={`/players/${teammate.tier.name}/${teammate.name}`}>
+                        <Link key={`closeby-${teammate.name}`} to={`/players/${teammate.name}`}>
                         <div
                             style={{userSelect:'none', lineHeight: '95%' }}
                             className="my-[5px] mr-4 flex h-[32px] cursor-pointer items-center rounded-[4px] bg-[#eceff1] px-[12px] py-0 text-[11px] font-normal normal-case leading-loose text-[#4f4f4f] shadow-none hover:!shadow-none active:bg-[#cacfd1] dark:bg-midnight2 dark:text-neutral-200">
@@ -190,9 +191,16 @@ export function Player() {
                 <div className="text-center">
                     <strong><i>This player has no stats in {currentPlayer.tier.name} for the current season.</i></strong>
                     {currentPlayer.statsOutOfTier !== null &&
-                        <div className="text-xs">Stats found in another tier and will be visible soon(TM).</div>
+                        <div className="text-xs">Stats found in non-primary tier(s).</div>
                     }
                 </div>
+            }
+            <br />
+            {
+                currentPlayer.statsOutOfTier && 
+                    currentPlayer.statsOutOfTier.map( outOfTierStats => (
+                        <StatsOutOfTier stats={outOfTierStats} />
+                    ))
             }
             </Container>
         </>

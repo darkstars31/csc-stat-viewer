@@ -34,7 +34,8 @@ export function Router(){
     { path: `/franchises/:franchise`, component: () => <Franchise /> },
     { path: `/franchises/:franchise/:team`, component: () => <Team />},
     { path: `/players`, component: () => <Players /> },
-    { path: `/players/:tier/:id`, component: () => <Player /> },
+    { path: `/players/:id`, component: () => <Player /> },
+    { path: `/players/:tier/:id`, component: () => <Player /> }, // TODO: Remove route when no longer needed
     { path: `/team-builder`, component: () => <TeamBuilder /> },
     { path: `/leaderboards`, component: () => <LeaderBoards /> },
     { path: `/playground`, component: () => <Playground /> },

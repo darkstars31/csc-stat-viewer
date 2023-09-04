@@ -35,7 +35,7 @@ export function PlayerNavigator( { player, playerIndex }: Props ) {
                     { pageCurrent > 0 && <button className="grow-0" onClick={ () => setPageCurrent( pageCurrent-1 )}><ImArrowLeft /></button> }
                         { playerInTierOrderedByRating.slice(pageCurrent*pageSize, pageCurrent*pageSize+pageSize).map(
                             (player, index) =>
-                                <Link key={`closeby-${player.name}`} to={`/players/${player.tier.name}/${player.name}`}>
+                                <Link key={`closeby-${player.name}`} to={`/players/${player.name}`}>
                                     <div
                                         style={{userSelect:'none', lineHeight: '95%' }}
                                         className="my-[5px] mr-4 flex h-[32px] cursor-pointer items-center rounded-[4px] bg-[#eceff1] px-[12px] py-0 text-[11px] font-normal normal-case leading-loose text-[#4f4f4f] shadow-none hover:!shadow-none active:bg-[#cacfd1] dark:bg-midnight2 dark:text-neutral-200">

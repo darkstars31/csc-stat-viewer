@@ -25,7 +25,7 @@ export const TeamPlayerCards = ( { franchisePlayer, team }: Props ) => {
         <div className="m-2 p-2 bg-midnight2 rounded-lg w-48 transition ease-in-out hover:-translate-y-2 duration-300">
             <Link className="hover:cursor-pointer hover:text-sky-400" 
                     key={`${team.tier.name}-${franchisePlayer.name}`} 
-                    to={`/players/${team.tier.name}/${franchisePlayer.name}`}
+                    to={`/players/${franchisePlayer.name}`}
                 >
                     <span className="fixed"><img className="relative w-32 h-32 ml-6 rounded-full -top-16" src={player?.avatarUrl} alt="" /></span>
                     <div className="mr-2 mt-16"><b>{franchisePlayer.name}</b></div>
