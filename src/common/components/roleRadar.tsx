@@ -8,6 +8,8 @@ type Props = {
     stats: CscStats,
 }
 
+const multiplier = 1.5;
+
 export function RoleRadar( { stats }: Props ){
     const options: EChartsOption = {
             //legend: { data: ["Role"] },
@@ -16,9 +18,9 @@ export function RoleRadar( { stats }: Props ){
                 //shape: "circle",
                 indicator: [
                     { name: "Awper", max: .55 },
-                    { name: "Entry", max: 1 },
-                    { name: "Fragger", max: 1 },
-                    { name: "Rifler", max: 200 },
+                    { name: "Entry", max: .95 },
+                    { name: "Fragger", max: 1.2 },
+                    { name: "Rifler", max: 230 },
                     { name: "Support", max: 50 },
                     { name: "Lurker", max: 4 },
                 ]
@@ -31,11 +33,11 @@ export function RoleRadar( { stats }: Props ){
                     { 
                         symbol: "none",
                         name: "Role", 
-                        value: [ clamp(stats["awpR"],0, .6), // Awper
-                                clamp(stats.odr*(stats["odaR"]*2), 0, 1.1), // Entry
-                                clamp(stats["multiR"], 0, 1.1), // Fragger
-                                clamp(stats.adr, 0, 220), // Rifler
-                                clamp((stats.suppR*10)+stats.suppXR, 0, 55), // Support
+                        value: [ clamp(stats["awpR"],0, .6)*multiplier, // Awper
+                                clamp(stats.odr*(stats["odaR"]*2), 0, .95)*multiplier, // Entry
+                                clamp(stats["multiR"], 0, 1.2)*multiplier, // Fragger
+                                clamp(stats.adr, 0, 230)*multiplier, // Rifler
+                                clamp((stats.suppR*10)+stats.suppXR, 0, 55)*multiplier, // Support
                                 // clamp(player.stats["wlp/L"], 0, 5), // Lurker
                             ],
                         areaStyle: {

@@ -46,6 +46,11 @@ const exportAsCsv = ( players: Player[]) => {
 };
 
 export function Players() {
+    const queryParams = new URLSearchParams(window.location.search);
+    // const types = queryParams.get("types");
+    // const tiers = queryParams.get("tiers");
+    // const roles = queryParams.get("roles");
+
     const { players } = useDataContext();
     const [ displayStyle, setDisplayStyle ] = useLocalStorage("displayStyle", "cards");
     const [ searchValue, setSearchValue ] = React.useState("");
@@ -60,6 +65,34 @@ export function Players() {
     const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.tier.name)) : filteredByPlayerType;
     const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.role)) : filteredByTier;
     const filteredBySearchPlayers = filters.length > 0 ? filteredByRole.filter( player => filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ))) : filteredByRole;
+
+    // React.useEffect(() => {
+    //     console.info( 'first', viewPlayerTypeOptions?.length )
+    //     if( viewPlayerTypeOptionsCumulative?.length ){
+    //         console.info( viewPlayerTypeOptions )
+    //         queryParams.append("types", JSON.stringify(viewPlayerTypeOptionsCumulative));
+    //     }
+
+    //     if( viewTierOptions?.length ){
+    //         queryParams.append("tiers", JSON.stringify(viewTierOptions));
+    //     }
+
+    //     if( viewPlayerRoleOptions?.length ){
+    //         queryParams.append("roles", JSON.stringify(viewPlayerRoleOptions));
+    //     }
+    // }, [ viewPlayerTypeOptionsCumulative?.length,  viewTierOptions?.length, viewPlayerRoleOptions?.length]);
+
+    // if( !queryParams.has("types") ){
+    //     queryParams.append("types", JSON.stringify(viewPlayerTypeOptionsCumulative));
+    // }
+    // if( !queryParams.has("tiers") ){
+    //     queryParams.append("tiers", JSON.stringify(viewTierOptions));
+    // }
+    // if( !queryParams.has("roles") ){
+    //     queryParams.append("roles", JSON.stringify(viewPlayerRoleOptions));
+    // }
+
+    window.history.replaceState({}, "", `?${queryParams.toString()}`);
 
     const addFilter = () => {
         setSearchValue(""); 
