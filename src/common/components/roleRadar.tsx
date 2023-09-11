@@ -19,10 +19,10 @@ export function RoleRadar( { stats }: Props ){
                 indicator: [
                     { name: "Awper", max: .55 },
                     { name: "Entry", max: .95 },
-                    { name: "Fragger", max: 1.2 },
+                    { name: "Fragger", max: 1.3 },
                     { name: "Rifler", max: 230 },
                     { name: "Support", max: 50 },
-                    { name: "Lurker", max: 4 },
+                    //{ name: "Lurker", max: 4 },
                 ]
             },
             series: [ 
@@ -33,11 +33,11 @@ export function RoleRadar( { stats }: Props ){
                     { 
                         symbol: "none",
                         name: "Role", 
-                        value: [ clamp(stats["awpR"],0, .6)*multiplier, // Awper
-                                clamp(stats.odr*(stats["odaR"]*2), 0, .95)*multiplier, // Entry
-                                clamp(stats["multiR"], 0, 1.2)*multiplier, // Fragger
-                                clamp(stats.adr, 0, 230)*multiplier, // Rifler
-                                clamp((stats.suppR*10)+stats.suppXR, 0, 55)*multiplier, // Support
+                        value: [ clamp(stats["awpR"]*multiplier,0, .56), // Awper
+                                clamp(stats.odr*(stats["odaR"]*2*multiplier), 0, 1), // Entry
+                                clamp(stats["multiR"]*multiplier, 0, 1.3), // Fragger
+                                clamp(stats.adr*multiplier, 0, 230), // Rifler
+                                clamp(((stats.suppR*10)+stats.suppXR)*multiplier, 0, 55), // Support
                                 // clamp(player.stats["wlp/L"], 0, 5), // Lurker
                             ],
                         areaStyle: {

@@ -26,7 +26,7 @@ export type DataConfiguration = {
 export const dataConfiguration = [
     {
         season: 12,
-        seasonStartDate: "2023-09-12",
+        seasonStartDate: "2023-09-11",
         seasonEndDate: "2023-11-30",
         name: "Season 12",
         spreadsheetUrl: googleSheetsUrl("18qgpc4NdPNg4I5Q9lmzaEgUYyxHtq25JKZfTxiQg_lc",334898684),

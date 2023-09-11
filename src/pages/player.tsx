@@ -25,19 +25,7 @@ import { ToolTip } from "../common/utils/tooltip-utils";
 import * as Containers from "../common/components/containers";
 import { StatsOutOfTier } from "./player/statsOutOfTier";
 import { tiers } from "../common/constants/tiers";
-
-// TODO: figure out a better way to handle this
-// const getStatsFallback = ( currentPlayer: PlayerWithStats | undefined ) => {
-
-//     if( currentPlayer?.stats ) {
-//         return currentPlayer?.stats;
-//     }
-//     if( currentPlayer?.statsOutOfTier?.at(0)?.stats ) {
-//         console.info( currentPlayer?.statsOutOfTier.at(0)?.stats );
-//         return currentPlayer?.statsOutOfTier?.at(0)?.stats;
-//     }
-//     return undefined;
-// }
+import { PlayerMatchHistory } from "./player/matchHistory";
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
@@ -58,15 +46,6 @@ export function Player() {
     if( !currentPlayer ){
         return <Container>x</Container>;
     }
-
-    // else if ( !currentPlayer?.stats ){
-	// 	return <Container>
-	// 		No {selectedDataOption?.label} stats found for {nameParam} in {tierParam}
-    //         <div className="text-xs mt-4 pl-4">
-    //             {/* { linksToDifferentTier.length > 0 && <div>This player has stats in a different tier. {linksToDifferentTier}</div> } */}
-    //         </div>
-	// 	</Container>
-	// }
 
     const teamAndFranchise = currentPlayer?.team?.franchise ? `${currentPlayer?.team?.franchise.name} (${currentPlayer?.team?.franchise.prefix}) > ${currentPlayer?.team?.name}` : teamNameTranslator(currentPlayer);
     const teammates = getTeammates( currentPlayer, players, franchises);
@@ -195,6 +174,8 @@ export function Player() {
                     }
                 </div>
             }
+            <br />
+            <PlayerMatchHistory player={currentPlayer} />
             <br />
             {
                 currentPlayer.statsOutOfTier && 
