@@ -15,6 +15,7 @@ export const getGridData = (currentStats: CscStats) => {
         "threeK": threeKills,
         "fourK": fourKills,
         "fiveK": aces,
+        awpR,
         hs,
         kast,
         adr,
@@ -99,7 +100,7 @@ export const getGridData = (currentStats: CscStats) => {
             {name: PlayerMappings["odaR"], value: `${openDuelsPerRound.toFixed(2)}`, rowIndex: 0},
             // {name: "Average Opening Duel T-side", value: `${avgRoundsOpenDuelOnTside}`, rowIndex: 1},
             {name: PlayerMappings["tradesR"], value: `${tradesPerRound.toFixed(2)}`, rowIndex: 0},
-            // {name: PlayerMappings["RWK"], value: `${(RWK * 100).toFixed(0)}%`, rowIndex: 1},
+            {name: PlayerMappings["awpR"], value: `${(awpR).toFixed(4)}`, rowIndex: 1},
         ],
         [
             {name: PlayerMappings["util"], value: `${utilThrownPerMatch}`, rowIndex: 0},

@@ -33,24 +33,27 @@ export function Team(){
 
 	const currentFranchise = franchises.find( f => f.name === franchiseName );
 	const currentTeam = currentFranchise?.teams.find( t => t.name === teamName );
+	let iterations = 0;
 	const currentTeamStatAggregation = currentTeam?.players.reduce( (acc, player, index) => {
-		const cscPlayerWithStats = cscPlayers.find( p => p.steam64Id === player.steam64Id );
-		acc["rating"] = (acc["rating"] + (cscPlayerWithStats?.stats.rating ?? 0));
-		acc["ef"] = ( acc["ef"] + cscPlayerWithStats?.stats?.ef ?? 0);
-		acc["adr"] = ( acc["adr"] + cscPlayerWithStats?.stats?.adr ?? 0);
-		acc["kast"] = ( acc["kast"] + cscPlayerWithStats?.stats?.kast ?? 0 );
-		acc["utilDmg"] = ( acc["utilDmg"] + cscPlayerWithStats?.stats?.utilDmg ?? 0);
-		acc["impact"] = ( acc["impact"] + cscPlayerWithStats?.stats?.impact ?? 0);
-		acc["clutchR"] = ( acc["clutchR"] +cscPlayerWithStats?.stats?.clutchR ?? 0);
+		const cscPlayerWithStats = cscPlayers.find( p => p.steam64Id === player.steam64Id && p.stats?.rating );
+		if ( !cscPlayerWithStats ) return acc;
+		iterations++;
+		acc["rating"] = (acc["rating"] + (cscPlayerWithStats.stats.rating));
+		acc["ef"] = ( acc["ef"] + cscPlayerWithStats.stats.ef);
+		acc["adr"] = ( acc["adr"] + cscPlayerWithStats.stats.adr);
+		acc["kast"] = ( acc["kast"] + cscPlayerWithStats.stats.kast);
+		acc["utilDmg"] = ( acc["utilDmg"] + cscPlayerWithStats.stats.utilDmg);
+		acc["impact"] = ( acc["impact"] + cscPlayerWithStats.stats.impact);
+		acc["clutchR"] = ( acc["clutchR"] +cscPlayerWithStats.stats.clutchR);
 
 		if(index === currentTeam.players.length - 1 ) {
-			acc["rating"] = acc["rating"] / currentTeam.players.length;
-			acc["ef"] = acc["ef"] / currentTeam.players.length;
-			acc["adr"] = acc["adr"] / currentTeam.players.length;
-			acc["kast"] = acc["kast"] / currentTeam.players.length;
-			acc["utilDmg"] = acc["utilDmg"] / currentTeam.players.length;
-			acc["impact"] = acc["impact"] / currentTeam.players.length;
-			acc["clutchR"] = acc["clutchR"] / currentTeam.players.length;
+			acc["rating"] = acc["rating"] / iterations;
+			acc["ef"] = acc["ef"] / iterations;
+			acc["adr"] = acc["adr"] / iterations;
+			acc["kast"] = acc["kast"] / iterations;
+			acc["utilDmg"] = acc["utilDmg"] / iterations;
+			acc["impact"] = acc["impact"] / iterations;
+			acc["clutchR"] = acc["clutchR"] / iterations;
 		}
 
 		return acc;

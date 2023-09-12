@@ -20,7 +20,7 @@ export function Charts() {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const { players, dataConfig, isLoading } = useDataContext();
     const playersWithStats = players.filter( p => p.stats );
-    const [ currentTab, setCurrentTab ] = React.useState<number>(3);
+    const [ currentTab, setCurrentTab ] = React.useState<number>(0);
 
     const [ filters, setFilters ] = React.useState<string[]>([]);
     const [ viewTierOptions, setViewTierOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();

@@ -116,7 +116,7 @@ export function PlayerMatchHistory( { player }: Props ) {
             {
                 ( showAll ? sortedPlayerMatchHistory : sortedPlayerMatchHistory?.slice(0,5))?.map( (match) => <MatchRow key={match.csc_match_id} match={match} /> )
             }
-            { !showAll && (playerMatchHistory ?? []).length > 5 && <div className="text-center" onClick={() => setShowAll(!showAll)}>Show All</div>}
+            { !showAll && (playerMatchHistory ?? []).length > 5 && <div className="text-center hover:cursor-pointer hover:bg-midnight2 rounded" onClick={() => setShowAll(!showAll)}>Show All</div>}
         </div>
     )
 }
