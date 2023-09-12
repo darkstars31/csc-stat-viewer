@@ -67,7 +67,7 @@ function MatchRow( { match }: { match: MatchHistoryPlayerStat } ) {
         <div>
             <div className="flex flex-nowrap gap-4 my-1 py-2 hover:cursor-pointer hover:bg-midnight2 rounded pl-2 text-sm" onClick={() => setIsExpanded(!isExpanded)}>
                 <div className="w-8">{ isExpanded ? <MdKeyboardArrowDown size="1.5em" className='leading-8 pl-1' /> : <MdKeyboardArrowRight size="1.5em" className='leading-8 pl-1' />}</div>
-                <div className="basis-1/12">{match.Match.type}</div>
+                <div className="basis-1/12">{match.Match.type} <div className="text-xs text-gray-700">id: {match.csc_match_id}</div></div>
                 <div className="basis-1/5"><span className="flex gap-2"><div className='text-sm'><img className='w-8 h-8 mx-auto' src={mapImages['de_'+match.Map.toLowerCase()]} alt=""/></div> {match.Map}</span></div>
                 <div className={`basis-1/12 min-w-32 ${match.RF > match.RA ? "text-green-400" : "text-rose-400"}`}><span className="flex flex-nowrap">{match.RF} : {match.RA}</span></div>
                 <div className="basis-1/12">{match.Rating.toFixed(2)}</div>
@@ -86,8 +86,11 @@ function MatchRow( { match }: { match: MatchHistoryPlayerStat } ) {
 
 export function PlayerMatchHistory( { player }: Props ) {
     const { data: playerMatchHistory, isLoading: isLoadingPlayerMatchHistory } = useAnalytikillPlayerMatchHistory( player?.steam64Id );
+    const [ showAll, setShowAll ] = React.useState( false );
 
-    if( playerMatchHistory?.length === 0) {
+    const sortedPlayerMatchHistory = playerMatchHistory?.sort( (a, b) => Number(b.csc_match_id) - Number(a.csc_match_id) );
+
+    if( playerMatchHistory?.length === 0 && !playerMatchHistory) {
         return null;
     }
 
@@ -97,7 +100,8 @@ export function PlayerMatchHistory( { player }: Props ) {
 
     return (
         <div className="my-4 p-4">
-            <h2 className="text-2xl font-bold text-center">Match History <span className="text-sm text-gray-600"> - Beta Feature</span></h2>
+            <h2 className="text-2xl text-center"><span className="font-bold">Match History</span> - {playerMatchHistory?.length} matches</h2>
+            <h2 className="text-center text-sm text-gray-600">Beta Feature</h2>
             <div className="flex flex-row pl-2 gap-4 h-16 items-center border-b border-gray-600">
                 <div className="w-8"></div>
                 <div className="basis-1/12">Type</div>
@@ -110,8 +114,9 @@ export function PlayerMatchHistory( { player }: Props ) {
                 <div className="basis-1/12">Flash Assists</div>
             </div>
             {
-                playerMatchHistory?.map( (match) => <MatchRow key={match.csc_match_id} match={ match} /> )
+                ( showAll ? sortedPlayerMatchHistory : sortedPlayerMatchHistory?.slice(0,5))?.map( (match) => <MatchRow key={match.csc_match_id} match={match} /> )
             }
+            { !showAll && (playerMatchHistory ?? []).length > 5 && <div className="text-center" onClick={() => setShowAll(!showAll)}>Show All</div>}
         </div>
     )
 }

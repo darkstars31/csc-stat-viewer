@@ -7,7 +7,6 @@ import { useFetchMatchesGraph } from "../dao/cscMatchesGraphQLDao";
 import { MatchCards } from "./team/matches";
 import { MapRecord } from "./team/mapRecord";
 import { franchiseImages } from "../common/images/franchise";
-import { TeamFooterTabulation } from "./franchise/team-footer-tabulation";
 import { calculateMapBans, calculateTeamRecord } from "../common/utils/match-utils";
 import { AwardsMappings } from "../common/utils/awards-utils";
 import { queryClient } from "../App";
@@ -36,16 +35,26 @@ export function Team(){
 	const currentTeam = currentFranchise?.teams.find( t => t.name === teamName );
 	const currentTeamStatAggregation = currentTeam?.players.reduce( (acc, player, index) => {
 		const cscPlayerWithStats = cscPlayers.find( p => p.steam64Id === player.steam64Id );
-		const divisor = index > 0 ? 2 : 1;
-		//acc["rating"] = (acc["rating"] + cscPlayerWithStats?.stats.rating ?? 0) / divisor;
-		acc["ef"] = ( acc["ef"] + cscPlayerWithStats?.stats?.ef ?? 0) / divisor;
-		acc["adr"] = ( acc["adr"] + cscPlayerWithStats?.stats?.adr ?? 0) / divisor;
-		acc["kast"] = ( acc["kast"] + cscPlayerWithStats?.stats?.kast ?? 0 ) / divisor;
-		acc["utilDmg"] = ( acc["utilDmg"] + cscPlayerWithStats?.stats?.utilDmg ?? 0) / divisor;
-		acc["impact"] = ( acc["impact"] + cscPlayerWithStats?.stats?.impact ?? 0) / divisor;
-		acc["clutchR"] = ( acc["clutchR"] +cscPlayerWithStats?.stats?.clutchR ?? 0) / divisor;
+		acc["rating"] = (acc["rating"] + (cscPlayerWithStats?.stats.rating ?? 0));
+		acc["ef"] = ( acc["ef"] + cscPlayerWithStats?.stats?.ef ?? 0);
+		acc["adr"] = ( acc["adr"] + cscPlayerWithStats?.stats?.adr ?? 0);
+		acc["kast"] = ( acc["kast"] + cscPlayerWithStats?.stats?.kast ?? 0 );
+		acc["utilDmg"] = ( acc["utilDmg"] + cscPlayerWithStats?.stats?.utilDmg ?? 0);
+		acc["impact"] = ( acc["impact"] + cscPlayerWithStats?.stats?.impact ?? 0);
+		acc["clutchR"] = ( acc["clutchR"] +cscPlayerWithStats?.stats?.clutchR ?? 0);
+
+		if(index === currentTeam.players.length - 1 ) {
+			acc["rating"] = acc["rating"] / currentTeam.players.length;
+			acc["ef"] = acc["ef"] / currentTeam.players.length;
+			acc["adr"] = acc["adr"] / currentTeam.players.length;
+			acc["kast"] = acc["kast"] / currentTeam.players.length;
+			acc["utilDmg"] = acc["utilDmg"] / currentTeam.players.length;
+			acc["impact"] = acc["impact"] / currentTeam.players.length;
+			acc["clutchR"] = acc["clutchR"] / currentTeam.players.length;
+		}
+
 		return acc;
-	}, { 'ef': 0, 'adr': 0, 'kast': 0, 'utilDmg': 0, 'impact': 0, 'clutchR': 0 } as any);
+	}, { 'rating': 0, 'ef': 0, 'adr': 0, 'kast': 0, 'utilDmg': 0, 'impact': 0, 'clutchR': 0 } as any);
 	//console.info( 'currentTeamStatAggregation', currentTeamStatAggregation);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -86,16 +95,11 @@ export function Team(){
 							<div className="p-4 rounded">
 								<hr className="h-px my-4 border-0" />
 								<div>
-								{/* {
-									currentTeam?.players?.map( player => <PlayerRow key={player.name} franchisePlayer={player} team={currentTeam} extraDetails /> )
-									//players?.map( ( player, index ) => <PlayerCard key={player.name} player={player} index={index}/> )								
-								} */}
-								<div className="flex flex-row justify-between gap-4 flex-wrap pt-4">
-								{
-									currentTeam?.players?.map( player => <TeamPlayerCards key={player.name} franchisePlayer={player} team={currentTeam} /> )
-								}
-								</div>
-								{ currentTeam && <TeamFooterTabulation team={currentTeam} /> }
+									<div className="flex flex-row justify-center gap-4 flex-wrap pt-4">
+									{
+										currentTeam?.players?.map( player => <TeamPlayerCards key={player.name} franchisePlayer={player} team={currentTeam} /> )
+									}
+									</div>
 								</div>
 								{ isLoadingMatches && <Loading />}							
 								{ playoffMatches.length > 0 && 
