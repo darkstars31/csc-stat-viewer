@@ -10,7 +10,7 @@ import { FaceitRank } from "../../common/components/faceitRank";
 import { BiStats } from "react-icons/bi";
 import { ExternalPlayerLinks } from "../../common/components/externalPlayerLinks";
 import { Mmr } from "../../common/components/mmr";
-
+import { discordPlaceholderImage } from "../../common/images/placeholder";
 
 type Props = {
     franchisePlayer: FranchisePlayer
@@ -27,7 +27,9 @@ export const TeamPlayerCards = ( { franchisePlayer, team }: Props ) => {
                     key={`${team.tier.name}-${franchisePlayer.name}`} 
                     to={`/players/${franchisePlayer.name}`}
                 >
-                    <span className="fixed"><img className="relative w-32 h-32 ml-6 rounded-full -top-16" src={player?.avatarUrl} alt="" /></span>
+                    <div className="relative">
+                        <img className="fixed w-32 h-32 ml-6 rounded-full -mt-32" src={player?.avatarUrl ?? discordPlaceholderImage} alt="" />
+                    </div>
                     <div className="mr-2 mt-16 text-lg"><b>{franchisePlayer.name}</b></div>
                     <div className="float-right">
                         { team?.captain?.steam64Id === franchisePlayer.steam64Id ? <GiPirateHat size="1.5em" className="inline"/> : ""}
