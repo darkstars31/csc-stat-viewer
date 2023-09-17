@@ -11,7 +11,7 @@ type Props = {
 }
 
 function MatchHistory( { match }: { match: MatchHistoryPlayerStat } ) {
-    const { data: matchHistory, isLoading } = useAnalytikillIndividualMatchHistory( match.csc_match_id );
+    const { data: matchHistory, isLoading } = useAnalytikillIndividualMatchHistory( match.match_uuid );
 
     if( isLoading ) {
         return <div><Loading /></div>;
@@ -62,12 +62,13 @@ function MatchHistory( { match }: { match: MatchHistoryPlayerStat } ) {
 
 function MatchRow( { match }: { match: MatchHistoryPlayerStat } ) {
     const [ isExpanded, setIsExpanded ] = React.useState(false);
+    const matchType = match.Match?.type ?? "broke"
 
     return (
         <div>
             <div className="flex flex-nowrap gap-4 my-1 py-2 hover:cursor-pointer hover:bg-midnight2 rounded pl-2 text-sm" onClick={() => setIsExpanded(!isExpanded)}>
                 <div className="w-8">{ isExpanded ? <MdKeyboardArrowDown size="1.5em" className='leading-8 pl-1' /> : <MdKeyboardArrowRight size="1.5em" className='leading-8 pl-1' />}</div>
-                <div className="basis-1/12">{match.Match.type} <div className="text-xs text-gray-700">id: {match.csc_match_id}</div></div>
+                <div className="basis-1/12"> {matchType} <div className="text-xs text-gray-700">id: {match?.csc_match_id ?? 0}</div></div>
                 <div className="basis-1/5"><span className="flex gap-2"><div className='text-sm'><img className='w-8 h-8 mx-auto' src={mapImages['de_'+match.Map.toLowerCase()]} alt=""/></div> {match.Map}</span></div>
                 <div className={`basis-1/12 min-w-32 ${match.RF > match.RA ? "text-green-400" : "text-rose-400"}`}><span className="flex flex-nowrap">{match.RF} : {match.RA}</span></div>
                 <div className="basis-1/12">{match.Rating.toFixed(2)}</div>

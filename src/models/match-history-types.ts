@@ -1,6 +1,7 @@
 
 export type MatchHistoryPlayerStat = {
-    csc_match_id: string,
+    csc_match_id?: string,
+    match_uuid: string,
     Team: string,
     steam: string,
     Name: string,
@@ -20,7 +21,10 @@ export type MatchHistoryPlayerStat = {
 }
 
 export type MatchHistory = {
-    csc_match_id: string,
+    csc_match_id?: string,
+    match_uuid: string,
+    server?: string,
+    matchStartTime?: string,
     type: string,
     map: string,
     Match_Player_Stat: MatchHistoryPlayerStat[],
