@@ -17,8 +17,10 @@ function MatchHistory( { match }: { match: MatchHistoryPlayerStat } ) {
         return <div><Loading /></div>;
     }
 
-    const teamHome = matchHistory?.Match_Player_Stat.filter( p => p.Team === "team_home" ).sort( (a, b) => b.Rating - a.Rating );
-    const teamAway = matchHistory?.Match_Player_Stat.filter( p => p.Team === "team_away" ).sort( (a, b) => b.Rating - a.Rating );
+    console.info( matchHistory)
+
+    const teamHome = matchHistory?.Match_Player_Stat_Match_Player_Stat_match_uuidToMatch.filter( p => p.Team === "team_home" || p.Team === "StartedCT").sort( (a, b) => b.Rating - a.Rating );
+    const teamAway = matchHistory?.Match_Player_Stat_Match_Player_Stat_match_uuidToMatch.filter( p => p.Team === "team_away" || p.Team === "StartedT" ).sort( (a, b) => b.Rating - a.Rating );
 
     console.info( match.Name, teamHome?.find( p => p.Name === match.Name), teamAway?.find( p => p.Name === match.Name) );
 
@@ -62,7 +64,7 @@ function MatchHistory( { match }: { match: MatchHistoryPlayerStat } ) {
 
 function MatchRow( { match }: { match: MatchHistoryPlayerStat } ) {
     const [ isExpanded, setIsExpanded ] = React.useState(false);
-    const matchType = match.Match?.type ?? "broke"
+    const matchType = match.Match_Match_Player_Stat_match_uuidToMatch?.type ?? "broke"
 
     return (
         <div>
@@ -89,7 +91,7 @@ export function PlayerMatchHistory( { player }: Props ) {
     const { data: playerMatchHistory, isLoading: isLoadingPlayerMatchHistory } = useAnalytikillPlayerMatchHistory( player?.steam64Id );
     const [ showAll, setShowAll ] = React.useState( false );
 
-    const sortedPlayerMatchHistory = playerMatchHistory?.sort( (a, b) => Number(b.csc_match_id) - Number(a.csc_match_id) );
+    const sortedPlayerMatchHistory = playerMatchHistory?.sort( (a, b) => new Date(b.Match_Match_Player_Stat_match_uuidToMatch.matchStartTime).getTime() - new Date(a.Match_Match_Player_Stat_match_uuidToMatch.matchStartTime).getTime() );
 
     if( playerMatchHistory?.length === 0 && !playerMatchHistory) {
         return null;

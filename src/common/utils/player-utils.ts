@@ -171,8 +171,6 @@ export function determinePlayerRole( stats: CscStats ){
         //clamp(player.stats["wlpL"], 0, 5), // Lurker
     };
 
-    console.info( roles );
-
     return Object.entries(roles).reduce( ( role, [key, value]) => value > role[1] ? [key, value] : role, ['', 0])[0];
     
 }
