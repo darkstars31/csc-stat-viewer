@@ -17,17 +17,15 @@ function MatchHistory( { match }: { match: MatchHistoryPlayerStat } ) {
         return <div><Loading /></div>;
     }
 
-    console.info( matchHistory)
-
     const teamHome = matchHistory?.Match_Player_Stat_Match_Player_Stat_match_uuidToMatch.filter( p => p.Team === "team_home" || p.Team === "StartedCT").sort( (a, b) => b.Rating - a.Rating );
     const teamAway = matchHistory?.Match_Player_Stat_Match_Player_Stat_match_uuidToMatch.filter( p => p.Team === "team_away" || p.Team === "StartedT" ).sort( (a, b) => b.Rating - a.Rating );
 
     console.info( match.Name, teamHome?.find( p => p.Name === match.Name), teamAway?.find( p => p.Name === match.Name) );
 
     return (
-        <div className="pl-16 text-xs">
+        <div className="pl-16 text-xs pb-4">
               <div className="flex flex-row pl-2 gap-4 h-8 items-center border-b border-gray-600">
-                <div className="basis-1/12">Name</div>
+                <div className="basis-1/6">Name</div>
                 <div className="basis-1/6">Rating</div>
                 <div className="basis-1/6">K / D / A</div>
                 <div className="basis-1/12">ADR</div>
@@ -36,7 +34,7 @@ function MatchHistory( { match }: { match: MatchHistoryPlayerStat } ) {
             </div>
             { teamHome?.map( (playerStat, index) => 
                     <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.Name === match.Name ? "text-yellow-300" : ""}`}>
-                        <div className={`basis-1/12`}>{playerStat.Name}</div>
+                        <div className={`basis-1/6`}>{playerStat.Name}</div>
                         <div className="basis-1/6">{playerStat.Rating.toFixed(2)}</div>
                         <div className="basis-1/6">{playerStat.Kills} / {playerStat.Deaths} / {playerStat.Assists}</div>
                         <div className="basis-1/12">{playerStat.ADR}</div>
@@ -48,7 +46,7 @@ function MatchHistory( { match }: { match: MatchHistoryPlayerStat } ) {
             <br />
             { teamAway?.map( (playerStat, index) => 
                     <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.Name === match.Name ? "text-yellow-300" : ""}`}>
-                        <div className={`basis-1/12`}>{playerStat.Name}</div>
+                        <div className={`basis-1/6`}>{playerStat.Name}</div>
                         <div className="basis-1/6">{playerStat.Rating.toFixed(2)}</div>
                         <div className="basis-1/6">{playerStat.Kills} / {playerStat.Deaths} / {playerStat.Assists}</div>
                         <div className="basis-1/12">{playerStat.ADR}</div>
@@ -70,7 +68,7 @@ function MatchRow( { match }: { match: MatchHistoryPlayerStat } ) {
         <div>
             <div className="flex flex-nowrap gap-4 my-1 py-2 hover:cursor-pointer hover:bg-midnight2 rounded pl-2 text-sm" onClick={() => setIsExpanded(!isExpanded)}>
                 <div className="w-8">{ isExpanded ? <MdKeyboardArrowDown size="1.5em" className='leading-8 pl-1' /> : <MdKeyboardArrowRight size="1.5em" className='leading-8 pl-1' />}</div>
-                <div className="basis-1/12"> {matchType} <div className="text-xs text-gray-700">id: {match?.csc_match_id ?? 0}</div></div>
+                <div className="basis-1/12"> {matchType} <div className="text-xs text-gray-700">{match?.Match_Match_Player_Stat_match_uuidToMatch?.matchStartTime.split("T")[0] ?? 0}</div></div>
                 <div className="basis-1/5"><span className="flex gap-2"><div className='text-sm'><img className='w-8 h-8 mx-auto' src={mapImages['de_'+match.Map.toLowerCase()]} alt=""/></div> {match.Map}</span></div>
                 <div className={`basis-1/12 min-w-32 ${match.RF > match.RA ? "text-green-400" : "text-rose-400"}`}><span className="flex flex-nowrap">{match.RF} : {match.RA}</span></div>
                 <div className="basis-1/12">{match.Rating.toFixed(2)}</div>
