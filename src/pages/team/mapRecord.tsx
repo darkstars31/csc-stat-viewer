@@ -18,6 +18,10 @@ export function MapRecord( { matches, team }: Props) {
 
 	const teamRecord: TeamRecord = calculateTeamRecord( team, matches );
 
+    if( teamRecord.record === undefined ) {
+        return null;
+    }
+
     return (
         <div className='p-2'>
             <div className='text-center text-sm'>Total RWP {teamRecord.record.roundsWon}:{teamRecord.record.roundsLost} ({calcPercentage(teamRecord.record.roundsWon, teamRecord.record.roundsWon+teamRecord.record.roundsLost)}%)</div>

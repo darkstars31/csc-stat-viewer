@@ -31,6 +31,8 @@ export function Team(){
 		}
 	});
 
+	const teamAwardMappings: Record<string, string> = { ...AwardsMappings, avgMmr: "Avg MMR" };
+
 	const currentFranchise = franchises.find( f => f.name === franchiseName );
 	const currentTeam = currentFranchise?.teams.find( t => t.name === teamName );
 	let iterations = 0;
@@ -38,6 +40,7 @@ export function Team(){
 		const cscPlayerWithStats = cscPlayers.find( p => p.steam64Id === player.steam64Id && p.stats?.rating );
 		if ( !cscPlayerWithStats ) return acc;
 		iterations++;
+		acc["avgMmr"] = (acc["avgMmr"] + cscPlayerWithStats.mmr);
 		acc["rating"] = (acc["rating"] + (cscPlayerWithStats.stats.rating));
 		acc["ef"] = ( acc["ef"] + cscPlayerWithStats.stats.ef);
 		acc["adr"] = ( acc["adr"] + cscPlayerWithStats.stats.adr);
@@ -47,6 +50,7 @@ export function Team(){
 		acc["clutchR"] = ( acc["clutchR"] +cscPlayerWithStats.stats.clutchR);
 
 		if(index === currentTeam.players.length - 1 ) {
+			acc["avgMmr"] = Math.floor(acc["avgMmr"] / iterations );
 			acc["rating"] = acc["rating"] / iterations;
 			acc["ef"] = acc["ef"] / iterations;
 			acc["adr"] = acc["adr"] / iterations;
@@ -57,12 +61,12 @@ export function Team(){
 		}
 
 		return acc;
-	}, { 'rating': 0, 'ef': 0, 'adr': 0, 'kast': 0, 'utilDmg': 0, 'impact': 0, 'clutchR': 0 } as any);
+	}, { 'rating': 0, 'ef': 0, 'adr': 0, 'kast': 0, 'utilDmg': 0, 'impact': 0, 'clutchR': 0, "avgMmr": 0 } as any);
 	//console.info( 'currentTeamStatAggregation', currentTeamStatAggregation);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph( dataConfig?.season ,currentTeam?.id );
-	const regularSeasonMatches = matches.filter( match => match.stats.length === 1 );
+	const regularSeasonMatches = matches.filter( match => match.stats.length <= 1);
 	const playoffMatches = matches.filter( match => match.stats.length > 1 );
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars 
 	//const matchesData = useFetchMultipleMatchInfoGraph(matches.filter( match => match.stats.length > 0).map( match => match.id ));
@@ -90,7 +94,7 @@ export function Team(){
 								{ Object.entries(currentTeamStatAggregation ?? []).map( ([key, value]) => 
 									<div className="flex-initial m-2 p-2 text-center">
 										<div><b>{(value as number).toFixed(2)}</b></div>
-										<div className="text-sm">{AwardsMappings[key]}</div>
+										<div className="text-sm">{teamAwardMappings[key]}</div>
 									</div>
 									)
 								}
@@ -114,7 +118,9 @@ export function Team(){
 								}
 								{ regularSeasonMatches.length > 0 && 
 									<div className="pt-8">								
-										<h2 className="text-2xl font-bold text-white grow text-center">Regular Season ({teamRecord.record.wins} - {teamRecord.record.losses})</h2>
+										<h2 className="text-2xl font-bold text-white grow text-center">Regular Season 
+											{ teamRecord.record && <span>({teamRecord.record.wins} - {teamRecord.record?.losses})</span> }
+										</h2> 
 										{
 											matches.length > 0 && regularSeasonMatches.some( match => match.stats.some( stat => stat.awayScore > 0 || stat.homeScore > 0 )) &&
 											<div className="text-center">

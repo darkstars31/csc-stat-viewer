@@ -140,8 +140,6 @@ export function MatchCards( { match, team }: Props ) {
     const didCurrentTeamWin = matchDayWins / match.stats.length > 0.5;
     const backgroundColor = match.stats.length > 0 || isMatchInProgress ? didCurrentTeamWin ? "bg-emerald-800" : "bg-red-950" : "bg-midnight1";
 
-    console.info( match.id, match.lobby.mapBans );
-
     return (
         <div className={`m-2 p-2 ${backgroundColor} ${isMatchInProgress ? "border-yellow-500 border-2" : ""} rounded-lg`}>
             <div className="w-full flex text-sm pb-2">
