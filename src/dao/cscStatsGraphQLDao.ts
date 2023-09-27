@@ -71,7 +71,7 @@ const fetchGraph = async ( tier: CscTiers, season?: number, matchType?: string )
     })
     .then( async response => {
         return response.json().then( (json: CscStatsQuery) => {
-            return json.data.tierSeasonStats;
+            return json.data?.tierSeasonStats;
         });
     } );
 
@@ -81,7 +81,7 @@ const fetchCachedGraph = async (tier: CscTiers, season?: number, matchType?: str
             headers: {'Content-Type': "application/json" }
         }).then( async response => 
             response.json().then( (json: CscStatsQuery) => 
-                json.data.tierSeasonStats
+                json.data?.tierSeasonStats
         ) ).catch( () => {
             fetchGraph( tier, season, matchType );
         });

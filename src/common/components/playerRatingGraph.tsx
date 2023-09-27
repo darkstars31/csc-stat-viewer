@@ -18,9 +18,12 @@ export function PlayerRatingTrendGraph({ player }: Props) {
     dataConfig?.season
   );
 
+  console.info( cscPlayerProfile?.map( match => match.match.matchDay) )
+
   const sortedCscPlayerProfile = React.useMemo(() => {
     if (cscPlayerProfile) {
-      return [...cscPlayerProfile].sort((a, b) => {
+      // HACK: Filter'd on 'M' to remove combine info (Mixed types dates/static match day number)
+      return [...cscPlayerProfile.filter(match => match.match.matchDay.includes("M"))].sort((a, b) => {
         const matchDayA = parseInt(a.match.matchDay.slice(1), 10);
         const matchDayB = parseInt(b.match.matchDay.slice(1), 10);
   
