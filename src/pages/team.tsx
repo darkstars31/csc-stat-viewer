@@ -102,7 +102,7 @@ export function Team(){
 							<div className="p-4 rounded">
 								<hr className="h-px my-4 border-0" />
 								<div>
-									<div className="flex flex-row justify-center gap-4 flex-wrap pt-4">
+									<div className="flex flex-row justify-center gap-2 flex-wrap pt-4">
 									{
 										currentTeam?.players?.map( player => <TeamPlayerCards key={player.name} franchisePlayer={player} team={currentTeam} /> )
 									}
