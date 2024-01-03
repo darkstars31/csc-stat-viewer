@@ -38,6 +38,7 @@ export interface CscStats {
     rounds: number;
     saveRate: number;
     savesR: number;
+    sRate: number;
     suppR: number;
     suppXR: number;
     team: string;
