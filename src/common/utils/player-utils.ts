@@ -86,7 +86,17 @@ export function _sort<T>( items: T[], property: string, n?: number, order?: "asc
 }
 export const getPlayersInTier = ( player: Player, allPlayers: Player[] ) => allPlayers.filter( ap => ap.tier.name === player.tier.name );
 export const getPlayersInTier3GP = (player: Player, allPlayers: Player[]) => allPlayers.filter(ap => ap.tier.name === player.tier.name && ap.stats?.gameCount > 3);
-export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Player[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => { if( !a.stats?.rating) return 1;  return a.stats?.rating < b.stats?.rating ? 1 : -1});
+export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Player[] ) => 
+    getPlayersInTier( player, allPlayers).sort( (a,b) => {
+        const aPlayerGameCount = a.stats?.gameCount ?? 0;
+        const bPlayerGameCount = b.stats?.gameCount ?? 0;
+        return aPlayerGameCount > bPlayerGameCount ? 1 : -1
+    }).sort( (a,b) => 
+        {   if( !a.stats?.rating || a.stats.gameCount < 3 ){
+                return 1;
+            }
+            return a.stats?.rating < b.stats?.rating ? 1 : -1}
+        );
 export const getTop10PlayersInTier3GP = (
     player: Player,
     allPlayers: Player[],

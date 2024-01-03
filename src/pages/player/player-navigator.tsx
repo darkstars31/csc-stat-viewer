@@ -19,7 +19,6 @@ export function PlayerNavigator( { player, playerIndex }: Props ) {
     if( !player ) {
         return null;
     }
-    //const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player, players );
     const pageMax = playerInTierOrderedByRating.length / pageSize;
     if( pageCurrent > pageMax ) {
@@ -43,7 +42,7 @@ export function PlayerNavigator( { player, playerIndex }: Props ) {
                                         {player.name}
                                         <span
                                             className="ml-2 inline-block whitespace-nowrap rounded-[0.27rem] bg-midnight1 px-[0.65em] pb-[0.25em] pt-[0.35em] text-center align-baseline text-[0.9em] font-bold leading-none text-neutral-200"
-                                        >{pageCurrent*pageSize+index+1}</span>
+                                        >{ player?.stats?.gameCount > 2 ? pageCurrent*pageSize+index+1 : "U" }</span>
                                     </div>
                                 </Link>
                             )
