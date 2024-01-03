@@ -40,7 +40,7 @@ export function Header() {
 		//{ name: 'Home', href: '/', current: location.endsWith("/") },
 		//{ name: 'Charts', href: '/charts', current: location.endsWith("/charts") || location.endsWith("/") },
 		{ name: 'Franchises', href: '/franchises', current: location.includes("franchises") },
-		{ name: 'Standings', href: '/Standings', current: location.endsWith("/Standings") },
+		//{ name: 'Standings', href: '/Standings', current: location.endsWith("/Standings") },
 		{ name: 'Players', href: '/players', current: location.includes("players") },
 		{ name: 'Leaderboards', href: '/leaderboards', current: location.includes("leaderboards") },
 		{ name: 'Tools', component: () => <ToolsDropdown />, current: location.includes("leaderboards") },

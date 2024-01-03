@@ -10,6 +10,7 @@ import GAS from "../../assets/images/franchise/GAS.png";
 import H4K from "../../assets/images/franchise/H4K.png";
 import HG from "../../assets/images/franchise/HG.png";
 import HEL from "../../assets/images/franchise/HEL.png";
+import LEC from "../../assets/images/franchise/LEC.png";
 import NAN from "../../assets/images/franchise/NAN.png";
 import OS from "../../assets/images/franchise/OS.png";
 import SAV from "../../assets/images/franchise/SAV.png";
@@ -19,4 +20,4 @@ import YC from "../../assets/images/franchise/YC.png";
 
 type FranchiseImages = Record<string, string>;
 
-export const franchiseImages: FranchiseImages = { ACA, AP, ATL, ATO, AVI, BS, COW, FRG, GAS, H4K, HG, HEL, NAN, OS, SAV, UPS, WET, YC };
+export const franchiseImages: FranchiseImages = { ACA, AP, ATL, ATO, AVI, BS, COW, FRG, GAS, H4K, HG, HEL, LEC, NAN, OS, SAV, UPS, WET, YC };
