@@ -23,6 +23,7 @@ export function MemoizedPlayerList( { orderBy, displayStyle, players }: Props){
     if( displayStyle === "cards" ){
         const playerCards = [];
         for( const player of sortedPlayerData ){
+            !player?.name && console.info("no name", player);
             playerCards.push( <PlayerCard key={`${player.name}`} player={player} />);
         }
 

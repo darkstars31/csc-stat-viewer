@@ -24,6 +24,20 @@ export type DataConfiguration = {
 }
 
 export const dataConfiguration = [
+    // {
+    //     season: 13,
+    //     seasonStartDate: "2024-01-11",
+    //     seasonEndDate: "2024-04-30",
+    //     name: "Season 13",
+    //     spreadsheetUrl: googleSheetsUrl("18qgpc4NdPNg4I5Q9lmzaEgUYyxHtq25JKZfTxiQg_lc",334898684),
+    // },
+    {
+        season: 13,
+        seasonStartDate: "2024-01-11",
+        seasonEndDate: "2024-04-30",
+        name: "Season 13 (Combines)",
+        spreadsheetUrl: googleSheetsUrl("18qgpc4NdPNg4I5Q9lmzaEgUYyxHtq25JKZfTxiQg_lc",334898684),
+    },
     {
         season: 12,
         seasonStartDate: "2023-09-11",
