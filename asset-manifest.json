@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.b6f89a73.css",
-    "main.js": "/static/js/main.57d78bc7.js",
+    "main.js": "/static/js/main.3330f429.js",
     "static/media/GAS.png": "/static/media/GAS.2d7416ff8947069d2d9a.png",
     "static/media/OS.png": "/static/media/OS.5616c74a661e36306219.png",
     "static/media/YC.png": "/static/media/YC.ac735f0a03a96e6be556.png",
@@ -11,6 +11,7 @@
     "static/media/ACA.png": "/static/media/ACA.ca290893ad36709f7fc3.png",
     "static/media/HG.png": "/static/media/HG.eda898cdc7d02469691b.png",
     "static/media/FRG.png": "/static/media/FRG.2c8689400171eca664f0.png",
+    "static/media/BS.png": "/static/media/BS.4e792a5aff49fefb227c.png",
     "static/media/AP.png": "/static/media/AP.87542aadf4a23edfc4eb.png",
     "static/media/De_vertigo.png": "/static/media/De_vertigo.9072ae7b499a6f7efb50.png",
     "static/media/NAN.png": "/static/media/NAN.b9399045f2520ca6db75.png",
@@ -23,10 +24,10 @@
     "static/media/SAV.png": "/static/media/SAV.d8b83cb52b559673b0fa.png",
     "static/media/De_overpass.png": "/static/media/De_overpass.9a17c69c8532444897bb.png",
     "static/media/De_mirage.png": "/static/media/De_mirage.04c38a84d08d8ea78629.png",
-    "static/media/BS.png": "/static/media/BS.ead0de70d13e750f676f.png",
     "static/media/ATL.png": "/static/media/ATL.70e33e5d30739be8ec67.png",
     "static/media/De_anubis.png": "/static/media/De_anubis.262aab62344b232515cf.png",
     "static/media/ATO.png": "/static/media/ATO.fcda327f6508187c8218.png",
+    "static/media/LEC.png": "/static/media/LEC.46b61d56e40c985dbd5e.png",
     "static/media/H4K.png": "/static/media/H4K.c92882529721c52de6d1.png",
     "static/media/faceit10.svg": "/static/media/faceit10.85f9bab1508323e3c8643c02055a2cdb.svg",
     "static/media/faceit6.svg": "/static/media/faceit6.d9dd88b43c361ca3bbf5d5b6a0a9e69b.svg",
@@ -41,10 +42,10 @@
     "static/media/faceit7.svg": "/static/media/faceit7.7193bbc6588efceeca89830842f3f9fc.svg",
     "static/media/faceit1.svg": "/static/media/faceit1.2feb84dcfc17bc9eba1c6b8a08380edb.svg",
     "main.b6f89a73.css.map": "/static/css/main.b6f89a73.css.map",
-    "main.57d78bc7.js.map": "/static/js/main.57d78bc7.js.map"
+    "main.3330f429.js.map": "/static/js/main.3330f429.js.map"
   },
   "entrypoints": [
     "static/css/main.b6f89a73.css",
-    "static/js/main.57d78bc7.js"
+    "static/js/main.3330f429.js"
   ]
 }
