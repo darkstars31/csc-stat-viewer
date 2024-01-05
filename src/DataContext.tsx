@@ -76,8 +76,11 @@ const useDataContextProvider = () => {
 		].filter( statsWithTier => statsWithTier?.stats );
 
 		if( statsByTier.length > 0 ){
-			const role = determinePlayerRole( statsByTier.find( s => s.tier === cscPlayer.tier.name)?.stats! );
+			var role = determinePlayerRole( statsByTier.find( s => s.tier === cscPlayer.tier.name)?.stats! );
 			const stats = statsByTier.find( s => s.tier === cscPlayer.tier.name)?.stats!;
+			if(cscPlayer.steam64Id === "76561198855758438") {
+				role = "BAITER";
+			}
 			acc.push( { ...cscPlayer,
 				hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
 				role,
