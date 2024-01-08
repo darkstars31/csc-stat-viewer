@@ -16,6 +16,7 @@ export interface CscStats {
     cl_5: number;
     clutchR: number;
     consistency: number;
+    ctRating: number;
     deaths: number;
     ef: number;
     fAssists: number;
@@ -44,6 +45,7 @@ export interface CscStats {
     team: string;
     threeK: number;
     tradesR: number;
+    TRating: number;
     tRatio: number;
     twoK: number;
     util: number;

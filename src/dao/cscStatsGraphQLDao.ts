@@ -44,6 +44,8 @@ const fetchGraph = async ( tier: CscTiers, season?: number, matchType?: string )
                     peak
                     pit
                     rating
+                    ctRating
+                    tRating
                     rounds
                     saveRate
                     savesR
