@@ -6,7 +6,7 @@ import {
   LeaderBoards, Franchises, Franchise, 
   Players, Player, Profile, 
   Playground, TeamStandings, Team, 
-  TeamBuilder, ExportData,
+  PlayerComparison, ExportData,
 } from './pages';
 import { ArticleRoutes } from './pages/articles/routes';
 import { useDataContext } from './DataContext';
@@ -36,7 +36,7 @@ export function Router(){
     { path: `/players`, component: () => <Players /> },
     { path: `/players/:id`, component: () => <Player /> },
     { path: `/players/:tier/:id`, component: () => <Player /> }, // TODO: Remove route when no longer needed
-    { path: `/team-builder`, component: () => <TeamBuilder /> },
+    { path: `/player-compare`, component: () => <PlayerComparison /> },
     { path: `/leaderboards`, component: () => <LeaderBoards /> },
     { path: `/playground`, component: () => <Playground /> },
     { path: `/profile`, component: () => <Profile /> },

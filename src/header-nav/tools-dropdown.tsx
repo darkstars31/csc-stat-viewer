@@ -35,9 +35,9 @@ export const ToolsDropdown = () => {
                 </Menu.Item>
                 <Menu.Item>
                     {({ active }) => (
-                        <Link to='/team-builder'>
+                        <Link to='/player-compare'>
                             <span className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700')}>
-                                Team Builder
+                                Player Comparison
                             </span>
                         </Link>
                     )}

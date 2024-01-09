@@ -10,7 +10,7 @@ export * from "./franchise";
 export * from "./team";
 export * from "./leaderboards";
 export * from "./cb";
-export * from "./teamBuilder";
+export * from "./playerComparison";
 export * from "./teamStandings";
 export * from "./playground";
 
