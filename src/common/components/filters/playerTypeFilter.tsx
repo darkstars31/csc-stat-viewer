@@ -42,6 +42,7 @@ export const PlayerTypeFilter = React.memo(({ onChange, selectedOptions }: Props
                 classNames={selectClassNames}
                 options={viewPlayerTypeList}
                 onChange={onChange}
+                defaultValue={JSON.parse(localStorage.getItem("viewPlayerTypeOptions") ?? "[]") as MultiValue<{label: string;value: PlayerTypes[];}>}             
             />
         </div>
     );

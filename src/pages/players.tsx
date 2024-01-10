@@ -2,7 +2,7 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import { Input } from "../common/components/input";
 import { Pill } from "../common/components/pill";
-import Select, { MultiValue } from "react-select";
+import Select, { MultiValue, SingleValue } from "react-select";
 import { useDataContext } from "../DataContext";
 import { MdGridView, MdOutlineViewHeadline } from "react-icons/md";
 import { TbDatabaseExport } from "react-icons/tb";
@@ -56,14 +56,14 @@ export function Players() {
     const [ searchValue, setSearchValue ] = React.useState("");
     const [ filters, setFilters ] = React.useState<string[]>([]);
     const [ orderBy, setOrderBy ] = useLocalStorage("orderBy", JSON.stringify(sortOptionsList[0])); // React.useState<SingleValue<{label: string;value: string;}>>(sortOptionsList[0]);
-    const [ viewTierOptions, setViewTierOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
-    const [ viewPlayerTypeOptions, setViewPlayerTypeOptions ] = React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>();
-    const [ viewPlayerRoleOptions, setViewPlayerRoleOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
+    const [ viewTierOptions, setViewTierOptions ] = useLocalStorage("viewTierOptions", JSON.stringify([])) //React.useState<MultiValue<{label: string;value: string;}>>();
+    const [ viewPlayerTypeOptions, setViewPlayerTypeOptions ] = useLocalStorage("viewPlayerTypeOptions", JSON.stringify([])); //React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>();
+    const [ viewPlayerRoleOptions, setViewPlayerRoleOptions ] = useLocalStorage("viewPlayerRoleOptions", JSON.stringify([])); //React.useState<MultiValue<{label: string;value: string;}>>();
 
-    const viewPlayerTypeOptionsCumulative = viewPlayerTypeOptions?.flatMap( option => option.value);
-    const filteredByPlayerType = viewPlayerTypeOptions?.length ? players.filter( player => viewPlayerTypeOptionsCumulative?.some( type => type === player.type )) : players;
-    const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.tier.name)) : filteredByPlayerType;
-    const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.role)) : filteredByTier;
+    const viewPlayerTypeOptionsCumulative = viewPlayerTypeOptions?.flatMap( (option: SingleValue<{label: string;value: string;}>) => option?.value);
+    const filteredByPlayerType = viewPlayerTypeOptions?.length ? players.filter( player => viewPlayerTypeOptionsCumulative?.some( (type: PlayerTypes | undefined) => type === player.type )) : players;
+    const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( (tier: { value: string; }) => tier.value === player.tier.name)) : filteredByPlayerType;
+    const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( (role: { value: string | undefined; }) => role.value === player.role)) : filteredByTier;
     const filteredBySearchPlayers = filters.length > 0 ? filteredByRole.filter( player => filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ))) : filteredByRole;
 
     // React.useEffect(() => {
@@ -162,7 +162,9 @@ export function Players() {
                 <PlayerTiersFilter onChange={setViewTierOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
             </div>
             <div className="basis-1/5">
-                <PlayerRolesFilter onChange={setViewPlayerRoleOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
+                <PlayerRolesFilter onChange={
+                    setViewPlayerRoleOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>
+                    } />
             </div>
             <div className="basis-1/5">
                 <div className="flex flex-row text-xs my-2 mx-1">

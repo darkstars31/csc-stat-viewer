@@ -34,6 +34,7 @@ export function PlayerRolesFilter( { onChange, hideLabel, placeHolder }: Props) 
                     classNames={selectClassNames}
                     options={viewRolesList}
                     onChange={onChange}
+                    defaultValue={JSON.parse(localStorage.getItem("viewPlayerRoleOptions") ?? "[]") as MultiValue<{label: string;value: String;}>}             
                 />
         </div>
     );}

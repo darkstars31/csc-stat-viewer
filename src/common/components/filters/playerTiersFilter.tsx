@@ -31,7 +31,8 @@ export function PlayerTiersFilter( { onChange }: Props) {
                         isSearchable={false}
                         classNames={selectClassNames}
                         options={viewTiersList}
-                        onChange={onChange}
+                        onChange={onChange}          
+                        defaultValue={JSON.parse(localStorage.getItem("viewTierOptions") ?? "[]") as MultiValue<{label: string;value: string;}>}             
                     />
             </div>
     );
