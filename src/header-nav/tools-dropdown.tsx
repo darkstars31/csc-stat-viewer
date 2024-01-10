@@ -42,6 +42,15 @@ export const ToolsDropdown = () => {
                         </Link>
                     )}
                 </Menu.Item>
+                <Menu.Item>
+                    {({ active }) => (
+                        <Link to='/export'>
+                            <span className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700')}>
+                                Stats Exporter
+                            </span>
+                        </Link>
+                    )}
+                </Menu.Item>
             </Menu.Items>
         </Transition>
     </Menu>
