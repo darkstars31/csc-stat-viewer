@@ -9,6 +9,32 @@ import { PlayerTiersFilter } from '../common/components/filters/playerTiersFilte
 import { PlayerRolesFilter } from '../common/components/filters/playerRoleFilter';
 import { Pill } from '../common/components/pill';
 import { Input } from '../common/components/input';
+import { Player } from '../models';
+import Papa from 'papaparse';
+import { TbDatabaseExport } from 'react-icons/tb';
+
+const exportAsCsv = ( players: Player[]) => {
+    const playerData = players.filter( p => Boolean(p.stats))
+        .map( p => {
+            // Hack to remove properties from stats and include player first class properties
+            const { name, team, __typename, rating, ...rest } = p.stats; 
+            const stats = Object.keys(rest)
+                .reduce( (acc, k) => {
+                    const value = rest[k as keyof typeof rest];
+                    acc[k] = typeof value === "number" && !Number.isInteger(value) ? value.toFixed(2) : value;
+                    return acc
+                }, {} as any);
+            return ({ name: p.name, tier: p.tier.name, role: p.role, mmr: p.mmr, rating: p.stats.rating, ...stats });
+            }
+        );
+    var csv = Papa.unparse(  playerData );
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.setAttribute('href', url)
+    a.setAttribute('download', 'PlayersWithStats.csv');
+    a.click()
+};
 
 export function ExportData() {
     const { players } = useDataContext();
@@ -58,7 +84,7 @@ export function ExportData() {
             <div className="mx-auto max-w-lg text-center">
             <h2 className="text-3xl font-bold sm:text-4xl">Export Players</h2>
             <p className="mt-4 text-gray-300">
-                Export a list of players based on filters below
+                Export a list of players based on filters below as a CSV
             </p>
             <p className="mt-4 text-gray-300">
                 Showing {filteredBySearchPlayers.length} of {players.length} Players
@@ -96,6 +122,11 @@ export function ExportData() {
             </div>
             <div className="basis-1/5">
                 <PlayerRolesFilter onChange={setViewPlayerRoleOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
+            </div>
+            <div className="basis-1/5">
+                <div className="flex flex-row text-xs my-2 mx-1">
+                    <button title="Export Stats as CSV" className={`p-2 m-1 rounded border bg-indigo-600 border-indigo-600`} onClick={ () => exportAsCsv(filteredBySearchPlayers) }><span className='flex flex-row'><TbDatabaseExport className='mr-2' />Export</span></button>
+                </div>
             </div>
         </div>
         <div className='my-8' />
