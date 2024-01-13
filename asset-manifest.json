@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.b29f7986.css",
-    "main.js": "/static/js/main.6afcf02c.js",
+    "main.js": "/static/js/main.5ae3b537.js",
     "static/media/ATL.png": "/static/media/ATL.fb63f87d3c8970cf5f2c.png",
     "static/media/GAS.png": "/static/media/GAS.2d7416ff8947069d2d9a.png",
     "static/media/OS.png": "/static/media/OS.5616c74a661e36306219.png",
@@ -11,7 +11,7 @@
     "static/media/HEL.png": "/static/media/HEL.6893db80567850f9712c.png",
     "static/media/UPS.png": "/static/media/UPS.01bb3d4aaed24865a126.png",
     "static/media/ACA.png": "/static/media/ACA.ca290893ad36709f7fc3.png",
-    "static/media/HG.png": "/static/media/HG.eda898cdc7d02469691b.png",
+    "static/media/HG.png": "/static/media/HG.6f56d16ec91d76c73a9a.png",
     "static/media/BS.png": "/static/media/BS.4e792a5aff49fefb227c.png",
     "static/media/AP.png": "/static/media/AP.87542aadf4a23edfc4eb.png",
     "static/media/De_vertigo.png": "/static/media/De_vertigo.9072ae7b499a6f7efb50.png",
@@ -42,10 +42,10 @@
     "static/media/faceit7.svg": "/static/media/faceit7.7193bbc6588efceeca89830842f3f9fc.svg",
     "static/media/faceit1.svg": "/static/media/faceit1.2feb84dcfc17bc9eba1c6b8a08380edb.svg",
     "main.b29f7986.css.map": "/static/css/main.b29f7986.css.map",
-    "main.6afcf02c.js.map": "/static/js/main.6afcf02c.js.map"
+    "main.5ae3b537.js.map": "/static/js/main.5ae3b537.js.map"
   },
   "entrypoints": [
     "static/css/main.b29f7986.css",
-    "static/js/main.6afcf02c.js"
+    "static/js/main.5ae3b537.js"
   ]
 }
