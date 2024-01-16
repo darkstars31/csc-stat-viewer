@@ -14,6 +14,7 @@ import { PlayerTypeFilter } from '../common/components/filters/playerTypeFilter'
 import { PlayerTiersFilter } from '../common/components/filters/playerTiersFilter';
 import { PlayerRolesFilter } from '../common/components/filters/playerRoleFilter';
 import * as Containers from "../common/components/containers";
+import { DistributionCurves } from './charts/distributionCurve';
   
 
 export function Charts() {
@@ -94,6 +95,7 @@ export function Charts() {
 
     const tabs = [
         { label: "MMR and Rating by Tier"},
+        { label: "Distribution Curves"},
         { label: "Stat Bars by Tier"},
         { label: "Role Distribution"},
         { label: "Role Distribution By Tier"},
@@ -175,7 +177,16 @@ export function Charts() {
                         <CartesianCompare playerData={filteredBySearchPlayers} />
                     </div>
                     }
-                    { currentTab === 1 && <div
+                     { currentTab === 1 && <div
+                            className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                            id="tabs-home"
+                            role="tabpanel"
+                            aria-labelledby="tabs-home-tab"
+                            data-te-tab-active>
+                            <DistributionCurves playerData={filteredBySearchPlayers} />
+                        </div>
+                    }
+                    { currentTab === 2 && <div
                         className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                         id="tabs-profile"
                         role="tabpanel"
@@ -194,7 +205,7 @@ export function Charts() {
                         </Containers.ChartButtonBoundingBox>
                     </div>
                     }
-                    { currentTab === 2 && <div
+                    { currentTab === 3 && <div
                         className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                         id="tabs-messages"
                         role="tabpanel"
@@ -202,7 +213,7 @@ export function Charts() {
                         <RolePieChart playerData={filteredBySearchPlayers} />
                     </div>
                     }
-                    { currentTab === 3 && <div
+                    { currentTab === 4 && <div
                         className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                         id="tabs-contact"
                         role="tabpanel"
@@ -211,7 +222,7 @@ export function Charts() {
                     </div>
                     }
                     {
-                        currentTab === 4 && <div
+                        currentTab === 5 && <div
                         className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                         id="tabs-correlation"
                         role="tabpanel"

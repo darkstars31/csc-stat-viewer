@@ -12,7 +12,7 @@ export const appConfig = {
 };  
 
 
-const googleSheetsUrl = ( spreadsheetId: string, spreadsheetGuid?: number ) => {
+export const googleSheetsUrl = ( spreadsheetId: string, spreadsheetGuid?: number ) => {
  const queryParams = spreadsheetGuid ? `gid=${spreadsheetGuid}&tqx=out:csv&tq` : "tqx=out:csv&tq";
  return`https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?${queryParams}`
 }

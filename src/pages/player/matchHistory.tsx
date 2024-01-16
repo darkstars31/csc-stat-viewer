@@ -57,6 +57,11 @@ function MatchRow( { player, match }: { player: Player, match: Match } ) {
     const matchType = match.matchType ?? "broke"
     const p = match.matchStats.find( ms => ms.name === player.name )!;
 
+    if(p === undefined) {
+        console.info('Player is missing match because their name does not appear as a player, possible name change?',p, 'match', match);
+        return null;
+    }
+
     return (
         <div>
             <div className="flex flex-nowrap gap-4 my-1 py-2 hover:cursor-pointer hover:bg-midnight2 rounded pl-2 text-sm" onClick={() => setIsExpanded(!isExpanded)}>
@@ -81,6 +86,8 @@ function MatchRow( { player, match }: { player: Player, match: Match } ) {
 export function PlayerMatchHistory( { player }: Props ) {
     const { data: playerMatchHistory, isLoading: isLoadingPlayerMatchHistory } = useCscPlayerMatchHistoryGraph( player );
     const [ showAll, setShowAll ] = React.useState( false );
+
+    console.info( 'playerMatchHistory', playerMatchHistory);
 
     const sortedPlayerMatchHistory = playerMatchHistory?.sort( (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() );
 
