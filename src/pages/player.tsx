@@ -25,7 +25,7 @@ import { ToolTip } from "../common/utils/tooltip-utils";
 import * as Containers from "../common/components/containers";
 import { StatsOutOfTier } from "./player/statsOutOfTier";
 import { tiers } from "../common/constants/tiers";
-//import { PlayerMatchHistory } from "./player/matchHistory"; //Disabled until further notice, no backend parser working for CS2 yet
+import { PlayerMatchHistory } from "./player/matchHistory";
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
@@ -175,7 +175,7 @@ export function Player() {
                 </div>
             }
             <br />
-            {/* <PlayerMatchHistory player={currentPlayer} /> */}
+            <PlayerMatchHistory player={currentPlayer} />
             <br />
             {
                 currentPlayer.statsOutOfTier && 

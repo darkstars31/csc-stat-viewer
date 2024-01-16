@@ -7,5 +7,5 @@ type Props = {
 }
 
 export function Mmr( { player }: Props) {
-    return <span>{ player.mmr === 0 ? player.mmr : "???"}</span> ;
+    return <span>{ player.mmr !== 0 ? player.mmr : "???"}</span> ;
 }

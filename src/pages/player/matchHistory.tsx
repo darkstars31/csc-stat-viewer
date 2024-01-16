@@ -1,26 +1,18 @@
 import * as React from "react";
-import { useAnalytikillIndividualMatchHistory, useAnalytikillPlayerMatchHistory } from "../../dao/analytikill";
 import { Player } from "../../models";
 import { Loading } from "../../common/components/loading";
 import { mapImages } from "../../common/images/maps";
 import { MdKeyboardArrowRight, MdKeyboardArrowDown } from 'react-icons/md'
-import { MatchHistoryPlayerStat } from "../../models/match-history-types";
+import { useCscPlayerMatchHistoryGraph } from "../../dao/cscPlayerMatchHistoryGraph";
+import { Match } from "../../models/csc-player-match-history-types";
 
 type Props = {
     player: Player;
 }
 
-function MatchHistory( { match }: { match: MatchHistoryPlayerStat } ) {
-    const { data: matchHistory, isLoading } = useAnalytikillIndividualMatchHistory( match.match_uuid );
-
-    if( isLoading ) {
-        return <div><Loading /></div>;
-    }
-
-    const teamHome = matchHistory?.Match_Player_Stat_Match_Player_Stat_match_uuidToMatch.filter( p => p.Team === "team_home" || p.Team === "StartedCT").sort( (a, b) => b.Rating - a.Rating );
-    const teamAway = matchHistory?.Match_Player_Stat_Match_Player_Stat_match_uuidToMatch.filter( p => p.Team === "team_away" || p.Team === "StartedT" ).sort( (a, b) => b.Rating - a.Rating );
-
-    console.info( match.Name, teamHome?.find( p => p.Name === match.Name), teamAway?.find( p => p.Name === match.Name) );
+function MatchHistory( { player, match }: { player: Player, match: Match } ) {
+    const teamHome = match?.matchStats.filter( p => p.teamClanName === "team_home" || p.teamClanName === "StartedCT").sort( (a, b) => b.rating - a.rating );
+    const teamAway = match?.matchStats.filter( p => p.teamClanName === "team_away" || p.teamClanName === "StartedT" ).sort( (a, b) => b.rating - a.rating );
 
     return (
         <div className="pl-16 text-xs pb-4">
@@ -33,26 +25,26 @@ function MatchHistory( { match }: { match: MatchHistoryPlayerStat } ) {
                 <div className="basis-1/12">Flash Assists</div>
             </div>
             { teamHome?.map( (playerStat, index) => 
-                    <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.Name === match.Name ? "text-yellow-300" : ""}`}>
-                        <div className={`basis-1/6`}>{playerStat.Name}</div>
-                        <div className="basis-1/6">{playerStat.Rating.toFixed(2)}</div>
-                        <div className="basis-1/6">{playerStat.Kills} / {playerStat.Deaths} / {playerStat.Assists}</div>
-                        <div className="basis-1/12">{playerStat.ADR}</div>
-                        <div className="basis-1/12">{playerStat.HS}</div>
-                        <div className="basis-1/12">{playerStat.F_Ass}</div>
+                    <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "text-yellow-300" : ""}`}>
+                        <div className={`basis-1/6`}>{playerStat.name}</div>
+                        <div className="basis-1/6">{playerStat.rating.toFixed(2)}</div>
+                        <div className="basis-1/6">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
+                        <div className="basis-1/12">{playerStat.adr.toFixed(2)}</div>
+                        <div className="basis-1/12">{playerStat.hs}</div>
+                        <div className="basis-1/12">{playerStat.FAss}</div>
                     </div> 
                 )
             }
             <br />
             { teamAway?.map( (playerStat, index) => 
-                    <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.Name === match.Name ? "text-yellow-300" : ""}`}>
-                        <div className={`basis-1/6`}>{playerStat.Name}</div>
-                        <div className="basis-1/6">{playerStat.Rating.toFixed(2)}</div>
-                        <div className="basis-1/6">{playerStat.Kills} / {playerStat.Deaths} / {playerStat.Assists}</div>
-                        <div className="basis-1/12">{playerStat.ADR}</div>
-                        <div className="basis-1/12">{playerStat.HS}</div>
-                        <div className="basis-1/12">{playerStat.F_Ass}</div>
-                    </div> 
+                    <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "text-yellow-300" : ""}`}>
+                    <div className={`basis-1/6`}>{playerStat.name}</div>
+                    <div className="basis-1/6">{playerStat.rating.toFixed(2)}</div>
+                    <div className="basis-1/6">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
+                    <div className="basis-1/12">{playerStat.adr.toFixed(2)}</div>
+                    <div className="basis-1/12">{playerStat.hs}</div>
+                    <div className="basis-1/12">{playerStat.FAss}</div>
+                </div> 
                 )
           }
         </div>
@@ -60,25 +52,26 @@ function MatchHistory( { match }: { match: MatchHistoryPlayerStat } ) {
 };
         
 
-function MatchRow( { match }: { match: MatchHistoryPlayerStat } ) {
+function MatchRow( { player, match }: { player: Player, match: Match } ) {
     const [ isExpanded, setIsExpanded ] = React.useState(false);
-    const matchType = match.Match_Match_Player_Stat_match_uuidToMatch?.type ?? "broke"
+    const matchType = match.matchType ?? "broke"
+    const p = match.matchStats.find( ms => ms.name === player.name )!;
 
     return (
         <div>
             <div className="flex flex-nowrap gap-4 my-1 py-2 hover:cursor-pointer hover:bg-midnight2 rounded pl-2 text-sm" onClick={() => setIsExpanded(!isExpanded)}>
                 <div className="w-8">{ isExpanded ? <MdKeyboardArrowDown size="1.5em" className='leading-8 pl-1' /> : <MdKeyboardArrowRight size="1.5em" className='leading-8 pl-1' />}</div>
-                <div className="basis-1/12"> {matchType} <div className="text-xs text-gray-700">{match?.Match_Match_Player_Stat_match_uuidToMatch?.matchStartTime.split("T")[0] ?? 0}</div></div>
-                <div className="basis-1/5"><span className="flex gap-2"><div className='text-sm'><img className='w-8 h-8 mx-auto' src={mapImages['de_'+match.Map.toLowerCase()]} alt=""/></div> {match.Map}</span></div>
-                <div className={`basis-1/12 min-w-32 ${match.RF > match.RA ? "text-green-400" : "text-rose-400"}`}><span className="flex flex-nowrap">{match.RF} : {match.RA}</span></div>
-                <div className="basis-1/12">{match.Rating.toFixed(2)}</div>
-                <div className="basis-1/6">{match.Kills} / {match.Deaths} / {match.Assists}</div>
-                <div className="basis-1/12">{match.ADR}</div>
-                <div className="basis-1/12">{match.HS}</div>
-                <div className="basis-1/12">{match.F_Ass}</div>
+                <div className="basis-1/12"> {matchType} <div className="text-xs text-gray-700">{match?.createdAt?.split("T")[0] ?? 0}</div></div>
+                <div className="basis-1/5"><span className="flex gap-2"><div className='text-sm'><img className='w-8 h-8 mx-auto' src={mapImages[match.mapName.toLowerCase()]} alt=""/></div> {match.mapName}</span></div>
+                <div className={`basis-1/12 min-w-32 ${p.RF > p.RA ? "text-green-400" : "text-rose-400"}`}><span className="flex flex-nowrap">{p.RF} : {p.RA}</span></div>
+                <div className="basis-1/12">{p.rating.toFixed(2)}</div>
+                <div className="basis-1/6">{p.kills} / {p.deaths} / {p.assists}</div>
+                <div className="basis-1/12">{p.adr.toFixed(2)}</div>
+                <div className="basis-1/12">{p.hs}</div>
+                <div className="basis-1/12">{p?.FAss}</div>
             </div>
             {
-                isExpanded && <MatchHistory match={match} />
+                isExpanded && <MatchHistory player={player} match={match} />
             }
         </div>
         
@@ -86,10 +79,10 @@ function MatchRow( { match }: { match: MatchHistoryPlayerStat } ) {
 }
 
 export function PlayerMatchHistory( { player }: Props ) {
-    const { data: playerMatchHistory, isLoading: isLoadingPlayerMatchHistory } = useAnalytikillPlayerMatchHistory( player?.steam64Id );
+    const { data: playerMatchHistory, isLoading: isLoadingPlayerMatchHistory } = useCscPlayerMatchHistoryGraph( player );
     const [ showAll, setShowAll ] = React.useState( false );
 
-    const sortedPlayerMatchHistory = playerMatchHistory?.sort( (a, b) => new Date(b.Match_Match_Player_Stat_match_uuidToMatch.matchStartTime).getTime() - new Date(a.Match_Match_Player_Stat_match_uuidToMatch.matchStartTime).getTime() );
+    const sortedPlayerMatchHistory = playerMatchHistory?.sort( (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() );
 
     if( playerMatchHistory?.length === 0 && !playerMatchHistory) {
         return null;
@@ -115,7 +108,7 @@ export function PlayerMatchHistory( { player }: Props ) {
                 <div className="basis-1/12">Flash Assists</div>
             </div>
             {
-                ( showAll ? sortedPlayerMatchHistory : sortedPlayerMatchHistory?.slice(0,5))?.map( (match) => <MatchRow key={match.csc_match_id} match={match} /> )
+                ( showAll ? sortedPlayerMatchHistory : sortedPlayerMatchHistory?.slice(0,5))?.map( (match) => <MatchRow key={match.matchId} player={player} match={match} /> )
             }
             { !showAll && (playerMatchHistory ?? []).length > 5 && <div className="text-center hover:cursor-pointer hover:bg-midnight2 rounded" onClick={() => setShowAll(!showAll)}>Show All</div>}
         </div>

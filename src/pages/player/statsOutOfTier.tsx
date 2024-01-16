@@ -40,6 +40,22 @@ export const StatsOutOfTier = ( { stats }: Props ) => {
                 leaveTo="transform opacity-0 scale-95"
             >
                 <div className="py-2">
+                    <GridContainer>                                                 
+                            {[
+                                { name: "Rating", value: stats.stats.rating },
+                                { name: "Peak", value: stats.stats.peak },
+                                { name: "PIT", value: stats.stats.pit 
+                            }].filter(stat => stat.value !== null)
+                                .map(({ name, value }, statIndex) => (
+                                <GridStat
+                                    key={`rating-stat-${statIndex}`}
+                                    name={name}
+                                    value={value.toFixed(2)}
+                                    rowIndex={statIndex} // pass statIndex instead of i
+                                />
+                            ))}       
+                    </GridContainer>
+                    <br />
                     {Array(Math.ceil(getGridData(stats.stats).length / 2)).fill(0).map((_, i) => {
                         const pair = getGridData(stats.stats).slice(i * 2, (i + 1) * 2);
                         return (

@@ -19,8 +19,6 @@ export function PlayerRatingTrendGraph({ player }: Props) {
     dataConfig?.season
   );
 
-  console.info( cscPlayerProfile )
-
   const sortedCscPlayerProfile = React.useMemo(() => {
     if (cscPlayerProfile) {
       // HACK: Check if combines in Season Name so trendgraph continues working during combines
