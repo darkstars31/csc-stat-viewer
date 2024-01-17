@@ -16,6 +16,7 @@ const fetchGraph = async ( player: Player ) => await fetch(appConfig.endpoints.c
                     totalRounds
                     matchType
                     createdAt
+                    tier
                     matchStats (where: { side: { equals: 4}}) {
                         name
                         kills

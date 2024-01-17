@@ -5,6 +5,7 @@ import { mapImages } from "../../common/images/maps";
 import { MdKeyboardArrowRight, MdKeyboardArrowDown } from 'react-icons/md'
 import { useCscPlayerMatchHistoryGraph } from "../../dao/cscPlayerMatchHistoryGraph";
 import { Match } from "../../models/csc-player-match-history-types";
+import { GoStarFill } from "react-icons/go";
 
 type Props = {
     player: Player;
@@ -56,6 +57,14 @@ function MatchRow( { player, match }: { player: Player, match: Match } ) {
     const [ isExpanded, setIsExpanded ] = React.useState(false);
     const matchType = match.matchType ?? "broke"
     const p = match.matchStats.find( ms => ms.name === player.name )!;
+    const matchDate = new Date(match.createdAt ?? 0).toLocaleDateString('en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: "numeric",
+        minute: "numeric",
+      });
 
     if(p === undefined) {
         console.info('Player is missing match because their name does not appear as a player, possible name change?',p, 'match', match);
@@ -66,12 +75,13 @@ function MatchRow( { player, match }: { player: Player, match: Match } ) {
         <div>
             <div className="flex flex-nowrap gap-4 my-1 py-2 hover:cursor-pointer hover:bg-midnight2 rounded pl-2 text-sm" onClick={() => setIsExpanded(!isExpanded)}>
                 <div className="w-8">{ isExpanded ? <MdKeyboardArrowDown size="1.5em" className='leading-8 pl-1' /> : <MdKeyboardArrowRight size="1.5em" className='leading-8 pl-1' />}</div>
-                <div className="basis-1/12"> {matchType} <div className="text-xs text-gray-700">{match?.createdAt?.split("T")[0] ?? 0}</div></div>
-                <div className="basis-1/5"><span className="flex gap-2"><div className='text-sm'><img className='w-8 h-8 mx-auto' src={mapImages[match.mapName.toLowerCase()]} alt=""/></div> {match.mapName}</span></div>
+                <div className="basis-1/12"> {matchType} <div className="text-xs text-gray-600">{match?.tier}</div></div>
+                <div className="basis-1/12 text-xs">{matchDate}</div>
+                <div className="basis-1/6"><span className="flex gap-2"><div className='text-sm'><img className='w-8 h-8 mx-auto' src={mapImages[match.mapName.toLowerCase()]} alt=""/></div> {match.mapName.split('de_')[1].charAt(0).toUpperCase() + match.mapName.split('de_')[1].slice(1)}</span></div>
                 <div className={`basis-1/12 min-w-32 ${p.RF > p.RA ? "text-green-400" : "text-rose-400"}`}><span className="flex flex-nowrap">{p.RF} : {p.RA}</span></div>
                 <div className="basis-1/12">{p.rating.toFixed(2)}</div>
                 <div className="basis-1/6">{p.kills} / {p.deaths} / {p.assists}</div>
-                <div className="basis-1/12">{p.adr.toFixed(2)}</div>
+                <div className={`basis-1/12 ${ p.adr > 100 ? "text-yellow-400" : ""}`}>{p.adr.toFixed(2)} {p.adr > 100 ? <GoStarFill className="text-yellow-400 inline" /> : ""}</div>
                 <div className="basis-1/12">{p.hs}</div>
                 <div className="basis-1/12">{p?.FAss}</div>
             </div>
@@ -86,8 +96,6 @@ function MatchRow( { player, match }: { player: Player, match: Match } ) {
 export function PlayerMatchHistory( { player }: Props ) {
     const { data: playerMatchHistory, isLoading: isLoadingPlayerMatchHistory } = useCscPlayerMatchHistoryGraph( player );
     const [ showAll, setShowAll ] = React.useState( false );
-
-    console.info( 'playerMatchHistory', playerMatchHistory);
 
     const sortedPlayerMatchHistory = playerMatchHistory?.sort( (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() );
 
@@ -106,7 +114,8 @@ export function PlayerMatchHistory( { player }: Props ) {
             <div className="flex flex-row pl-2 gap-4 h-16 items-center border-b border-gray-600">
                 <div className="w-8"></div>
                 <div className="basis-1/12">Type</div>
-                <div className="basis-1/5">Map</div>
+                <div className="basis-1/12">Date</div>
+                <div className="basis-1/6">Map</div>
                 <div className="basis-1/12">Score</div>
                 <div className="basis-1/12">Rating</div>
                 <div className="basis-1/6">K / D / A</div>
