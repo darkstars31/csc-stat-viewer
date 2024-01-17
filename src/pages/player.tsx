@@ -3,6 +3,7 @@ import { Container } from "../common/components/container";
 import {
     teamNameTranslator,
     getPlayerRatingIndex,
+    PlayerTypes,
 } from "../common/utils/player-utils";
 import { getGridData } from "./player/grid-data"
 import { GridContainer, GridStat } from "./player/grid-container";
@@ -26,6 +27,7 @@ import * as Containers from "../common/components/containers";
 import { StatsOutOfTier } from "./player/statsOutOfTier";
 import { tiers } from "../common/constants/tiers";
 import { PlayerMatchHistory } from "./player/matchHistory";
+import { TiWarningOutline } from "react-icons/ti";
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
@@ -70,7 +72,7 @@ export function Player() {
                             <i>
                                 <b>{currentPlayer?.role ? `${currentPlayer?.role} — ` : ""}</b>
                                 { currentPlayer?.team?.franchise.name ? 
-                                    <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
+                                    <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer.type === PlayerTypes.EXPIRED ? <ToolTip type="generic" message="This players contract has expired."><TiWarningOutline className="inline text-red-500" /></ToolTip> : ""} {currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
                                     : <span>{teamNameTranslator(currentPlayer)}</span>                         
                                 }                              
                             </i>
