@@ -1,3 +1,4 @@
+import ABW from "../../assets/images/franchise/ABW.png";
 import ACA from "../../assets/images/franchise/ACA.png";
 import AP from "../../assets/images/franchise/AP.png";
 import ATL from "../../assets/images/franchise/ATL.png";
@@ -22,4 +23,4 @@ import YC from "../../assets/images/franchise/YC.png";
 
 type FranchiseImages = Record<string, string>;
 
-export const franchiseImages: FranchiseImages = { ACA, AP, ATL, ATO, AVI, dB, BS, COW, DRG, FRG, GAS, H4K, HG, HEL, LEC, NAN, OS, SAV, UPS, WET, YC };
+export const franchiseImages: FranchiseImages = { ABW, ACA, AP, ATL, ATO, AVI, dB, BS, COW, DRG, FRG, GAS, H4K, HG, HEL, LEC, NAN, OS, SAV, UPS, WET, YC };
