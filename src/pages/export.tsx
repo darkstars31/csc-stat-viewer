@@ -24,7 +24,8 @@ const exportAsCsv = ( players: Player[]) => {
                     acc[k] = typeof value === "number" && !Number.isInteger(value) ? value.toFixed(2) : value;
                     return acc
                 }, {} as any);
-            return ({ name: p.name, tier: p.tier.name, role: p.role, mmr: p.mmr, rating: p.stats.rating, ...stats });
+            const playerType = p.type?.includes("PERM") ? "PFA" : "FA"
+            return ({ name: p.name, tier: p.tier.name, team: p.team?.name ?? playerType, franchise: p.team?.franchise.prefix ?? "", role: p.role, mmr: p.mmr, rating: p.stats.rating, ...stats });
             }
         );
     var csv = Papa.unparse(  playerData );
@@ -73,7 +74,7 @@ export function ExportData() {
                     return acc
                 }, {} as any);
             const playerType = p.type?.includes("PERM") ? "PFA" : "FA"
-            return ({ name: p.name, tier: p.tier.name, team: p.team?.name ?? playerType, role: p.role, mmr: p.mmr, rating: p.stats.rating.toFixed(2), ...stats });
+            return ({ name: p.name, tier: p.tier.name, team: p.team?.name ?? playerType, franchise: p.team?.franchise.prefix ?? "", role: p.role, mmr: p.mmr, rating: p.stats.rating.toFixed(2), ...stats });
             }
         );
 
