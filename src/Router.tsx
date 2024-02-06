@@ -15,17 +15,17 @@ import ReactGA from 'react-ga4';
 import { ErrorBoundary } from './common/components/errorBoundary';
 import { discordFetchUser } from './dao/oAuth';
 import cookie from 'js-cookie';
-import { useLocalStorage } from './common/hooks/localStorage';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
+// import { useLocalStorage } from './common/hooks/localStorage';
+// import { AiOutlineCloseCircle } from 'react-icons/ai';
 
 export function Router(){
-  const [ closeNotificationBanner, setCloseNotificationBanner] = useLocalStorage("closeNotificationBanner", "")
+  //const [ closeNotificationBanner, setCloseNotificationBanner] = useLocalStorage("closeNotificationBanner", "")
   const { loading, discordUser, setDiscordUser } = useDataContext();
   const BASE_ROUTE = "";
   const [ location ] = useLocation();
 
   const routes = [
-    { path: `/`, component: () => <Players /> },
+    { path: `/`, component: () => <Charts /> },
     { path: `/about`, component: () => <Home /> },
     { path: `/cb`, component: () => <LoginCallBack /> },
     { path: `/charts`, component: () => <Charts />},
@@ -64,12 +64,12 @@ export function Router(){
       { loading.isLoadingCscPlayers && <ProgressBar />}
       <Wouter base={BASE_ROUTE}>
         <div>
-        { !closeNotificationBanner && 
+        {/* { !closeNotificationBanner && 
                 <button className='w-full h-8 bg-teal-600 text-center' onClick={() => setCloseNotificationBanner("true")}>
                   Season 13 Combine Stats now available, MMR hidden until the draft. 
                   <AiOutlineCloseCircle className='float-right mr-4' size="1.5em"/>
                 </button>
-              }
+              } */}
             <ErrorBoundary>
             <ArticleRoutes base={`/articles`} />
               <Switch>
