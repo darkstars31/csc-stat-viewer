@@ -13,28 +13,56 @@ export const getTeamRecord = ( team?: Team, matches?: Match[] ) => matches?.redu
     return acc;
 }, { wins: 0, losses: 0 });
 
+
+const initialMapBans = { de_inferno: 0, de_vertigo: 0, de_nuke: 0, de_mirage: 0, de_ancient: 0, de_anubis: 0, de_overpass: 0};
+
 export const calculateMapBans = (team?: Team, matches?: Match[]) => {
+   
+    const numberOfRegularSeasonBanRounds = 3;
+
     const mapBans = matches
         ?.filter( match => match.stats.length === 1 )
-        ?.flatMap( match => match.lobby.mapBans );
+        ?.flatMap( match => match.lobby.mapBans )
+        ?.filter(match => match.team.name === team?.name);
 
     const totalMapBans = mapBans?.reduce((acc, mapBan, index) => {
-        const map = mapBan.map;
-
-        if( !acc[map] ) {
-            acc[map] = { banFor: 0, banAgainst: 0 };
-        }
-
-        if( mapBan.team.name === team?.name){
-            acc[map].banFor += 1;
-        } else {
-            acc[map].banAgainst += 1;
+        const roundNumber = (index % numberOfRegularSeasonBanRounds) + 1;
+        const roundKey = `Round ${roundNumber}`;
+        if( mapBan.team.name === team?.name) {
+            if( !acc[roundKey] ) {
+                acc[roundKey] = {...initialMapBans};
+            }
+            acc[roundKey][mapBan.map] += 1;
         }
 
         return acc;
     }, {} as any);
 
     return totalMapBans;
+}
+
+export const calculateMapBanFloat = ( team?: Team, matches?: Match[]) => {
+
+    const regularSeasonMatches = matches?.filter( match => match.stats.length === 1 );
+
+    const mapFloats = regularSeasonMatches?.reduce((acc, match) => {
+        const isAwayTeam = match.lobby.mapBans[0].team.name === team?.name;
+        const mapBan = match.lobby.mapBans;
+        const selectedMap = match.stats[0].mapName;
+        const mapFloat = mapBan[mapBan.length - 1].map;
+
+        if( isAwayTeam ){
+            acc["float"][mapFloat as keyof typeof initialMapBans] += 1;
+            acc["float"][selectedMap as keyof typeof initialMapBans] += 1;
+        } else {
+            acc["picks"][selectedMap as keyof typeof initialMapBans] += 1;
+        }
+
+        return acc;
+    }, { picks: {...initialMapBans}, float: {...initialMapBans}});
+
+    return mapFloats;
+
 }
 
 export const calculateTeamRecord = (team?: Team, matches?: Match[], conferncesTeams?: string[]) => matches?.reduce((acc, match) => {

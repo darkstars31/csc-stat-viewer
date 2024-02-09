@@ -7,16 +7,16 @@ import { useFetchMatchesGraph } from "../dao/cscMatchesGraphQLDao";
 import { MatchCards } from "./team/matches";
 import { MapRecord } from "./team/mapRecord";
 import { franchiseImages } from "../common/images/franchise";
-import { calculateMapBans, calculateTeamRecord } from "../common/utils/match-utils";
+import { calculateTeamRecord } from "../common/utils/match-utils";
 import { AwardsMappings } from "../common/utils/awards-utils";
 import { queryClient } from "../App";
 import { TeamPlayerCards } from "./team/playerCards";
-//import { MapBans } from "./team/mapBans";
+import { MapBans } from "./team/mapBans";
 
 
 export function Team(){
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { franchises = [], players: cscPlayers = [], dataConfig, loading } = useDataContext();
+	const { franchises = [], players: cscPlayers = [], dataConfig, seasonAndTierConfig, loading } = useDataContext();
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [, params] = useRoute("/franchises/:franchiseName/:teamName");
 	const franchiseName = decodeURIComponent(params?.franchiseName ?? "");
@@ -35,6 +35,9 @@ export function Team(){
 
 	const currentFranchise = franchises.find( f => f.name === franchiseName );
 	const currentTeam = currentFranchise?.teams.find( t => t.name === teamName );
+	const currentTier = seasonAndTierConfig?.league.leagueTiers.find( t => t.tier.name === currentTeam?.tier.name );
+	const currentTeamTotalMmr = currentTeam?.players.reduce((sum, next) => sum+next.mmr ?? 0, 0) ?? 0;
+	const currentTeamTotalMmrPercent = ((currentTeamTotalMmr / (currentTier?.tier.mmrCap ?? 0) ) * 100).toFixed(2);
 	let iterations = 0;
 	const currentTeamStatAggregation = currentTeam?.players.reduce( (acc, player, index) => {
 		const cscPlayerWithStats = cscPlayers.find( p => p.steam64Id === player.steam64Id && p.stats?.rating );
@@ -62,18 +65,14 @@ export function Team(){
 
 		return acc;
 	}, { 'rating': 0, 'ef': 0, 'adr': 0, 'kast': 0, 'utilDmg': 0, 'impact': 0, 'clutchR': 0, "avgMmr": 0 } as any);
-	//console.info( 'currentTeamStatAggregation', currentTeamStatAggregation);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph( dataConfig?.season ,currentTeam?.id );
 	const regularSeasonMatches = matches.filter( match => match.stats.length <= 1);
 	const playoffMatches = matches.filter( match => match.stats.length > 1 );
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars 
-	//const matchesData = useFetchMultipleMatchInfoGraph(matches.filter( match => match.stats.length > 0).map( match => match.id ));
 
 	const teamRecord = calculateTeamRecord( currentTeam, matches );
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const totalMapBans = calculateMapBans( currentTeam, matches );
+
 
 	return (
 			<div style={{backgroundImage: `url(${franchiseImages[currentFranchise?.prefix ?? '']})`, overflow:'auto'}} className={`bg-repeat bg-center bg-fixed`}>
@@ -85,7 +84,7 @@ export function Team(){
 							<Link className="hover:text-blue-400" to={`/franchises/${currentFranchise?.name}`}>{currentFranchise?.name}</Link></i> {"> "} 
 							{currentTeam?.tier.name}
 						</div>
-							{ loading.isLoadingFranchises && <Loading />}
+							{ loading.isLoadingFranchises && loading.isLoadingCscSeasonAndTiers && <Loading />}
 							<h2 className="text-5xl font-bold text-white grow text-center">{currentTeam?.name}</h2>
 							<div className="text-center p-4 text-xl">
 								{currentFranchise?.name} - <i>{currentFranchise?.prefix}</i>
@@ -98,6 +97,12 @@ export function Team(){
 									</div>
 									)
 								}
+							</div>
+							<div className="flex flex-wrap justify-between">
+								<div className="flex-initial m-2 p-2 text-center">
+									<div><b>{currentTeam?.players.map( player => player.mmr ).reduce((acc, val) => acc + val, 0)} / {currentTier?.tier.mmrCap} ({currentTeamTotalMmrPercent}%)</b></div>
+									<div className="text-sm">MMR Cap</div>
+								</div>
 							</div>
 							<div className="p-4 rounded">
 								<hr className="h-px my-4 border-0" />
@@ -118,8 +123,8 @@ export function Team(){
 								}
 								{ regularSeasonMatches.length > 0 && 
 									<div className="pt-8">								
-										<h2 className="text-2xl font-bold text-white grow text-center">Regular Season 
-											{ teamRecord.record && <span>({teamRecord.record.wins} - {teamRecord.record?.losses})</span> }
+										<h2 className="text-2xl font-bold text-white grow text-center">Regular Season
+											{ teamRecord.record && <span> ( {teamRecord.record.wins} - {teamRecord.record?.losses} )</span> }
 										</h2> 
 										{
 											matches.length > 0 && regularSeasonMatches.some( match => match.stats.some( stat => stat.awayScore > 0 || stat.homeScore > 0 )) &&
@@ -139,7 +144,7 @@ export function Team(){
 											</div>
 										}
 										<MapRecord matches={regularSeasonMatches} team={currentTeam} />
-										{/* <MapBans mapBans={totalMapBans} />										 */}
+										{ matches.length > 0 && <MapBans matches={matches} team={currentTeam} /> }									
 										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
 											{ regularSeasonMatches.map( (match) => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
 										</div>											

@@ -19,17 +19,20 @@ type Props = {
 }
 
 const mapBanPopover = ( matchMapBans : MapBan[] ) => (
-        <div className="z-40 w-48 bg-midnight2 m-1 p-1 rounded-lg text-xs">
+        <div className="z-48 w-56 bg-midnight2 m-1 p-1 rounded-lg text-xs">
         { matchMapBans.length > 0 ? 
             <div>
-                <div className="grid grid-cols-2">
-                    <div>{matchMapBans[0].team.name}</div>
-                    <div>{matchMapBans[1].team.name}</div>
-                    {matchMapBans.map( mapBan => (
-                                <div className="text-sm"><img className="w-12 h-12 mx-auto" src={mapImages[mapBan.map]} alt=""/></div>
+                <div className="grid grid-cols-3">
+                    <div></div>
+                    <div className="p-1">{matchMapBans[0].team.name}</div>
+                    <div className="p-1">{matchMapBans[1].team.name}</div>
+                    {matchMapBans.map( (mapBan, index) => (
+                        <>
+                        { index % 2 === 0 ? <div style={{lineHeight: '2.5rem'}}>Round { index / 2 + 1}</div> : <></> }
+                        <div className="text-sm"><img className="w-14 h-14 mx-auto" src={mapImages[mapBan.map]} alt=""/></div>
+                        </>
                     ))}
                 </div>
-                <div className="text-center">Map Ban Order</div>
             </div>
         :
         <div>Map ban information unavailable.</div>
@@ -140,6 +143,7 @@ export function MatchCards( { match, team }: Props ) {
     const didCurrentTeamWin = matchDayWins / match.stats.length > 0.5;
     const backgroundColor = match.stats.length > 0 || isMatchInProgress ? didCurrentTeamWin ? "bg-emerald-800" : "bg-red-950" : "bg-midnight1";
 
+    console.info( match?.lobby?.mapBans );
     return (
         <div className={`m-2 p-2 ${backgroundColor} ${isMatchInProgress ? "border-yellow-500 border-2" : ""} rounded-lg`}>
             <div className="w-full flex text-sm pb-2">

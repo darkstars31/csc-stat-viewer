@@ -23,14 +23,20 @@ export type DataConfiguration = {
     spreadsheetUrl: string,
 }
 
+export const betaUsers = {
+    "Camps": "76561197974933853",
+    "Djtl": "76561197998527398",
+    "Toast": "76561198107156820",
+}
+
 export const dataConfiguration = [
-    // {
-    //     season: 13,
-    //     seasonStartDate: "2024-01-11",
-    //     seasonEndDate: "2024-04-30",
-    //     name: "Season 13",
-    //     spreadsheetUrl: googleSheetsUrl("18qgpc4NdPNg4I5Q9lmzaEgUYyxHtq25JKZfTxiQg_lc",334898684),
-    // },
+    {
+        season: 13,
+        seasonStartDate: "2024-02-08",
+        seasonEndDate: "2024-04-30",
+        name: "Season 13",
+        spreadsheetUrl: googleSheetsUrl("18qgpc4NdPNg4I5Q9lmzaEgUYyxHtq25JKZfTxiQg_lc",334898684),
+    },
     {
         season: 13,
         seasonStartDate: "2024-01-11",

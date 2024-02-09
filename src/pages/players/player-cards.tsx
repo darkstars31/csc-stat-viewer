@@ -36,6 +36,12 @@ export function MemoizedPlayerCard( { player }: Props) {
                             <div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player.stats?.rating.toFixed(2) ?? 'N/A'}</div>                             
                             <div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/> <Mmr player={player}/></div>          
                         </div>
+                        {
+                            window.debug === true && <code>
+                                DiscordId {player.discordId}<br />
+                                SteamId {player.steam64Id}
+                            </code>
+                        }
                     </div>  
                 </div>
             </div>

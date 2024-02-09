@@ -7,11 +7,14 @@ import { SingleValue } from "react-select";
 import { useCscStatsGraph } from "./dao/cscStatsGraphQLDao";
 import { PlayerTypes, calculateHltvTwoPointOApproximationFromStats, determinePlayerRole } from "./common/utils/player-utils";
 import { DiscordUser } from "./models/discord-users";
+import { useCscSeasonAndTiersGraph } from "./dao/cscSeasonAndTiersDao";
 
 const useDataContextProvider = () => {
 	const [ discordUser, setDiscordUser ] = React.useState<DiscordUser | null>(null);
 	const [ selectedDataOption, setSelectedDataOption ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: dataConfiguration[0].name, value: dataConfiguration[0].name });
 	const dataConfig = dataConfiguration.find( item => selectedDataOption?.value === item.name);
+
+	const { data: seasonAndTierConfig = undefined, isLoading: isLoadingCscSeasonAndTiers } = useCscSeasonAndTiersGraph();
 
 	const { data: cscSignedPlayers = [], isLoading: isLoadingSignedCscPlayers, error } = useCscPlayersGraph( PlayerTypes.SIGNED );
 	const { data: cscSignedSubbedPlayers = [], isLoading: isLoadingSignedSubbedCscPlayers } = useCscPlayersGraph( PlayerTypes.SIGNED_SUBBED );
@@ -53,6 +56,7 @@ const useDataContextProvider = () => {
 		...cscExpiredPlayers,
 		//...cscSpectatorPlayers,
 	];
+	console.info( cscPlayers );
 
 	const statsByTier = {
 		Recruit: cscStatsRecruit,
@@ -108,6 +112,7 @@ const useDataContextProvider = () => {
 		isLoadingUnrosteredAGMPlayers,
 		isLoadingSignPromoted,
 		isLoadingExpiredPlayers,
+		isLoadingCscSeasonAndTiers,
 	].some(Boolean);
 
 	// const tierNumber = {
@@ -137,6 +142,7 @@ const useDataContextProvider = () => {
 		isLoading: isLoadingCscPlayers,
 		loading: {
 			isLoadingCscPlayers: isLoadingCscPlayers,
+			isLoadingCscSeasonAndTiers: isLoadingCscSeasonAndTiers,
 			isLoadingFranchises,
 			stats: {
 				isLoadingCscStatsRecruit,
@@ -150,6 +156,7 @@ const useDataContextProvider = () => {
 		statsByTier,
 		selectedDataOption, setSelectedDataOption,
 		dataConfig,
+		seasonAndTierConfig,
 		featureFlags:{
 		},
 		errors: [ error ].filter(Boolean),
