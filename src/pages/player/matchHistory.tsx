@@ -12,42 +12,51 @@ type Props = {
 }
 
 function MatchHistory( { player, match }: { player: Player, match: Match } ) {
-    const teamHome = match?.matchStats.filter( p => p.teamClanName === "team_home" || p.teamClanName === "StartedCT").sort( (a, b) => b.rating - a.rating );
-    const teamAway = match?.matchStats.filter( p => p.teamClanName === "team_away" || p.teamClanName === "StartedT" ).sort( (a, b) => b.rating - a.rating );
+    const team1 = match.teamStats[0].name;
+    const team2 = match.teamStats[1].name;
+    const teamHome = match?.matchStats.filter( p => p.teamClanName === team1 ).sort( (a, b) => b.rating - a.rating );
+    const teamAway = match?.matchStats.filter( p => p.teamClanName === team2 ).sort( (a, b) => b.rating - a.rating );
+   
 
     return (
-        <div className="pl-16 text-xs pb-4">
-              <div className="flex flex-row pl-2 gap-4 h-8 items-center border-b border-gray-600">
-                <div className="basis-1/6">Name</div>
-                <div className="basis-1/6">Rating</div>
-                <div className="basis-1/6">K / D / A</div>
+        <div className="relative pl-16 text-xs pb-4">
+            <div className="flex flex-row pl-2 gap-4 h-8 items-center border-b border-gray-600">
+                <div className="basis-2/12">Name</div>
+                <div className="basis-1/12">Rating</div>
+                <div className="basis-1/12">K / D / A</div>
                 <div className="basis-1/12">ADR</div>
                 <div className="basis-1/12">HS%</div>
                 <div className="basis-1/12">Flash Assists</div>
             </div>
-            { teamHome?.map( (playerStat, index) => 
-                    <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "text-yellow-300" : ""}`}>
-                        <div className={`basis-1/6`}>{playerStat.name}</div>
-                        <div className="basis-1/6">{playerStat.rating.toFixed(2)}</div>
-                        <div className="basis-1/6">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
+            <div className="relative">
+                <div className="absolute -left-16 top-12 -rotate-90 w-24 border-b border-gray-600 mr-16 text-center bg-gradient-to-r from-indigo-500 font-medium capitalize">{ team1.replace("_", " ") }</div>
+                { teamHome?.map( (playerStat, index) => 
+                        <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "text-yellow-300" : ""}`}>
+                            <div className={`basis-2/12`}>{playerStat.name}</div>
+                            <div className="basis-1/12">{playerStat.rating.toFixed(2)}</div>
+                            <div className="basis-1/12">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
+                            <div className="basis-1/12">{playerStat.adr.toFixed(2)}</div>
+                            <div className="basis-1/12">{playerStat.hs}</div>
+                            <div className="basis-1/12">{playerStat.FAss}</div>
+                        </div> 
+                    )
+                }
+            </div>
+            <br />
+            <div className="relative">
+                <div className="absolute -left-16 top-12 -rotate-90 w-24 border-b border-gray-600 mr-16 text-center bg-gradient-to-r from-orange-500 font-medium capitalize">{ team2.replace("_", " ") }</div>
+                { teamAway?.map( (playerStat, index) => 
+                        <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "text-yellow-300" : ""}`}>
+                        <div className={`basis-2/12`}>{playerStat.name}</div>
+                        <div className="basis-1/12">{playerStat.rating.toFixed(2)}</div>
+                        <div className="basis-1/12">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
                         <div className="basis-1/12">{playerStat.adr.toFixed(2)}</div>
                         <div className="basis-1/12">{playerStat.hs}</div>
                         <div className="basis-1/12">{playerStat.FAss}</div>
                     </div> 
-                )
-            }
-            <br />
-            { teamAway?.map( (playerStat, index) => 
-                    <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "text-yellow-300" : ""}`}>
-                    <div className={`basis-1/6`}>{playerStat.name}</div>
-                    <div className="basis-1/6">{playerStat.rating.toFixed(2)}</div>
-                    <div className="basis-1/6">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
-                    <div className="basis-1/12">{playerStat.adr.toFixed(2)}</div>
-                    <div className="basis-1/12">{playerStat.hs}</div>
-                    <div className="basis-1/12">{playerStat.FAss}</div>
-                </div> 
-                )
-          }
+                    )
+                }
+            </div>
         </div>
     )
 };
@@ -80,7 +89,7 @@ function MatchRow( { player, match }: { player: Player, match: Match } ) {
                 <div className="basis-1/6"><span className="flex gap-2"><div className='text-sm'><img className='w-8 h-8 mx-auto' src={mapImages[match.mapName.toLowerCase()]} alt=""/></div> {match.mapName.split('de_')[1].charAt(0).toUpperCase() + match.mapName.split('de_')[1].slice(1)}</span></div>
                 <div className={`basis-1/12 min-w-32 ${p.RF > p.RA ? "text-green-400" : "text-rose-400"}`}><span className="flex flex-nowrap">{p.RF} : {p.RA}</span></div>
                 <div className="basis-1/12">{p.rating.toFixed(2)}</div>
-                <div className="basis-1/6">{p.kills} / {p.deaths} / {p.assists}</div>
+                <div className="basis-1/12">{p.kills} / {p.deaths} / {p.assists}</div>
                 <div className={`basis-1/12 ${ p.adr > 100 ? "text-yellow-400" : ""}`}>{p.adr.toFixed(2)} {p.adr > 100 ? <GoStarFill className="text-yellow-400 inline" /> : ""}</div>
                 <div className="basis-1/12">{p.hs}</div>
                 <div className="basis-1/12">{p?.FAss}</div>
@@ -118,7 +127,7 @@ export function PlayerMatchHistory( { player }: Props ) {
                 <div className="basis-1/6">Map</div>
                 <div className="basis-1/12">Score</div>
                 <div className="basis-1/12">Rating</div>
-                <div className="basis-1/6">K / D / A</div>
+                <div className="basis-1/12">K / D / A</div>
                 <div className="basis-1/12">ADR</div>
                 <div className="basis-1/12">HS%</div>
                 <div className="basis-1/12">Flash Assists</div>

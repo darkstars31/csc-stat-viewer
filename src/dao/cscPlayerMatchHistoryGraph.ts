@@ -17,6 +17,9 @@ const fetchGraph = async ( player: Player ) => await fetch(appConfig.endpoints.c
                     matchType
                     createdAt
                     tier
+                    teamStats {
+                        name
+                    }
                     matchStats (where: { side: { equals: 4}}) {
                         name
                         kills

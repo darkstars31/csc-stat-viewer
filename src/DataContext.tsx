@@ -56,7 +56,6 @@ const useDataContextProvider = () => {
 		...cscExpiredPlayers,
 		//...cscSpectatorPlayers,
 	];
-	console.info( cscPlayers );
 
 	const statsByTier = {
 		Recruit: cscStatsRecruit,

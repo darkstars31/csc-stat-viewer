@@ -7,7 +7,6 @@ import { _sort } from "../common/utils/player-utils";
 import Select, { SingleValue } from "react-select";
 import { Player } from "../models/player";
 import { CscStats } from "../models/csc-stats-types";
-//import _sort from "lodash/sortBy";
 
 function buildTableRow( player: Player, columnName: string, property: keyof CscStats ){
     return { "Player": player.name, "Tier": player.tier.name, [columnName]: player.stats[property]};
@@ -16,32 +15,31 @@ function buildTableRow( player: Player, columnName: string, property: keyof CscS
 export function LeaderBoards() {
     const { players = [], loading } = useDataContext();
     const [ filterBy, setFilterBy ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: `All`, value: "All"});
+    const [ limit, setLimit ] = React.useState<number>(5);
     
     const player = players.filter( p => (p.stats?.gameCount ?? 0) >= 3);
     
     const playerData = filterBy?.value.includes("All") ? player : player.filter( f => f.tier.name.toLowerCase() === filterBy?.value.toLowerCase());
       
-    const gamesPlayed = _sort(playerData, "stats.gameCount", 5, "desc").map( p => buildTableRow(p, "Games Played", "gameCount"));
-    const kills = _sort(playerData, "stats.kills", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Kills": p.stats.kills}));
-    const killDeathRatio = playerData.sort( (a,b) => (a.stats.kills/a.stats.deaths) < (b.stats.kills/b.stats.deaths) ? 1 : -1).slice(0,5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "K/D Ratio": (p.stats.kills/p.stats.deaths).toFixed(2)}));
-    const aces = playerData.sort( (a,b) => (a.stats["fiveK"]) < (b.stats["fiveK"]) ? 1 : -1).slice(0,5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Aces": p.stats["fiveK"] }));
-    const damagePerRound = _sort(playerData, "stats.adr", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Average Damage Per Round": p.stats.adr.toFixed(2)}));
-    const awpKillsPerRound = _sort(playerData, "stats.awpR", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Awp Kills per Round": p.stats["awpR"].toFixed(2)}));
-    const utilDamagePerMatch = _sort(playerData, "stats.utilDmg", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Utility Damage": p.stats.utilDmg.toFixed(2)}));
+    const gamesPlayed = _sort(playerData, "stats.gameCount", limit, "desc").map( p => buildTableRow(p, "Games Played", "gameCount"));
+    const kills = _sort(playerData, "stats.kills", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Kills": p.stats.kills}));
+    const killDeathRatio = playerData.sort( (a,b) => (a.stats.kills/a.stats.deaths) < (b.stats.kills/b.stats.deaths) ? 1 : -1).slice(0,limit).map( p => ({ "Player": p.name, "Tier": p.tier.name, "K/D Ratio": (p.stats.kills/p.stats.deaths).toFixed(2)}));
+    const aces = playerData.sort( (a,b) => (a.stats["fiveK"]) < (b.stats["fiveK"]) ? 1 : -1).slice(0,limit).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Aces": p.stats["fiveK"] }));
+    const damagePerRound = _sort(playerData, "stats.adr", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Average Damage Per Round": p.stats.adr.toFixed(2)}));
+    const awpKillsPerRound = _sort(playerData, "stats.awpR", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Awp Kills per Round": p.stats["awpR"].toFixed(2)}));
+    const utilDamagePerMatch = _sort(playerData, "stats.utilDmg", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Utility Damage": p.stats.utilDmg.toFixed(2)}));
     // const timeToDeath = _sort(playerData, "stats.atd", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Time til Death (seconds)": p.ATD}));
-    // const ctRating = _sort(playerData, "ctADP", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Rating": p.ctADP}));
-    // const tRating = _sort(playerData, "tADP", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Rating": p.tADP}));
-    const kastPercentage = _sort(playerData, "stats.kast", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "KAST%": p.stats.kast.toFixed(2)}));
+    const ctRating = _sort(playerData, "stats.ctRating", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Rating": p.stats.ctRating.toFixed(2)}));
+    const tRating = _sort(playerData, "stats.TRating", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Rating": p.stats.TRating.toFixed(2)}));
+    const kastPercentage = _sort(playerData, "stats.kast", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "KAST%": p.stats.kast.toFixed(2)}));
     const utilThrownPerMatchX = _sort(playerData, "stats.util",);
-    const utilThrownPerMatch = utilThrownPerMatchX.map( p => ({ "Player": p.name, "Tier": p.tier.name, "Util/Match": p.stats.util})).reverse().splice(0,5);
-    const leastUtilThrownPerMatch = utilThrownPerMatchX.map( p => ({ "Player": p.name, "Tier": p.tier.name, "Least Util/Match": p.stats.util })).splice(0,5);
-    const headshotPercentage = _sort(playerData, "stats.hs", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "HeadShot %": p.stats.hs}));
-    const clutchAbility = _sort(playerData, "stats.clutchR", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Clutch Points per Match": p.stats['clutchR'].toFixed(2)}));
+    const utilThrownPerMatch = utilThrownPerMatchX.map( p => ({ "Player": p.name, "Tier": p.tier.name, "Util/Match": p.stats.util})).reverse().splice(0,limit);
+    const leastUtilThrownPerMatch = utilThrownPerMatchX.map( p => ({ "Player": p.name, "Tier": p.tier.name, "Least Util/Match": p.stats.util })).splice(0,limit);
+    const headshotPercentage = _sort(playerData, "stats.hs", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "HeadShot %": p.stats.hs}));
+    const clutchAbility = _sort(playerData, "stats.clutchR", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Clutch Points per Match": p.stats['clutchR'].toFixed(2)}));
     // const grenadeDamagePerRound = _sort(playerData, "X/nade", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Grenade Damage Per Round": p["Xnade"]}));
     // const flashesPerFlash = _sort(playerData, "EF/F", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Flashes per Flash Thrown": p["EF/F"]}));
-    const openDuels = _sort(playerData, "stats.odr", 5, "desc").map( p => ({ "Player": p.stats.name, "Tier": p.tier.name, "Open Duels": p.stats.odr.toFixed(2)}));
-
-    // console.info( awpKillsPerRound );
+    const openDuels = _sort(playerData, "stats.odr", limit, "desc").map( p => ({ "Player": p.stats.name, "Tier": p.tier.name, "Open Duels": p.stats.odr.toFixed(2)}));
 
 
     const selectClassNames = {
@@ -78,6 +76,12 @@ export function LeaderBoards() {
         { label: `Recruit (${tierCounts.recruit})`, value: "Recruit", isDisabled: !tierCounts.recruit },
     ];
 
+    const showLimitOptionsList = [
+        { label: `5`, value: "5"},
+        { label: `10`, value: "10"},
+        { label: `20`, value: "20"},
+    ];
+
 
     if( loading.isLoadingCscPlayers ) {
         return <Container><Loading /></Container>;
@@ -93,6 +97,22 @@ export function LeaderBoards() {
             </div>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
             <div className="flex flex-box h-12 mx-auto justify-end">
+            <div className="basis-1/4">
+                        <div className="flex flex-row text-sm m-2">
+                            <label title="Order By" className="p-1 leading-9">
+                                Show
+                            </label>
+                            <Select
+                                className="grow"
+                                unstyled              
+                                defaultValue={showLimitOptionsList[0]}
+                                isSearchable={false}
+                                classNames={selectClassNames}
+                                options={showLimitOptionsList}
+                                onChange={( item ) => setLimit( parseInt(item!.value) )}
+                            />
+                    </div>
+                </div>
                 <div className="basis-1/4">
                         <div className="flex flex-row text-sm m-2">
                             <label title="Order By" className="p-1 leading-9">
@@ -152,7 +172,7 @@ export function LeaderBoards() {
                         <Table rows={utilDamagePerMatch}/>
                     </div>
                 </div>
-                {/* <div className="grid md:grid-cols-2 sm:grid-cols-1">
+                <div className="grid md:grid-cols-2 sm:grid-cols-1">
                     <div className="m-4">
                         CT-Side Rating
                         <Table rows={ctRating}/>
@@ -161,7 +181,7 @@ export function LeaderBoards() {
                         T-Side Rating
                         <Table rows={tRating}/>
                     </div>
-                </div> */}
+                </div>
 
                 <div className="grid md:grid-cols-2 sm:grid-cols-1">
                     <div className="m-4">

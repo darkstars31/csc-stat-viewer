@@ -11,9 +11,14 @@ export type Match = {
     mapName: string;
     totalRounds: number;
     matchType: string;
+    teamStats: TeamStats[]
     matchStats: MatchStats[];
     createdAt: string;
     tier: string;
+}
+
+export type TeamStats = {
+    name: string
 }
 
 export type MatchStats = {

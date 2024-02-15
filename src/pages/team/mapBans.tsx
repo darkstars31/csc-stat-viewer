@@ -5,7 +5,6 @@ import { calculateMapBanFloat, calculateMapBans } from "../../common/utils/match
 import { Team } from "../../models/franchise-types";
 import { Match } from "../../models/matches-types";
 import { useDataContext } from "../../DataContext";
-import { betaUsers } from "../../dataConfig";
 
 type MapBansType = {
     de_inferno: number, 
@@ -174,17 +173,16 @@ export function MapBans( { matches, team }: Props) {
     ]
     };
 
-    if ( !Object.values(betaUsers).includes( loggedinUser?.steam64Id ?? "" )) {
+    if ( !loggedinUser ) {
         return null;
     }
 
     return (
-        <div className="flex flex-row">
-            {loggedinUser?.name}
-            <div className="basis-7/12">
+        <div className="flex md:flex-row flex-wrap">
+            <div className="basis-full md:basis-7/12">
                 <ReactECharts option={mapBanMatrixOptions} style={{ height: 320, width: "100%" }}/>
             </div>
-            <div className="basis-5/12">
+            <div className="basis-full md:basis-5/12">
                 <ReactECharts option={mapBanFloatOptions} style={{ height: 320, width: "100%" }}/>
             </div>
         </div>

@@ -185,6 +185,9 @@ export function Player() {
                         <StatsOutOfTier stats={outOfTierStats} />
                     ))
             }
+            {
+                
+            }
             </Container>
         </>
     );

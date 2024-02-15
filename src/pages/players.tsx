@@ -46,7 +46,7 @@ const exportAsCsv = ( players: Player[]) => {
 };
 
 export function Players() {
-    const queryParams = new URLSearchParams(window.location.search);
+    //const queryParams = new URLSearchParams(window.location.search);
     // const types = queryParams.get("types");
     // const tiers = queryParams.get("tiers");
     // const roles = queryParams.get("roles");
@@ -92,7 +92,7 @@ export function Players() {
     //     queryParams.append("roles", JSON.stringify(viewPlayerRoleOptions));
     // }
 
-    window.history.replaceState({}, "", `?${queryParams.toString()}`);
+    //window.history.replaceState({}, "", `?${queryParams.toString()}`);
 
     const addFilter = () => {
         setSearchValue(""); 

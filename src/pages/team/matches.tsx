@@ -65,10 +65,8 @@ const ScoreboardPopover = ( matchId : string ) => {
         2: "T"
     }
     const matches = useFetchMultipleMatchInfoGraph([matchId]);
-    console.info(matches);
     const match = matches.find( m => m.data?.at(0)?.matchId === matchId)?.data?.at(0);
     const rounds = match?.rounds.slice(0, -1);
-    console.info(match);
     const firstHalf = rounds?.slice(0, 15);
     const secondHalf = rounds?.slice(15, 30);
     const overtime = rounds?.slice(30) ?? [];
@@ -143,7 +141,6 @@ export function MatchCards( { match, team }: Props ) {
     const didCurrentTeamWin = matchDayWins / match.stats.length > 0.5;
     const backgroundColor = match.stats.length > 0 || isMatchInProgress ? didCurrentTeamWin ? "bg-emerald-800" : "bg-red-950" : "bg-midnight1";
 
-    console.info( match?.lobby?.mapBans );
     return (
         <div className={`m-2 p-2 ${backgroundColor} ${isMatchInProgress ? "border-yellow-500 border-2" : ""} rounded-lg`}>
             <div className="w-full flex text-sm pb-2">
@@ -166,15 +163,15 @@ export function MatchCards( { match, team }: Props ) {
             <div className="relative pt-2">
                  {  match.stats.filter( matchStats => matchStats.homeScore + matchStats.awayScore > 0).map( matchStats =>
                  <>
-                <div className="absolute w-full">
+                {/* <div className="absolute flex justify-center items-center w-full">
                     <img className="object-cover object-center w-16 h-16" src={mapImages[matchStats.mapName as keyof typeof mapImages ]} alt={matchStats.mapName}/>
-                </div>
-                        <div className="text-center z-10">{matchStats.mapName.split('_')[1]}</div>
+                </div> */}
+                        {/* <div className="text-center z-10">{matchStats.mapName.split('_')[1]}</div> */}
                         <div className="grid grid-cols-1 text-3xl text-center z-10">
-                            <div>                     
-                                <span className={`${matchStats.homeScore > matchStats.awayScore} ? "text-green-400 : "text-red-400"`}>{matchStats.homeScore}</span>
-                                : 
-                                <span className={`${matchStats.homeScore > matchStats.awayScore} ? "text-green-400 : "text-red-400"`}>{matchStats.awayScore}</span>                               
+                            <div className="flex flex-row justify-center">                     
+                                <div className={`basis-1/3 ${matchStats.homeScore > matchStats.awayScore ? "text-green-400" : "text-red-400"}`}>{matchStats.homeScore}</div>
+                                <img className="object-cover object-center w-16 h-16" src={mapImages[matchStats.mapName as keyof typeof mapImages ]} alt={matchStats.mapName}/>
+                                <div className={`basis-1/3 ${matchStats.homeScore < matchStats.awayScore ? "text-green-400" : "text-red-400"}`}>{matchStats.awayScore}</div>                               
                             </div>
                         </div>
                     </>
