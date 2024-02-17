@@ -28,7 +28,7 @@ export const TeamPlayerCards = ( { franchisePlayer, team }: Props ) => {
                     to={`/players/${franchisePlayer.name}`}
                 >
                     <div className="relative">
-                        <img className="fixed w-32 h-32 ml-6 rounded-full -mt-32" src={player?.avatarUrl ?? discordPlaceholderImage} alt="" />
+                        <img className="absolute w-32 h-32 ml-6 rounded-full -mt-32" src={player?.avatarUrl ?? discordPlaceholderImage} alt="" />
                     </div>
                     <div className="mr-2 mt-16 text-lg"><b>{franchisePlayer.name}</b></div>
                     <div className="float-right">
