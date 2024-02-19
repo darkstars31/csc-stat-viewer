@@ -4,7 +4,7 @@ import { useDataContext } from "../DataContext";
 import { Link, useRoute } from "wouter";
 import { Loading } from "../common/components/loading";
 import { PlayerRow } from "./franchise/player-row";
-import { TeamFooterTabulation } from "./franchise/team-footer-tabulation";
+//import { TeamFooterTabulation } from "./franchise/team-footer-tabulation";
 import { franchiseImages } from "../common/images/franchise";
 
 export const COLUMNS = 4;
@@ -27,9 +27,24 @@ export function Franchise(){
                         <img className="absolute h-full w-full" src={franchiseImages[currentFranchise?.prefix ?? '']} placeholder="" alt=""/>
                     </div>
                     <div className="pt-2 grow">
-                        <h2 className="text-5xl font-bold text-white grow text-center">{currentFranchise?.name} - <i>{currentFranchise?.prefix}</i></h2>
-                        <div className="text-center p-4 text-xl">
-                            GM - {currentFranchise?.gm.name} | AGM - {currentFranchise?.agms?.map( agm => agm.name).join(', ')}
+                        <h2 className="text-5xl font-bold text-white grow text-center">{currentFranchise?.name} (<i>{currentFranchise?.prefix}</i>)</h2>
+                        <div className="flex flex-row gap-8 justify-center text-center p-4 text-xl">
+                            <div className="basis-1/2">                       
+                                <div>
+                                    {currentFranchise?.gm.name}
+                                </div>
+                                <div className="text-gray-400 text-xs font-bold">
+                                    GENERAL MANAGER
+                                </div>
+                            </div>
+                            <div className="basis-1/2">
+                                <div>
+                                    {currentFranchise?.agms?.map( agm => agm.name).join(', ')}
+                                </div>
+                                <div className="text-gray-400 text-xs font-bold">
+                                    ASST. GM(s)
+                                </div>
+                            </div>
                         </div>
                         <div className="grid grid-cols-1 gap-4 p-1 text-sm text-gray-300">
                             { currentFranchise?.teams.map( team =>      
@@ -41,10 +56,10 @@ export function Franchise(){
                                     </Link>
                                     <div className="mx-4 px-2">
                                     { team.players.map( player => 
-                                       <PlayerRow key={`${team.tier.name}-${player.name}`} franchisePlayer={player} team={team} extraDetails={false} />
+                                       <PlayerRow key={`${team.tier.name}-${player.name}`} franchisePlayer={player} team={team} />
                                         )}
                                     </div>
-                                    <TeamFooterTabulation team={team} />
+                                    {/* <TeamFooterTabulation team={team} /> */}
                                 </div>
                                 )
                             }

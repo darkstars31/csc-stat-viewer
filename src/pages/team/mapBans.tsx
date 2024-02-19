@@ -5,6 +5,7 @@ import { calculateMapBanFloat, calculateMapBans } from "../../common/utils/match
 import { Team } from "../../models/franchise-types";
 import { Match } from "../../models/matches-types";
 import { useDataContext } from "../../DataContext";
+import { Exandable } from "../../common/components/containers/Expandable";
 
 type MapBansType = {
     de_inferno: number, 
@@ -33,7 +34,7 @@ export function MapBans( { matches, team }: Props) {
     
     const mapBanMatrixOptions: EChartsOption = {
         title: { 
-            text: `Map Ban Matrix`,
+            text: `Matrix`,
             subtext: "(Beta Feature)",
             subtextStyle: {
               align: 'center',
@@ -102,7 +103,7 @@ export function MapBans( { matches, team }: Props) {
 
     const mapBanFloatOptions: EChartsOption = {
         title: {
-            text: 'Map Floats & Picks',
+            text: 'Floats & Picks',
             left: 'center',
             textStyle: {
                 color: '#FFFFFF',
@@ -115,12 +116,12 @@ export function MapBans( { matches, team }: Props) {
         series: [
         {
             name: 'Map Picks',
-            radius: [0, '50%'],
-            center: ['50%', '50%'],
+            radius: [0, '45%'],
+            center: ['50%', '45%'],
             type: 'pie',
             label: {
                 position: 'inner',
-                fontSize: 13,
+                fontSize: 12,
                 formatter(param: Record<string,unknown>) {
                 // correct the percentage
                     return param.name + '\n' + param.percent + '%';
@@ -141,9 +142,11 @@ export function MapBans( { matches, team }: Props) {
         {
             name: 'Map Floats',
             type: 'pie',
-            radius: ['60%', '72%'],
+            startAngle: 45,
+            radius: ['50%', '60%'],
+            center: ['50%', '45%'],
             label: {
-                fontSize: 14,
+                fontSize: 12,
                 formatter(param: Record<string,unknown>) {
                     // correct the percentage
                     return param.name + "\n (" + param.percent + '%)';
@@ -152,7 +155,7 @@ export function MapBans( { matches, team }: Props) {
                 textBorderColor: '#000',
             },
             labelLine: {
-              length: 20,
+              length: 10,
             },
             itemStyle: {
                 borderRadius: 4,
@@ -162,7 +165,7 @@ export function MapBans( { matches, team }: Props) {
             emphasis: {
                 label: {
                   show: true,
-                  fontSize: 20,
+                  fontSize: 14,
                   fontWeight: 'bold'
                 }
             },
@@ -178,13 +181,16 @@ export function MapBans( { matches, team }: Props) {
     }
 
     return (
-        <div className="flex md:flex-row flex-wrap">
-            <div className="basis-full md:basis-7/12">
-                <ReactECharts option={mapBanMatrixOptions} style={{ height: 320, width: "100%" }}/>
-            </div>
-            <div className="basis-full md:basis-5/12">
-                <ReactECharts option={mapBanFloatOptions} style={{ height: 320, width: "100%" }}/>
-            </div>
-        </div>
+        <Exandable title="Map Analysis">
+            { loggedinUser ? 
+              <div className="flex flex-row flex-wrap">
+                <ReactECharts className="w-full md:w-1/2" option={mapBanMatrixOptions} style={{ height: 320 }}/>
+                <ReactECharts className="w-full md:w-1/2" option={mapBanFloatOptions} style={{ height: 320 }}/>
+              </div>
+              :
+              <div className="w-full text-center font-italic">AnalytiKill Prime is only available for logged in users.</div>
+            } 
+           
+        </Exandable>
     );
 }

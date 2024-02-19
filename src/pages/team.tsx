@@ -129,7 +129,7 @@ export function Team(){
 										</h2> 
 										<MapRecord matches={regularSeasonMatches} team={currentTeam} />
 										{ matches.length > 0 && <MapBans matches={matches} team={currentTeam} /> }	
-										<div>
+										<div className="mt-4">
 										{
 												matches.length > 0 && regularSeasonMatches.some( match => match.stats.some( stat => stat.awayScore > 0 || stat.homeScore > 0 )) &&
 												<div>
@@ -148,7 +148,7 @@ export function Team(){
 												</div>
 											}
 										</div>								
-										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
+										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
 											{ regularSeasonMatches.map( (match) => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
 										</div>											
 									</div>

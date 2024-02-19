@@ -32,11 +32,21 @@ export function Franchises() {
                                     <img className="absolute h-full w-full" src={franchiseImages[franchise.prefix]} placeholder="" alt=""/>
                                 </div>
                                 <div className="pt-2 grow">
-                                    <h2 className="text-xl font-bold text-white grow text-center">{franchise.name} - <i>{franchise.prefix}</i></h2>
-                                    <div className="text-center text-sm">
-                                        GM - {franchise.gm.name} | AGM - {franchise.agms?.map( agm => agm.name).join(', ')}
+                                    <div className="flex flex-row gap-8 justify-center">
+                                        <div className="basis-1/2 text-3xl font-bold text-white text-center leading-loose">                                          
+                                            {franchise.name} (<i>{franchise.prefix}</i>)                                                
+                                        </div>                                                       
+                                        <div className="basis-1/2">
+                                            <div>
+                                                GM - {franchise.gm.name}
+                                            </div>                                          
+                                            <div>
+                                                AGM - {franchise.agms?.map( agm => agm.name).join(', ')}
+                                            </div>
+                                        </div>
+                                      
                                     </div>
-                                    <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3 p-1 text-sm text-gray-300">
+                                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 p-1 text-sm text-gray-300">
                                         { franchise.teams.map( team =>      
                                             <div key={`${team.tier.name}`}>
                                                 <div className="mx-4 border-b-[1px] border-slate-700 text-center">
