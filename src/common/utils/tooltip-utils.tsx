@@ -22,7 +22,7 @@ const useHover = () => {
     const onMouseLeave = () => setIsHovered(false);
     return { isHovered, onMouseEnter, onMouseLeave };
 }
-const baseTooltipClass = "absolute-top transition-opacity duration-300 ease-in-out absolute top-0 left-0 text-neutral-100 text-center py-1 px-3 text-sm rounded";
+const baseTooltipClass = "absolute-top transition-opacity duration-300 ease-in-out absolute top-0 left-0 text-neutral-100 text-center py-1 px-2 text-sm rounded";
 const noWrapClass = "whitespace-nowrap";
 const wideTooltipClass = "min-w-[200px] max-w-full";
 const awardTooltipClass = "bg-zinc-500 text-neutral-100 text-center font-normal";
