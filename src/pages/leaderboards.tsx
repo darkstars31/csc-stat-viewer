@@ -29,8 +29,8 @@ export function LeaderBoards() {
     const awpKillsPerRound = _sort(playerData, "stats.awpR", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Awp Kills per Round": p.stats["awpR"].toFixed(2)}));
     const utilDamagePerMatch = _sort(playerData, "stats.utilDmg", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Utility Damage": p.stats.utilDmg.toFixed(2)}));
     // const timeToDeath = _sort(playerData, "stats.atd", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Time til Death (seconds)": p.ATD}));
-    const ctRating = _sort(playerData, "stats.ctRating", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Rating": p.stats.ctRating.toFixed(2)}));
-    const tRating = _sort(playerData, "stats.TRating", 5, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Rating": p.stats.TRating.toFixed(2)}));
+    const ctRating = _sort(playerData, "stats.ctRating", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Rating": p.stats.ctRating.toFixed(2)}));
+    const tRating = _sort(playerData, "stats.TRating", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Rating": p.stats.TRating.toFixed(2)}));
     const kastPercentage = _sort(playerData, "stats.kast", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "KAST%": p.stats.kast.toFixed(2)}));
     const utilThrownPerMatchX = _sort(playerData, "stats.util",);
     const utilThrownPerMatch = utilThrownPerMatchX.map( p => ({ "Player": p.name, "Tier": p.tier.name, "Util/Match": p.stats.util})).reverse().splice(0,limit);
