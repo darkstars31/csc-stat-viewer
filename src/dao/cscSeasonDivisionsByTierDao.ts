@@ -27,7 +27,7 @@ const fetchGraph = async ( season?: number ) => await fetch(appConfig.endpoints.
             }
             `,
             "variables": {
-                "season": season,
+                "season": 11,
             }      
         }),
         headers: {

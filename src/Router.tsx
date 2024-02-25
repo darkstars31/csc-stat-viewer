@@ -5,8 +5,8 @@ import {
   Home, LoginCallBack, Charts, 
   LeaderBoards, Franchises, Franchise, 
   Players, Player, Profile, 
-  Playground, TeamStandings, Team, 
-  PlayerComparison, ExportData,
+  Playground, Team, 
+  PlayerComparison, ExportData, TeamStandings,
 } from './pages';
 import { ArticleRoutes } from './pages/articles/routes';
 import { useDataContext } from './DataContext';

@@ -64,18 +64,19 @@ const ScoreboardPopover = ( matchId : string ) => {
         3: "CT",
         2: "T"
     }
+    const fullMatchRounds = 24
     const matches = useFetchMultipleMatchInfoGraph([matchId]);
     const match = matches.find( m => m.data?.at(0)?.matchId === matchId)?.data?.at(0);
     const rounds = match?.rounds.slice(0, -1);
-    const firstHalf = rounds?.slice(0, 15);
-    const secondHalf = rounds?.slice(15, 30);
-    const overtime = rounds?.slice(30) ?? [];
+    const firstHalf = rounds?.slice(0, fullMatchRounds/2);
+    const secondHalf = rounds?.slice(fullMatchRounds/2, fullMatchRounds);
+    const overtime = rounds?.slice(fullMatchRounds) ?? [];
 
     const ctTeam = match?.rounds.find( r => r.winnerENUM === 3)?.winnerClanName;
     const tTeam = match?.rounds.find( r => r.winnerENUM === 2)?.winnerClanName;
     
     return (
-        <div className="z-40 w-[31rem] bg-midnight2 m-2 p-2 rounded-lg text-xs">
+        <div className="z-40 w-[25rem] bg-midnight2 m-2 p-2 rounded-lg text-xs">
             <div className="flex flex-row justify-between px-4">
                 <div className="text-sky-500"><strong>{ctTeam}</strong></div>
                 <div>Start Side</div>
@@ -85,7 +86,7 @@ const ScoreboardPopover = ( matchId : string ) => {
             {
                 firstHalf?.map( ( round, index ) =>
                         <div>
-                            {index+1} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
+                            {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)} {index+1}
                         </div> 
                 )
             }
@@ -94,18 +95,18 @@ const ScoreboardPopover = ( matchId : string ) => {
                     <i>Half</i>
                     <div className='-mt-[.5em] border-dotted border-b border-gray-500' />
             </div>
-            <div className="flex flex-row justify-between px-4">
-                <div className="text-sky-500"><strong>{tTeam}</strong></div>
-                <div className="text-rose-500"><strong>{ctTeam}</strong></div>
-            </div>
             <div className="flex flex-row">
             {
             secondHalf?.map( ( round, index ) =>
                     <div>
-                        {index+16} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
+                        {index+1+fullMatchRounds/2} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
                     </div>
                 )
             }
+            </div>
+            <div className="flex flex-row justify-between px-4">
+                <div className="text-sky-500"><strong>{tTeam}</strong></div>
+                <div className="text-rose-500"><strong>{ctTeam}</strong></div>
             </div>
             { overtime.length > 0 && <div className='text-gray-600 text-xs w-full p-1'>
                     <i>Overtime</i>
@@ -179,7 +180,7 @@ export function MatchCards( { match, team }: Props ) {
                 }
                 <div className="flex flex-row justify-end text-xs gap-2">
                     { !isPlayoffMatch && 
-                    <ToolTip type="generic" classNames={["-translate-x-96","right-4"]} message={ScoreboardPopover( match.id ) }>
+                    <ToolTip type="generic" classNames={["-translate-x-48","right-4"]} message={ScoreboardPopover( match.id ) }>
                         <span className="text-gray-900">Scoreline</span>
                     </ToolTip>
                     }
