@@ -152,8 +152,8 @@ export function MatchCards( { match, team }: Props ) {
             </div>
             <div className="cursor-pointer">
                 <div className="grid grid-cols-2 overflow-hidden">
-                    <Link to={`/franchises/${match.home.franchise.name}/${match.home.name}`}><div className="h-16 w-16 mx-auto"><img src={franchiseImages[match.home.franchise.prefix]} alt=""/></div></Link>
-                    <Link to={`/franchises/${match.away.franchise.name}/${match.away.name}`}><div className="h-16 w-16 mx-auto"><img src={franchiseImages[match.away.franchise.prefix]} alt=""/></div></Link>
+                    <Link to={`/franchises/${match.home.franchise.name}/${match.home.name}`}><div className="h-14 w-14 mx-auto"><img src={franchiseImages[match.home.franchise.prefix]} alt=""/></div></Link>
+                    <Link to={`/franchises/${match.away.franchise.name}/${match.away.name}`}><div className="h-14 w-14 mx-auto"><img src={franchiseImages[match.away.franchise.prefix]} alt=""/></div></Link>
                 </div>
                 <div className="grid grid-cols-2 text-center text-sm">
                     <Link to={`/franchises/${match.home.franchise.name}/${match.home.name}`}><div className="text-sky-500">{match.home.name}</div></Link>
@@ -171,7 +171,7 @@ export function MatchCards( { match, team }: Props ) {
                         <div className="grid grid-cols-1 text-3xl text-center z-10">
                             <div className="flex flex-row justify-center">                     
                                 <div className={`basis-1/3 ${matchStats.homeScore > matchStats.awayScore ? "text-green-400" : "text-red-400"}`}>{matchStats.homeScore}</div>
-                                <img className="object-cover object-center w-16 h-16" src={mapImages[matchStats.mapName as keyof typeof mapImages ]} alt={matchStats.mapName}/>
+                                <img className="object-cover object-center w-12 h-12" src={mapImages[matchStats.mapName as keyof typeof mapImages ]} alt={matchStats.mapName}/>
                                 <div className={`basis-1/3 ${matchStats.homeScore < matchStats.awayScore ? "text-green-400" : "text-red-400"}`}>{matchStats.awayScore}</div>                               
                             </div>
                         </div>
