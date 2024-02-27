@@ -53,7 +53,7 @@ export function HeaderProfile() {
                             {({ active }) => (
                                 <Link to={`/profile`}>
                                     <button
-                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 w-full')}
                                     >
                                         My Profile
                                     </button>
@@ -64,7 +64,7 @@ export function HeaderProfile() {
                             {({ active }) => (
                                 <Link to={`/players/${currentLoggedInPlayer?.name}`}>
                                     <button
-                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                        className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 w-full')}
                                     >
                                         My Stats
                                     </button>
@@ -75,7 +75,7 @@ export function HeaderProfile() {
                                 {({ active }) => (
                                     <Link to={`/franchises/${currentLoggedInPlayer?.team?.franchise.name}/${currentLoggedInPlayer?.team?.name}`}>
                                         <button
-                                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 w-full')}
                                         >
                                             My Team
                                         </button>
@@ -86,7 +86,7 @@ export function HeaderProfile() {
                                 {({ active }) => (
                                     <Link to={`/franchises/${currentLoggedInPlayer?.team?.franchise.name}`}>
                                         <button
-                                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 w-full')}
                                         >
                                             My Franchise
                                         </button>
@@ -98,7 +98,7 @@ export function HeaderProfile() {
                     <Menu.Item>
                         {({ active }) => (
                             <button
-                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700', 'w-full')}
                                 onClick={() => {
                                     discordSignOut();
                                 }}

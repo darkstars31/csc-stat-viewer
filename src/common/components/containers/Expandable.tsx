@@ -17,7 +17,7 @@ export const Exandable = ({ title, children }: { title: string | React.ReactNode
         <div className="flex flex-col gap-4">
             <Card>
             <div ref={divRef} />
-             <div className="flex m-2" onClick={() => setIsExpanded(!isExpanded)}>
+             <div className="flex m-1" onClick={() => setIsExpanded(!isExpanded)}>
                 <h1 className={`text-lg`}>{title}</h1>
                 <div className="pt-1">{ isExpanded ? <MdKeyboardArrowUp size="1.5em" className='leading-8 pl-1' /> : <MdKeyboardArrowDown size="1.5em" className='leading-8 pl-1' /> }</div>
             </div>

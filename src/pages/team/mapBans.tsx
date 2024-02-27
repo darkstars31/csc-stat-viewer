@@ -34,7 +34,7 @@ export function MapBans( { matches, team }: Props) {
     
     const mapBanMatrixOptions: EChartsOption = {
         title: { 
-            text: `Matrix`,
+            text: `Ban Matrix`,
             subtext: "(Beta Feature)",
             subtextStyle: {
               align: 'center',
@@ -175,10 +175,6 @@ export function MapBans( { matches, team }: Props) {
         }
     ]
     };
-
-    if ( !loggedinUser ) {
-        return null;
-    }
 
     return (
         <Exandable title="Map Analysis">
