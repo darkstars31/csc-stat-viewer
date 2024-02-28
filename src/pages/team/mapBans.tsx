@@ -1,5 +1,4 @@
 import * as React from "react";
-//import { mapImages } from "../../common/images/maps";
 import ReactECharts, { EChartsOption } from "echarts-for-react";
 import { calculateMapBanFloat, calculateMapBans } from "../../common/utils/match-utils";
 import { Team } from "../../models/franchise-types";
@@ -22,10 +21,8 @@ type Props = {
 }
 
 export function MapBans( { matches, team }: Props) {
-    const { loggedinUser } = useDataContext();
     const mapBans: Record<"Round 1"|"Round 2"|"Round 3", MapBansType> = calculateMapBans( team, matches );
     const mapFloats = calculateMapBanFloat( team, matches );
-    //{/* <div className='text-sm'><img className='w-16 h-16 mx-auto' src={mapImages[key]} alt=""/></div> */}
     const roundLabels = Object.keys( mapBans ?? {});
     const mapLabels = ["de_inferno","de_vertigo","de_nuke", "de_mirage", "de_ancient", "de_anubis", "de_overpass"];
     const data = Object.values( mapBans ?? {})
@@ -177,16 +174,33 @@ export function MapBans( { matches, team }: Props) {
     };
 
     return (
-        <Exandable title="Map Analysis">
-            { loggedinUser ? 
-              <div className="flex flex-row flex-wrap">
-                <ReactECharts className="w-full md:w-1/2" option={mapBanMatrixOptions} style={{ height: 320 }}/>
-                <ReactECharts className="w-full md:w-1/2" option={mapBanFloatOptions} style={{ height: 320 }}/>
-              </div>
-              :
-              <div className="w-full text-center font-italic">AnalytiKill Prime is only available for logged in users.</div>
-            } 
-           
-        </Exandable>
+      <div className="flex flex-row flex-wrap">
+        <ReactECharts className="w-full md:w-1/2" option={mapBanMatrixOptions} style={{ height: 320 }}/>
+        <ReactECharts className="w-full md:w-1/2" option={mapBanFloatOptions} style={{ height: 320 }}/>
+      </div>
     );
+}
+
+export function PistolRounds( { matches, team}: Props) {
+  // matches?.reduce( (acc, match) => {
+  //   match.stats.
+  // })
+}
+
+export function TeamSide( { matches, team }: Props) {
+
+}
+
+export function MapAnalysis( { matches, team }: Props ) {
+  const { loggedinUser } = useDataContext();
+  return (
+    <Exandable title="Map Analysis">
+    { loggedinUser ? 
+       <MapBans matches={matches} team={team} />
+      :
+      <div className="w-full text-center font-italic">AnalytiKill Prime is only available for logged in users.</div>
+    } 
+   
+</Exandable>
+  );
 }

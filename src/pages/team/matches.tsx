@@ -18,27 +18,31 @@ type Props = {
     team?: Team,
 }
 
-const mapBanPopover = ( matchMapBans : MapBan[] ) => (
-        <div className="z-48 w-56 bg-midnight2 m-1 p-1 rounded-lg text-xs">
-        { matchMapBans.length > 0 ? 
-            <div>
-                <div className="grid grid-cols-3">
-                    <div></div>
-                    <div className="p-1">{matchMapBans[0].team.name}</div>
-                    <div className="p-1">{matchMapBans[1].team.name}</div>
-                    {matchMapBans.map( (mapBan, index) => (
-                        <>
-                        { index % 2 === 0 ? <div style={{lineHeight: '2.5rem'}}>Round { index / 2 + 1}</div> : <></> }
-                        <div className="text-sm"><img className="w-14 h-14 mx-auto" src={mapImages[mapBan.map]} alt=""/></div>
-                        </>
-                    ))}
+const mapBanPopover = ( matchMapBans : MapBan[] ) => {
+    const sortedMapBans = matchMapBans.sort( (a, b) => a.number - b.number );
+
+    return (
+            <div className="z-48 w-56 bg-midnight2 m-1 p-1 rounded-lg text-xs">
+            { matchMapBans.length > 0 ? 
+                <div>
+                    <div className="grid grid-cols-3">
+                        <div></div>
+                        <div className="p-1">{matchMapBans[0].team.name}</div>
+                        <div className="p-1">{matchMapBans[1].team.name}</div>
+                        {sortedMapBans.map( (mapBan, index) => (
+                            <>
+                            { index % 2 === 0 ? <div style={{lineHeight: '2.5rem'}}>Round { index / 2 + 1}</div> : <></> }
+                            <div className="text-sm"><img className="w-14 h-14 mx-auto" src={mapImages[mapBan.map]} alt=""/></div>
+                            </>
+                        ))}
+                    </div>
                 </div>
-            </div>
-        :
-        <div>Map ban information unavailable.</div>
-    }
-    </div>
-)
+            :
+            <div>Map ban information unavailable.</div>
+        }
+        </div>
+    )
+}
 
 const roundWinner = ( side: string, round: Round ) => {
     let winType = <IoMdTimer size="2em" />;
@@ -163,11 +167,7 @@ export function MatchCards( { match, team }: Props ) {
             { match.stats.length > 0 &&
             <div className="relative pt-2">
                  {  match.stats.filter( matchStats => matchStats.homeScore + matchStats.awayScore > 0).map( matchStats =>
-                 <>
-                {/* <div className="absolute flex justify-center items-center w-full">
-                    <img className="object-cover object-center w-16 h-16" src={mapImages[matchStats.mapName as keyof typeof mapImages ]} alt={matchStats.mapName}/>
-                </div> */}
-                        {/* <div className="text-center z-10">{matchStats.mapName.split('_')[1]}</div> */}
+                    <>
                         <div className="grid grid-cols-1 text-3xl text-center z-10">
                             <div className="flex flex-row justify-center">                     
                                 <div className={`basis-1/3 ${matchStats.homeScore > matchStats.awayScore ? "text-green-400" : "text-red-400"}`}>{matchStats.homeScore}</div>

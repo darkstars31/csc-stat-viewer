@@ -11,7 +11,7 @@ import { calculateTeamRecord } from "../common/utils/match-utils";
 import { AwardsMappings } from "../common/utils/awards-utils";
 import { queryClient } from "../App";
 import { TeamPlayerCards } from "./team/playerCards";
-import { MapBans } from "./team/mapBans";
+import { MapAnalysis } from "./team/mapBans";
 
 
 export function Team(){
@@ -128,7 +128,7 @@ export function Team(){
 											{ teamRecord.record && <span> ( {teamRecord.record.wins} - {teamRecord.record?.losses} )</span> }
 										</h2> 
 										<MapRecord matches={regularSeasonMatches} team={currentTeam} />
-										{ matches.length > 0 && <MapBans matches={matches} team={currentTeam} /> }	
+										{ matches.length > 0 && <MapAnalysis matches={matches} team={currentTeam} /> }	
 										<div className="mt-4">
 										{
 												matches.length > 0 && regularSeasonMatches.some( match => match.stats.some( stat => stat.awayScore > 0 || stat.homeScore > 0 )) &&

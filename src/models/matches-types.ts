@@ -28,6 +28,7 @@ export type Lobby = {
 
 export type MapBan = {
     map: string;
+    number: number,
     team: Team;
 }
 

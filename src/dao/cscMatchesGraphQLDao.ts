@@ -25,16 +25,17 @@ export const fetchMatchesGraph = async (teamId?: string, season: number = 11) =>
                         scheduledDate
                         completedAt
                         demoUrl
-						lobby {
-							id
-							mapBans {
-							  map
-							  team {
-								id
-								name
-							  }
-							}
-						  }
+                      lobby {
+                        id
+                        mapBans {
+                          number
+                          map
+                          team {
+                          id
+                          name
+                          }
+                        }
+                        }
                         matchDay {
                           number
                         }

@@ -26,6 +26,7 @@ export function Router(){
 
   const routes = [
     { path: `/`, component: () => <Charts /> },
+    { path: `/articles`, component: () => <ArticleRoutes base={'articles'} /> },
     { path: `/about`, component: () => <Home /> },
     { path: `/cb`, component: () => <LoginCallBack /> },
     { path: `/charts`, component: () => <Charts />},
@@ -71,7 +72,7 @@ export function Router(){
                 </button>
               } */}
             <ErrorBoundary>
-            <ArticleRoutes base={`/articles`} />
+              <ArticleRoutes base={`/articles`} />
               <Switch>
                 { routes.map( route => <Route key={`route${route.path}`} { ...route} /> ) }
                 <Route key="404, Page not found." component={ () => <Container><h1>404</h1></Container>} />
