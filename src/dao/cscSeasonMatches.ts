@@ -73,7 +73,7 @@ const fetchGraph = async ( tier: string, season?: number ) => await fetch(appCon
 
 export function useCscSeasonMatches( tier: string, season?: number ): UseQueryResult<StandingMatches[]> {
     return useQuery( 
-        [`cscSeasonMatches-${season}-graph`], 
+        [`cscSeasonMatches-${season}-${tier}-graph`], 
         () => fetchGraph(tier, season), 
         {
             staleTime: OneHour,

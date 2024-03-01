@@ -74,7 +74,6 @@ export function Team(){
 
 	const teamRecord = calculateTeamRecord( currentTeam, matches );
 
-
 	return (
 			<div style={{backgroundImage: `url(${franchiseImages[currentFranchise?.prefix ?? '']})`, overflow:'auto'}} className={`bg-repeat bg-center bg-fixed`}>
 				<div className="backdrop-opacity-10 backdrop-brightness-90 bg-black/[.85] overflow-auto">
