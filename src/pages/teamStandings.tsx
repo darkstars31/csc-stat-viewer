@@ -27,25 +27,34 @@ type ProcessedTeamStandings = {
 
 function TeamRecordRow ({ team, index }: { team: any, index: number }) {
     return (
-        <div key={`${team.name}${index}`} className='grid grid-cols-3 gap-2 m-4'>
-            <div><Link 
+        <tr key={`${team.name}${index}`} className={`${index % 2 === 0 ? 'bg-slate-800' : ''} p-2`}>
+            <td>{index+1}</td>
+            <td>
+                <Link 
                 to={`/franchises/${team.franchise.name}/${team.name}`} 
                 className='hover:cursor-pointer hover:text-sky-400 transition ease-in-out hover:-translate-x-1 duration-300'>
                     <img className='w-8 h-8 mr-2 float-left' src={franchiseImages[team.franchise.prefix]} alt="" /> 
                     {team.name} ({team.franchise.prefix})
                 </Link>
-            </div>
-            <div>
-                <b>
-                    <span className='text-green-400'>{team.wins}</span> : <span className='text-red-400'>{team.losses}</span>
-                </b> 
-                <span className='text-gray-400 text-xs pl-2'>
+            </td>
+            <td>
+                <div>
+                    <span className='text-green-400 font-bold'>{team.wins}</span> : <span className='text-red-400'>{team.losses}</span>
+                </div>
+                <div className='text-gray-400 text-xs pl-2'>
                     ({(team.wins / (team.wins + team.losses)*100).toFixed(2)}%)
-                </span>
-            </div>
-            <div><span className='text-green-400'>{team.roundsWon}</span> : <span className='text-red-400'>{team.roundsLost}</span> <span className='text-gray-400 text-xs'>(diff {team.roundsWon - team.roundsLost > 0 ? '+': ''}{team.roundsWon - team.roundsLost}</span> <span className='text-gray-400 text-xs'>{(team.roundsWon / (team.roundsWon + team.roundsLost)*100).toFixed(1)}%)</span></div>
+                </div> 
+            </td>
+            <td>
+                <div>
+                    <span className='text-green-400'>{team.roundsWon}</span> : <span className='text-red-400'>{team.roundsLost}</span> 
+                </div>
+                <div>
+                    <span className='text-gray-400 text-xs'>(diff {team.roundsWon - team.roundsLost > 0 ? '+': ''}{team.roundsWon - team.roundsLost}</span> <span className='text-gray-400 text-xs'>{(team.roundsWon / (team.roundsWon + team.roundsLost)*100).toFixed(1)}%)</span>
+                </div>
+            </td>
             {/* <div><span className='text-green-400'>{team.teamRecord.record.conferenceWins}</span> : <span className='text-red-400'>{team.teamRecord.record.conferenceLosses}</span></div> */}
-        </div>
+        </tr>
     );
 }
 
@@ -83,15 +92,21 @@ export function TeamStandings() {
 
     }, {} as Record<string,ProcessedTeamStandings>);
 
-    const sorted = sortBy(Object.values(teamsWithScores), "wins").reverse(); //.sort( (a,b) => (a as any).wins - (b as any).wins);
-    // const sortedX = sorted.sort( (a,b) => {
-
-    //     if( a.wins === b.wins ){
-    //        const match = matches.find( m => m.teamStats.find( t => t.name === a.name ));
-           
-    //     }
-    //     return 0;
-    // })
+    const sorted = sortBy(Object.values(teamsWithScores), "wins").reverse();
+    sorted.sort( (a,b) => {
+        if( a.wins === b.wins ){
+           const match = matches.find( m => m.teamStats.find( t => t.name === a.name ) && m.teamStats.find( t => t.name === b.name ));
+           if( match ) {
+               const teamA = match.teamStats.find( t => t.name === a.name );
+            //    const teamB = match.teamStats.find( t => t.name === b.name );
+            //    console.info( 'Tie discovered', a.name, teamA?.score, b.name, teamB?.score, match.totalRounds/2, "WINNER", teamA?.score! > match.totalRounds/2 ? "A" : "B" );
+               return teamA?.score! > match.totalRounds/2 ? -1 : 1;
+           }
+           //console.info( 'Tie discovered RWP', a.name, (a.roundsWon / (a.roundsWon+a.roundsLost)), b.name, (b.roundsWon / (b.roundsWon+b.roundsLost)) );
+           return (a.roundsWon / (a.roundsWon+a.roundsLost)) > (b.roundsWon / (b.roundsWon+b.roundsLost)) ? -1 : 1; 
+        }
+        return 0;
+    })
 
     const tierButtonClass = "rounded-md flex-grow px-6 pb-2 pt-2.5 text-sm font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-blue-400 focus:bg-blue-400 focus:outline-none focus:ring-0 active:bg-blue-300";
 
@@ -133,22 +148,28 @@ export function TeamStandings() {
                         <Loading /> 
                         :
                             <Card>                                
-                                <div className='grid grid-cols-3 gap-2 mx-4 text-sm'>
-                                    <div></div>
-                                    <div>W : L</div>
-                                    <div>Rounds</div>                                       
-                                </div>
-                                <div>
+                                <table className='table-fixed'>
+                                    <thead>
+                                        <tr className="text-left underline">
+                                            <th>POS.</th>                                     
+                                            <th>Team</th>
+                                            <th>W : L</th>
+                                            <th>Rounds</th>    
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                     { sorted.map( (team: any, index: number) => 
                                         <>
                                             <TeamRecordRow key={`${index}`} team={team} index={index} />
                                             { 
-                                                Math.ceil(( sorted as []).length / 2 ) === index+1 && 
-                                                <span className='text-gray-600 text-xs'><i>Playoff Line</i><div className='-mt-[.8em] ml-20 border-dotted border-b border-gray-500' /></span>
+                                                Math.ceil(( sorted as []).length * .7  ) === index+1 && 
+                                                <tr className='text-gray-600 text-xs'><i>Playoff Line</i><div className='-mt-[.8em] ml-20 border-dotted border-b border-gray-500' /></tr>
                                             }
                                         </>
                                     )}
-                                </div>                               
+                                    </tbody>                              
+                            
+                                </table>                              
                             </Card>                                            
                     }                   
                     {/* { tieBreakers.length > 0 && <div className='m-4'>
@@ -159,12 +180,11 @@ export function TeamStandings() {
                             }
                         </li>
                     </div> }            */}
-                    { selectedTier && false && 
+                    { selectedTier && 
                         <div className='text-center text-xs m-4 text-slate-400'>
-                            * Tie-Breakers partially-implemented: Conference Record, Head-to-Head <br />
+                            * Tie-Breakers implemented: Head-to-Head Record, Round Win Percentage <br />
+                            * Playoff line is estimated and not guaranteed (roughly ~70%). <br />
                             * Unofficial Standings, could contain inaccuracies. <br />
-                            * Playoff line is estimated and not guaranteed. <br />
-                            * Bo1 Play-Ins not currently shown.
                         </div>}    
                     { !selectedTier && <div className='text-center text-xl m-4'>Select a tier to get started.</div>}                    
                 </div> 
