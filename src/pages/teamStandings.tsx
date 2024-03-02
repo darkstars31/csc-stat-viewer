@@ -62,7 +62,7 @@ function TeamRecordRow ({ team, index }: { team: any, index: number }) {
                 <Link 
                 to={`/franchises/${team?.franchise?.name}/${team.name}`} 
                 className='hover:cursor-pointer hover:text-sky-400 transition ease-in-out hover:-translate-x-1 duration-300'>
-                    <img className='w-10 h-10 mr-2 float-left' src={franchiseImages[team?.franchise?.prefix]} alt="" /> 
+                    <img className='w-8 h-8 md:w-10 md:h-10 mr-2 float-left' src={franchiseImages[team?.franchise?.prefix]} alt="" /> 
                     {team.name} ({team?.franchise?.prefix})
                 </Link>
             </td>
@@ -82,13 +82,13 @@ function TeamRecordRow ({ team, index }: { team: any, index: number }) {
                     <span className='text-gray-400 text-xs'>diff {team.roundsWon - team.roundsLost > 0 ? '+': ''}{team.roundsWon - team.roundsLost}</span> <span className='text-gray-400 text-xs'>{calculatePercentage(team.roundsWon , (team.roundsWon + team.roundsLost),1)}%</span>
                 </div>
             </td>
-            <td className={getColor(calculatePercentage(team.ctRoundsWon,team.ctTotalRounds,1))}>
+            <td className={`${getColor(calculatePercentage(team.ctRoundsWon,team.ctTotalRounds,1))} collapse md:visible`}>
                 {calculatePercentage(team.ctRoundsWon,team.ctTotalRounds,1)}%
             </td>
-            <td className={getColor(calculatePercentage(team.tRoundsWon,team.tTotalRounds,1))}>
+            <td className={`${getColor(calculatePercentage(team.tRoundsWon,team.tTotalRounds,1))} collapse md:visible`}>
                 {calculatePercentage(team.tRoundsWon,team.tTotalRounds,1)}%
             </td>
-            <td className={getColor(calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1))}>
+            <td className={`${getColor(calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1))} collapse md:visible`}>
                 {calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1)}%
             </td>
             {/* <div><span className='text-green-400'>{team.teamRecord.record.conferenceWins}</span> : <span className='text-red-400'>{team.teamRecord.record.conferenceLosses}</span></div> */}
@@ -192,7 +192,7 @@ export function TeamStandings() {
                                     <h3 className='text-xl font-bold'>MATCH DAY <span className="text-yellow-400">{sorted[0].wins+sorted[0].losses}</span></h3>
                                 </div>
                                 <div className='flex'>
-                                    <div className="basis-1/12">
+                                    <div className="basis-1/12 collapse md:visible">
                                         <div className='text-3xl font-black -rotate-90 translate-y-16'>
                                             <span>SEASON {seasonAndTierConfig?.number}</span>
                                         </div>
@@ -205,9 +205,9 @@ export function TeamStandings() {
                                                     <th>Team</th>
                                                     <th>Win : Loss</th>
                                                     <th>Rounds</th>
-                                                    <th>CT</th>
-                                                    <th>T</th>
-                                                    <th>Pistols</th>
+                                                    <th className="collapse md:visible">CT</th>
+                                                    <th className="collapse md:visible">T</th>
+                                                    <th className="collapse md:visible">Pistols</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
