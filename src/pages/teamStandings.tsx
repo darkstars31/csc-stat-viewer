@@ -8,6 +8,8 @@ import { Link } from "wouter";
 import { franchiseImages } from "../common/images/franchise";
 import { sortBy } from 'lodash';
 import { Franchise } from "../models/franchise-types";
+import { calculatePercentage } from "../common/utils/string-utils";
+import { Exandable } from "../common/components/containers/Expandable";
 
 type ProcessedTeamStandings = {
      franchise?: Franchise, 
@@ -26,15 +28,42 @@ type ProcessedTeamStandings = {
 
 
 function TeamRecordRow ({ team, index }: { team: any, index: number }) {
+
+    const getColor = (percentage: number | string) => {
+        let colorClass = '';
+        if (+percentage >= 90) {
+            colorClass = 'from-green-500 to-green-900'; // Gradient from green-500 to green-900 for percentages >= 90%
+        } else if (+percentage >= 80) {
+            colorClass = 'from-green-400 to-green-800'; // Gradient from green-400 to green-800 for percentages >= 80%
+        } else if (+percentage >= 70) {
+            colorClass = 'from-green-300 to-green-700'; // Gradient from green-300 to green-700 for percentages >= 70%
+        } else if (+percentage >= 60) {
+            colorClass = 'from-green-200 to-green-600'; // Gradient from green-200 to green-600 for percentages >= 60%
+        } else if (+percentage >= 50) {
+            colorClass = 'from-green-100 to-green-500'; // Gradient from green-100 to green-500 for percentages >= 50%
+        } else if (+percentage >= 40) {
+            colorClass = 'from-yellow-300 to-yellow-700'; // Gradient from yellow-300 to yellow-700 for percentages >= 40%
+        } else if (+percentage >= 30) {
+            colorClass = 'from-yellow-200 to-yellow-600'; // Gradient from yellow-200 to yellow-600 for percentages >= 30%
+        } else if (+percentage >= 20) {
+            colorClass = 'from-yellow-100 to-yellow-500'; // Gradient from yellow-100 to yellow-500 for percentages >= 20%
+        } else if (+percentage >= 10) {
+            colorClass = 'from-red-400 to-red-800'; // Gradient from red-400 to red-800 for percentages >= 10%
+        } else {
+            colorClass = 'from-red-300 to-red-700'; // Gradient from red-300 to red-700 for percentages < 10%
+        }
+        return `bg-clip-text text-transparent bg-gradient-to-r ${colorClass}`;
+    }
+
     return (
         <tr key={`${team.name}${index}`} className={`${index % 2 === 0 ? 'bg-slate-800' : ''} p-2`}>
-            <td>{index+1}</td>
-            <td>
+            <td className="font-bold pl-4">{index+1}</td>
+            <td className="uppercase leading-10">
                 <Link 
-                to={`/franchises/${team.franchise.name}/${team.name}`} 
+                to={`/franchises/${team?.franchise?.name}/${team.name}`} 
                 className='hover:cursor-pointer hover:text-sky-400 transition ease-in-out hover:-translate-x-1 duration-300'>
-                    <img className='w-8 h-8 mr-2 float-left' src={franchiseImages[team.franchise.prefix]} alt="" /> 
-                    {team.name} ({team.franchise.prefix})
+                    <img className='w-10 h-10 mr-2 float-left' src={franchiseImages[team?.franchise?.prefix]} alt="" /> 
+                    {team.name} ({team?.franchise?.prefix})
                 </Link>
             </td>
             <td>
@@ -42,7 +71,7 @@ function TeamRecordRow ({ team, index }: { team: any, index: number }) {
                     <span className='text-green-400 font-bold'>{team.wins}</span> : <span className='text-red-400'>{team.losses}</span>
                 </div>
                 <div className='text-gray-400 text-xs pl-2'>
-                    ({(team.wins / (team.wins + team.losses)*100).toFixed(2)}%)
+                    {calculatePercentage(team.wins , (team.wins + team.losses),2)}%
                 </div> 
             </td>
             <td>
@@ -50,8 +79,17 @@ function TeamRecordRow ({ team, index }: { team: any, index: number }) {
                     <span className='text-green-400'>{team.roundsWon}</span> : <span className='text-red-400'>{team.roundsLost}</span> 
                 </div>
                 <div>
-                    <span className='text-gray-400 text-xs'>(diff {team.roundsWon - team.roundsLost > 0 ? '+': ''}{team.roundsWon - team.roundsLost}</span> <span className='text-gray-400 text-xs'>{(team.roundsWon / (team.roundsWon + team.roundsLost)*100).toFixed(1)}%)</span>
+                    <span className='text-gray-400 text-xs'>diff {team.roundsWon - team.roundsLost > 0 ? '+': ''}{team.roundsWon - team.roundsLost}</span> <span className='text-gray-400 text-xs'>{calculatePercentage(team.roundsWon , (team.roundsWon + team.roundsLost),1)}%</span>
                 </div>
+            </td>
+            <td className={getColor(calculatePercentage(team.ctRoundsWon,team.ctTotalRounds,1))}>
+                {calculatePercentage(team.ctRoundsWon,team.ctTotalRounds,1)}%
+            </td>
+            <td className={getColor(calculatePercentage(team.tRoundsWon,team.tTotalRounds,1))}>
+                {calculatePercentage(team.tRoundsWon,team.tTotalRounds,1)}%
+            </td>
+            <td className={getColor(calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1))}>
+                {calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1)}%
             </td>
             {/* <div><span className='text-green-400'>{team.teamRecord.record.conferenceWins}</span> : <span className='text-red-400'>{team.teamRecord.record.conferenceLosses}</span></div> */}
         </tr>
@@ -59,9 +97,10 @@ function TeamRecordRow ({ team, index }: { team: any, index: number }) {
 }
 
 export function TeamStandings() {
-    const { franchises, dataConfig } = useDataContext();
+    const { franchises = [], seasonAndTierConfig, dataConfig } = useDataContext();
     const [ selectedTier, setSelectedTier ] = React.useState('Contender');
     const { data: matches = [], isLoading } = useCscSeasonMatches(selectedTier, dataConfig?.season);
+    const tieBreakers: string[] = [];
 
     const teamsWithScores = matches.reduce( ( acc, match ) => {
        match.teamStats.forEach( team => {
@@ -95,14 +134,16 @@ export function TeamStandings() {
     const sorted = sortBy(Object.values(teamsWithScores), "wins").reverse();
     sorted.sort( (a,b) => {
         if( a.wins === b.wins ){
-           const match = matches.find( m => m.teamStats.find( t => t.name === a.name ) && m.teamStats.find( t => t.name === b.name ));
-           if( match ) {
-               const teamA = match.teamStats.find( t => t.name === a.name );
-            //    const teamB = match.teamStats.find( t => t.name === b.name );
-            //    console.info( 'Tie discovered', a.name, teamA?.score, b.name, teamB?.score, match.totalRounds/2, "WINNER", teamA?.score! > match.totalRounds/2 ? "A" : "B" );
-               return teamA?.score! > match.totalRounds/2 ? -1 : 1;
+           const foundMatches = matches.filter( m => m.teamStats.find( t => t.name === a.name ) && m.teamStats.find( t => t.name === b.name ));
+           if( foundMatches.length === 1 ) {
+                const match = foundMatches[0];
+                const teamA = match.teamStats.find( t => t.name === a.name );
+                tieBreakers.push( teamA?.score! > match.totalRounds/2 ? `${a.name} over ${b.name} in Head-to-Head` : `${b.name} over ${a.name} in Head-to-Head` );
+                return teamA?.score! > match.totalRounds/2 ? -1 : 1;
+           } else if ( foundMatches.length > 1 ) {
+                tieBreakers.push( `Standings currently does not account for multiple head-to-head matches between ${a.name} and ${b.name}` );
            }
-           //console.info( 'Tie discovered RWP', a.name, (a.roundsWon / (a.roundsWon+a.roundsLost)), b.name, (b.roundsWon / (b.roundsWon+b.roundsLost)) );
+           tieBreakers.push( (a.roundsWon / (a.roundsWon+a.roundsLost)) > (b.roundsWon / (b.roundsWon+b.roundsLost)) ? `${a.name} over ${b.name} in RWP` : `${b.name} over ${a.name} in RWP` );
            return (a.roundsWon / (a.roundsWon+a.roundsLost)) > (b.roundsWon / (b.roundsWon+b.roundsLost)) ? -1 : 1; 
         }
         return 0;
@@ -121,9 +162,7 @@ export function TeamStandings() {
 
     return (
         <Container>
-            <div>
-                <div>
-                <h1 className='text-2xl text-center my-4'>Team Standings (Beta Feature)</h1>    
+            <div>             
                 <div className="mb-[0.125rem] block min-h-[1.5rem] pl-[1.5rem]">
                    
                     </div>
@@ -147,48 +186,62 @@ export function TeamStandings() {
                     { isLoading ? 
                         <Loading /> 
                         :
-                            <Card>                                
-                                <table className='table-fixed'>
-                                    <thead>
-                                        <tr className="text-left underline">
-                                            <th>POS.</th>                                     
-                                            <th>Team</th>
-                                            <th>W : L</th>
-                                            <th>Rounds</th>    
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    { sorted.map( (team: any, index: number) => 
-                                        <>
-                                            <TeamRecordRow key={`${index}`} team={team} index={index} />
-                                            { 
-                                                Math.ceil(( sorted as []).length * .7  ) === index+1 && 
-                                                <tr className='text-gray-600 text-xs'><i>Playoff Line</i><div className='-mt-[.8em] ml-20 border-dotted border-b border-gray-500' /></tr>
-                                            }
-                                        </>
-                                    )}
-                                    </tbody>                              
-                            
-                                </table>                              
+                            <Card>
+                                <div>
+                                    <h1 className='text-4xl font-black uppercase'>{selectedTier}</h1>
+                                    <h3 className='text-xl font-bold'>MATCH DAY <span className="text-yellow-400">{sorted[0].wins+sorted[0].losses}</span></h3>
+                                </div>
+                                <div className='flex'>
+                                    <div className="basis-1/12">
+                                        <div className='text-3xl font-black -rotate-90 translate-y-16'>
+                                            <span>SEASON {seasonAndTierConfig?.number}</span>
+                                        </div>
+                                    </div>
+                                    <div className="basis-11/12">
+                                        <table className='table-auto w-full'>
+                                            <thead className="border-b">
+                                                <tr className="text-left">
+                                                    <th>POS.</th>                                     
+                                                    <th>Team</th>
+                                                    <th>Win : Loss</th>
+                                                    <th>Rounds</th>
+                                                    <th>CT</th>
+                                                    <th>T</th>
+                                                    <th>Pistols</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            { sorted.map( (team: any, index: number) => 
+                                                <>
+                                                    <TeamRecordRow key={`${index}`} team={team} index={index} />
+                                                    { 
+                                                        Math.ceil(( sorted as []).length * .7  ) === index+1 && 
+                                                        <tr className='text-gray-600 text-xs'><i>Playoff Line</i><div className='-mt-[.8em] ml-20 border-dotted border-b border-gray-500' /></tr>
+                                                    }
+                                                </>
+                                            )}
+                                            </tbody>                                                 
+                                        </table>                  
+                                    </div>               
+                                </div>                                                          
                             </Card>                                            
-                    }                   
-                    {/* { tieBreakers.length > 0 && <div className='m-4'>
-                        <li>
-                            {tieBreakers.length > 0 &&
-                                tieBreakers.map( (tieBreaker, index) =>
-                                    <ul>{tieBreaker}</ul> )
+                    }
+                    { tieBreakers.length > 0 &&<Exandable title='Tie-Breakers'>
+                        <div className='m-4'>                
+                            {tieBreakers.map( (tieBreaker, index) =>
+                                    <li className="text-xs">{tieBreaker}</li> )
                             }
-                        </li>
-                    </div> }            */}
+                        </div>
+                    </Exandable>
+                    }     
                     { selectedTier && 
                         <div className='text-center text-xs m-4 text-slate-400'>
-                            * Tie-Breakers implemented: Head-to-Head Record, Round Win Percentage <br />
+                            * Tie-Breakers implemented in order: Head-to-Head Record, Round Win Percentage <br />
                             * Playoff line is estimated and not guaranteed (roughly ~70%). <br />
-                            * Unofficial Standings, could contain inaccuracies. <br />
+                            * Unofficial Standings, calculated based on available match data. <br />
                         </div>}    
                     { !selectedTier && <div className='text-center text-xl m-4'>Select a tier to get started.</div>}                    
                 </div> 
-            </div>
         </Container>
     );
 }
