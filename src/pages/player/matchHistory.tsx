@@ -37,7 +37,7 @@ function MatchHistory( { player, match }: { player: Player, match: Match } ) {
                             <div className="basis-1/12">{playerStat.rating.toFixed(2)}</div>
                             <div className="basis-1/12">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
                             <div className="basis-1/12">{playerStat.adr.toFixed(2)}</div>
-                            <div className="basis-1/12">{playerStat.hs}</div>
+                            <div className="basis-1/12">{Math.round(playerStat.hs / playerStat.kills * 100) || 0}</div>
                             <div className="basis-1/12">{playerStat.FAss}</div>
                         </div> 
                     )
@@ -52,7 +52,7 @@ function MatchHistory( { player, match }: { player: Player, match: Match } ) {
                         <div className="basis-1/12">{playerStat.rating.toFixed(2)}</div>
                         <div className="basis-1/12">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
                         <div className="basis-1/12">{playerStat.adr.toFixed(2)}</div>
-                        <div className="basis-1/12">{playerStat.hs}</div>
+                        <div className="basis-1/12">{Math.round(playerStat.hs / playerStat.kills * 100) || 0}</div>
                         <div className="basis-1/12">{playerStat.FAss}</div>
                     </div> 
                     )
