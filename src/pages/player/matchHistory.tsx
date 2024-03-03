@@ -97,7 +97,7 @@ function MatchRow( { player, match }: { player: Player, match: Match } ) {
                 <div className="basis-1/12">{p.rating.toFixed(2)}</div>
                 <div className="basis-1/12">{p.kills} / {p.deaths} / {p.assists}</div>
                 <div className={`basis-1/12 ${ p.adr > 100 ? "text-yellow-400" : ""}`}>{p.adr.toFixed(2)} {p.adr > 100 ? <GoStarFill className="text-yellow-400 inline" /> : ""}</div>
-                <div className="basis-1/12">{p.hs}</div>
+                <div className="basis-1/12">{Math.round(p.hs / p.kills * 100) || 0}</div>
                 <div className="basis-1/12">{p?.FAss}</div>
             </div>
             {
