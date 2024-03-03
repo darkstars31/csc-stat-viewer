@@ -95,8 +95,12 @@ export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Pla
         {   if( !a.stats?.rating || a.stats.gameCount < 3 ){
                 return 1;
             }
+            if( !b.stats?.rating || b.stats.gameCount < 3) {
+                return -1;
+            }
             return a.stats?.rating < b.stats?.rating ? 1 : -1}
         );
+
 export const getTop10PlayersInTier3GP = (
     player: Player,
     allPlayers: Player[],

@@ -8,7 +8,7 @@ import { Link } from "wouter";
 import { franchiseImages } from "../common/images/franchise";
 import { sortBy } from 'lodash';
 import { Franchise } from "../models/franchise-types";
-import { calculatePercentage } from "../common/utils/string-utils";
+import { calculatePercentage, getCssColorGradientBasedOnPercentage } from "../common/utils/string-utils";
 import { Exandable } from "../common/components/containers/Expandable";
 
 type ProcessedTeamStandings = {
@@ -28,32 +28,6 @@ type ProcessedTeamStandings = {
 
 
 function TeamRecordRow ({ team, index }: { team: any, index: number }) {
-
-    const getColor = (percentage: number | string) => {
-        let colorClass = '';
-        if (+percentage >= 90) {
-            colorClass = 'from-green-500 to-green-900'; // Gradient from green-500 to green-900 for percentages >= 90%
-        } else if (+percentage >= 80) {
-            colorClass = 'from-green-400 to-green-800'; // Gradient from green-400 to green-800 for percentages >= 80%
-        } else if (+percentage >= 70) {
-            colorClass = 'from-green-300 to-green-700'; // Gradient from green-300 to green-700 for percentages >= 70%
-        } else if (+percentage >= 60) {
-            colorClass = 'from-green-200 to-green-600'; // Gradient from green-200 to green-600 for percentages >= 60%
-        } else if (+percentage >= 50) {
-            colorClass = 'from-green-100 to-green-500'; // Gradient from green-100 to green-500 for percentages >= 50%
-        } else if (+percentage >= 40) {
-            colorClass = 'from-yellow-300 to-yellow-700'; // Gradient from yellow-300 to yellow-700 for percentages >= 40%
-        } else if (+percentage >= 30) {
-            colorClass = 'from-yellow-200 to-yellow-600'; // Gradient from yellow-200 to yellow-600 for percentages >= 30%
-        } else if (+percentage >= 20) {
-            colorClass = 'from-yellow-100 to-yellow-500'; // Gradient from yellow-100 to yellow-500 for percentages >= 20%
-        } else if (+percentage >= 10) {
-            colorClass = 'from-red-400 to-red-800'; // Gradient from red-400 to red-800 for percentages >= 10%
-        } else {
-            colorClass = 'from-red-300 to-red-700'; // Gradient from red-300 to red-700 for percentages < 10%
-        }
-        return `bg-clip-text text-transparent bg-gradient-to-r ${colorClass}`;
-    }
 
     return (
         <tr key={`${team.name}${index}`} className={`${index % 2 === 0 ? 'bg-slate-800' : ''} p-2`}>
@@ -82,13 +56,13 @@ function TeamRecordRow ({ team, index }: { team: any, index: number }) {
                     <span className='text-gray-400 text-xs'>diff {team.roundsWon - team.roundsLost > 0 ? '+': ''}{team.roundsWon - team.roundsLost}</span> <span className='text-gray-400 text-xs'>{calculatePercentage(team.roundsWon , (team.roundsWon + team.roundsLost),1)}%</span>
                 </div>
             </td>
-            <td className={`${getColor(calculatePercentage(team.ctRoundsWon,team.ctTotalRounds,1))} collapse md:visible`}>
+            <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.ctRoundsWon,team.ctTotalRounds,1))} collapse md:visible`}>
                 {calculatePercentage(team.ctRoundsWon,team.ctTotalRounds,1)}%
             </td>
-            <td className={`${getColor(calculatePercentage(team.tRoundsWon,team.tTotalRounds,1))} collapse md:visible`}>
+            <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.tRoundsWon,team.tTotalRounds,1))} collapse md:visible`}>
                 {calculatePercentage(team.tRoundsWon,team.tTotalRounds,1)}%
             </td>
-            <td className={`${getColor(calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1))} collapse md:visible`}>
+            <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1))} collapse md:visible`}>
                 {calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1)}%
             </td>
             {/* <div><span className='text-green-400'>{team.teamRecord.record.conferenceWins}</span> : <span className='text-red-400'>{team.teamRecord.record.conferenceLosses}</span></div> */}
@@ -239,6 +213,7 @@ export function TeamStandings() {
                             * Tie-Breakers implemented in order: Head-to-Head Record, Round Win Percentage <br />
                             * Playoff line is estimated and not guaranteed (roughly ~70%). <br />
                             * Unofficial Standings, calculated based on available match data. <br />
+                            * Design inspired by <a href="/players/spidey">Spidey</a> <br />
                         </div>}    
                     { !selectedTier && <div className='text-center text-xl m-4'>Select a tier to get started.</div>}                    
                 </div> 

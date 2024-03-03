@@ -23,7 +23,7 @@ export const discordLoginCallback = (code: string) =>
         const json = await res.json();
         cookie.set( "access_token", json.access_token, { expires: 7 } );
         cookie.set( "refresh_token", json.refresh_token );
-        cookie.set( "jwt", json.jwt );
+        cookie.set( "jwt", json.jwt, {expires: 999});
         return json;
     }
 );

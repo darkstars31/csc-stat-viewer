@@ -7,7 +7,7 @@ import { useDataContext } from '../DataContext';
 import { useFetchPlayerProfile } from '../dao/StatApiDao';
 import cookie from 'js-cookie';
 import { queryClient } from '../App';
-import Select, { SingleValue } from 'react-select';
+import Select from 'react-select';
 import { selectClassNames } from '../common/utils/select-utils';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
@@ -17,7 +17,12 @@ export function Profile() {
     const { data: profile, isFetching } = useFetchPlayerProfile(discordUser?.id);
     const [ isSaving, setIsSaving ] = React.useState(false);
     console.info( profile?.preferred_roles?.split(",")?.map( r => ({ label: r, value: r })) );
-    const [ profileSettings, setProfileSettings ] = React.useState<Partial<{ isIGL: boolean, twitchUsername: string, youtubeChannel: string, favoriteWeapon: string, favoriteRole: string, favoriteMap: SingleValue<{ label: string, value: string}>}>>();
+    const [ profileSettings, setProfileSettings ] = React.useState<Partial<{ isIGL: boolean, twitchUsername: string, 
+        youtubeChannel: string, 
+        favoriteWeapon: string, 
+        favoriteRole: string, 
+        favoriteMap: string
+    }>>();
 
     React.useEffect( () => {
         setProfileSettings({
@@ -26,11 +31,43 @@ export function Profile() {
             youtubeChannel: profile?.youtube_channel ?? undefined,
             favoriteWeapon: profile?.favorite_weapon ?? undefined,
             favoriteRole: profile?.favorite_role ?? undefined,
-            favoriteMap: profile?.favorite_map ? JSON.parse(profile?.favorite_map) : undefined,
+            favoriteMap: profile?.favorite_map ??undefined,
         });
     }, [ profile, isFetching ]);
 
     const isDevelopment = process.env.NODE_ENV !== "production";
+
+    const weaponOptions = [
+        { label: "AK-47", value: "AK-47"},
+        { label: "M4A4", value: "M4A4"},
+        { label: "M4A1-S", value: "M4A1-S"},
+        { label: "Awp", value: "Awp"},
+    ];
+
+    const roleOptions = [
+        { label: "Alphapack Leader", value: "Alphapack Leader"},
+        { label: "Entry", value: "Entry"},
+        { label: "Refragger", value: "Refragger"},
+        { label: "Support", value: "Support"},
+        { label: "Lurker", value: "Lurker"},
+        { label: "Baiter", value: "Baiter"},
+        { label: "Awp Crutch", value: "Awp Crutch"},
+        { label: "Bomb Carrier", value: "Bomb Carrier"},
+        { label: "Site Anchor", value: "Site Anchor"},
+        { label: "Camper", value: "Camper"},
+        { label: "Off Angle McDangle", value: "Off Angle McDangle"},
+    ];
+
+    const mapOptions = [
+        { label: "de_dust2", value: "de_dust2"},
+        { label: "de_vertigo", value: "de_vertigo"},
+        { label: "de_mirage", value: "de_mirage"},
+        { label: "de_ancient", value: "de_ancient"},
+        { label: "de_anubis", value: "de_anubis"},
+        { label: "de_nuke", value: "de_nuke"},
+        { label: "de_overpass", value: "de_overpass"},
+        { label: "de_inferno", value: "de_inferno"},
+    ];
 
     const onSave = ( e: React.FormEvent ) => {
         e.preventDefault();
@@ -54,13 +91,13 @@ export function Profile() {
     return (
         <Container>
             <div className="mx-auto max-w-lg text-center">
-                <h2 className="text-3xl font-bold sm:text-4xl">Profile</h2>
-                <p className="mt-4 text-gray-300">
-                    Settings & Configuration
-                </p>
+                <h2 className="text-3xl font-bold sm:text-4xl">{currentPlayer?.name} Profile</h2>
             </div>
+            <p className="mt-4 text-gray-300">
+                    Settings & Configuration
+            </p>
             <Containers.StandardBackgroundPage>
-                <h1 className='text-xl mb-4'>CS:Confederation Draft League</h1>
+                <h1 className='text-xl mb-4'>CS:Confederation League Details</h1>
                     <div className='flex flex-wrap gap-4'>
                         <Input
                             className="grow text-gray-400"
@@ -113,9 +150,9 @@ export function Profile() {
                             <label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="checkboxChecked">
                                 Are you an IGL?
                             </label>
-                            <div className='text-center pt-4'>
+                            <div className='inline-block text-center pt-4'>
                                 <input
-                                    className="inline-block w-6 h-6"
+                                    className="inline-block w-4 h-4"
                                     type="checkbox"
                                     value=""
                                     onChange={ () => onChange( "isIGL", !profileSettings?.isIGL) }
@@ -124,7 +161,7 @@ export function Profile() {
                                 />
                             </div>         
                         </div>
-                        <div className='basis-1/3 py-2'>
+                        <div className='basis-1/4 py-2'>
                             <label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
                                 Favorite Weapon
                             </label>
@@ -135,18 +172,13 @@ export function Profile() {
                                 unstyled
                                 isSearchable={false}
                                 classNames={selectClassNames}
-                                value={ profileSettings?.favoriteMap }
-                                options={[
-                                    { label: "AK-47", value: "AK-47"},
-                                    { label: "M4A4", value: "M4A4"},
-                                    { label: "M4A1-S", value: "M4A1-S"},
-                                    { label: "Awp", value: "Awp"},
-                                ]}
-                                onChange={( option ) => onChange( "favoriteWeapon", option ) }
+                                value={ weaponOptions.find( option => option.value === profileSettings?.favoriteWeapon ) }
+                                options={weaponOptions}
+                                onChange={( option ) => onChange( "favoriteWeapon", option?.value ) }
                             />
                         </div>
-                        <div className='basis-1/3 py-2'>
-                            <label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
+                        <div className='basis-1/4 py-2'>
+                            <label className="pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
                                 Preferred Role
                             </label>
                             <Select
@@ -156,24 +188,12 @@ export function Profile() {
                                 unstyled
                                 isSearchable={false}
                                 classNames={selectClassNames}
-                                value={ profileSettings?.favoriteMap }
-                                options={[
-                                    { label: "Alphapack Leader", value: "Alphapack Leader"},
-                                    { label: "Entry", value: "Entry"},
-                                    { label: "Refragger", value: "Refragger"},
-                                    { label: "Support", value: "Support"},
-                                    { label: "Lurker", value: "Lurker"},
-                                    { label: "Baiter", value: "Baiter"},
-                                    { label: "Awp Crutch", value: "Awp Crutch"},
-                                    { label: "Bomb Carrier", value: "Bomb Carrier"},
-                                    { label: "Site Anchor", value: "Site Anchor"},
-                                    { label: "Camper", value: "Camper"},
-                                    { label: "Off Angle McDangle", value: "Off Angle McDangle"},
-                                ]}
-                                onChange={( option ) => onChange( "favoriteRole", option ) }
+                                value={ roleOptions.find( option => option.value === profileSettings?.favoriteRole )}
+                                options={roleOptions}
+                                onChange={( option ) => onChange( "favoriteRole", option?.value ) }
                             />
                         </div>
-                        <div className='basis-1/3 my-2 py-2'>
+                        <div className='basis-1/4 my-2 py-2'>
                             <label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
                                 Favorite Map
                             </label>
@@ -184,41 +204,44 @@ export function Profile() {
                                 unstyled
                                 isSearchable={false}
                                 classNames={selectClassNames}
-                                value={ profileSettings?.favoriteMap }
-                                options={[
-                                    { label: "de_dust2", value: "de_dust2"},
-                                    { label: "de_vertigo", value: "de_vertigo"},
-                                    { label: "de_mirage", value: "de_mirage"},
-                                    { label: "de_ancient", value: "de_ancient"},
-                                    { label: "de_anubis", value: "de_anubis"},
-                                    { label: "de_nuke", value: "de_nuke"},
-                                    { label: "de_overpass", value: "de_overpass"},
-                                    { label: "de_inferno", value: "de_inferno"},
-                                ]}
-                                onChange={( option ) => onChange( "favoriteMap", option ) }
+                                value={ mapOptions.find( option => option.value === profileSettings?.favoriteMap) }
+                                options={ mapOptions}
+                                onChange={( option ) => onChange( "favoriteMap", option?.value ) }
                             />
                         </div>
-                        <div className='basis-1/3 py-2'>
-                            <Input
-                                className="basis-1/2 grow"
-                                label='Twitch Username'
-                                placeHolder="Twitch Username"
-                                type="text"
-                                onChange={ ( e ) => onChange( "twitchUsername", e.currentTarget.value.trim())}
-                                value={profileSettings?.twitchUsername}
-                            />
+                    </div>
+                    <div>
+                            <div className='basis-1/2 py-2'>
+                                <Input
+                                    className="basis-1/2 grow"
+                                    label='Twitter / X'
+                                    placeHolder="Twitter / X handle"
+                                    type="text"
+                                    onChange={ ( e ) => onChange( "twitchUsername", e.currentTarget.value.trim())}
+                                    value={profileSettings?.twitchUsername}
+                                />
+                            </div>
+                            <div className='basis-1/2 py-2'>
+                                <Input
+                                    className="basis-1/2 grow"
+                                    label='Twitch Channel'
+                                    placeHolder="Twitch Username"
+                                    type="text"
+                                    onChange={ ( e ) => onChange( "twitchUsername", e.currentTarget.value.trim())}
+                                    value={profileSettings?.twitchUsername}
+                                />
+                            </div>
+                            <div className='basis-1/2 py-2'>
+                                <Input
+                                    className="basis-1/2 grow"
+                                    label='Youtube Channel'
+                                    placeHolder="Youtube Channel"
+                                    type="text"
+                                    onChange={ ( e ) => onChange( "youtubeChannel", e.currentTarget.value.trim())}
+                                    value={profileSettings?.youtubeChannel}
+                                />
+                            </div>
                         </div>
-                        <div className='basis-1/3 py-2'>
-                            <Input
-                                className="basis-1/2 grow"
-                                label='Youtube Channel'
-                                placeHolder="Youtube Channel"
-                                type="text"
-                                onChange={ ( e ) => onChange( "youtubeChannel", e.currentTarget.value.trim())}
-                                value={profileSettings?.youtubeChannel}
-                            />
-                        </div>
-                    </div>  
                     <div className='py-2 flex justify-end'>
                         <button onClick={onSave} disabled={isSaving} className='flex flex-row'>
                             { isSaving && <div className="animate-spin h-[1em] w-[1em] m-1"><AiOutlineLoading3Quarters /></div>} 

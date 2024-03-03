@@ -2,7 +2,7 @@ import * as React from "react";
 import { Player as FranchisePlayer, Team } from "../../models/franchise-types";
 import { useDataContext } from "../../DataContext";
 import { Link } from "wouter";
-import { GiPirateHat, GiSubmarine, GiSubway } from "react-icons/gi";
+import { GiMoneyStack, GiPirateHat, GiSubmarine, GiSubway } from "react-icons/gi";
 import { BsLifePreserver } from "react-icons/bs";
 import { Mmr } from "../../common/components/mmr";
 import { ExternalPlayerLinks } from "../../common/components/externalPlayerLinks";
@@ -33,7 +33,7 @@ export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: Franchis
                     </span>
                 </Link>
                 <div className="basis-1/6">{player?.role}</div>
-                <div className="basis-1/6">MMR <Mmr player={franchisePlayer} /> <div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player?.stats?.rating.toFixed(2) ?? "-"}</div></div>
+                <div className="basis-1/6"><div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/><Mmr player={franchisePlayer} /></div> <div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player?.stats?.rating.toFixed(2) ?? "-"}</div></div>
                 <div className="basis-1/12 w-7 h-7"><FaceitRank player={player} /></div>
                 <div className="basis-1/12 text-sm">{player?.contractDuration}<IoDocumentTextOutline className="inline mx-1" /></div>
                 <div className="basis-1/12">
