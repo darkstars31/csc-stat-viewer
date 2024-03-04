@@ -7,9 +7,23 @@ import { useCscPlayerMatchHistoryGraph } from "../../dao/cscPlayerMatchHistoryGr
 import { Match } from "../../models/csc-player-match-history-types";
 import { GoStarFill } from "react-icons/go";
 import { ToolTip } from "../../common/utils/tooltip-utils";
+import { getCssColorGradientBasedOnPercentage } from "../../common/utils/string-utils";
 
 type Props = {
     player: Player;
+}
+
+function PlayerMatchStatLine( { playerStat, player }: { playerStat: any, player: Player } ) {
+    return (
+        <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "text-yellow-300" : ""}`}>
+            <div className={`basis-2/12`}>{playerStat.name}</div>
+            <div className="basis-1/12">{playerStat.rating.toFixed(2)}</div>
+            <div className="basis-1/12">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
+            <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(playerStat.adr)}`}>{playerStat.adr.toFixed(2)}</div>
+            <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(Math.round(playerStat.hs / playerStat.kills * 100) || 0)}`}>{Math.round(playerStat.hs / playerStat.kills * 100) || 0}</div>
+            <div className="basis-1/12">{playerStat.FAss}</div>
+        </div> 
+    )
 }
 
 function MatchHistory( { player, match }: { player: Player, match: Match } ) {
@@ -30,31 +44,17 @@ function MatchHistory( { player, match }: { player: Player, match: Match } ) {
                 <div className="basis-1/12">Flash Assists</div>
             </div>
             <div className="relative">
-                <div className="absolute -left-16 top-12 -rotate-90 w-24 border-b border-gray-600 mr-16 text-center bg-gradient-to-r from-indigo-500 font-medium capitalize">{ team1.replace("_", " ") }</div>
+                <div className="absolute -left-20 top-14 -rotate-90 w-28 border-b border-gray-600 mr-16 text-center bg-gradient-to-r from-indigo-500 font-bold capitalize">{ team1.replace("_", " ") }</div>
                 { teamHome?.map( (playerStat, index) => 
-                        <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "text-yellow-300" : ""}`}>
-                            <div className={`basis-2/12`}>{playerStat.name}</div>
-                            <div className="basis-1/12">{playerStat.rating.toFixed(2)}</div>
-                            <div className="basis-1/12">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
-                            <div className="basis-1/12">{playerStat.adr.toFixed(2)}</div>
-                            <div className="basis-1/12">{Math.round(playerStat.hs / playerStat.kills * 100) || 0}</div>
-                            <div className="basis-1/12">{playerStat.FAss}</div>
-                        </div> 
+                        <PlayerMatchStatLine key={index} playerStat={playerStat} player={player} />
                     )
                 }
             </div>
             <br />
             <div className="relative">
-                <div className="absolute -left-16 top-12 -rotate-90 w-24 border-b border-gray-600 mr-16 text-center bg-gradient-to-r from-orange-500 font-medium capitalize">{ team2.replace("_", " ") }</div>
+                <div className="absolute -left-20 top-14 -rotate-90 w-28 border-b border-gray-600 mr-16 text-center bg-gradient-to-r from-orange-500 font-bold capitalize">{ team2.replace("_", " ") }</div>
                 { teamAway?.map( (playerStat, index) => 
-                        <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "text-yellow-300" : ""}`}>
-                        <div className={`basis-2/12`}>{playerStat.name}</div>
-                        <div className="basis-1/12">{playerStat.rating.toFixed(2)}</div>
-                        <div className="basis-1/12">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
-                        <div className="basis-1/12">{playerStat.adr.toFixed(2)}</div>
-                        <div className="basis-1/12">{Math.round(playerStat.hs / playerStat.kills * 100) || 0}</div>
-                        <div className="basis-1/12">{playerStat.FAss}</div>
-                    </div> 
+                        <PlayerMatchStatLine key={index} playerStat={playerStat} player={player} />
                     )
                 }
             </div>
@@ -97,7 +97,7 @@ function MatchRow( { player, match }: { player: Player, match: Match } ) {
                 <div className="basis-1/12">{p.rating.toFixed(2)}</div>
                 <div className="basis-1/12">{p.kills} / {p.deaths} / {p.assists}</div>
                 <div className={`basis-1/12 ${ p.adr > 100 ? "text-yellow-400" : ""}`}>{p.adr.toFixed(2)} {p.adr > 100 ? <GoStarFill className="text-yellow-400 inline" /> : ""}</div>
-                <div className="basis-1/12">{Math.round(p.hs / p.kills * 100) || 0}</div>
+                <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(Math.round(p.hs / p.kills * 100) || 0)}`}>{Math.round(p.hs / p.kills * 100) || 0}</div>
                 <div className="basis-1/12">{p?.FAss}</div>
             </div>
             {
