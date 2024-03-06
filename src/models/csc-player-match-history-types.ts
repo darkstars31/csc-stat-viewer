@@ -35,4 +35,5 @@ export type MatchStats = {
     rating: number;
     RF: number;
     RA: number;
+    utilDmg: number;
 }

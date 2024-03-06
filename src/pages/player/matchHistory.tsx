@@ -15,13 +15,15 @@ type Props = {
 
 function PlayerMatchStatLine( { playerStat, player }: { playerStat: any, player: Player } ) {
     return (
-        <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "text-yellow-300" : ""}`}>
+        <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "bg-slate-900" : ""}`}>
             <div className={`basis-2/12`}>{playerStat.name}</div>
             <div className="basis-1/12">{playerStat.rating.toFixed(2)}</div>
             <div className="basis-1/12">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
-            <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(playerStat.adr)}`}>{playerStat.adr.toFixed(2)}</div>
+            <div className={`basis-1/12`}>{playerStat.damage}</div>
+            <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(playerStat.adr)}`}>{playerStat.adr.toFixed(1)}</div>
             <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(Math.round(playerStat.hs / playerStat.kills * 100) || 0)}`}>{Math.round(playerStat.hs / playerStat.kills * 100) || 0}</div>
             <div className="basis-1/12">{playerStat.FAss}</div>
+            <div className="basis-1/12">{playerStat.utilDmg}</div>
         </div> 
     )
 }
@@ -39,9 +41,11 @@ function MatchHistory( { player, match }: { player: Player, match: Match } ) {
                 <div className="basis-2/12">Name</div>
                 <div className="basis-1/12">Rating</div>
                 <div className="basis-1/12">K / D / A</div>
+                <div className="basis-1/12">Damage</div>
                 <div className="basis-1/12">ADR</div>
                 <div className="basis-1/12">HS%</div>
-                <div className="basis-1/12">Flash Assists</div>
+                <div className="basis-1/12">Flash AST</div>
+                <div className="basis-1/12">Util Dmg</div>
             </div>
             <div className="relative">
                 <div className="absolute -left-20 top-14 -rotate-90 w-28 border-b border-gray-600 mr-16 text-center bg-gradient-to-r from-indigo-500 font-bold capitalize">{ team1.replace("_", " ") }</div>
@@ -96,9 +100,11 @@ function MatchRow( { player, match }: { player: Player, match: Match } ) {
                 <div className={`basis-1/12 min-w-32 ${p.RF > p.RA ? "text-green-400" : "text-rose-400"}`}><span className="flex flex-nowrap">{p.RF} : {p.RA}</span></div>
                 <div className="basis-1/12">{p.rating.toFixed(2)}</div>
                 <div className="basis-1/12">{p.kills} / {p.deaths} / {p.assists}</div>
-                <div className={`basis-1/12 ${ p.adr > 100 ? "text-yellow-400" : ""}`}>{p.adr.toFixed(2)} {p.adr > 100 ? <GoStarFill className="text-yellow-400 inline" /> : ""}</div>
+                <div className="basis-1/12">{p.damage}</div>
+                <div className={`basis-1/12 ${ p.adr > 100 ? "text-yellow-400" : ""}`}>{p.adr.toFixed(1)} {p.adr > 100 ? <GoStarFill className="text-yellow-400 inline" /> : ""}</div>
                 <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(Math.round(p.hs / p.kills * 100) || 0)}`}>{Math.round(p.hs / p.kills * 100) || 0}</div>
                 <div className="basis-1/12">{p?.FAss}</div>
+                <div className="basis-1/12">{p?.utilDmg}</div>
             </div>
             {
                 isExpanded && <MatchHistory player={player} match={match} />
@@ -134,9 +140,11 @@ export function PlayerMatchHistory( { player }: Props ) {
                 <div className="basis-1/12">Score</div>
                 <div className="basis-1/12">Rating</div>
                 <div className="basis-1/12">K / D / A</div>
+                <div className="basis-1/12">Damage</div>
                 <div className="basis-1/12">ADR</div>
                 <div className="basis-1/12">HS%</div>
-                <div className="basis-1/12">Flash Assists</div>
+                <div className="basis-1/12">Flash AST</div>
+                <div className="basis-1/12">Util. Damage</div>
             </div>
             {
                 ( showAll ? sortedPlayerMatchHistory : sortedPlayerMatchHistory?.slice(0,5))?.map( (match) => <MatchRow key={match.matchId} player={player} match={match} /> )

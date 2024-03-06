@@ -34,6 +34,7 @@ const fetchGraph = async ( player: Player ) => await fetch(appConfig.endpoints.c
                         rating
                         RF
                         RA
+                        utilDmg
                     }
                 }
             }`,

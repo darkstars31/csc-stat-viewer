@@ -10,6 +10,7 @@ import { sortBy } from 'lodash';
 import { Franchise } from "../models/franchise-types";
 import { calculatePercentage, getCssColorGradientBasedOnPercentage } from "../common/utils/string-utils";
 import { Exandable } from "../common/components/containers/Expandable";
+import csclogo from "../assets/images/placeholders/csc-logo.png";
 
 type ProcessedTeamStandings = {
      franchise?: Franchise, 
@@ -126,12 +127,12 @@ export function TeamStandings() {
     const tierButtonClass = "rounded-md flex-grow px-6 pb-2 pt-2.5 text-sm font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-blue-400 focus:bg-blue-400 focus:outline-none focus:ring-0 active:bg-blue-300";
 
     const tiers = [
-        { name: "Recruit", color: 'red'},
-        { name: "Prospect", color: 'orange'},
-        { name: "Contender", color: 'yellow'},
-        { name: "Challenger", color: 'green'},
-        { name: "Elite", color: 'blue'},
-        { name: "Premier", color: 'purple'},
+        { name: "Recruit", color: 'red', playoffLine: 10},
+        { name: "Prospect", color: 'orange', playoffLine: 14},
+        { name: "Contender", color: 'yellow', playoffLine: 16 },
+        { name: "Challenger", color: 'green', playoffLine: 12},
+        { name: "Elite", color: 'blue', playoffLine: 10 },
+        { name: "Premier", color: 'purple', playoffLine: 12},
     ];
 
     return (
@@ -160,20 +161,20 @@ export function TeamStandings() {
                     { isLoading ? 
                         <Loading /> 
                         :
-                            <Card>
+                            <Card>                          
                                 <div>
                                     <h1 className='text-4xl font-black uppercase'>{selectedTier}</h1>
-                                    <h3 className='text-xl font-bold'>MATCH DAY <span className="text-yellow-400">{sorted[0].wins+sorted[0].losses}</span></h3>
+                                    <h3 className='text-xl font-bold' style={{backgroundImage: `url(${csclogo})`, overflow:'auto'}}>MATCH DAY <span className="text-yellow-400">{sorted[0].wins+sorted[0].losses}</span></h3>
                                 </div>
                                 <div className='flex'>
                                     <div className="basis-1/12 collapse md:visible">
-                                        <div className='text-3xl font-black -rotate-90 translate-y-16'>
-                                            <span>SEASON {seasonAndTierConfig?.number}</span>
+                                        <div className='text-3xl -rotate-90 font-black translate-y-16'>
+                                            SEASON {seasonAndTierConfig?.number}
                                         </div>
                                     </div>
                                     <div className="basis-11/12">
                                         <table className='table-auto w-full'>
-                                            <thead className="border-b">
+                                            <thead className="underline decoration-yellow-400">
                                                 <tr className="text-left">
                                                     <th>POS.</th>                                     
                                                     <th>Team</th>
@@ -189,15 +190,18 @@ export function TeamStandings() {
                                                 <>
                                                     <TeamRecordRow key={`${index}`} team={team} index={index} />
                                                     { 
-                                                        Math.ceil(( sorted as []).length * .7  ) === index+1 && 
-                                                        <tr className='text-gray-600 text-xs'><i>Playoff Line</i><div className='-mt-[.8em] ml-20 border-dotted border-b border-gray-500' /></tr>
+                                                        tiers.find( (tier) => tier.name === selectedTier)?.playoffLine === index+1 && 
+                                                        <tr className='text-gray-500 text-xs italic'>
+                                                            <td className='-mt-[.8em] ml-20 border-dotted border-b border-gray-400'>Playoff Line</td>
+                                                            <td className='-mt-[.8em] ml-20 border-dotted border-b border-gray-400'></td>
+                                                        </tr>
                                                     }
                                                 </>
                                             )}
                                             </tbody>                                                 
                                         </table>                  
                                     </div>               
-                                </div>                                                          
+                                </div>                                                   
                             </Card>                                            
                     }
                     { tieBreakers.length > 0 &&<Exandable title='Tie-Breakers'>
@@ -216,7 +220,7 @@ export function TeamStandings() {
                             * Design inspired by <a href="/players/spidey">Spidey</a> <br />
                         </div>}    
                     { !selectedTier && <div className='text-center text-xl m-4'>Select a tier to get started.</div>}                    
-                </div> 
+                </div>
         </Container>
     );
 }
