@@ -1,11 +1,12 @@
 {
   "files": {
-    "main.css": "/static/css/main.e10dcbb6.css",
-    "main.js": "/static/js/main.9675bc65.js",
+    "main.css": "/static/css/main.e49008dd.css",
+    "main.js": "/static/js/main.9fd94b31.js",
     "static/media/ATL.png": "/static/media/ATL.fb63f87d3c8970cf5f2c.png",
     "static/media/H4K.png": "/static/media/H4K.5eb515bc8e408ca1cdf7.png",
     "static/media/GAS.png": "/static/media/GAS.2d7416ff8947069d2d9a.png",
     "static/media/OS.png": "/static/media/OS.5616c74a661e36306219.png",
+    "static/media/csc-logo.png": "/static/media/csc-logo.68b1d03ecf71d95a414c.png",
     "static/media/YC.png": "/static/media/YC.ac735f0a03a96e6be556.png",
     "static/media/WET.png": "/static/media/WET.4a61b373e15ff7885165.png",
     "static/media/FRG.png": "/static/media/FRG.f906936409ccc954ca29.png",
@@ -44,11 +45,11 @@
     "static/media/faceit4.svg": "/static/media/faceit4.301c02ace28ed32c7327dcdba0f16a4b.svg",
     "static/media/faceit7.svg": "/static/media/faceit7.7193bbc6588efceeca89830842f3f9fc.svg",
     "static/media/faceit1.svg": "/static/media/faceit1.2feb84dcfc17bc9eba1c6b8a08380edb.svg",
-    "main.e10dcbb6.css.map": "/static/css/main.e10dcbb6.css.map",
-    "main.9675bc65.js.map": "/static/js/main.9675bc65.js.map"
+    "main.e49008dd.css.map": "/static/css/main.e49008dd.css.map",
+    "main.9fd94b31.js.map": "/static/js/main.9fd94b31.js.map"
   },
   "entrypoints": [
-    "static/css/main.e10dcbb6.css",
-    "static/js/main.9675bc65.js"
+    "static/css/main.e49008dd.css",
+    "static/js/main.9fd94b31.js"
   ]
 }
