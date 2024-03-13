@@ -59,50 +59,54 @@ export function Player() {
         <Container>
             <PlayerNavigator player={currentPlayer} playerIndex={playerRatingIndex} />
             <Containers.StandardBackgroundPage>
-                <div className="flex space-x-4 pb-2">
-                    <div className="object-contain">
-                        { currentPlayer?.avatarUrl && <img className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
-                        { !currentPlayer?.avatarUrl && <div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border"/>}
-                    </div>
-                    <div className="text-left basis-3/4">
-                        <div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
-                            { currentPlayer?.name ?? "n/a"}
+                <div className="flex flex-wrap flex-row pb-2">
+                    <div className="flex basis-full md:basis-1/3 space-x-4">
+                        <div className="object-contain">
+                            { currentPlayer?.avatarUrl && <img className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
+                            { !currentPlayer?.avatarUrl && <div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border"/>}
                         </div>
-                        <div className={"text-[1.1rem] pb-5"}>
-                            <i>
-                                <b>{currentPlayer?.role ? `${currentPlayer?.role} — ` : ""}</b>
-                                { currentPlayer?.team?.franchise.name ? 
-                                    <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer.type === PlayerTypes.EXPIRED ? <ToolTip type="generic" message="This players contract has expired."><TiWarningOutline className="inline text-red-500" /></ToolTip> : ""} {currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
-                                    : <span>{teamNameTranslator(currentPlayer)}</span>                         
-                                }                              
-                            </i>
+                        <div className="text-left basis-3/4">
+                            <div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
+                                { currentPlayer?.name ?? "n/a"}
+                            </div>
+                            <div className={"text-[1.1rem] pb-5"}>
+                                <i>
+                                    <b>{currentPlayer?.role ? `${currentPlayer?.role} — ` : ""}</b>
+                                    { currentPlayer?.team?.franchise.name ? 
+                                        <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer.type === PlayerTypes.EXPIRED ? <ToolTip type="generic" message="This players contract has expired."><TiWarningOutline className="inline text-red-500" /></ToolTip> : ""} {currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
+                                        : <span>{teamNameTranslator(currentPlayer)}</span>                         
+                                    }                              
+                                </i>
+                            </div>
+                            <ul className="text-[0.8rem]">
+                                <li>
+                                    {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <span className={`text-${tiers.find( t => t.name === currentPlayer.tier.name )?.color}-500`}><b><i>{currentPlayer.tier.name}</i></b></span>
+                                    <br /> <Mmr player={currentPlayer}/> MMR
+                                    <div>
+                                        <span className="flex leading-7">
+                                            <FaceitRank player={currentPlayer} />
+                                            <ToolTip type="generic" message="HLTV2.0 Rating formula w/ <1% margin of error.">
+                                                <span className="ml-2 bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">
+                                                    ~{currentPlayer.hltvTwoPointO?.toFixed(2)} HLTV
+                                                </span>
+                                            </ToolTip>
+                                        </span>
+                                    </div> 
+
+                                </li>
+                            </ul>
+
                         </div>
-                        <ul className="text-[0.8rem]">
-                            <li>
-                                {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <span className={`text-${tiers.find( t => t.name === currentPlayer.tier.name )?.color}-500`}><b><i>{currentPlayer.tier.name}</i></b></span>
-                                <br /> <Mmr player={currentPlayer}/> MMR
-                                <div>
-                                    <span className="flex leading-7">
-                                        <FaceitRank player={currentPlayer} />
-                                        <ToolTip type="generic" message="HLTV2.0 Rating formula w/ <1% margin of error.">
-                                            <span className="ml-2 bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">
-                                                ~{currentPlayer.hltvTwoPointO?.toFixed(2)} HLTV
-                                            </span>
-                                        </ToolTip>
-                                    </span>
-                                </div> 
-
-                            </li>
-                        </ul>
-
                     </div>
-                    <div className="w-full">
+                    <div className="basis-1/2 grow p-2">
+                        <PlayerAwards player={currentPlayer} players={players} />
+                    </div>
+                    <div className="basis-1/12">
                       <ExternalPlayerLinks player={currentPlayer} />
-                    </div>
+                    </div>          
                 </div>
                 { currentPlayerStats &&
-                    <div className="space-y-2">
-                        <PlayerAwards player={currentPlayer} players={players} />
+                    <div className="space-y-2">                       
                         <Containers.StandardBoxRow>
                             <Containers.StandardContentBox>
                                 <PlayerRatings player={currentPlayer} stats={currentPlayerStats} />
