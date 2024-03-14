@@ -8,6 +8,7 @@ import { Match } from "../../models/csc-player-match-history-types";
 import { GoStarFill } from "react-icons/go";
 import { ToolTip } from "../../common/utils/tooltip-utils";
 import { getCssColorGradientBasedOnPercentage } from "../../common/utils/string-utils";
+import * as Containers from "../../common/components/containers";
 
 type Props = {
     player: Player;
@@ -15,16 +16,26 @@ type Props = {
 
 function PlayerMatchStatLine( { playerStat, player }: { playerStat: any, player: Player } ) {
     return (
-        <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "bg-slate-900" : ""}`}>
-            <div className={`basis-2/12`}>{playerStat.name}</div>
-            <div className="basis-1/12">{playerStat.rating.toFixed(2)}</div>
-            <div className="basis-1/12">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
-            <div className={`basis-1/12`}>{playerStat.damage}</div>
-            <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(playerStat.adr)}`}>{playerStat.adr.toFixed(1)}</div>
-            <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(Math.round(playerStat.hs / playerStat.kills * 100) || 0)}`}>{Math.round(playerStat.hs / playerStat.kills * 100) || 0}</div>
-            <div className="basis-1/12">{playerStat.FAss}</div>
-            <div className="basis-1/12">{playerStat.utilDmg}</div>
-        </div> 
+        <tr>
+            <td>{playerStat.name}</td>
+            <td>{playerStat.rating.toFixed(2)}</td>
+            <td>{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</td>
+            <td>{playerStat.damage}</td>
+            <td className={`${getCssColorGradientBasedOnPercentage(playerStat.adr)}`}>{playerStat.adr.toFixed(1)}</td>
+            <td className={`${getCssColorGradientBasedOnPercentage(Math.round(playerStat.hs / playerStat.kills * 100) || 0)}`}>{Math.round(playerStat.hs / playerStat.kills * 100) || 0}</td>
+            <td>{playerStat.FAss}</td>
+            <td>{playerStat.utilDmg}</td>
+        </tr>
+        // <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "bg-slate-900" : ""}`}>
+        //     <div className={`basis-2/12`}>{playerStat.name}</div>
+        //     <div className="basis-1/12">{playerStat.rating.toFixed(2)}</div>
+        //     <div className="basis-1/12">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
+        //     <div className={`basis-1/12`}>{playerStat.damage}</div>
+        //     <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(playerStat.adr)}`}>{playerStat.adr.toFixed(1)}</div>
+        //     <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(Math.round(playerStat.hs / playerStat.kills * 100) || 0)}`}>{Math.round(playerStat.hs / playerStat.kills * 100) || 0}</div>
+        //     <div className="basis-1/12">{playerStat.FAss}</div>
+        //     <div className="basis-1/12">{playerStat.utilDmg}</div>
+        // </div> 
     )
 }
 
@@ -36,8 +47,41 @@ function MatchHistory( { player, match }: { player: Player, match: Match } ) {
    
 
     return (
-        <div className="relative pl-16 text-xs pb-4">
-            <div className="flex flex-row pl-2 gap-4 h-8 items-center border-b border-gray-600">
+        <div className="relative text-xs pb-4">
+             <Containers.StandardBackgroundPage>
+                <table className="table-auto w-full border-spacing-0.5">
+                    <thead className="text-left border-b border-gray-600">
+                        <th>Name</th>
+                        <th>Rating</th>
+                        <th>K / D / A</th>
+                        <th>Damage</th>
+                        <th>ADR</th>
+                        <th>HS%</th>
+                        <th>F Asst</th>
+                        <th>Util Dmg</th>
+                    </thead>
+                    <tbody>
+                        <div className="relative">
+                            <div className="absolute -left-20 top-4 -rotate-90 w-28 mr-16 text-center bg-gradient-to-r from-indigo-500 font-bold capitalize">{ team1.replace("_", " ") }</div>
+                        </div>
+                        { teamHome?.map( (playerStat, index) => 
+                                    <PlayerMatchStatLine key={index} playerStat={playerStat} player={player} />
+                            )
+                        }
+                        <tr>
+                            <td colSpan={8} className="text-center h-4"></td>
+                        </tr>
+                        <div className="relative">
+                            <div className="absolute -left-20 top-8 -rotate-90 w-28 mr-16 text-center bg-gradient-to-r from-orange-500 font-bold capitalize">{ team2.replace("_", " ") }</div>
+                        </div>
+                        { teamAway?.map( (playerStat, index) => 
+                                <PlayerMatchStatLine key={index} playerStat={playerStat} player={player} />
+                            )
+                        }
+                    </tbody>
+                </table>
+            </Containers.StandardBackgroundPage>
+            {/* <div className="flex flex-row pl-2 gap-4 h-8 items-center border-b border-gray-600">
                 <div className="basis-2/12">Name</div>
                 <div className="basis-1/12">Rating</div>
                 <div className="basis-1/12">K / D / A</div>
@@ -61,7 +105,7 @@ function MatchHistory( { player, match }: { player: Player, match: Match } ) {
                         <PlayerMatchStatLine key={index} playerStat={playerStat} player={player} />
                     )
                 }
-            </div>
+            </div> */}
         </div>
     )
 };

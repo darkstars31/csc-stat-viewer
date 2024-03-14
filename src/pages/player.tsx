@@ -98,7 +98,7 @@ export function Player() {
 
                         </div>
                     </div>
-                    <div className="basis-1/2 grow p-2">
+                    <div className="basis-1/2 grow p-4 content-center">
                         <PlayerAwards player={currentPlayer} players={players} />
                     </div>
                     <div className="basis-1/12">
