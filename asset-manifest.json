@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.7704946c.css",
-    "main.js": "/static/js/main.3ac1a59a.js",
+    "main.js": "/static/js/main.92db469d.js",
     "static/media/ATL.png": "/static/media/ATL.fb63f87d3c8970cf5f2c.png",
     "static/media/H4K.png": "/static/media/H4K.5eb515bc8e408ca1cdf7.png",
     "static/media/GAS.png": "/static/media/GAS.2d7416ff8947069d2d9a.png",
@@ -28,6 +28,7 @@
     "static/media/placeholder.webp": "/static/media/placeholder.be51105d0b695573e772.webp",
     "static/media/De_inferno.png": "/static/media/De_inferno.be52437e5dcc8b225df1.png",
     "static/media/De_overpass.png": "/static/media/De_overpass.9a17c69c8532444897bb.png",
+    "static/media/forfeitWin.png": "/static/media/forfeitWin.5003215b006790ef1a0b.png",
     "static/media/De_mirage.png": "/static/media/De_mirage.04c38a84d08d8ea78629.png",
     "static/media/NAN.png": "/static/media/NAN.28fb615731ce260d3e60.png",
     "static/media/De_anubis.png": "/static/media/De_anubis.262aab62344b232515cf.png",
@@ -46,10 +47,10 @@
     "static/media/faceit7.svg": "/static/media/faceit7.7193bbc6588efceeca89830842f3f9fc.svg",
     "static/media/faceit1.svg": "/static/media/faceit1.2feb84dcfc17bc9eba1c6b8a08380edb.svg",
     "main.7704946c.css.map": "/static/css/main.7704946c.css.map",
-    "main.3ac1a59a.js.map": "/static/js/main.3ac1a59a.js.map"
+    "main.92db469d.js.map": "/static/js/main.92db469d.js.map"
   },
   "entrypoints": [
     "static/css/main.7704946c.css",
-    "static/js/main.3ac1a59a.js"
+    "static/js/main.92db469d.js"
   ]
 }
