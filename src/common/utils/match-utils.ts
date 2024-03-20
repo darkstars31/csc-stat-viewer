@@ -46,6 +46,8 @@ export const calculateMapBanFloat = ( team?: Team, matches?: Match[]) => {
     const regularSeasonMatches = matches?.filter( match => match.stats.length === 1 );
 
     const mapFloats = regularSeasonMatches?.reduce((acc, match) => {
+        if( match.lobby.mapBans.length === 0 ) return acc;
+
         const isAwayTeam = match.lobby.mapBans[0].team.name === team?.name;
         const mapBan = match.lobby.mapBans;
         const selectedMap = match.stats[0].mapName;
