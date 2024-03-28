@@ -4,7 +4,7 @@ import { useCscSeasonMatches } from "../dao/cscSeasonMatches";
 import { Container } from "../common/components/container";
 import { Card } from "../common/components/card";
 import { Loading } from "../common/components/loading";
-import { Link } from "wouter";
+import { Link, useSearch, useLocation } from "wouter";
 import { franchiseImages } from "../common/images/franchise";
 import { sortBy } from 'lodash';
 import { Franchise } from "../models/franchise-types";
@@ -66,22 +66,23 @@ function TeamRecordRow ({ team, index }: { team: any, index: number }) {
             <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1))} collapse md:visible`}>
                 {calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1)}%
             </td>
-            {/* <div><span className='text-green-400'>{team.teamRecord.record.conferenceWins}</span> : <span className='text-red-400'>{team.teamRecord.record.conferenceLosses}</span></div> */}
         </tr>
     );
 }
 
 export function TeamStandings() {
+    const [, setLocation ] = useLocation();
+    const queryParams = new URLSearchParams(useSearch());
     const { franchises = [], seasonAndTierConfig, dataConfig } = useDataContext();
-    const [ selectedTier, setSelectedTier ] = React.useState('Contender');
-    const { data: matches = [], isLoading } = useCscSeasonMatches(selectedTier, dataConfig?.season);
+    const [ selectedTier, setSelectedTier ] = React.useState(queryParams.get("") || "Contender");
+    
+    const { data: matches = [], isLoading } = useCscSeasonMatches(selectedTier[0].toUpperCase() + selectedTier.slice(1), dataConfig?.season);
     const tieBreakers: string[] = [];
 
     const teamsWithScores = matches.reduce( ( acc, match ) => {
        match.teamStats.forEach( team => {
             if( !acc[team.name] ) {
                 const franchise = franchises.find( f => f.teams.find( t => t.name === team.name));
-                console.info( franchise );
                 acc[team.name] = { franchise: franchise, name: team.name, wins: 0, losses: 0, roundsWon: 0, roundsLost: 0, ctRoundsWon: 0, tRoundsWon: 0, ctTotalRounds: 0, tTotalRounds: 0, pistolRoundsWon: 0, pistolTotalRounds: 0 };
             }
 
@@ -148,7 +149,11 @@ export function TeamStandings() {
                             tiers.map( tier => 
                                 <button key={tier.name} 
                                     type="button" 
-                                    onClick={() => setSelectedTier(tier.name)} 
+                                    onClick={() => { 
+                                        queryParams.set("", tier.name);
+                                        setLocation( window.location.pathname + '?' + queryParams.toString()); 
+                                        setSelectedTier(tier.name)
+                                    }}
                                     className={`${selectedTier === tier.name ? 'bg-blue-500' : 'bg-blue-700'} text-${tier.color}-400 ${tierButtonClass}`}
                                 >
                                     {tier.name}
@@ -215,7 +220,6 @@ export function TeamStandings() {
                     { selectedTier && 
                         <div className='text-center text-xs m-4 text-slate-400'>
                             * Tie-Breakers implemented in order: Head-to-Head Record, Round Win Percentage <br />
-                            * Playoff line is estimated and not guaranteed (roughly ~70%). <br />
                             * Unofficial Standings, calculated based on available match data. <br />
                             * Design inspired by <a href="/players/spidey">Spidey</a> <br />
                         </div>}    
