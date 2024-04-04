@@ -177,7 +177,7 @@ export function TeamStandings() {
                                             SEASON {seasonAndTierConfig?.number}
                                         </div>
                                     </div>
-                                    <div className="basis-11/12">
+                                    <div className="basis-11/12 md:basis-full">
                                         <table className='table-auto w-full'>
                                             <thead className="underline decoration-yellow-400">
                                                 <tr className="text-left">

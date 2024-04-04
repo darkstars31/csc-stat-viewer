@@ -6,6 +6,7 @@ import { useKonamiCode } from "../common/hooks/konami";
 import { useDataContext } from "../DataContext";
 import { GiPirateHat } from "react-icons/gi";
 import { franchiseImages } from "../common/images/franchise";
+import { PlayerTypes } from "../common/utils/player-utils";
 // import { Mmr } from "../common/components/mmr";
 
 
@@ -53,13 +54,17 @@ export function Franchises() {
                                                     <strong>{team.name}</strong> <span className="text-gray-400"><i>{team.tier.name} { konami && <span className="text-xs"> ({team.players.reduce((cum,player) => cum + player.mmr, 0)}/{team.tier.mmrCap})</span>} </i></span>
                                                 </div>
                                                 <div className="mx-4 px-2">
-                                                { team.players.map( player => 
-                                                    <div key={`${team.tier.name}-${player.name}`} className="m-1 grid grid-cols-2">
-                                                        <div>{player.name} { team?.captain?.steam64Id === player.steam64Id ? <GiPirateHat size="1.5em" className="inline"/> : ""}</div>      
-                                                        <div>{players.find(p => p.steam64Id === player.steam64Id)?.stats?.rating.toFixed(2)}</div>   
+                                                { team.players.map( player => {
+                                                    const playerWithStats = players.find(p => p.steam64Id === player.steam64Id);
+                                                    const isInactiveReserve = playerWithStats?.type === PlayerTypes.INACTIVE_RESERVE
+                                                
+                                                    return <div key={`${team.tier.name}-${player.name}`} className={`${isInactiveReserve ? 'text-slate-500' : ''} m-1 grid grid-cols-3 gap-2`}>
+                                                        <div>{player.name} {isInactiveReserve ? <span>(IR)</span> : ""} { team?.captain?.steam64Id === player.steam64Id ? <GiPirateHat size="1.5em" className="inline"/> : ""}</div>      
+                                                        <div className="text-center">{playerWithStats?.stats?.rating.toFixed(2)}</div>
+                                                        <div>{playerWithStats?.role}</div>                                                      
                                                         {/* <div className="text-xs text-gray-500"> <span className="hidden md:contents"><Mmr player={player} />({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span></div> */}
                                                     </div>
-                                                    )}
+                                                })}
                                                 </div>
                                             </div>
                                             )
