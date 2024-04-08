@@ -2,7 +2,7 @@ export * from "./charts";
 export * from "./players";
 export * from "./player";
 export * from "./profile";
-export * from "./home";
+export * from "./about";
 export * from "./export";
 
 export * from "./franchises";

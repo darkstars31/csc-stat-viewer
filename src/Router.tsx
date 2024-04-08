@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Router as Wouter, Route, Switch, useLocation } from 'wouter';
 import { Container } from './common/components/container';
 import { 
-  Home, LoginCallBack, Charts, 
+  About, LoginCallBack, Charts, 
   LeaderBoards, Franchises, Franchise, 
   Players, Player, Profile, 
   Playground, Team, 
@@ -27,7 +27,7 @@ export function Router(){
   const routes = [
     { path: `/`, component: () => <Charts /> },
     { path: `/articles`, component: () => <ArticleRoutes base={'articles'} /> },
-    { path: `/about`, component: () => <Home /> },
+    { path: `/about`, component: () => <About /> },
     { path: `/cb`, component: () => <LoginCallBack /> },
     { path: `/charts`, component: () => <Charts />},
     { path: `/export`, component: () => <ExportData /> },

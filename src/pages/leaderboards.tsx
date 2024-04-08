@@ -40,7 +40,8 @@ export function LeaderBoards() {
     // const grenadeDamagePerRound = _sort(playerData, "X/nade", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Grenade Damage Per Round": p["Xnade"]}));
     // const flashesPerFlash = _sort(playerData, "EF/F", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Flashes per Flash Thrown": p["EF/F"]}));
     const openDuels = _sort(playerData, "stats.odr", limit, "desc").map( p => ({ "Player": p.stats.name, "Tier": p.tier.name, "Open Duels": p.stats.odr.toFixed(2)}));
-
+    const fAssists = _sort(playerData, "stats.fAssists", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Flash Assists": p.stats.fAssists.toFixed(2)}));
+    const ef = _sort(playerData, "stats.ef", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "EF": p.stats.ef.toFixed(2)}));
 
     const selectClassNames = {
         placeholder: () => "text-gray-400 bg-inherit",
@@ -157,10 +158,10 @@ export function LeaderBoards() {
                         Damager Per Round
                         <Table rows={damagePerRound}/>
                     </div>
-                    {/* <div className="m-4">
-                        Survival Time (Seconds)
-                        <Table rows={timeToDeath}/>
-                    </div> */}
+                    <div className="m-4">
+                        Flash Assists per Match
+                        <Table rows={fAssists}/>
+                    </div>
                 </div>
                 <div className="grid md:grid-cols-2 sm:grid-cols-1">
                     <div className="m-4">
@@ -212,10 +213,10 @@ export function LeaderBoards() {
                         Open Duels Per Round
                         <Table rows={openDuels}/>
                     </div>
-                    {/* <div className="m-4">
-                        Grenade Damage per Round
-                        <Table rows={grenadeDamagePerRound}/>
-                    </div> */}
+                    <div className="m-4">
+                        Enemies Flashed per Match
+                        <Table rows={ef}/>
+                    </div>
                 </div>   
                 <div className="grid md:grid-cols-2 sm:grid-cols-1">
                     {/* <div className="m-4">
