@@ -25,7 +25,7 @@ export function Router(){
   const [ location ] = useLocation();
 
   const routes = [
-    { path: `/`, component: () => <Charts /> },
+    { path: `/`, component: () => <Players /> },
     { path: `/articles`, component: () => <ArticleRoutes base={'articles'} /> },
     { path: `/about`, component: () => <About /> },
     { path: `/cb`, component: () => <LoginCallBack /> },

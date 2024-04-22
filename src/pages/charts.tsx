@@ -19,7 +19,7 @@ import { DistributionCurves } from './charts/distributionCurve';
 
 export function Charts() {
     const inputRef = React.useRef<HTMLInputElement>(null);
-    const { players, dataConfig, isLoading } = useDataContext();
+    const { players, seasonAndTierConfig, isLoading } = useDataContext();
     const playersWithStats = players.filter( p => p.stats );
     const [ currentTab, setCurrentTab ] = React.useState<number>(0);
 
@@ -90,7 +90,7 @@ export function Charts() {
     }
 
     if( playersWithStats.length === 0) {
-        return <Container><i>No Players with stats for season {dataConfig?.season} yet.. Check back later</i></Container>;
+        return <Container><i>No Players with stats for season {seasonAndTierConfig?.number} yet.. Check back later</i></Container>;
     }
 
     const tabs = [
