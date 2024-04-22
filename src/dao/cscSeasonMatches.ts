@@ -55,7 +55,7 @@ const fetchGraph = async ( tier: string, season?: number ) => await fetch(appCon
             `,
             "variables": {
                 "matchType": "Regulation",
-                "season": 13,
+                "season": season,
                 "tier": tier
             }      
         }),
