@@ -136,11 +136,12 @@ export function TeamStandings() {
         { name: "Premier", color: 'purple', playoffLine: 12},
     ];
 
+    const matchDaysPlayed = matches.length > 0 ? sorted[0].wins+sorted[0].losses : 0;
+
     return (
         <Container>
             <div>             
                 <div className="mb-[0.125rem] block min-h-[1.5rem] pl-[1.5rem]">
-                   
                     </div>
                     <div
                         className="justify-center flex flex-wrap rounded-md shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out bg-blue-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-blue-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-blue-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
@@ -169,7 +170,7 @@ export function TeamStandings() {
                             <Card>                          
                                 <div>
                                     <h1 className='text-4xl font-black uppercase'>{selectedTier}</h1>
-                                    <h3 className='text-xl font-bold' style={{backgroundImage: `url(${csclogo})`, overflow:'auto'}}>MATCH DAY <span className="text-yellow-400">{sorted[0].wins+sorted[0].losses}</span></h3>
+                                    <h3 className='text-xl font-bold' style={{backgroundImage: `url(${csclogo})`, overflow:'auto'}}>MATCH DAY <span className="text-yellow-400">{matchDaysPlayed}</span></h3>
                                 </div>
                                 <div className='flex'>
                                     <div className="basis-1/12 collapse md:visible">
@@ -177,7 +178,7 @@ export function TeamStandings() {
                                             SEASON {seasonAndTierConfig?.number}
                                         </div>
                                     </div>
-                                    <div className="basis-11/12 md:basis-full">
+                                    <div className="basis-11/12 md:basis-full min-h-[300px]">
                                         <table className='table-auto w-full'>
                                             <thead className="underline decoration-yellow-400">
                                                 <tr className="text-left">
@@ -191,17 +192,21 @@ export function TeamStandings() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            { sorted.map( (team: any, index: number) => 
-                                                <>
-                                                    <TeamRecordRow key={`${index}`} team={team} index={index} />
-                                                    { 
-                                                        tiers.find( (tier) => tier.name === selectedTier)?.playoffLine === index+1 && 
-                                                        <tr className='text-gray-500 text-xs italic'>
-                                                            <td className='-mt-[.8em] ml-20 border-dotted border-b border-gray-400'>Playoff Line</td>
-                                                            <td className='-mt-[.8em] ml-20 border-dotted border-b border-gray-400'></td>
-                                                        </tr>
-                                                    }
-                                                </>
+                                            { matches.length < 1 ? 
+                                                <tr className="text-center text-xl font-italic">
+                                                    Season {seasonAndTierConfig?.number} hasn't started yet! Check back after Match Day 1.
+                                                </tr> 
+                                                : sorted.map( (team: any, index: number) => 
+                                                    <>
+                                                        <TeamRecordRow key={`${index}`} team={team} index={index} />
+                                                        { 
+                                                            tiers.find( (tier) => tier.name === selectedTier)?.playoffLine === index+1 && 
+                                                            <tr className='text-gray-500 text-xs italic'>
+                                                                <td className='-mt-[.8em] ml-20 border-dotted border-b border-gray-400'>Playoff Line</td>
+                                                                <td className='-mt-[.8em] ml-20 border-dotted border-b border-gray-400'></td>
+                                                            </tr>
+                                                        }
+                                                    </>
                                             )}
                                             </tbody>                                                 
                                         </table>                  
