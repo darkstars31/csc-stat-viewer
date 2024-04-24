@@ -10,8 +10,24 @@ import { Player } from "../models/player";
 
 
 export function PlayerComparison() {
+    const qs = new URLSearchParams(window.location.search);
+    const playersFromUrl = qs.get("players");
     const [ selectedPlayers, setSelectedPlayers ] = React.useState<MultiValue<{label: string; value: Player;}>>([]);
     const { players = [], isLoading, loggedinUser } = useDataContext();
+
+    
+    React.useEffect(() => {
+        if( playersFromUrl ) {
+            const playerNames = playersFromUrl.split(",");
+            setSelectedPlayers(playerNames.map( name => {
+                const player = players.find( p => p.name.toLowerCase() === name.toLowerCase());
+                return player 
+                ? { label: `${player.name} (${player.tier.name} ${shortTeamNameTranslator(player)}) ${player.stats ? "" : " - No stats"}`, value: player, isDisabled: !player.stats }
+                : false
+            }).filter(Boolean) as MultiValue<{label: string; value: Player;}>)
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     if( isLoading ){
         return <Container><Loading /></Container>
