@@ -80,7 +80,7 @@ export function Player() {
                             </div>
                             <ul className="text-[0.8rem]">
                                 <li>
-                                    {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <span className={`text-${tiers.find( t => t.name === currentPlayer.tier.name )?.color}-500`}><b><i>{currentPlayer.tier.name}</i></b></span>
+                                    {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <span className={`text-${tiers.find( t => t.name === currentPlayer.tier.name )?.color}-500`}><b><i>{currentPlayer.name.toLowerCase() === "comradsniper" ? "Super ": ""} {currentPlayer.tier.name}</i></b></span>
                                     <br /> <Mmr player={currentPlayer}/> MMR
                                     <div>
                                         <span className="flex leading-7">
