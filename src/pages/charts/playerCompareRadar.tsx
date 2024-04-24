@@ -1,7 +1,7 @@
 import * as React from "react";
 import { EChartsOption } from "echarts-for-react";
 import { useDataContext } from "../../DataContext";
-import { PlayerMappings, getTotalPlayerAverages } from "../../common/utils/player-utils";
+import { getTotalPlayerAverages, statDescriptionsShort } from "../../common/utils/player-utils";
 import { Player } from "../../models/player";
 import ReactECharts from "echarts-for-react";
 import { getPlayerPercentileStatInTier } from "../../common/utils/player-utils";
@@ -9,7 +9,7 @@ import { type CscStats } from "../../models";
 
 
 
-export function PlayerCompareRadar( { selectedPlayers, tier, statOptions }: { selectedPlayers: Player[], tier: string, statOptions: string[] } ) {
+export function PlayerCompareRadar( { selectedPlayers, tier, statOptions, startAngle = 90 }: { selectedPlayers: Player[], tier: string, statOptions: string[], startAngle: number } ) {
     const { players } = useDataContext();
     const playerAverages = getTotalPlayerAverages(players, { tier: tier });
     const tierAveragePlayer = { name: `${tier} Average`, tier: { name: tier }, stats: { name: `${tier} Average`, ...playerAverages.average} } as unknown as Player;
@@ -17,7 +17,8 @@ export function PlayerCompareRadar( { selectedPlayers, tier, statOptions }: { se
     const tierAverageValues = { 
         name: `${tier} Average`,
         lineStyle: {
-            type: 'dashed'
+            width: 1,
+            type: 'dotted'
         },
         value: statOptions.map( (stat) => getPlayerPercentileStatInTier( tierAveragePlayer, [...players, tierAveragePlayer], stat as keyof CscStats)),
         label: {
@@ -48,29 +49,41 @@ export function PlayerCompareRadar( { selectedPlayers, tier, statOptions }: { se
           },
         darkMode: true,
         radar:{
+            radius: '75%',
+            startAngle,
             label:{
                 show: true
             },
             shape: "circle",
-            indicator: statOptions.map( (stat) => ({ name: PlayerMappings[stat], max: 100, min: 0})),
+            indicator: statOptions.map( (stat) => ({ name: statDescriptionsShort[stat], max: 100, min: 0})),
             toolTip:{
                 show: true,
             },
+            gradientColor: ["#f6efa61", "#d882732", "#bf444c"],
+            splitNumber: 4,
+            axisNameGap: 15,
             splitArea: {
                 areaStyle: {
-                    color: ['#77EADF', '#26C3BE', '#64AFE9', '#428BD4'],
+                    color: ['#0c0c18', '#0f0f1c','#111121','#131325'],
                     shadowColor: 'rgba(0, 0, 0, 0.2)',
                     shadowBlur: 10
                 }
             },
+            axisLabel: {
+                show:false, // Numbers inside radar for each "step"
+            },
             axisLine: {
+                show: true,
                 lineStyle: {
-                  color: 'rgba(211, 253, 250, 0.8)'
-                }
+                    width: 1,
+                    color: '#4D4D4D',
+                    type: 'dashed',
+                },
+                onZero: true
               },
               splitLine: {
                 lineStyle: {
-                  color: 'rgba(211, 253, 250, 0.8)'
+                  color: '#4D4D4D'
                 }
               },
         },
@@ -86,11 +99,13 @@ export function PlayerCompareRadar( { selectedPlayers, tier, statOptions }: { se
                 show: false,
                 label: {
                     fontSize: 20
-                },
-                
+                },   
                 lineStyle: {
-                    width: 7,
+                    width: 8,
                 }
+            },
+            label: {
+                position: 'top',
             },
             select: {
             },
@@ -106,7 +121,7 @@ export function PlayerCompareRadar( { selectedPlayers, tier, statOptions }: { se
     };
 
 return (
-    <ReactECharts option={options} style={{height: "800px",width: "100%"}}/>
+    <ReactECharts option={options} style={{height: "700px",width: "100%"}}/>
 );
 
 

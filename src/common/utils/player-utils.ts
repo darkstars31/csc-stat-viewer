@@ -66,6 +66,51 @@ export const PlayerMappings: Record<string,string> = {
     "deaths": "Total Deaths",
     "eaR": "Rounds with Opening Duel on T-side",
 }
+export const statDescriptionsShort: Record<string,string> = {
+    "name": "Name",
+    "gameCount": "Games Played",
+    "rating": "Rating",
+    "kr": "Kills/Round",
+    "adr": "ADR",
+    "kast": "KAST",
+    "odr": "Opening Duel (%)",
+    "impact": "Impact",
+    "adp": "Average Death Placement",
+    "utilDmg": "Util Dmg",
+    "ef": "EF/Match",
+    "fAssists": "FAssists/Match",
+    "util": "Utility Thrown / Match",
+    "hs": "HS(%)",
+    "awpR": "Awp Kills / Round",
+    "multiR": "Multi-Kills / Round", // points based on difficulty/remaining players
+    "clutchR": "Clutch-ability", // points based on difficulty/remaining players
+    "suppR": "Support Rounds",
+    "suppXR": "Support Damage / Round",
+    "odaR": "Open Duel Attempts / Round",
+    "entriesR": "Entry Kill on T-side / Round",
+    "tradesR": "Trade Kills / Round",
+    "tRatio": "Deaths Traded Out (%)",
+    "savesR": "Saves / Round",
+    "sRate": "Rounds Survived (%)",
+    "twoK": "2K Rounds",
+    "threeK": "3K Rounds",
+    "fourK": "4K Rounds",
+    "fiveK": "Ace Rounds",
+    "cl_1": "1v1 Clutches",
+    "cl_2": "1v2 Clutches",
+    "cl_3": "1v3 Clutches",
+    "cl_4": "1v4 Clutches",
+    "cl_5": "Ace Clutches",
+    "rounds": "Total Rounds Played",
+    "peak": "Single Match Rating Peak",
+    "pit": "Single Match Rating Pit",
+    "form": "Avg Rating from last 3 games",
+    "consistency": "Std Deviation from Rating (Lower is better)",
+    "kills": "Total Kills",
+    "assists": "Total Assists",
+    "deaths": "Total Deaths",
+    "eaR": "Rounds with Opening Duel on T-side",
+}
 
 export const tiers = ["Premier", "EliPrem", "Elite", "Challenger", "Contender", "Prospect", "New Tier"];
 
@@ -227,8 +272,3 @@ export function calculateHltvTwoPointOApproximation( kast: number, killsPerRound
 
     return xkast + xkillsPerRound + xdeathsPerRound + ximpact + xavgDmgPerRround + 0.1587;
 }
-
-function calcPercentage(arg0: number) {
-    throw new Error("Function not implemented.");
-}
-

@@ -3,7 +3,7 @@ import { Container } from "../common/components/container";
 import { useDataContext } from "../DataContext";
 import { shortTeamNameTranslator } from "../common/utils/player-utils";
 import { Loading } from "../common/components/loading";
-import Select, { MultiValue, SingleValue } from "react-select";
+import Select, { MultiValue } from "react-select";
 import { selectClassNames } from "../common/utils/select-utils";
 import { PlayerCompareRadar } from "./charts/playerCompareRadar";
 import { Player } from "../models/player";
@@ -11,7 +11,7 @@ import { Player } from "../models/player";
 
 export function PlayerComparison() {
     const [ selectedPlayers, setSelectedPlayers ] = React.useState<MultiValue<{label: string; value: Player;}>>([]);
-    const { players = [], isLoading } = useDataContext();
+    const { players = [], isLoading, loggedinUser } = useDataContext();
 
     if( isLoading ){
         return <Container><Loading /></Container>
@@ -20,6 +20,16 @@ export function PlayerComparison() {
     const playerOptions = players.map( player => ({ label: `${player.name} (${player.tier.name} ${shortTeamNameTranslator(player)}) ${player.stats ? "" : " - No stats"}`, value: player, isDisabled: !player.stats }))
     playerOptions.sort((a,_)=> a.isDisabled ? 1 : -1 );
     
+    if( !(btoa(loggedinUser?.team?.franchise.prefix ?? "") === 'V0VU' || btoa(loggedinUser?.name ?? "") === 'c2xldG9uZw==') ){
+        return (
+            <Container>
+                <h2 className="text-3xl font-bold sm:text-4xl">Player Comparison Tool</h2>
+                <p>
+                    This feature currently under development.
+                </p>
+            </Container>
+        )
+    }
 
     return (
         <Container>
@@ -34,7 +44,7 @@ export function PlayerComparison() {
             <div>
                 <div className="flex flex-row text-xs my-2 mx-1">
                     <label title="Player Type" className="p-1 leading-9">
-                        Player
+                        Player(s)
                     </label>
                     <div className="flex flex-row w-full">
                         <Select
@@ -57,11 +67,13 @@ export function PlayerComparison() {
                     selectedPlayers={Array.from(selectedPlayers.values()).map( p => p.value)} 
                     tier={Array.from(selectedPlayers.values()).map( p => p.value)[0]?.tier.name ?? "Contender"} 
                     statOptions={["rating","kast","adr","kr","hs"]} 
+                    startAngle={90}
                 />
                 <PlayerCompareRadar 
                     selectedPlayers={Array.from(selectedPlayers.values()).map( p => p.value)} 
-                    tier={"Contender"} 
-                    statOptions={["utilDmg","ef", "fAssists","suppXR","util"]} 
+                    tier={Array.from(selectedPlayers.values()).map( p => p.value)[0]?.tier.name ?? "Contender"} 
+                    statOptions={["utilDmg","ef", "fAssists","suppXR","util"]}
+                    startAngle={180}
                 />
             </div>
         </Container>

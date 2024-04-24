@@ -52,7 +52,7 @@ export function MemoizedPlayerTable( { players}: Props) {
                                             : 
                                             teamNameTranslator(player)
                                         }</td>
-                                    <td className="whitespace-nowrap px-6 py-4">{player.stats?.rating.toFixed(2)}</td>
+                                    <td className="whitespace-nowrap px-6 py-4">{player.stats?.rating.toFixed(2)} <span className="text-xs text-slate-600">{player.stats?.gameCount < 3 ? `(GP:${player.stats?.gameCount})` : ""}</span></td>
                                     <td className="whitespace-nowrap px-6 py-4"><Mmr player={player}/></td>
                             </tr>
                         ))}
