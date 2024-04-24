@@ -1,48 +1,36 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
 import { useDataContext } from "../DataContext";
-import { PlayerMappings } from "../common/utils/player-utils";
+import { shortTeamNameTranslator } from "../common/utils/player-utils";
 import { Loading } from "../common/components/loading";
 import Select, { MultiValue, SingleValue } from "react-select";
 import { selectClassNames } from "../common/utils/select-utils";
-import { CscStats } from "../models/csc-stats-types";
 import { PlayerCompareRadar } from "./charts/playerCompareRadar";
 import { Player } from "../models/player";
-//import { VscWarning } from "react-icons/vsc";
+
 
 export function PlayerComparison() {
     const [ selectedPlayers, setSelectedPlayers ] = React.useState<MultiValue<{label: string; value: Player;}>>([]);
     const { players = [], isLoading } = useDataContext();
-    
-
-    // const gridData: { prop: string, data: (string | number | null)[]}[] = React.useMemo( () => {
-    //     const gridData = [];
-    //     const playerProps = Object.keys(PlayerMappings);
-    //     for( let i = 0; i < Object.keys(PlayerMappings).length; i++){
-    //         const prop = playerProps[i];
-    //         const stat = playerStats.map( member => member[prop as keyof CscStats]);  
-    //         gridData.push( {prop: prop, data: [...stat]})
-    //     }
-    //     return gridData;
-    // }, [ playerStats ]);
-
-    // const gridClassName = `grid grid-cols-${playerStats.length+1} gap-2`;
-    // const statExclusionList = ["","Name","Steam","GP","ADP","ctADP","tADP","Xdiff","1v1","1v2","1v3","1v4","1v5","Rounds","Tier"];
 
     if( isLoading ){
         return <Container><Loading /></Container>
     }
 
+    const playerOptions = players.map( player => ({ label: `${player.name} (${player.tier.name} ${shortTeamNameTranslator(player)}) ${player.stats ? "" : " - No stats"}`, value: player, isDisabled: !player.stats }))
+    playerOptions.sort((a,_)=> a.isDisabled ? 1 : -1 );
+    
+
     return (
         <Container>
-            {/* <div className="mx-auto max-w-7xl px-2 sm:p-4 bg-orange-700 rounded">
-                <VscWarning className="pr-4" /> This feature is in need of repair.
-            </div> */}
             <h2 className="text-3xl font-bold sm:text-4xl">Player Comparison Tool</h2>
             <p>
-                Search for players by name.
+                Values are percentile 0-100% when compared to all players within the same tier for a given stat property. (i.e. A value of 100 is top player) 
             </p>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
+            <p>
+                Search for players by name. Tier Average is based on first player selected.
+            </p>
             <div>
                 <div className="flex flex-row text-xs my-2 mx-1">
                     <label title="Player Type" className="p-1 leading-9">
@@ -58,13 +46,24 @@ export function PlayerComparison() {
                             value={selectedPlayers}
                             isSearchable={true}
                             classNames={selectClassNames}
-                            options={players.map( player => ({ label: `${player.name} (${player.tier.name})`, value: player}))}
+                            options={playerOptions}
                             onChange={setSelectedPlayers as typeof React.useState<MultiValue<{label: string;value: string;}>>}
                         />
                     </div>
                 </div>
             </div>
-            <PlayerCompareRadar selectedPlayers={Array.from(selectedPlayers.values()).map( p => p.value)} tier={"Contender"} />
+            <div className="flex">
+                <PlayerCompareRadar 
+                    selectedPlayers={Array.from(selectedPlayers.values()).map( p => p.value)} 
+                    tier={Array.from(selectedPlayers.values()).map( p => p.value)[0]?.tier.name ?? "Contender"} 
+                    statOptions={["rating","kast","adr","kr","hs"]} 
+                />
+                <PlayerCompareRadar 
+                    selectedPlayers={Array.from(selectedPlayers.values()).map( p => p.value)} 
+                    tier={"Contender"} 
+                    statOptions={["utilDmg","ef", "fAssists","suppXR","util"]} 
+                />
+            </div>
         </Container>
     );
 }

@@ -2,6 +2,7 @@ import { clamp } from "lodash";
 import { CscStats } from "../../models/csc-stats-types";
 import { Player } from "../../models/player";
 import { sortBy } from "lodash";
+import { calculatePercentage } from "./string-utils";
 
 export enum PlayerTypes {
     SIGNED = 'SIGNED',
@@ -79,6 +80,17 @@ export const teamNameTranslator = ( player?: Player ) => {
     }
 }
 
+export const shortTeamNameTranslator = ( player?: Player ) => {
+    const name = player?.team?.franchise.prefix ?? player?.type ?? "";
+    switch( name?.toUpperCase() ){
+        case "DRAFT_ELIGIBLE": return "DE";
+        case "PERMANENT_FREE_AGENT": return "PFA";
+        case "FREE_AGENT": return "FA";
+        case "UNROSTERED_GM": return `GM`;
+        default: return name;
+    }
+}
+
 export function _sort<T>( items: T[], property: string, n?: number, order?: "asc" | "desc" ) {
     const sorted = sortBy(items, property);
     const orderDirection = order === "desc" ? sorted.reverse() : sorted;
@@ -100,6 +112,13 @@ export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Pla
             }
             return a.stats?.rating < b.stats?.rating ? 1 : -1}
         );
+
+export const getPlayerPercentileStatInTier = ( player: Player, allPlayers: Player[], property: keyof CscStats ) => {
+    const playersInTier = getPlayersInTier(player, allPlayers);
+    const sortedPlayers = playersInTier.filter( p => p.stats).sort((a, b) => (a.stats[property] as any) - (b.stats[property] as any));
+    const indexOfPlayer = sortedPlayers.findIndex( p => p.name === player.name);
+    return calculatePercentage(indexOfPlayer + 1, sortedPlayers.length, 0);
+}
 
 export const getTop10PlayersInTier3GP = (
     player: Player,
@@ -207,5 +226,9 @@ export function calculateHltvTwoPointOApproximation( kast: number, killsPerRound
     const xavgDmgPerRround = (0.0032 * adr);
 
     return xkast + xkillsPerRound + xdeathsPerRound + ximpact + xavgDmgPerRround + 0.1587;
+}
+
+function calcPercentage(arg0: number) {
+    throw new Error("Function not implemented.");
 }
 

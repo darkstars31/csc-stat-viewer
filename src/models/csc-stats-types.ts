@@ -50,6 +50,7 @@ export interface CscStats {
     twoK: number;
     util: number;
     utilDmg: number;
+    //[key: string]: any;
     __typename: string;
   }
   
