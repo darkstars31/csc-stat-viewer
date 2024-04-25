@@ -28,6 +28,7 @@ import { StatsOutOfTier } from "./player/statsOutOfTier";
 import { tiers } from "../common/constants/tiers";
 import { PlayerMatchHistory } from "./player/matchHistory";
 import { TiWarningOutline } from "react-icons/ti";
+import { Exandable } from "../common/components/containers/Expandable";
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
@@ -181,6 +182,28 @@ export function Player() {
                         <div className="text-xs">Stats found in non-primary tier(s).</div>
                     }
                 </div>
+            }
+            <br />
+            { currentPlayer.extendedStats && <Exandable title="Extended Stats (BETA)">
+                <div className="flex flex-row flex-wrap">
+                    <div>WEAPONS</div>
+                    { Object.entries(currentPlayer.extendedStats.trackedObj).map( ([key,value]) => (
+                        <div className="m-2 p-2"><div>{key}</div><div className="text-center">{value}</div></div>
+                    ))}
+                </div>
+                <div className="flex flex-row flex-wrap">
+                    <div>WEAPONS</div>
+                    { Object.entries(currentPlayer.extendedStats.weaponKills).map( ([key,value]) => (
+                        <div className="m-2 p-2"><div>{key}</div><div className="text-center">{value}</div></div>
+                    ))}
+                </div>
+                <div className="flex flex-row">
+                    <div>HITBOX</div>
+                    { Object.entries(currentPlayer.extendedStats.hitboxTags).map( ([key,value]) => (
+                        <div className="m-2 p-2"><div>{key}</div><div className="text-center">{value}</div></div>
+                    ))}
+                </div>
+            </Exandable>
             }
             <br />
             <PlayerMatchHistory player={currentPlayer} />
