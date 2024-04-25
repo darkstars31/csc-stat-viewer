@@ -15,6 +15,7 @@ import ReactGA from 'react-ga4';
 import { ErrorBoundary } from './common/components/errorBoundary';
 import { discordFetchUser } from './dao/oAuth';
 import cookie from 'js-cookie';
+import { Chickens } from './pages/chickens';
 // import { useLocalStorage } from './common/hooks/localStorage';
 // import { AiOutlineCloseCircle } from 'react-icons/ai';
 
@@ -25,7 +26,7 @@ export function Router(){
   const [ location ] = useLocation();
 
   const routes = [
-    { path: `/`, component: () => <Players /> },
+    { path: `/`, component: () => <Chickens /> },
     { path: `/articles`, component: () => <ArticleRoutes base={'articles'} /> },
     { path: `/about`, component: () => <About /> },
     { path: `/cb`, component: () => <LoginCallBack /> },

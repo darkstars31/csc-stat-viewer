@@ -48,7 +48,7 @@ const config = {
       {
         test: /\.(png|j?g|svg|gif|webp)?$/,
         use: 'file-loader?name=./assets/images/[name].[ext]'
-       }
+       },
       // Add your rules for custom modules here
       // Learn more about loaders from https://webpack.js.org/loaders/
     ],

@@ -8,7 +8,9 @@ import { useCscStatsGraph } from "./dao/cscStatsGraphQLDao";
 import { PlayerTypes, calculateHltvTwoPointOApproximationFromStats, determinePlayerRole } from "./common/utils/player-utils";
 import { DiscordUser } from "./models/discord-users";
 import { useCscSeasonAndTiersGraph } from "./dao/cscSeasonAndTiersDao";
-
+import extendStats from "./assets/json/extendedStats.json";
+import { ExtendedStats } from "./models/extended-stats";
+ 
 const useDataContextProvider = () => {
 	const [ discordUser, setDiscordUser ] = React.useState<DiscordUser | null>(null);
 	const [ selectedDataOption, setSelectedDataOption ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: dataConfiguration[0].name, value: dataConfiguration[0].name });
@@ -68,6 +70,8 @@ const useDataContextProvider = () => {
 
 	//const players: Player[] = cscPlayers.map( cscPlayer => ({ ...cscPlayer, stats: stats.find( stats => (stats.name === cscPlayer?.name)) }));
 
+	let totalChickenKills = 0;
+
 	const players: Player[] = cscPlayers?.reduce( (acc,cscPlayer) => {
 		const statsByTier = [
 			{ tier: "Recruit", stats: cscStatsRecruit.find( stats => (stats.name === cscPlayer?.name)) },
@@ -84,10 +88,18 @@ const useDataContextProvider = () => {
 			if(cscPlayer.steam64Id === "76561198855758438") {
 				role = "BAITER";
 			}
+			if(cscPlayer.steam64Id === "76561199389109923") {
+				role = "ECO FRAGGER";
+			}
+
+			const extendedStats = extendStats.extended.find( (stats: { name: string; }) => stats.name === cscPlayer?.name) as ExtendedStats;
+			totalChickenKills += extendedStats?.trackedObj?.chickenKills ?? 0;
+
 			acc.push( { ...cscPlayer,
 				hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
 				role,
-				stats, 
+				stats,
+				extendedStats,
 				statsOutOfTier: statsByTier.length > 0 ? statsByTier.filter( statsWithTier => statsWithTier.tier !== cscPlayer.tier.name) : null,
 			});
 		} else {
@@ -133,7 +145,10 @@ const useDataContextProvider = () => {
     // a.setAttribute('download', 'PlayersWithStats.csv');
     // a.click()
 
+	console.info( totalChickenKills );
+
     return {
+		totalChickenKills: totalChickenKills,
 		discordUser, setDiscordUser,
 		loggedinUser: players.find( p => p.discordId === discordUser?.id),
         players: players,

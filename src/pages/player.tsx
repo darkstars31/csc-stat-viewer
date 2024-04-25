@@ -49,6 +49,8 @@ export function Player() {
         return <Container>x</Container>;
     }
 
+    console.info( currentPlayer.extendedStats)
+
     const teamAndFranchise = currentPlayer?.team?.franchise ? `${currentPlayer?.team?.franchise.name} (${currentPlayer?.team?.franchise.prefix}) > ${currentPlayer?.team?.name}` : teamNameTranslator(currentPlayer);
     const teammates = getTeammates( currentPlayer, players, franchises);
     const playerRatingIndex = getPlayerRatingIndex( currentPlayer, players ) ?? 0;
