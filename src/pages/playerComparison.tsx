@@ -7,13 +7,15 @@ import Select, { MultiValue } from "react-select";
 import { selectClassNames } from "../common/utils/select-utils";
 import { PlayerCompareRadar } from "./charts/playerCompareRadar";
 import { Player } from "../models/player";
+import { useEnableFeature } from "../common/hooks/enableFeature";
 
 
 export function PlayerComparison() {
     const qs = new URLSearchParams(window.location.search);
     const playersFromUrl = qs.get("players");
     const [ selectedPlayers, setSelectedPlayers ] = React.useState<MultiValue<{label: string; value: Player;}>>([]);
-    const { players = [], isLoading, loggedinUser } = useDataContext();
+    const { players = [], isLoading } = useDataContext();
+    const enabled = useEnableFeature("canUsePlayerComparison");
 
     
     React.useEffect(() => {
@@ -36,7 +38,7 @@ export function PlayerComparison() {
     const playerOptions = players.map( player => ({ label: `${player.name} (${player.tier.name} ${shortTeamNameTranslator(player)}) ${player.stats ? "" : " - No stats"}`, value: player, isDisabled: !player.stats }))
     playerOptions.sort((a,_)=> a.isDisabled ? 1 : -1 );
     
-    if( !(btoa(loggedinUser?.team?.franchise.prefix ?? "") === 'V0VU' || btoa(loggedinUser?.name ?? "") === 'c2xldG9uZw==') ){
+    if( !enabled ){
         return (
             <Container>
                 <h2 className="text-3xl font-bold sm:text-4xl">Player Comparison Tool</h2>

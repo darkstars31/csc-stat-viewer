@@ -12,11 +12,14 @@ import { AwardsMappings } from "../common/utils/awards-utils";
 import { queryClient } from "../App";
 import { TeamPlayerCards } from "./team/playerCards";
 import { MapAnalysis } from "./team/mapBans";
+import { CompareLink } from "../common/components/compareLink";
+import { useEnableFeature } from "../common/hooks/enableFeature";
 
 
 export function Team(){
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { franchises = [], players: cscPlayers = [], dataConfig, seasonAndTierConfig, loading } = useDataContext();
+	const { franchises = [], players: cscPlayers = [], dataConfig, seasonAndTierConfig, loggedinUser, loading } = useDataContext();
+	const compareFeatureEnabled = useEnableFeature("canUsePlayerComparison");
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [, params] = useRoute("/franchises/:franchiseName/:teamName");
 	const franchiseName = decodeURIComponent(params?.franchiseName ?? "");
@@ -38,6 +41,7 @@ export function Team(){
 	const currentTier = seasonAndTierConfig?.league.leagueTiers.find( t => t.tier.name === currentTeam?.tier.name );
 	const currentTeamTotalMmr = currentTeam?.players.reduce((sum, next) => sum+next.mmr ?? 0, 0) ?? 0;
 	const currentTeamTotalMmrPercent = ((currentTeamTotalMmr / (currentTier?.tier.mmrCap ?? 0) ) * 100).toFixed(2);
+	const playersWithStats = currentTeam?.players.map( t => cscPlayers.find( p => p.steam64Id === t.steam64Id));
 	let iterations = 0;
 	const currentTeamStatAggregation = currentTeam?.players.reduce( (acc, player, index) => {
 		const cscPlayerWithStats = cscPlayers.find( p => p.steam64Id === player.steam64Id && p.stats?.rating );
@@ -107,6 +111,7 @@ export function Team(){
 							<div className="p-4 rounded">
 								<hr className="h-px my-4 border-0" />
 								<div>
+									{ compareFeatureEnabled && <CompareLink players={playersWithStats} /> }
 									<div className="flex flex-row justify-center gap-2 flex-wrap pt-4">
 									{
 										currentTeam?.players?.map( player => <TeamPlayerCards key={player.name} franchisePlayer={player} team={currentTeam} /> )
