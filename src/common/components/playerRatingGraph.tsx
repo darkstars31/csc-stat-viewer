@@ -32,13 +32,7 @@ export function PlayerRatingTrendGraph({ player }: Props) {
 
   const defaultOptions: EChartsOption = {
     title: {
-      text: "Trends",
-      textStyle: {
-        color: "#fff",
-      },
-      textAlign: "left",
-      top: "16px",
-      padding: [12, 0, 0, 24],
+      show: false,
     },
     legend: {
       data: ["Rating", "HLTV", "Impact", "KAST", "ADR", "EF", "UtilDmg", "HS%", "DMG", "SideRating"],
@@ -397,6 +391,12 @@ export function PlayerRatingTrendGraph({ player }: Props) {
       },
     ],
     animation: true,
+    grid: {
+      top: '10px',
+      right: '20px',
+      bottom: '80px',
+      left: '40px',
+    },
     tooltip: {
       trigger: "axis",
       formatter: function (params) {

@@ -66,67 +66,77 @@ export function Player() {
         <Container>
             <PlayerNavigator player={currentPlayer} playerIndex={playerRatingIndex} />
             <Containers.StandardBackgroundPage>
-                <div className="flex space-x-4 pb-2">
-                    <div className="object-contain">
-                        { currentPlayer?.avatarUrl && <img className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
-                        { !currentPlayer?.avatarUrl && <div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border"/>}
-                    </div>
-                    <div className="text-left basis-3/4">
-                        <div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
-                            { currentPlayer?.name ?? "n/a"}
-                        </div>
-                        <div className={"text-[1.1rem] pb-5"}>
-                            <i>
-                                <b>{currentPlayer?.role ? `${currentPlayer?.role} — ` : ""}</b>
-                                { currentPlayer?.team?.franchise.name ? 
-                                    <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
-                                    : <span>{teamNameTranslator(currentPlayer)}</span>                         
-                                }                              
-                            </i>
-                        </div>
-                        <ul className="text-[0.8rem]">
-                            <li>
-                                {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{currentPlayer.tier.name}</i></b>
-                                <br /> <Mmr player={currentPlayer}/> MMR
-                                <div>
-                                    <span className="flex leading-7">
-                                        <ToolTip type="generic" message="FACEIT Rank">
+                <Containers.StandardContentThinBox>
+                        <div className="flex space-x-4 flex-row pb-0 w-full h-fill">
+                            <div className="object-contain">
+                                { currentPlayer?.avatarUrl && <img className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
+                                { !currentPlayer?.avatarUrl && <div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border"/>}
+                                
+                            </div>
+                            <div className="text-left basis-3/4">
+                                <div className="text-2xl font-extrabold text-white-100 flex flex-row md:text-4xl pb-0">
+                                    { currentPlayer?.name ?? "n/a"}
+                                    <span className="flex leading-7 m-2 font-normal place-items-center">
+                                        <ToolTip type="generic" message={"FACEIT Rank"}>
                                             <div className="w-7 h-7">
                                                 <FaceitRank player={currentPlayer} />
                                             </div>
                                         </ToolTip>
-                                        <ToolTip type="generic" message="HLTV2.0 Rating formula w/ <1% margin of error.">
-                                            <span className="ml-2 bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">
-                                                ~{currentPlayer.hltvTwoPointO?.toFixed(2)} HLTV
+                                        
+                                    </span>
+                                </div>
+                                <div className={"text-[1.1rem] pb-5"}>
+                                    <i>
+                                        <b>{currentPlayer?.role ? `${currentPlayer?.role} — ` : ""}</b>
+                                        { currentPlayer?.team?.franchise.name ? 
+                                            <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
+                                            : <span>{teamNameTranslator(currentPlayer)}</span>                         
+                                        }                              
+                                    </i>
+                                </div>
+                                <ul className="text-[0.8rem]">
+                                    <li>
+                                        {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{currentPlayer.tier.name}</i></b>
+                                        <br />
+                                        <ToolTip type="generic" message="Estimated HLTV2.0 Rating formula based on CSC matches">
+                                            <span className=" bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent pointer-events-none">
+                                                    {currentPlayer.hltvTwoPointO?.toFixed(2)} HLTV2.0 
                                             </span>
                                         </ToolTip>
-                                    </span>
+                                        <span className="text-xs">
+                                            {' '}<Mmr player={currentPlayer}/> MMR
+                                        </span>
+                                        <div>
+                                    
                                 </div> 
 
-                            </li>
-                        </ul>
-
-                    </div>
-                    <div className="w-full">
-                      <ExternalPlayerLinks player={currentPlayer} />
-                    </div>
-                </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="w-full ">
+                                <ExternalPlayerLinks player={currentPlayer} />
+                            </div>
+                            
+                        </div>
+                        
+                    </Containers.StandardContentThinBox>
+                        <PlayerAwards player={currentPlayer} players={players} />
                 { currentPlayerStats &&
                     <div className="space-y-2">
-                        <PlayerAwards player={currentPlayer} players={players} />
+                        
                         <Containers.StandardBoxRow>
-                            <Containers.StandardContentBox>
+                            <Containers.StandardContentBox title="Ratings">
                                 <PlayerRatings player={currentPlayer} />
                             </Containers.StandardContentBox>
-                            <Containers.StandardContentBox>
+                            <Containers.StandardContentBox title="Trends">
                                 <PlayerRatingTrendGraph player={currentPlayer} />
                             </Containers.StandardContentBox>
                         </Containers.StandardBoxRow>
                         <Containers.StandardBoxRow>
-                            <Containers.StandardContentBox>
+                            <Containers.StandardContentBox title="Role Radar">
                                 <RoleRadar player={currentPlayer!}/>         
                             </Containers.StandardContentBox>
-                            <Containers.StandardContentBox>
+                            <Containers.StandardContentBox title="Team">
                                 <TeamSideRatingPie player={currentPlayer} />
                                 <KillsAssistsDeathsPie player={currentPlayer} />
                             </Containers.StandardContentBox>

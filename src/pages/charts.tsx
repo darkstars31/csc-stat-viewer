@@ -147,7 +147,7 @@ export function Charts() {
                 </div>
             </div>
             <Containers.StandardBackgroundPage>
-                <Containers.StandardContentThinBox>
+                <Containers.StandardContentThinBox isFlexRow={true}>
                     <div className="basis-1/3">
                         <PlayerTypeFilter 
                             onChange={setViewPlayerTypeOptions as typeof React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>} 

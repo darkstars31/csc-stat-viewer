@@ -1,7 +1,7 @@
 import { clamp } from "lodash";
 import { CscStats } from "../../models/csc-stats-types";
 import { Player } from "../../models/player";
-import { sortBy } from "lodash";
+import get from 'lodash/get';
 
 export enum PlayerTypes {
     SIGNED = 'SIGNED',
@@ -78,11 +78,27 @@ export const teamNameTranslator = ( player?: Player ) => {
     }
 }
 
-export function _sort<T>( items: T[], property: string, n?: number, order?: "asc" | "desc" ) {
-    const sorted = sortBy(items, property);
-    const orderDirection = order === "desc" ? sorted.reverse() : sorted;
-    return n ? orderDirection.slice(0,n) : orderDirection;
+export interface SortOptions {
+  limit?: number;
+  order?: 'asc' | 'desc';
 }
+
+export function _sort<T>(arr: T[], property: ((item: T) => number) | string, options: SortOptions = {}): T[] {
+  const { limit, order = 'desc' } = options;
+
+
+  return arr
+    .sort((a: T, b: T) => {
+      const aValue = typeof property === 'function' ? property(a) : get(a, property);
+      const bValue = typeof property === 'function' ? property(b) : get(b, property);
+      if (aValue > bValue) return order === 'desc' ? -1 : 1;
+      if (aValue < bValue) return order === 'desc' ? 1 : -1;
+      return 0;
+    })
+    .slice(0, limit);
+}
+
+
 export const getPlayersInTier = ( player: Player, allPlayers: Player[] ) => allPlayers.filter( ap => ap.tier.name === player.tier.name );
 export const getPlayersInTier3GP = (player: Player, allPlayers: Player[]) => allPlayers.filter(ap => ap.tier.name === player.tier.name && ap.stats?.gameCount > 3);
 export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Player[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => { if( !a.stats?.rating) return 1;  return a.stats?.rating < b.stats?.rating ? 1 : -1});
@@ -92,9 +108,23 @@ export const getTop10PlayersInTier3GP = (
     property: keyof CscStats
 ) => {
     const playersInTier3GP = getPlayersInTier3GP(player, allPlayers);
-    const sortedPlayers = playersInTier3GP.sort((a, b) => (b.stats[property] as any) - (a.stats[property] as any));
-    return sortedPlayers.slice(0, 10);
+    const nonZeroPlayers = playersInTier3GP.filter(player => (player.stats[property] as number) > 0);
+    const sortedPlayers = nonZeroPlayers.sort((a, b) => (b.stats[property] as any) - (a.stats[property] as any));
+
+    // Define cutoff based on the 10th player's value
+    const cutoffValue = sortedPlayers[9]?.stats[property];
+
+    // Check if cutoffValue is defined
+    if (cutoffValue !== undefined) {
+        // Return all players with value equal to or greater than the cutoff
+        return sortedPlayers.filter(player => player.stats[property] >= cutoffValue);
+    } else {
+        // If less than 10 players, return all of them
+        return sortedPlayers;
+    }
 };
+
+
 export const getPlayerRatingIndex = ( player: Player, allPlayers: Player[] ) => {
     const playersInTierSortedByRating = getPlayersInTierOrderedByRating(player, allPlayers);
     return playersInTierSortedByRating.findIndex( p => p.name === player.name);
