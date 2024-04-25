@@ -7,7 +7,7 @@ import chicken from "../assets/images/chicken.png";
 export function Chickens() {
     const { totalChickenKills, players } = useDataContext();
 
-    const leaderBoard = players.sort( (a, b) => (b?.extendedStats?.trackedObj.chickenKills ?? 0) - (a.extendedStats?.trackedObj?.chickenKills ?? 0) ).slice(0, 10);
+    const leaderBoard = players.sort( (a, b) => (b?.extendedStats?.trackedObj.chickenKills ?? 0) - (a.extendedStats?.trackedObj?.chickenKills ?? 0) ).slice(0, 20);
 
     return (
         <Container>
@@ -18,13 +18,15 @@ export function Chickens() {
                     <table className="table-auto w-full">
                         <thead className="underline decoration-yellow-400">
                             <tr className="text-left">
+                                <th></th>
                                 <th>NAME</th>
                                 <th>CHICKENS MURDERED</th>
                             </tr>
                         </thead>
                         <tbody>
-                            { leaderBoard.map( player => 
-                            <tr key={player.name}>
+                            { leaderBoard.map( (player, index) => 
+                            <tr className={`${index % 2 === 0 ? "bg-midnight1" : "bg-midnight2"}`} key={player.name}>
+                                <td className="pr-4">{index + 1}</td>
                                 <td>{player.name}</td>
                                 <td className="text-center">{player?.extendedStats?.trackedObj.chickenKills}</td>
                             </tr> ) }
