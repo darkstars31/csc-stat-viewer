@@ -184,23 +184,31 @@ export function Player() {
                 </div>
             }
             <br />
-            { currentPlayer.extendedStats && <Exandable title="Extended Stats (BETA)">
+            { currentPlayer.extendedStats && <Exandable title="Extended Stats (beta)">
                 <div className="flex flex-row flex-wrap">
-                    <div>WEAPONS</div>
                     { Object.entries(currentPlayer.extendedStats.trackedObj).map( ([key,value]) => (
                         <div className="m-2 p-2"><div>{key}</div><div className="text-center">{value}</div></div>
                     ))}
                 </div>
                 <div className="flex flex-row flex-wrap">
-                    <div>WEAPONS</div>
-                    { Object.entries(currentPlayer.extendedStats.weaponKills).map( ([key,value]) => (
-                        <div className="m-2 p-2"><div>{key}</div><div className="text-center">{value}</div></div>
+                    <div>WEAPONS TYPES</div>
+                    { Object.entries(currentPlayer.extendedStats.weaponKillSubTypes).map( ([key,value]) => (
+                        <div className="m-2 p-2"><div>{key}</div><div className="text-center">{String(value)}</div></div>
                     ))}
                 </div>
-                <div className="flex flex-row">
+                <div className="flex flex-row flex-wrap">
+                    <div>WEAPONS</div>
+                    { Object.entries(currentPlayer.extendedStats.weaponKills).map( ([key,value]) => (
+                        <div className="m-2 p-2"><div>{key}</div><div className="text-center">{String(value)}</div></div>
+                    ))}
+                </div>
+                <div className="flex flex-row flex-wrap">
                     <div>HITBOX</div>
                     { Object.entries(currentPlayer.extendedStats.hitboxTags).map( ([key,value]) => (
-                        <div className="m-2 p-2"><div>{key}</div><div className="text-center">{value}</div></div>
+                        <div className="m-2 p-2">
+                            <div className="text-center">{value}</div>
+                            <div className="text-sm">{key}</div>
+                        </div>
                     ))}
                 </div>
             </Exandable>

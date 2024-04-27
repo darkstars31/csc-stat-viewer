@@ -93,7 +93,6 @@ const useDataContextProvider = () => {
 			}
 
 			const extendedStats = extendStats.extended.find( (stats: { name: string; }) => stats.name === cscPlayer?.name) as ExtendedStats;
-			totalChickenKills += extendedStats?.trackedObj?.chickenKills ?? 0;
 
 			acc.push( { ...cscPlayer,
 				hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
@@ -148,7 +147,6 @@ const useDataContextProvider = () => {
 	console.info( totalChickenKills );
 
     return {
-		totalChickenKills: totalChickenKills,
 		discordUser, setDiscordUser,
 		loggedinUser: players.find( p => p.discordId === discordUser?.id),
         players: players,
