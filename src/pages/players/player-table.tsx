@@ -5,7 +5,10 @@ import { useLocation } from "wouter";
 import { franchiseImages } from "../../common/images/franchise";
 import { BiStats } from "react-icons/bi";
 import { GiMoneyStack } from "react-icons/gi";
-import { teamNameTranslator } from "../../common/utils/player-utils";
+import { PlayerTypes, teamNameTranslator } from "../../common/utils/player-utils";
+import { TiWarningOutline } from "react-icons/ti";
+import { ToolTip } from "../../common/utils/tooltip-utils";
+
 
 type Props = {
     players: Player[]
@@ -48,6 +51,13 @@ export function MemoizedPlayerTable( { players}: Props) {
                                             <span className="flex flex-left">
                                                 <img className="h-6 w-6 mr-2" src={franchiseImages[player.team?.franchise.prefix]} alt={player.team?.franchise.prefix} />
                                                 {player.team?.franchise.name ?? ""}
+                                                {player.type === PlayerTypes.EXPIRED ? 
+                                                    <div className="pl-2 pb-2 italic">
+                                                        <ToolTip type="generic" message={<div className="rounded m-2 p-2 bg-zinc-500 shadow-lg"><div>This players contract</div><div>has expired</div></div>} >
+                                                            <TiWarningOutline className="inline text-red-500" />
+                                                        </ToolTip>
+                                                    </div>
+                                                    : ""}
                                             </span>
                                             : 
                                             teamNameTranslator(player)
