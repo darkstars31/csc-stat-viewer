@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
-import { Table } from "../common/components/table";
+import { LeaderBoard } from "../common/components/leaderboard";
 import { useDataContext } from "../DataContext";
 import { _sort } from "../common/utils/player-utils";
 import Select, { SingleValue } from "react-select";
@@ -135,87 +135,70 @@ export function LeaderBoards() {
             <div>
                 <div className="grid md:grid-cols-2 sm:grid-cols-1">
                     <div className="m-4">
-                        Games Played
-                        <Table rows={gamesPlayed}/>
+                        <LeaderBoard title="Games Played" rows={gamesPlayed}/>
                     </div>
                     <div className="m-4">
-                        Most Kills
-                        <Table rows={kills}/>
+                        <LeaderBoard title="Most Kills" rows={kills}/>
                     </div>
                 </div>
                 <div className="grid md:grid-cols-2 sm:grid-cols-1">
                     <div className="m-4">
-                        Highest Kill / Death Ratio
-                        <Table rows={killDeathRatio}/>
+                        <LeaderBoard title="Highest Kill / Death Ratio" rows={killDeathRatio}/>
                     </div>
                     <div className="m-4">
-                        Most Aces
-                        <Table rows={aces}/>
+                        <LeaderBoard title="Most Aces" rows={aces}/>
                     </div>
                 </div>
                 <div className="grid md:grid-cols-2 sm:grid-cols-1">
                     <div className="m-4">
-                        Damager Per Round
-                        <Table rows={damagePerRound}/>
+                        <LeaderBoard title=" Damager Per Round" rows={damagePerRound}/>
                     </div>
                     <div className="m-4">
-                        Flash Assists per Match
-                        <Table rows={fAssists}/>
+                        <LeaderBoard title="Flash Assists per Match" rows={fAssists}/>
                     </div>
                 </div>
                 <div className="grid md:grid-cols-2 sm:grid-cols-1">
                     <div className="m-4">
-                        Awp Kills per Round
-                        <Table rows={awpKillsPerRound}/>
+                        <LeaderBoard title="Awp Kills per Round" rows={awpKillsPerRound}/>
                     </div>
                     <div className="m-4">
-                        Utility Damage per Match
-                        <Table rows={utilDamagePerMatch}/>
+                        <LeaderBoard title="Utility Damage per Match" rows={utilDamagePerMatch}/>
                     </div>
                 </div>
                 <div className="grid md:grid-cols-2 sm:grid-cols-1">
                     <div className="m-4">
-                        CT-Side Rating
-                        <Table rows={ctRating}/>
+                        <LeaderBoard title="CT-Side Rating" rows={ctRating}/>
                     </div>
                     <div className="m-4">
-                        T-Side Rating
-                        <Table rows={tRating}/>
+                        <LeaderBoard title="T-Side Rating" rows={tRating}/>
                     </div>
                 </div>
 
                 <div className="grid md:grid-cols-2 sm:grid-cols-1">
                     <div className="m-4">
-                        Kill/Asset/Survived/Traded
-                        <Table rows={kastPercentage}/>
+                        <LeaderBoard title="Kill/Asset/Survived/Traded" rows={kastPercentage}/>
                     </div>
                     <div className="m-4">
-                        Utility Thrown Per Match
-                        <Table rows={utilThrownPerMatch}/>
+                        <LeaderBoard title="Utility Thrown Per Match" rows={utilThrownPerMatch}/>
                     </div>
                 </div>
                 <div className="grid md:grid-cols-2 sm:grid-cols-1">
                     <div className="m-4">
-                        Least Utility Thrown Per Match
-                        <Table rows={leastUtilThrownPerMatch}/>
+                        <LeaderBoard title="Least Utility Thrown Per Match" rows={leastUtilThrownPerMatch}/>
                     </div>
                     <div className="m-4">
-                        Highest Headshot Percentage
-                        <Table rows={headshotPercentage}/>
+                        <LeaderBoard title="Highest Headshot Percentage" rows={headshotPercentage}/>
                     </div>
                 </div>
                 <div className="grid md:grid-cols-2 sm:grid-cols-1">
                     <div className="m-4">
-                        Clutch Points Average per Match
-                        <Table rows={clutchAbility}/>
+                        <LeaderBoard title="Clutch Points Average per Match" rows={clutchAbility}/>
+                    </div>
+                    <div className="m-4">                     
+                        <LeaderBoard title="Open Duels Per Round" rows={openDuels}/>
                     </div>
                     <div className="m-4">
-                        Open Duels Per Round
-                        <Table rows={openDuels}/>
-                    </div>
-                    <div className="m-4">
-                        Enemies Flashed per Match
-                        <Table rows={ef}/>
+                        <LeaderBoard title="Enemies Flashed per Match" rows={ef}/>
                     </div>
                 </div>   
                 <div className="grid md:grid-cols-2 sm:grid-cols-1">
