@@ -2,82 +2,95 @@ import * as React from 'react';
 import { useDataContext } from '../DataContext';
 import { Container } from '../common/components/container';
 import chicken from "../assets/images/chicken.png";
+import { Player } from '../models';
+import { ExtendedStats } from '../models/extended-stats';
+
+
+const LeaderBoard = ( { title, property, leaderBoard }: { title: string, property: string,  leaderBoard: Player[]} ) => 
+<div className='m-4'>
+    <div>
+        <div className="text-3xl text-center m-4">{title}</div>
+    </div>
+    <table className="table-auto w-full">
+        <thead className="underline decoration-yellow-400">
+            <tr className="text-left h-12">
+                <th></th>
+                <th>NAME</th>
+                <th>{title}</th>
+            </tr>
+        </thead>
+        <tbody>
+            { leaderBoard.map( (player, index) => 
+            <tr className={`${index % 2 === 0 ? "bg-midnight1" : "bg-midnight2"}`} key={player.name}>
+                <td className="pr-4">{index + 1}</td>
+                <td className='truncate'>{player.name}</td>
+                <td className="text-center">{player.extendedStats["trackedObj" as keyof ExtendedStats][property]}</td>
+            </tr> ) }
+        </tbody>
+    </table>
+</div>
 
 
 export function Chickens() {
     const { players } = useDataContext();
 
-    const totalChickenKills = players.reduce( (total, player) => total + (player?.extendedStats?.chickens.killed ?? 0), 0);
+    const playersWithExtendedStats = players.filter( p => p.extendedStats);
+
+    const totalChickenKills = playersWithExtendedStats.reduce( (total, player) => total + (player.extendedStats.chickens.killed), 0);
     const chickenDeathTotals = {
-        "Knifed": players.reduce( (total, player) => total + (player?.extendedStats?.chickens.stabbed ?? 0), 0),
-        "Roasted": players.reduce( (total, player) => total + (player?.extendedStats?.chickens.roasted ?? 0), 0),
-        "Exploded": players.reduce( (total, player) => total + (player?.extendedStats?.chickens.exploded ?? 0), 0),
-        "Shot": players.reduce( (total, player) => total + (player?.extendedStats?.chickens.shot ?? 0), 0),
+        "Knifed": playersWithExtendedStats.reduce( (total, player) => total + (player.extendedStats.chickens.stabbed), 0),
+        "Roasted": playersWithExtendedStats.reduce( (total, player) => total + (player.extendedStats.chickens.roasted), 0),
+        "Exploded": playersWithExtendedStats.reduce( (total, player) => total + (player.extendedStats.chickens.exploded), 0),
+        "Shot": playersWithExtendedStats.reduce( (total, player) => total + (player.extendedStats.chickens.shot), 0),
     }
     
 
-    const chickenLeaderBoard = players.sort( (a, b) => (b?.extendedStats?.chickens.killed ?? 0) - (a.extendedStats?.chickens.killed ?? 0) ).slice(0, 10);
-    const ninjaLeaderBoard = players.sort( (a, b) => (b?.extendedStats?.trackedObj.ninjaDefuses ?? 0) - (a.extendedStats?.trackedObj.ninjaDefuses ?? 0) ).slice(0, 10);
+    const chickenLeaderBoard = playersWithExtendedStats.sort( (a, b) => (b?.extendedStats.chickens.killed) - (a.extendedStats?.chickens.killed) ).slice(0, 10);
+    const ninjaLeaderBoard = playersWithExtendedStats.sort( (a, b) => (b?.extendedStats.trackedObj.ninjaDefuses) - (a.extendedStats?.trackedObj.ninjaDefuses) ).slice(0, 10);
+    const noScopesLeaderBoard = playersWithExtendedStats.sort( (a, b) => (b?.extendedStats.trackedObj.noScopesKills) - (a.extendedStats?.trackedObj.noScopesKills) ).slice(0, 10);
+    const wallBangLeaderBoard = playersWithExtendedStats.sort( (a, b) => (b?.extendedStats.trackedObj.wallBangKills) - (a.extendedStats?.trackedObj.wallBangKills) ).slice(0, 10);
+
 
     return (
         <Container>
-            <div className="flex flex-row">
-                <div className='basis-1/4 m-2'>
-                    <div>
-                        <div className='flex flex-row w-48'>
-                            <div className="text-3xl text-center m-8">Chickens killed in Combines</div>
-                            <img src={chicken} alt="Chickens" />
-                        </div>
-                        <div className="text-6xl text-center m-4">{totalChickenKills}</div>
-                    </div>
+                <div className='flex'>
                     <div className='flex flex-row flex-wrap'>
-                        {   Object.entries(chickenDeathTotals).map( ([key, value]) =>
-                            <div className="text-l text-center m-4"><div>{key}</div><div className="text-center">{value}</div></div>
-                        )}
-                    </div>
-                    <table className="table-auto w-full">
-                        <thead className="underline decoration-yellow-400">
-                            <tr className="text-left">
-                                <th></th>
-                                <th>NAME</th>
-                                <th>CHICKENS MURDERED</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            { chickenLeaderBoard.map( (player, index) => 
-                            <tr className={`${index % 2 === 0 ? "bg-midnight1" : "bg-midnight2"}`} key={player.name}>
-                                <td className="pr-4">{index + 1}</td>
-                                <td>{player.name}</td>
-                                <td className="text-center">{player?.extendedStats?.chickens.killed}</td>
-                            </tr> ) }
-                        </tbody>
-                    </table>
-                </div>            
-                <div className='basis-1/4 m-2'>
-                    <div>
                         <div className='flex flex-row'>
-                            <div className="text-3xl text-center m-8">Ninja Defusals</div>
+                            <div className="text-3xl text-center m-4"><img className='m-auto h-16 w-16' src={chicken} alt="Chickens" />killed in Combines</div>
+                            <div className="text-6xl text-center m-4 pt-16">{totalChickenKills}</div>
                         </div>
+                        <div className='flex flex-row flex-wrap'>
+                            {   Object.entries(chickenDeathTotals).map( ([key, value]) =>
+                                <div className="text-l text-center m-auto w-32">
+                                    <div>{key}</div>
+                                    <div className="text-center">{value}</div>
+                                </div>
+                            )}
+                        </div>
+                        <table className="table-auto w-full">
+                            <thead className="underline decoration-yellow-400">
+                                <tr className="text-left">
+                                    <th></th>
+                                    <th>NAME</th>
+                                    <th>CHICKENS MURDERED</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                { chickenLeaderBoard.map( (player, index) => 
+                                <tr className={`${index % 2 === 0 ? "bg-midnight1" : "bg-midnight2"}`} key={player.name}>
+                                    <td className="pr-4">{index + 1}</td>
+                                    <td className='truncate'>{player.name}</td>
+                                    <td className="text-center">{player?.extendedStats?.chickens.killed}</td>
+                                </tr> ) }
+                            </tbody>
+                        </table>
                     </div>
-                    <table className="table-auto w-full">
-                        <thead className="underline decoration-yellow-400">
-                            <tr className="text-left">
-                                <th></th>
-                                <th>NAME</th>
-                                <th>Ninja Defuses</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            { ninjaLeaderBoard.map( (player, index) => 
-                            <tr className={`${index % 2 === 0 ? "bg-midnight1" : "bg-midnight2"}`} key={player.name}>
-                                <td className="pr-4">{index + 1}</td>
-                                <td>{player.name}</td>
-                                <td className="text-center">{player?.extendedStats?.trackedObj.ninjaDefuses}</td>
-                            </tr> ) }
-                        </tbody>
-                    </table>
                 </div>
-            </div>
+                <div className='flex flex-row flex-wrap m-auto'>
+                    <LeaderBoard title='Ninja Defuses' property='ninjaDefuses' leaderBoard={ninjaLeaderBoard} />
+                    <LeaderBoard title='No Scopes' property='noScopesKills' leaderBoard={noScopesLeaderBoard} />
+                    <LeaderBoard title='Wall Bangs' property='wallBangKills' leaderBoard={wallBangLeaderBoard} />
+                </div>
         </Container>
     );
 }

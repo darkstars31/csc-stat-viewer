@@ -7,6 +7,7 @@ export type ExtendedStats = {
     hitboxTags: HitboxTags,
     weaponKillSubTypes: WeaponKillSubTypes,
     weaponKills: Partial<WeaponKills>
+    [key: string]: any;
 }
 
 export type chickens = {

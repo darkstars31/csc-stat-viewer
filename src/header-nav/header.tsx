@@ -9,21 +9,22 @@ import { HeaderNotifications } from './notifications';
 import { HeaderProfile } from './profile';
 import { NotificationsProvider } from '../NotificationsContext';
 import { ToolsDropdown } from './tools-dropdown';
+import chicken from "../assets/images/chicken.png";
 
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(' ')
 }
 
-const HeaderItem = ({ item, close }: { item :{ href: string, name: string, current: boolean }, close: () => void }) => {
+const HeaderItem = ({ item, close }: { item :{ href: string, name: string | React.JSX.Element, current: boolean }, close: () => void }) => {
 	return (
 		<Link
-			key={item.name}
+			key={item.href}
 			to={item.href}
 			onClick={() => close()}
 			className={classNames(
 				item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-				'block px-3 py-2 rounded-md text-sm font-medium'
+				'block px-3 py-2 rounded-md text-sm font-medium', 'min-h-6', 'min-w-6'
 			)}
 			aria-current={item.current ? 'page' : undefined}
 		>
@@ -39,6 +40,7 @@ export function Header() {
 	const navigation = [
 		//{ name: 'Home', href: '/', current: location.endsWith("/") },
 		//{ name: 'Charts', href: '/charts', current: location.endsWith("/charts") || location.endsWith("/") },
+		{ name: <div className='h-2 w-8 flex justify-center items-center pt-2'><img src={chicken} alt="Chickens" /></div>, href: "/", current: location === "https://analytikill.com/"},
 		{ name: 'Franchises', href: '/franchises', current: location.includes("franchises") },
 		{ name: 'Standings', href: '/Standings', current: location.endsWith("/Standings") },
 		{ name: 'Players', href: '/players', current: location.includes("players") },
