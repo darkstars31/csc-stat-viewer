@@ -5,8 +5,9 @@ import de_vertigo from "../../assets/images/maps/De_vertigo.png";
 import de_inferno from "../../assets/images/maps/De_inferno.png";
 import de_anubis from "../../assets/images/maps/De_anubis.png";
 import de_nuke from "../../assets/images/maps/De_nuke.png";
+import de_dust2 from "../../assets/images/maps/De_dust2.png";
 import cs_office from "../../assets/images/maps/forfeitWin.png";
 
 type MapImages = Record<string, string>;
 
-export const mapImages: MapImages = {de_vertigo,de_mirage,de_ancient,de_anubis,de_nuke,de_overpass,de_inferno,cs_office};
+export const mapImages: MapImages = {de_vertigo,de_mirage,de_ancient,de_anubis,de_nuke,de_overpass,de_inferno,de_dust2,cs_office};
