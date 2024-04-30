@@ -9,7 +9,7 @@ import { Player } from "../models/player";
 import { CscStats } from "../models/csc-stats-types";
 
 function buildTableRow( player: Player, columnName: string, property: keyof CscStats ){
-    return { "Player": player.name, "Tier": player.tier.name, [columnName]: player.stats[property]};
+    return { player, value: player.stats[property]};
 }
 
 export function LeaderBoards() {
@@ -22,26 +22,26 @@ export function LeaderBoards() {
     const playerData = filterBy?.value.includes("All") ? player : player.filter( f => f.tier.name.toLowerCase() === filterBy?.value.toLowerCase());
       
     const gamesPlayed = _sort(playerData, "stats.gameCount", limit, "desc").map( p => buildTableRow(p, "Games Played", "gameCount"));
-    const kills = _sort(playerData, "stats.kills", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Kills": p.stats.kills}));
-    const killDeathRatio = playerData.sort( (a,b) => (a.stats.kills/a.stats.deaths) < (b.stats.kills/b.stats.deaths) ? 1 : -1).slice(0,limit).map( p => ({ "Player": p.name, "Tier": p.tier.name, "K/D Ratio": (p.stats.kills/p.stats.deaths).toFixed(2)}));
-    const aces = playerData.sort( (a,b) => (a.stats["fiveK"]) < (b.stats["fiveK"]) ? 1 : -1).slice(0,limit).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Aces": p.stats["fiveK"] }));
-    const damagePerRound = _sort(playerData, "stats.adr", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Average Damage Per Round": p.stats.adr.toFixed(2)}));
-    const awpKillsPerRound = _sort(playerData, "stats.awpR", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Awp Kills per Round": p.stats["awpR"].toFixed(2)}));
-    const utilDamagePerMatch = _sort(playerData, "stats.utilDmg", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Utility Damage": p.stats.utilDmg.toFixed(2)}));
-    // const timeToDeath = _sort(playerData, "stats.atd", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Time til Death (seconds)": p.ATD}));
-    const ctRating = _sort(playerData, "stats.ctRating", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Rating": p.stats.ctRating.toFixed(2)}));
-    const tRating = _sort(playerData, "stats.TRating", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Rating": p.stats.TRating.toFixed(2)}));
-    const kastPercentage = _sort(playerData, "stats.kast", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "KAST%": p.stats.kast.toFixed(2)}));
+    const kills = _sort(playerData, "stats.kills", limit, "desc").map( p => ({ player: p, value: p.stats.kills}));
+    const killDeathRatio = playerData.sort( (a,b) => (a.stats.kills/a.stats.deaths) < (b.stats.kills/b.stats.deaths) ? 1 : -1).slice(0,limit).map( p => ({ player: p, value: (p.stats.kills/p.stats.deaths).toFixed(2)}));
+    const aces = playerData.sort( (a,b) => (a.stats["fiveK"]) < (b.stats["fiveK"]) ? 1 : -1).slice(0,limit).map( p => ({ player: p, value: p.stats["fiveK"] }));
+    const damagePerRound = _sort(playerData, "stats.adr", limit, "desc").map( p => ({ player: p, value: p.stats.adr.toFixed(2)}));
+    const awpKillsPerRound = _sort(playerData, "stats.awpR", limit, "desc").map( p => ({ player: p, value: p.stats["awpR"].toFixed(2)}));
+    const utilDamagePerMatch = _sort(playerData, "stats.utilDmg", limit, "desc").map( p => ({ player: p, value: p.stats.utilDmg.toFixed(2)}));
+    // const timeToDeath = _sort(playerData, "stats.atd", 5).map( p => ({ "Player": p.name,   "Time til Death (seconds)": p.ATD}));
+    const ctRating = _sort(playerData, "stats.ctRating", limit, "desc").map( p => ({ player: p, value: p.stats.ctRating.toFixed(2)}));
+    const tRating = _sort(playerData, "stats.TRating", limit, "desc").map( p => ({ player: p, value: p.stats.TRating.toFixed(2)}));
+    const kastPercentage = _sort(playerData, "stats.kast", limit, "desc").map( p => ({ player: p, value: p.stats.kast.toFixed(2)}));
     const utilThrownPerMatchX = _sort(playerData, "stats.util",);
-    const utilThrownPerMatch = utilThrownPerMatchX.map( p => ({ "Player": p.name, "Tier": p.tier.name, "Util/Match": p.stats.util})).reverse().splice(0,limit);
-    const leastUtilThrownPerMatch = utilThrownPerMatchX.map( p => ({ "Player": p.name, "Tier": p.tier.name, "Least Util/Match": p.stats.util })).splice(0,limit);
-    const headshotPercentage = _sort(playerData, "stats.hs", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "HeadShot %": p.stats.hs}));
-    const clutchAbility = _sort(playerData, "stats.clutchR", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Clutch Points per Match": p.stats['clutchR'].toFixed(2)}));
-    // const grenadeDamagePerRound = _sort(playerData, "X/nade", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Grenade Damage Per Round": p["Xnade"]}));
-    // const flashesPerFlash = _sort(playerData, "EF/F", 5).map( p => ({ "Player": p.name, "Tier": p.tier.name, "Flashes per Flash Thrown": p["EF/F"]}));
-    const openDuels = _sort(playerData, "stats.odr", limit, "desc").map( p => ({ "Player": p.stats.name, "Tier": p.tier.name, "Open Duels": p.stats.odr.toFixed(2)}));
-    const fAssists = _sort(playerData, "stats.fAssists", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "Flash Assists": p.stats.fAssists.toFixed(2)}));
-    const ef = _sort(playerData, "stats.ef", limit, "desc").map( p => ({ "Player": p.name, "Tier": p.tier.name, "EF": p.stats.ef.toFixed(2)}));
+    const utilThrownPerMatch = utilThrownPerMatchX.map( p => ({ player: p, value: p.stats.util})).reverse().splice(0,limit);
+    const leastUtilThrownPerMatch = utilThrownPerMatchX.map( p => ({ player: p, value: p.stats.util })).splice(0,limit);
+    const headshotPercentage = _sort(playerData, "stats.hs", limit, "desc").map( p => ({ player: p, value: p.stats.hs}));
+    const clutchAbility = _sort(playerData, "stats.clutchR", limit, "desc").map( p => ({ player: p, value: p.stats['clutchR'].toFixed(2)}));
+    // const grenadeDamagePerRound = _sort(playerData, "X/nade", 5).map( p => ({ "Player": p.name,   "Grenade Damage Per Round": p["Xnade"]}));
+    // const flashesPerFlash = _sort(playerData, "EF/F", 5).map( p => ({ "Player": p.name,   "Flashes per Flash Thrown": p["EF/F"]}));
+    const openDuels = _sort(playerData, "stats.odr", limit, "desc").map( p => ({ player: p, value: p.stats.odr.toFixed(2)}));
+    const fAssists = _sort(playerData, "stats.fAssists", limit, "desc").map( p => ({ player: p, value: p.stats.fAssists.toFixed(2)}));
+    const ef = _sort(playerData, "stats.ef", limit, "desc").map( p => ({ player: p, value: p.stats.ef.toFixed(2)}));
 
     const selectClassNames = {
         placeholder: () => "text-gray-400 bg-inherit",
@@ -132,84 +132,25 @@ export function LeaderBoards() {
                 </div>
             </div>
             { playerData.length > 0 && 
-            <div>
-                <div className="grid md:grid-cols-2 sm:grid-cols-1">
-                    <div className="m-4">
-                        <LeaderBoard title="Games Played" rows={gamesPlayed}/>
-                    </div>
-                    <div className="m-4">
-                        <LeaderBoard title="Most Kills" rows={kills}/>
-                    </div>
-                </div>
-                <div className="grid md:grid-cols-2 sm:grid-cols-1">
-                    <div className="m-4">
-                        <LeaderBoard title="Highest Kill / Death Ratio" rows={killDeathRatio}/>
-                    </div>
-                    <div className="m-4">
-                        <LeaderBoard title="Most Aces" rows={aces}/>
-                    </div>
-                </div>
-                <div className="grid md:grid-cols-2 sm:grid-cols-1">
-                    <div className="m-4">
-                        <LeaderBoard title=" Damager Per Round" rows={damagePerRound}/>
-                    </div>
-                    <div className="m-4">
-                        <LeaderBoard title="Flash Assists per Match" rows={fAssists}/>
-                    </div>
-                </div>
-                <div className="grid md:grid-cols-2 sm:grid-cols-1">
-                    <div className="m-4">
-                        <LeaderBoard title="Awp Kills per Round" rows={awpKillsPerRound}/>
-                    </div>
-                    <div className="m-4">
-                        <LeaderBoard title="Utility Damage per Match" rows={utilDamagePerMatch}/>
-                    </div>
-                </div>
-                <div className="grid md:grid-cols-2 sm:grid-cols-1">
-                    <div className="m-4">
-                        <LeaderBoard title="CT-Side Rating" rows={ctRating}/>
-                    </div>
-                    <div className="m-4">
-                        <LeaderBoard title="T-Side Rating" rows={tRating}/>
-                    </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 sm:grid-cols-1">
-                    <div className="m-4">
-                        <LeaderBoard title="Kill/Asset/Survived/Traded" rows={kastPercentage}/>
-                    </div>
-                    <div className="m-4">
-                        <LeaderBoard title="Utility Thrown Per Match" rows={utilThrownPerMatch}/>
-                    </div>
-                </div>
-                <div className="grid md:grid-cols-2 sm:grid-cols-1">
-                    <div className="m-4">
-                        <LeaderBoard title="Least Utility Thrown Per Match" rows={leastUtilThrownPerMatch}/>
-                    </div>
-                    <div className="m-4">
-                        <LeaderBoard title="Highest Headshot Percentage" rows={headshotPercentage}/>
-                    </div>
-                </div>
-                <div className="grid md:grid-cols-2 sm:grid-cols-1">
-                    <div className="m-4">
-                        <LeaderBoard title="Clutch Points Average per Match" rows={clutchAbility}/>
-                    </div>
-                    <div className="m-4">                     
-                        <LeaderBoard title="Open Duels Per Round" rows={openDuels}/>
-                    </div>
-                    <div className="m-4">
-                        <LeaderBoard title="Enemies Flashed per Match" rows={ef}/>
-                    </div>
-                </div>   
-                <div className="grid md:grid-cols-2 sm:grid-cols-1">
-                    {/* <div className="m-4">
-                        Enemies Flashed per Flash
-                        <Table rows={flashesPerFlash}/>
-                    </div> */}
-                     {/* <div className="m-4">
-                        Grenade Damage per Round
-                        <Table rows={grenadeDamagePerRound}/>
-                    </div> */}
+            <div className="pt-6">
+                <div className="flex flex-row flex-wrap gap-6">    
+                    <LeaderBoard title="Games Played" rows={gamesPlayed}/>
+                    <LeaderBoard title="Most Kills" rows={kills}/>
+                    <LeaderBoard title="Highest K/D Ratio" rows={killDeathRatio}/>
+                    <LeaderBoard title="Most Aces" rows={aces}/>
+                    <LeaderBoard title=" Damager Per Round" rows={damagePerRound}/>
+                    <LeaderBoard title="Flash Assists per Match" rows={fAssists}/>
+                    <LeaderBoard title="Awp Kills per Round" rows={awpKillsPerRound}/>
+                    <LeaderBoard title="Utility Damage per Match" rows={utilDamagePerMatch}/>
+                    <LeaderBoard title="CT-Side Rating" rows={ctRating}/>
+                    <LeaderBoard title="T-Side Rating" rows={tRating}/>
+                    <LeaderBoard title="Kill/Asset/Survived/Traded" rows={kastPercentage}/>
+                    <LeaderBoard title="Utility Thrown Per Match" rows={utilThrownPerMatch}/>
+                    <LeaderBoard title="Least Utility Thrown Per Match" rows={leastUtilThrownPerMatch}/>
+                    <LeaderBoard title="Highest Headshot Percentage" rows={headshotPercentage}/>
+                    <LeaderBoard title="Clutch Points Average per Match" rows={clutchAbility}/>                                     
+                    <LeaderBoard title="Open Duels Per Round" rows={openDuels}/>                   
+                    <LeaderBoard title="Enemies Flashed per Match" rows={ef}/>
                 </div>   
             </div> }
             { !playerData.length && 

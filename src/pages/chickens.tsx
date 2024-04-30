@@ -49,6 +49,7 @@ export function Chickens() {
     const ninjaLeaderBoard = playersWithExtendedStats.sort( (a, b) => (b?.extendedStats.trackedObj.ninjaDefuses) - (a.extendedStats?.trackedObj.ninjaDefuses) ).slice(0, 10);
     const noScopesLeaderBoard = playersWithExtendedStats.sort( (a, b) => (b?.extendedStats.trackedObj.noScopesKills) - (a.extendedStats?.trackedObj.noScopesKills) ).slice(0, 10);
     const wallBangLeaderBoard = playersWithExtendedStats.sort( (a, b) => (b?.extendedStats.trackedObj.wallBangKills) - (a.extendedStats?.trackedObj.wallBangKills) ).slice(0, 10);
+    //const knifeLeaderBoard = playersWithExtendedStats.filter( p => p.extendedStats.weaponKills.Knife ).sort( (a, b) => (b?.extendedStats.weaponKills.Knife!) - (a.extendedStats?.weaponKills.Knife!) ).slice(0, 10);
 
 
     return (
@@ -90,6 +91,8 @@ export function Chickens() {
                     <LeaderBoard title='Ninja Defuses' property='ninjaDefuses' leaderBoard={ninjaLeaderBoard} />
                     <LeaderBoard title='No Scopes' property='noScopesKills' leaderBoard={noScopesLeaderBoard} />
                     <LeaderBoard title='Wall Bangs' property='wallBangKills' leaderBoard={wallBangLeaderBoard} />
+                    {/* <LeaderBoard title='Knife' property='Knifes' leaderBoard={wallBangLeaderBoard} /> */}
+
                 </div>
         </Container>
     );
