@@ -45,9 +45,6 @@ export function LeaderBoard( { title, rows, header = true }: Props ){
                                     </td>            
                                     <td>{row.player.tier.name}</td>
                                     <td className="font-black">{row.value}</td>                    
-                                    {/* <td className={`whitespace-nowrap py-1 font-medium truncate hover:text-blue-400`}><Link to={`/players/${encodeURIComponent(row.player.name)}`}>{row.player.name}</Link></td>
-                                    <td className={`whitespace-nowrap py-1 font-medium`}>{row.player.tier.name}</td>
-                                    <td className={`whitespace-nowrap py-1 font-medium`}>{row.value}</td> */}
                                 </tr>
 
                             :
@@ -56,22 +53,6 @@ export function LeaderBoard( { title, rows, header = true }: Props ){
                                     <td className={`whitespace-nowrap py-1 font-medium`}>{row.player.tier.name}</td>
                                     <td className={`whitespace-nowrap py-1 font-medium`}>{row.value}</td>
                                 </tr>
-                        //  <tr key={rowIndex} > className={`text-yellow-${rowIndex}00`}></tr>
-                            // <tr className={`${rowIndex % 2 === 0 ? "bg-midnight1" : "bg-midnight2"} rounded`}>
-                            /* { Object.entries(row).map( ([key,value], colIndex) =>
-                                <td key={key+colIndex} className={`whitespace-nowrap px-4 py-1 font-medium`}>
-                                    { rowIndex === 0 ?
-                                        <div data-row-col={`${rowIndex},${colIndex}`} className={ colIndex === 0 ? `text-white-${rowIndex+1}00` : ''}>
-                                        {value ?? "n/a"}
-                                        </div>
-                                    :
-                                        <div data-row-col={`${rowIndex},${colIndex}`} className={ colIndex === 0 ? `text-white-${rowIndex+1}00` : ''}>
-                                            {value ?? "n/a"}
-                                        </div>
-                                    }
-                                </td>
-                            )}
-                            </tr> */
                             )
                         }
                         </tbody>
