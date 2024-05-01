@@ -5,6 +5,8 @@ export type ExtendedStats = {
     chickens: chickens,
     trackedObj: TrackedObj,
     hitboxTags: HitboxTags,
+    averages: Averages,
+    durationAverages: Durations,
     weaponKillSubTypes: WeaponKillSubTypes,
     weaponKills: Partial<WeaponKills>
     [key: string]: any;
@@ -27,9 +29,22 @@ export type TrackedObj = {
     airborneKills: number,
     bombsPlanted: number,
     bombsDefused: number,
-    diedToBomb: 0,
-	ninjaDefuses: 0,
+    diedToBomb: number,
+	ninjaDefuses:number,
+    teamKills: number,
+    selfKills: number,
     mvpCount: number,
+}
+
+export type Averages = {
+    pistolRoundKillAverageCt: number,
+    pistolRoundKillAverageT: number,
+}
+
+export type Durations = {
+    selfFlashDurationAverage:  number,
+    teamFlashDurationAverage:  number,
+    enemyFlashDurationAverage:  number,
 }
 
 export type WeaponKillSubTypes = {

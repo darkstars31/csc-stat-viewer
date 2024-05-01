@@ -49,6 +49,8 @@ export function Chickens() {
     const ninjaLeaderBoard = playersWithExtendedStats.sort( (a, b) => (b?.extendedStats.trackedObj.ninjaDefuses) - (a.extendedStats?.trackedObj.ninjaDefuses) ).slice(0, 10);
     const noScopesLeaderBoard = playersWithExtendedStats.sort( (a, b) => (b?.extendedStats.trackedObj.noScopesKills) - (a.extendedStats?.trackedObj.noScopesKills) ).slice(0, 10);
     const wallBangLeaderBoard = playersWithExtendedStats.sort( (a, b) => (b?.extendedStats.trackedObj.wallBangKills) - (a.extendedStats?.trackedObj.wallBangKills) ).slice(0, 10);
+    const TeamKillLeaderBoard = playersWithExtendedStats.sort( (a, b) => (b?.extendedStats.trackedObj.teamKills) - (a.extendedStats?.trackedObj.teamKills) ).slice(0, 10);
+    const selfKillLeaderBoard = playersWithExtendedStats.sort( (a, b) => (b?.extendedStats.trackedObj.selfKills) - (a.extendedStats?.trackedObj.selfKills) ).slice(0, 10);
     //const knifeLeaderBoard = playersWithExtendedStats.filter( p => p.extendedStats.weaponKills.Knife ).sort( (a, b) => (b?.extendedStats.weaponKills.Knife!) - (a.extendedStats?.weaponKills.Knife!) ).slice(0, 10);
 
 
@@ -91,6 +93,8 @@ export function Chickens() {
                     <LeaderBoard title='Ninja Defuses' property='ninjaDefuses' leaderBoard={ninjaLeaderBoard} />
                     <LeaderBoard title='No Scopes' property='noScopesKills' leaderBoard={noScopesLeaderBoard} />
                     <LeaderBoard title='Wall Bangs' property='wallBangKills' leaderBoard={wallBangLeaderBoard} />
+                    <LeaderBoard title='Team Kills' property='teamKills' leaderBoard={TeamKillLeaderBoard} />
+                    <LeaderBoard title='Self Kill' property='selfKills' leaderBoard={selfKillLeaderBoard} />
                     {/* <LeaderBoard title='Knife' property='Knifes' leaderBoard={wallBangLeaderBoard} /> */}
 
                 </div>
