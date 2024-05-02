@@ -10,7 +10,7 @@ const getByTier = ( p: { MMR: number, Tier: string}[], { tier }: { tier: string 
 
 const getDistribution = ( p: number[] ) => {
   const high = p[0];
-  const width = 50;
+  const width = 10;
   const distribution = {} as { [key: string]: number };
   for( let i = 0; i < high+width; i += width){
       const x = p.filter( x => x >= i && x < i+width );

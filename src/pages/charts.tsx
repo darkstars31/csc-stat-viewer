@@ -15,6 +15,7 @@ import { PlayerTiersFilter } from '../common/components/filters/playerTiersFilte
 import { PlayerRolesFilter } from '../common/components/filters/playerRoleFilter';
 import * as Containers from "../common/components/containers";
 import { DistributionCurves } from './charts/distributionCurve';
+import { Overlay } from '../common/components/overlay';
   
 
 export function Charts() {
@@ -35,13 +36,16 @@ export function Charts() {
     const filteredBySearchPlayers = filters.length > 0 ? filteredByRole.filter( player => filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ))) : filteredByRole;
 
     const statPropertyOptions = [
-        { label: "HeadShot %", value: "hs"},
+        { label: "Rating", value: "rating"},
+        { label: "Avg Damage/Round", value: "adr"},
+        { label: "Kill Assists", value: "assists"},
+        { label: "Kill/Assists/Surivived/Traded (KAST)", value: "kast"},
+        { label: "Multi Kill Rounds", value: "multiR"},
+        { label: "Headshot %", value: "hs"},
         { label: "Util Thrown per Match", value: "util"},
         { label: "Util Damage per Match", value: "utilDmg"},
         { label: "Average Damage per Round", value: "adr"},
         { label: "Flash Assists", value: "fAssists"},
-        { label: "Multi Kill Rounds", value: "multiR"},
-        { label: "Kill/Assists/Surivived/Traded", value: "kast"},
         { label: "Trade Kill Ratio", value: "tRatio"},
     ];
 
@@ -104,8 +108,7 @@ export function Charts() {
 
     return (
         <Container>
-            <div>
-                
+            <div>        
             <ul className="mb-5 flex justify-center list-none flex-row flex-wrap border-b-0 pl-0" role="tablist" data-te-nav-ref>
                 { tabs.map( (tab, index) => (
                      <li role="presentation" key={index}>
@@ -167,22 +170,25 @@ export function Charts() {
                     </div>     
                 </Containers.StandardContentThinBox>
             
-                <div className=""> 
-                    { currentTab === 0 && <div
-                        className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                <div> 
+                    { currentTab === 0 && 
+                    <div
+                        className="relative transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                         id="tabs-home"
                         role="tabpanel"
                         aria-labelledby="tabs-home-tab"
                         data-te-tab-active>
+                        <Overlay condition={(filteredBySearchPlayers[0].mmr || 0) < 1} message={<><div>This chart is not very useful without MMR. </div><div>Please check back closer to the draft when MMR is released publicly.</div></>}/>
                         <CartesianCompare playerData={filteredBySearchPlayers} />
                     </div>
                     }
                      { currentTab === 1 && <div
-                            className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                            className="relative transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                             id="tabs-home"
                             role="tabpanel"
                             aria-labelledby="tabs-home-tab"
                             data-te-tab-active>
+                            <Overlay condition={(filteredBySearchPlayers[0].mmr || 0) < 1} message={<><div>This chart is not very useful without MMR. </div><div>Please check back closer to the draft when MMR is released publicly.</div></>}/>
                             <DistributionCurves playerData={filteredBySearchPlayers} />
                         </div>
                     }
@@ -205,29 +211,31 @@ export function Charts() {
                         </Containers.ChartButtonBoundingBox>
                     </div>
                     }
-                    { currentTab === 3 && <div
-                        className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-                        id="tabs-messages"
-                        role="tabpanel"
-                        aria-labelledby="tabs-profile-tab">
-                        <RolePieChart playerData={filteredBySearchPlayers} />
-                    </div>
+                    { currentTab === 3 && 
+                        <div
+                            className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                            id="tabs-messages"
+                            role="tabpanel"
+                            aria-labelledby="tabs-profile-tab">
+                            <RolePieChart playerData={filteredBySearchPlayers} />
+                        </div>
                     }
-                    { currentTab === 4 && <div
-                        className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-                        id="tabs-contact"
-                        role="tabpanel"
-                        aria-labelledby="tabs-contact-tab">
-                        <RoleByTierBarChart playerData={filteredBySearchPlayers} />
-                    </div>
+                    { currentTab === 4 && 
+                        <div
+                            className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                            id="tabs-contact"
+                            role="tabpanel"
+                            aria-labelledby="tabs-contact-tab">
+                            <RoleByTierBarChart playerData={filteredBySearchPlayers} />
+                        </div>
                     }
-                    {
-                        currentTab === 5 && <div
-                        className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-                        id="tabs-correlation"
-                        role="tabpanel"
-                        aria-labelledby="tabs-correlation-tab">
-                        <CorrelationByTier playerData={filteredBySearchPlayers} />
+                    {currentTab === 5 && 
+                        <div
+                            className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                            id="tabs-correlation"
+                            role="tabpanel"
+                            aria-labelledby="tabs-correlation-tab">
+                            <CorrelationByTier playerData={filteredBySearchPlayers} />
                         </div>
                     }
                 </div>
