@@ -10,7 +10,7 @@ import { franchiseImages } from "../common/images/franchise";
 export const COLUMNS = 4;
 
 export function Franchise(){
-    const { players, franchises = [], loading } = useDataContext();
+    const { players, franchises = [], seasonAndTierConfig, loading } = useDataContext();
     const [, params] = useRoute("/franchises/:franchiseName");
     const franchiseName = decodeURIComponent(params?.franchiseName ?? "");
     const currentFranchise = franchises.find( f => f.name === franchiseName);
@@ -62,7 +62,7 @@ export function Franchise(){
                                 <div key={`${team.tier.name}`} className="">
                                     <Link to={`/franchises/${currentFranchise.name}/${team.name}`}>
                                         <div className="m-2 border-b-[1px] hover:cursor-pointer hover:text-sky-400 transition ease-in-out hover:-translate-y-1 duration-300">
-                                            <h2 className="text-xl"><strong>{team.name}</strong> <span className="text-gray-400"><i>{team.tier.name} { false && <span className="text-xs">({team.players.reduce((cum,player) => cum + player.mmr, 0)}/{team.tier.mmrCap})</span>} </i></span></h2>
+                                            <h2 className="text-xl w-full"><div className="inline font-extrabold">{team.name}</div> <span className={`text-gray-400 italic text-${ seasonAndTierConfig?.league?.leagueTiers?.find( item => item.tier.name === team.tier.name)?.tier.color ?? ""}-400`}>{team.tier.name} { false && <span className="text-xs">({team.players.reduce((cum,player) => cum + player.mmr, 0)}/{team.tier.mmrCap})</span>}</span></h2>
                                         </div>
                                     </Link>
                                     <div className="mx-4 px-2">

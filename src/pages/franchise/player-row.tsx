@@ -19,7 +19,7 @@ export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: Franchis
     return (
         <div className="m-2 h-16 text-sm lg:text-m">
             <div className={`flex flex-row`}>
-                <Link className="basis-5/12 hover:cursor-pointer hover:text-sky-400 transition ease-in-out hover:-translate-x-1 duration-300" 
+                <Link className="basis-1/3 hover:cursor-pointer hover:text-sky-400 transition ease-in-out hover:-translate-x-1 duration-300" 
                     key={`${team.tier.name}-${franchisePlayer.name}`} 
                     to={`/players/${franchisePlayer.name}`}
                 >
@@ -31,12 +31,12 @@ export function PlayerRow( { franchisePlayer, team }: {franchisePlayer: Franchis
                         { player?.type === PlayerTypes.TEMPSIGNED || player?.type === PlayerTypes.PERMFA_TEMP_SIGNED ? <GiSubmarine size="1.5em" className="inline"/> : ""}
                         { player?.type === PlayerTypes.INACTIVE_RESERVE ? <BsLifePreserver size="1.5em" className="inline"/> : ""}
                     </span>
+                    <div className="italic w-full pl-12 text-sm">{player?.role}</div>
                 </Link>
-                <div className="basis-1/6">{player?.role}</div>
                 <div className="basis-1/6"><div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/><Mmr player={franchisePlayer} /></div> <div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player?.stats?.rating.toFixed(2) ?? "-"}</div></div>
                 <div className="basis-1/12 w-7 h-7"><FaceitRank player={player} /></div>
                 <div className="basis-1/12 text-sm">{player?.contractDuration}<IoDocumentTextOutline className="inline mx-1" /></div>
-                <div className="basis-1/12">
+                <div className="basis-2/12">
                     <ExternalPlayerLinks player={player!} />
                 </div>
             </div>
