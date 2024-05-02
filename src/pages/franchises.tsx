@@ -12,7 +12,16 @@ import { PlayerTypes } from "../common/utils/player-utils";
 
 export function Franchises() {
     const konami = useKonamiCode();
-    const { franchises = [], players = [], loading } = useDataContext();
+    const { franchises = [], players = [], seasonAndTierConfig, loading } = useDataContext();
+
+    const tierNumber = {
+		Recruit: 1,
+		Prospect: 2,
+		Contender: 3,
+		Challenger: 4,
+		Elite: 5,
+		Premier: 6
+	}
     
     return (
         <Container>
@@ -48,10 +57,10 @@ export function Franchises() {
                                       
                                     </div>
                                     <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 p-1 text-sm text-gray-300">
-                                        { franchise.teams.map( team =>      
+                                        { franchise.teams.sort((a,b) => (tierNumber[b.tier.name as keyof typeof tierNumber]) - tierNumber[a.tier.name as keyof typeof tierNumber]).map( team =>      
                                             <div key={`${team.tier.name}`}>
                                                 <div className="mx-4 border-b-[1px] border-slate-700 text-center">
-                                                    <strong>{team.name}</strong> <span className="text-gray-400"><i>{team.tier.name} { konami && <span className="text-xs"> ({team.players.reduce((cum,player) => cum + player.mmr, 0)}/{team.tier.mmrCap})</span>} </i></span>
+                                                    <strong>{team.name}</strong> <span className={`text-gray-400 italic text-${ seasonAndTierConfig?.league?.leagueTiers?.find( item => item.tier.name === team.tier.name)?.tier.color ?? ""}-400`}>{team.tier.name} { konami && <span className="text-xs"> ({team.players.reduce((cum,player) => cum + player.mmr, 0)}/{team.tier.mmrCap})</span>}</span>
                                                 </div>
                                                 <div className="mx-4 px-2">
                                                 { team.players.map( player => {
