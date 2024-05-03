@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Card } from "./card";
+import { Card } from "../../common/components/card";
 import { Player } from "../../models";
 import { Link } from "wouter";
 
@@ -12,7 +12,7 @@ type Props = {
     }[]
 }
 
-export function LeaderBoard( { title, rows, header = true }: Props ){
+export function StatsLeaderBoard( { title, rows, header = true }: Props ){
     return (
         <div className="basis-1/4 grow">
             <Card>

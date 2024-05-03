@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
-import { LeaderBoard } from "../common/components/leaderboard";
+import { StatsLeaderBoard } from "./leaderboards/stats";
 import { useDataContext } from "../DataContext";
 import { _sort } from "../common/utils/player-utils";
 import Select, { SingleValue } from "react-select";
@@ -167,23 +167,23 @@ export function LeaderBoards() {
                 <div className="flex flex-row flex-wrap gap-6">
                     { selectedPage === "stats" &&
                     <>
-                        <LeaderBoard title="Games Played" rows={gamesPlayed}/>
-                        <LeaderBoard title="Most Kills" rows={kills}/>
-                        <LeaderBoard title="Highest K/D Ratio" rows={killDeathRatio}/>
-                        <LeaderBoard title="Most Aces" rows={aces}/>
-                        <LeaderBoard title=" Damager Per Round" rows={damagePerRound}/>
-                        <LeaderBoard title="Flash Assists per Match" rows={fAssists}/>
-                        <LeaderBoard title="Awp Kills per Round" rows={awpKillsPerRound}/>
-                        <LeaderBoard title="Utility Damage per Match" rows={utilDamagePerMatch}/>
-                        <LeaderBoard title="CT-Side Rating" rows={ctRating}/>
-                        <LeaderBoard title="T-Side Rating" rows={tRating}/>
-                        <LeaderBoard title="Kill/Asset/Survived/Traded" rows={kastPercentage}/>
-                        <LeaderBoard title="Utility Thrown Per Match" rows={utilThrownPerMatch}/>
-                        <LeaderBoard title="Least Utility Thrown Per Match" rows={leastUtilThrownPerMatch}/>
-                        <LeaderBoard title="Highest Headshot Percentage" rows={headshotPercentage}/>
-                        <LeaderBoard title="Clutch Points Average per Match" rows={clutchAbility}/>                                     
-                        <LeaderBoard title="Open Duels Per Round" rows={openDuels}/>                   
-                        <LeaderBoard title="Enemies Flashed per Match" rows={ef}/>
+                        <StatsLeaderBoard title="Games Played" rows={gamesPlayed}/>
+                        <StatsLeaderBoard title="Most Kills" rows={kills}/>
+                        <StatsLeaderBoard title="Highest K/D Ratio" rows={killDeathRatio}/>
+                        <StatsLeaderBoard title="Most Aces" rows={aces}/>
+                        <StatsLeaderBoard title=" Damager Per Round" rows={damagePerRound}/>
+                        <StatsLeaderBoard title="Flash Assists per Match" rows={fAssists}/>
+                        <StatsLeaderBoard title="Awp Kills per Round" rows={awpKillsPerRound}/>
+                        <StatsLeaderBoard title="Utility Damage per Match" rows={utilDamagePerMatch}/>
+                        <StatsLeaderBoard title="CT-Side Rating" rows={ctRating}/>
+                        <StatsLeaderBoard title="T-Side Rating" rows={tRating}/>
+                        <StatsLeaderBoard title="Kill/Asset/Survived/Traded" rows={kastPercentage}/>
+                        <StatsLeaderBoard title="Utility Thrown Per Match" rows={utilThrownPerMatch}/>
+                        <StatsLeaderBoard title="Least Utility Thrown Per Match" rows={leastUtilThrownPerMatch}/>
+                        <StatsLeaderBoard title="Highest Headshot Percentage" rows={headshotPercentage}/>
+                        <StatsLeaderBoard title="Clutch Points Average per Match" rows={clutchAbility}/>                                     
+                        <StatsLeaderBoard title="Open Duels Per Round" rows={openDuels}/>                   
+                        <StatsLeaderBoard title="Enemies Flashed per Match" rows={ef}/>
                     </>
                     }
                     { selectedPage === "weapons" &&

@@ -29,6 +29,7 @@ import { tiers } from "../common/constants/tiers";
 import { PlayerMatchHistory } from "./player/matchHistory";
 import { TiWarningOutline } from "react-icons/ti";
 import { Exandable } from "../common/components/containers/Expandable";
+import { Hitbox } from "./player/hitbox";
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
@@ -214,17 +215,11 @@ export function Player() {
                         <div className="m-2 p-2"><div>{key}</div><div className="text-center">{String(value)}</div></div>
                     ))}
                 </div>
-                <div className="flex flex-row flex-wrap">
-                    <div>HITBOX</div>
-                    { Object.entries(currentPlayer.extendedStats.hitboxTags).map( ([key,value]) => (
-                        <div className="m-2 p-2">
-                            <div className="text-center">{value}</div>
-                            <div className="text-sm">{key}</div>
-                        </div>
-                    ))}
-                </div>
             </Exandable>
             }
+            <Exandable title="HITBOXES">
+                <Hitbox hitboxTags={currentPlayer.extendedStats.hitboxTags} />
+            </Exandable>
             <br />
             <PlayerMatchHistory player={currentPlayer} />
             <br />

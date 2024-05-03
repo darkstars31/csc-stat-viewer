@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Player } from "../../models";
-import { LeaderBoard } from "../../common/components/leaderboard";
+import { StatsLeaderBoard } from "./stats";
 import { WeaponKills } from "../../models/extended-stats";
 
 
@@ -45,7 +45,7 @@ export function WeaponLeaderboards( { players, limit }: { players: Player[], lim
 
     return (
         <>
-            { weaponLeaderBoards.map( (board) => <LeaderBoard key={board.title} title={board.title} rows={board.rows} /> ) }
+            { weaponLeaderBoards.map( (board) => <StatsLeaderBoard key={board.title} title={board.title} rows={board.rows} /> ) }
         </>
     );
 }
