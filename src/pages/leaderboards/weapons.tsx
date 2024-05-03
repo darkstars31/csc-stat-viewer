@@ -39,7 +39,7 @@ export function WeaponLeaderboards( { players, limit }: { players: Player[], lim
         ];
 
     const weaponLeaderBoards = weaponStrings.map( (weapon) => {
-        const board = players.sort( (a, b) => (b?.extendedStats.weaponKills[weapon as keyof WeaponKills] ?? 0) - (a.extendedStats?.weaponKills[weapon as keyof WeaponKills] ?? 0) ).slice(0, limit);
+        const board = players.filter((p) => p.extendedStats).sort( (a, b) => (b?.extendedStats.weaponKills[weapon as keyof WeaponKills] ?? 0) - (a.extendedStats?.weaponKills[weapon as keyof WeaponKills] ?? 0) ).slice(0, limit);
         return { title: weapon, rows: board.map( (player) => { return { player, value: player.extendedStats?.weaponKills[weapon as keyof WeaponKills] ?? 0 } }) };
     })
 
