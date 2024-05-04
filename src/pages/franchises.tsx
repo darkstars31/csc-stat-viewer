@@ -22,6 +22,15 @@ export function Franchises() {
 		Elite: 5,
 		Premier: 6
 	}
+
+    const teamCounts = {
+        recruit: franchises.reduce( (acc,franchise) => acc + (franchise.teams?.find( t => t.tier.name === 'Recruit') ? 1 : 0), 0),
+        prospect: franchises.reduce( (acc,franchise) => acc + (franchise.teams?.find( t => t.tier.name === 'Prospect') ? 1 : 0), 0),
+        contender: franchises.reduce( (acc,franchise) => acc + (franchise.teams?.find( t => t.tier.name === 'Contender') ? 1 : 0), 0),
+        challenger: franchises.reduce( (acc,franchise) => acc + (franchise.teams?.find( t => t.tier.name === 'Challenger') ? 1 : 0), 0),
+        elite: franchises.reduce( (acc,franchise) => acc + (franchise.teams?.find( t => t.tier.name === 'Elite') ? 1 : 0), 0),
+        premier: franchises.reduce( (acc,franchise) => acc + (franchise.teams?.find( t => t.tier.name === 'Premier') ? 1 : 0), 0),
+    }
     
     return (
         <Container>
@@ -30,6 +39,26 @@ export function Franchises() {
                 <p className="mt-4 text-gray-300">
                     Current Teams and players on those teams + roles.
                 </p>
+            </div>
+            <div className="flex flex-row gap-4 m-auto text-center text-xs">
+                <div className="grow">
+                    <div className={`font-bold`}>
+                       Franchises
+                    </div>
+                    <div>
+                        {franchises.length}
+                    </div>
+                </div> 
+                {Object.keys(teamCounts).reverse().map( (key) => 
+                <div className="grow">
+                    <div className={`font-bold capitalize text-${ seasonAndTierConfig?.league?.leagueTiers?.find( item => item.tier.name.toLowerCase() === key)?.tier.color ?? ""}-400`}>
+                        {key}
+                    </div>
+                    <div>
+                        {teamCounts[key as keyof typeof teamCounts] ?? 0} Teams
+                    </div>
+                </div> 
+                )}
             </div>
             { loading.isLoadingFranchises && <Loading /> }
             {
