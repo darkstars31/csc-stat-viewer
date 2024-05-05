@@ -84,7 +84,7 @@ export function PlayerComparison() {
                 <PlayerCompareRadar 
                     selectedPlayers={Array.from(selectedPlayers.values()).map( p => p.value)} 
                     tier={Array.from(selectedPlayers.values()).map( p => p.value)[0]?.tier.name ?? "Contender"} 
-                    statOptions={["rating","kast","adr","kr","hs"]} 
+                    statOptions={["rating","pit","kast","adr","kr","hs"]} 
                     startAngle={90}
                 />
                 <PlayerCompareRadar 
