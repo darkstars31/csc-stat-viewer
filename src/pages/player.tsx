@@ -36,7 +36,11 @@ export function Player() {
     const { players = [], franchises = [], loading } = useDataContext();
     const [, params] = useRoute("/players/:id");
     const nameParam = decodeURIComponent(params?.id ?? "");
-    const currentPlayer = players.find( p => p.name === nameParam);
+    const nameFromUrl = window.location.href.split("/").pop();
+    if(nameFromUrl?.includes("?")){
+        console.warn( "Player URL contains a query string '?'. This should not be allowed, but unfortunately it is.")
+    }
+    const currentPlayer = players.find( p => p.name === nameParam || p.name === nameFromUrl );
     const currentPlayerStats = currentPlayer?.stats;
 
     React.useEffect(() => {
@@ -48,10 +52,8 @@ export function Player() {
     }
 
     if( !currentPlayer ){
-        return <Container>x</Container>;
+        return <Container>An error occured. Player could not found. Please inform Camps of this error.</Container>;
     }
-
-    console.info( currentPlayer.extendedStats)
 
     const teamAndFranchise = currentPlayer?.team?.franchise ? `${currentPlayer?.team?.franchise.name} (${currentPlayer?.team?.franchise.prefix}) > ${currentPlayer?.team?.name}` : teamNameTranslator(currentPlayer);
     const teammates = getTeammates( currentPlayer, players, franchises);
