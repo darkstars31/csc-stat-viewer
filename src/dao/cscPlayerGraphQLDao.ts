@@ -13,6 +13,7 @@ const fetchGraph = async ( playerType: keyof typeof PlayerTypes ) => await fetch
             "operationName": "",
             "query": `query CscPlayers ( $playerType: PlayerTypes) {
                 players ( type: $playerType ) {
+                    id
                     steam64Id
                     name
                     discordId
