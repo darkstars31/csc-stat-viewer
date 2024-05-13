@@ -6,18 +6,20 @@ import { Link } from "wouter";
 type Props = {
     title: string,
     header?: boolean,
+    headerImage?: string,
     rows: {
         player: Player,
         value: string | number, //Record<string, React.ReactNode | string | number | null | undefined>[]
     }[]
 }
 
-export function StatsLeaderBoard( { title, rows, header = true }: Props ){
+export function StatsLeaderBoard( { title, rows, header = true, headerImage }: Props ){
     return (
         <div className="basis-1/4 grow">
             <Card>
                 <div className="text-center text-xl uppercase font-extrabold m-4">
                     {title}
+                    { headerImage && <div className="ml-4 w-24 h-24 mx-auto inline"><img className="inline" src={headerImage} alt="Header" /></div> }
                 </div>
                 <div className="overflow-hidden overflow-x-auto rounded">
                     <table className="table-auto min-w-full text-sm">
@@ -38,7 +40,7 @@ export function StatsLeaderBoard( { title, rows, header = true }: Props ){
                                     <td>                                   
                                         <div className="relative pl-2 font-xl font-bold truncate hover:text-blue-400">
                                             <Link to={`/players/${encodeURIComponent(row.player.name)}`}>
-                                            <img className="inline h-12 w-12 rounded-full mr-2" src={row.player.avatarUrl} alt="Player Discord Profile" />                                      
+                                            <img className="inline h-12 w-12 rounded-full mr-2" src={row.player.avatarUrl} alt="Discord Avatar" />                                      
                                                 {row.player.name}
                                             </Link>
                                         </div>                                                                      

@@ -30,6 +30,7 @@ import { PlayerMatchHistory } from "./player/matchHistory";
 import { TiWarningOutline } from "react-icons/ti";
 import { Exandable } from "../common/components/containers/Expandable";
 import { Hitbox } from "./player/hitbox";
+import { PlayerWeaponsExtended } from "./player/weapons-extended";
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
@@ -214,17 +215,14 @@ export function Player() {
                         ))}
                     </div>
                     <div className="flex flex-row flex-wrap">
-                        <div>WEAPONS TYPES</div>
-                        { Object.entries(currentPlayer.extendedStats.weaponKillSubTypes).map( ([key,value]) => (
-                            <div className="m-2 p-2"><div>{key}</div><div className="text-center">{String(value)}</div></div>
-                        ))}
-                    </div>
-                    <div className="flex flex-row flex-wrap">
                         <div>WEAPONS</div>
                         { Object.entries(currentPlayer.extendedStats.weaponKills).map( ([key,value]) => (
                             <div className="m-2 p-2"><div>{key}</div><div className="text-center">{String(value)}</div></div>
                         ))}
                     </div>
+                </Exandable>
+                <Exandable title="Weapons">
+                    <PlayerWeaponsExtended extendedStats={currentPlayer?.extendedStats} />
                 </Exandable>
                 <Exandable title="HITBOXES">
                     <Hitbox hitboxTags={currentPlayer?.extendedStats.hitboxTags} />

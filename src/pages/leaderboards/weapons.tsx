@@ -2,6 +2,7 @@ import * as React from "react";
 import { Player } from "../../models";
 import { StatsLeaderBoard } from "./stats";
 import { WeaponKills } from "../../models/extended-stats";
+import { cs2icons } from "../../common/images/cs2icons";
 
 
 export function WeaponLeaderboards( { players, limit }: { players: Player[], limit: number } ) {
@@ -15,6 +16,7 @@ export function WeaponLeaderboards( { players, limit }: { players: Player[], lim
         "Galil AR", 
         "FAMAS",
         "AUG",
+        "SG 553",
         "AWP",
         "SSG 08",
         "Desert Eagle", 
@@ -25,13 +27,20 @@ export function WeaponLeaderboards( { players, limit }: { players: Player[], lim
         "Five-SeveN",
         "Tec-9", 
         "Dual Berettas",
+        "CZ75 Auto",
         "R8 Revolver",
         "MP5-SD",
         "MP7",
         "MP9",
+        "UMP-45",
+        "P90",
+        "PP-Bizon",
         "XM1014",
         "Nova",
+        "Sawed-Off",
+        "MAG-7",
         "MAC-10",
+        "M249",
         "Negev",
         "Incendiary Grenade",
         "Molotov",
@@ -45,7 +54,7 @@ export function WeaponLeaderboards( { players, limit }: { players: Player[], lim
 
     return (
         <>
-            { weaponLeaderBoards.map( (board) => <StatsLeaderBoard key={board.title} title={board.title} rows={board.rows} /> ) }
+            { weaponLeaderBoards.map( (board) => <StatsLeaderBoard key={board.title} title={board.title} headerImage={cs2icons[board.title]} rows={board.rows} /> ) }
         </>
     );
 }

@@ -8,11 +8,11 @@ import { useCscStatsGraph } from "./dao/cscStatsGraphQLDao";
 import { PlayerTypes, calculateHltvTwoPointOApproximationFromStats, determinePlayerRole } from "./common/utils/player-utils";
 import { DiscordUser } from "./models/discord-users";
 import { useCscSeasonAndTiersGraph } from "./dao/cscSeasonAndTiersDao";
-import extendStats from "./assets/json/extendedStats.json";
 import { ExtendedStats } from "./models/extended-stats";
  
 const useDataContextProvider = () => {
 	const [ discordUser, setDiscordUser ] = React.useState<DiscordUser | null>(null);
+	const [ extendStats, setExtendStats ] = React.useState<ExtendedStats | null>(null);
 	const [ selectedDataOption, setSelectedDataOption ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: dataConfiguration[0].name, value: dataConfiguration[0].name });
 	const dataConfig = dataConfiguration.find( item => selectedDataOption?.value === item.name);
 
@@ -42,6 +42,14 @@ const useDataContextProvider = () => {
 
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
 
+	React.useEffect(() => {
+		const fetchData = async () => {
+			const extendedStatsResult = await fetch(`./extendedStats.json`).then( (response) => response.json() );
+			setExtendStats(extendedStatsResult as unknown as ExtendedStats);
+		};
+		fetchData();
+	}, []);
+
 	const cscPlayers = [
 		...cscSignedPlayers, 
 		...cscFreeAgentsPlayers, 
@@ -70,8 +78,6 @@ const useDataContextProvider = () => {
 
 	//const players: Player[] = cscPlayers.map( cscPlayer => ({ ...cscPlayer, stats: stats.find( stats => (stats.name === cscPlayer?.name)) }));
 
-	let totalChickenKills = 0;
-
 	const players: Player[] = cscPlayers?.reduce( (acc,cscPlayer) => {
 		const statsByTier = [
 			{ tier: "Recruit", stats: cscStatsRecruit.find( stats => (stats.name === cscPlayer?.name)) },
@@ -92,7 +98,7 @@ const useDataContextProvider = () => {
 				role = "ECO FRAGGER";
 			}
 
-			const extendedStats = extendStats.extended.find( (stats: { name: string; }) => stats.name === cscPlayer?.name) as ExtendedStats;
+			const extendedStats = extendStats?.extended.find( (stats: { name: string; }) => stats.name === cscPlayer?.name) as ExtendedStats;
 
 			acc.push( { ...cscPlayer,
 				hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
@@ -143,8 +149,6 @@ const useDataContextProvider = () => {
     // a.setAttribute('href', url)
     // a.setAttribute('download', 'PlayersWithStats.csv');
     // a.click()
-
-	console.info( totalChickenKills );
 
     return {
 		discordUser, setDiscordUser,

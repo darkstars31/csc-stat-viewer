@@ -9,7 +9,6 @@ import { HeaderNotifications } from './notifications';
 import { HeaderProfile } from './profile';
 import { NotificationsProvider } from '../NotificationsContext';
 import { ToolsDropdown } from './tools-dropdown';
-import chicken from "../assets/images/chicken.png";
 
 
 function classNames(...classes: string[]) {
@@ -40,7 +39,7 @@ export function Header() {
 	const navigation = [
 		//{ name: 'Home', href: '/', current: location.endsWith("/") },
 		//{ name: 'Charts', href: '/charts', current: location.endsWith("/charts") || location.endsWith("/") },
-		{ name: <div className='h-2 w-8 flex justify-center items-center pt-2'><img src={chicken} alt="Chickens" /></div>, href: "/", current: location === "https://analytikill.com/"},
+		//{ name: <div className='h-2 w-8 flex justify-center items-center pt-2'><img src={chicken} alt="Chickens" /></div>, href: "/", current: location === "https://analytikill.com/"},
 		{ name: 'Franchises', href: '/franchises', current: location.includes("franchises") },
 		{ name: 'Standings', href: '/Standings', current: location.endsWith("/Standings") },
 		{ name: 'Players', href: '/players', current: location.includes("players") },

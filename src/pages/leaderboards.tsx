@@ -9,6 +9,7 @@ import { Player } from "../models/player";
 import { CscStats } from "../models/csc-stats-types";
 import { WeaponLeaderboards } from "./leaderboards/weapons";
 import { useLocation } from "wouter";
+import { Chickens } from "./leaderboards/chickens";
 
 function buildTableRow( player: Player, columnName: string, property: keyof CscStats ){
     return { player, value: player.stats[property]};
@@ -19,7 +20,7 @@ export function LeaderBoards() {
     const q = qs.get("q");
     const [, setLocation ] = useLocation();
     const { players = [], loading } = useDataContext();
-    const [ selectedPage, setSelectedPage ] = React.useState<string>(q ?? "stats");
+    const [ selectedPage, setSelectedPage ] = React.useState<string>(q ?? "general");
     const [ filterBy, setFilterBy ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: `All`, value: "All"});
     const [ limit, setLimit ] = React.useState<number>(5);
     
@@ -92,7 +93,8 @@ export function LeaderBoards() {
     ];
 
     const pages = [
-        { name: "Stats", color: 'yellow'},
+        { name: "General", color: 'yellow'},
+        { name: "Extended", color: 'cyan'},
         { name: "Weapons", color: 'green'},
     ];
 
@@ -165,7 +167,7 @@ export function LeaderBoards() {
             { playerData.length > 0 && 
             <div className="pt-6">
                 <div className="flex flex-row flex-wrap gap-6">
-                    { selectedPage === "stats" &&
+                    { selectedPage === "general" &&
                     <>
                         <StatsLeaderBoard title="Games Played" rows={gamesPlayed}/>
                         <StatsLeaderBoard title="Most Kills" rows={kills}/>
@@ -185,6 +187,9 @@ export function LeaderBoards() {
                         <StatsLeaderBoard title="Open Duels Per Round" rows={openDuels}/>                   
                         <StatsLeaderBoard title="Enemies Flashed per Match" rows={ef}/>
                     </>
+                    }
+                    { selectedPage === "extended" && 
+                        <Chickens players={playerData} limit={limit} />
                     }
                     { selectedPage === "weapons" &&
                         <WeaponLeaderboards players={playerData} limit={limit} />
