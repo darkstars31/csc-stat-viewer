@@ -205,19 +205,13 @@ export function Player() {
                     <div className="flex flex-row flex-wrap">
                         <div>PISTOL ROUND</div>
                         { Object.entries(currentPlayer.extendedStats.averages).map( ([key,value]) => (
-                            <div className="m-2 p-2"><div>{key}</div><div className="text-center">{String(value)}</div></div>
+                            <div className="m-2 p-2"><div>{key}</div><div className="text-center">{String(value.toFixed(2))}</div></div>
                         ))}
                     </div>
                     <div className="flex flex-row flex-wrap">
                         <div>FLASH AVERAGES</div>
                         { Object.entries(currentPlayer.extendedStats.durationAverages).map( ([key,value]) => (
-                            <div className="m-2 p-2"><div>{key}</div><div className="text-center">{String(value)}</div></div>
-                        ))}
-                    </div>
-                    <div className="flex flex-row flex-wrap">
-                        <div>WEAPONS</div>
-                        { Object.entries(currentPlayer.extendedStats.weaponKills).map( ([key,value]) => (
-                            <div className="m-2 p-2"><div>{key}</div><div className="text-center">{String(value)}</div></div>
+                            <div className="m-2 p-2"><div>{key}</div><div className="text-center">{String(value.toFixed(2))}</div></div>
                         ))}
                     </div>
                 </Exandable>
