@@ -17,9 +17,9 @@
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "papaparse": "^5.4.1",
-    "react": "^18.2.0",
+    "react": "^18.3.1",
     "react-data-table-component": "^7.5.3",
-    "react-dom": "^18.2.0",
+    "react-dom": "^18.3.1",
     "react-draft-wysiwyg": "^1.15.0",
     "react-for-echarts": "^1.0.0",
     "react-ga4": "^2.1.0",
@@ -80,10 +80,10 @@
     "ts-loader": "^9.4.4",
     "tw-elements": "^1.0.0-beta2",
     "typescript": "^4.9.5",
-    "webpack": "^5.88.1",
+    "webpack": "^5.91.0",
     "webpack-bundle-analyzer": "^4.9.0",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1",
+    "webpack-dev-server": "^5.0.4",
     "workbox-webpack-plugin": "^7.0.0"
   }
 }

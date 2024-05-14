@@ -1,7 +1,8 @@
 import * as React from "react";
 import { useDataContext } from "../../DataContext";
+import { get } from "lodash";
 
-const isIn = (evaluate?: string, array?: string | string[]) => (Array.isArray(array) ? array : [array]).map( i => atob(i ?? "")).includes(evaluate || "");
+const isIn = ( obj?: Record<string,any>, evaluate?: string, array?: string | string[]) => (Array.isArray(array) ? array : [array]).map( i => atob(i ?? "")).includes( get(obj, evaluate ?? "") || "");
 
 
 export const useEnableFeature = ( featureString: string ) => {
@@ -10,7 +11,7 @@ export const useEnableFeature = ( featureString: string ) => {
 
     React.useEffect(() => {
         const rules = [
-            { name: "canUsePlayerComparison", function: () => isIn( loggedinUser?.team?.franchise.prefix, 'V0VU') || isIn( loggedinUser?.steam64Id, ['NzY1NjExOTgxNjk5MzM4Nzg=','NzY1NjExOTc5ODcwMTU0NjA=','NzY1NjExOTgxMDcxNTY4MjA=','NzY1NjExOTc5ODcwMTU0NTg='])},
+            { name: "canUsePlayerComparison", function: () => isIn( loggedinUser, "team.franchise.prefix", 'V0VU') || isIn( loggedinUser, "steam64Id", ['NzY1NjExOTgxNjk5MzM4Nzg=','NzY1NjExOTc5ODcwMTU0NjA=','NzY1NjExOTgxMDcxNTY4MjA=','NzY1NjExOTc5ODcwMTU0NTg='])},
         ];
     
         const rule = rules.find( r => r.name === featureString );

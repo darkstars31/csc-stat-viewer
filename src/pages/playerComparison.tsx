@@ -12,11 +12,10 @@ import { useEnableFeature } from "../common/hooks/enableFeature";
 
 export function PlayerComparison() {
     const qs = new URLSearchParams(window.location.search);
-    const playersFromUrl = qs.get("players");
+    const playersFromUrl = qs.get("players") ?? "";
     const [ selectedPlayers, setSelectedPlayers ] = React.useState<MultiValue<{label: string; value: Player;}>>([]);
     const { players = [], isLoading } = useDataContext();
     const enabled = useEnableFeature("canUsePlayerComparison");
-
     
     React.useEffect(() => {
         if( playersFromUrl ) {
@@ -30,6 +29,15 @@ export function PlayerComparison() {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    React.useEffect(() => {
+        if( selectedPlayers.length > 0) {
+            const url = new URL(window.location.href);
+            url.searchParams.set("players", decodeURIComponent(selectedPlayers.map( p => p.value.name ).join(",")));
+            window.history.pushState(null, "", url);
+        }
+    }, [ selectedPlayers ]);
+
 
     if( isLoading ){
         return <Container><Loading /></Container>
