@@ -1,19 +1,14 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
-import { StatsLeaderBoard } from "./leaderboards/stats";
 import { useDataContext } from "../DataContext";
-import { _sort } from "../common/utils/player-utils";
 import Select, { SingleValue } from "react-select";
-import { Player } from "../models/player";
-import { CscStats } from "../models/csc-stats-types";
 import { WeaponLeaderboards } from "./leaderboards/weapons";
 import { useLocation } from "wouter";
 import { Chickens } from "./leaderboards/chickens";
+import { GeneralLeaderBoards } from "./leaderboards/general";
+import { selectClassNames } from "../common/utils/select-utils";
 
-function buildTableRow( player: Player, columnName: string, property: keyof CscStats ){
-    return { player, value: player.stats[property]};
-}
 
 export function LeaderBoards() {
     const qs = new URLSearchParams(window.location.search);
@@ -27,43 +22,6 @@ export function LeaderBoards() {
     const player = players.filter( p => (p.stats?.gameCount ?? 0) >= 3);
     
     const playerData = filterBy?.value.includes("All") ? player : player.filter( f => f.tier.name.toLowerCase() === filterBy?.value.toLowerCase());
-      
-    const gamesPlayed = _sort(playerData, "stats.gameCount", limit, "desc").map( p => buildTableRow(p, "Games Played", "gameCount"));
-    const kills = _sort(playerData, "stats.kills", limit, "desc").map( p => ({ player: p, value: p.stats.kills}));
-    const killDeathRatio = playerData.sort( (a,b) => (a.stats.kills/a.stats.deaths) < (b.stats.kills/b.stats.deaths) ? 1 : -1).slice(0,limit).map( p => ({ player: p, value: (p.stats.kills/p.stats.deaths).toFixed(2)}));
-    const aces = playerData.sort( (a,b) => (a.stats["fiveK"]) < (b.stats["fiveK"]) ? 1 : -1).slice(0,limit).map( p => ({ player: p, value: p.stats["fiveK"] }));
-    const damagePerRound = _sort(playerData, "stats.adr", limit, "desc").map( p => ({ player: p, value: p.stats.adr.toFixed(2)}));
-    const awpKillsPerRound = _sort(playerData, "stats.awpR", limit, "desc").map( p => ({ player: p, value: p.stats["awpR"].toFixed(2)}));
-    const utilDamagePerMatch = _sort(playerData, "stats.utilDmg", limit, "desc").map( p => ({ player: p, value: p.stats.utilDmg.toFixed(2)}));
-    // const timeToDeath = _sort(playerData, "stats.atd", 5).map( p => ({ "Player": p.name,   "Time til Death (seconds)": p.ATD}));
-    const ctRating = _sort(playerData, "stats.ctRating", limit, "desc").map( p => ({ player: p, value: p.stats.ctRating.toFixed(2)}));
-    const tRating = _sort(playerData, "stats.TRating", limit, "desc").map( p => ({ player: p, value: p.stats.TRating.toFixed(2)}));
-    const kastPercentage = _sort(playerData, "stats.kast", limit, "desc").map( p => ({ player: p, value: p.stats.kast.toFixed(2)}));
-    const utilThrownPerMatchX = _sort(playerData, "stats.util",);
-    const utilThrownPerMatch = utilThrownPerMatchX.map( p => ({ player: p, value: p.stats.util})).reverse().splice(0,limit);
-    const leastUtilThrownPerMatch = utilThrownPerMatchX.map( p => ({ player: p, value: p.stats.util })).splice(0,limit);
-    const headshotPercentage = _sort(playerData, "stats.hs", limit, "desc").map( p => ({ player: p, value: p.stats.hs}));
-    const clutchAbility = _sort(playerData, "stats.clutchR", limit, "desc").map( p => ({ player: p, value: p.stats['clutchR'].toFixed(2)}));
-    // const grenadeDamagePerRound = _sort(playerData, "X/nade", 5).map( p => ({ "Player": p.name,   "Grenade Damage Per Round": p["Xnade"]}));
-    // const flashesPerFlash = _sort(playerData, "EF/F", 5).map( p => ({ "Player": p.name,   "Flashes per Flash Thrown": p["EF/F"]}));
-    const openDuels = _sort(playerData, "stats.odr", limit, "desc").map( p => ({ player: p, value: p.stats.odr.toFixed(2)}));
-    const fAssists = _sort(playerData, "stats.fAssists", limit, "desc").map( p => ({ player: p, value: p.stats.fAssists.toFixed(2)}));
-    const ef = _sort(playerData, "stats.ef", limit, "desc").map( p => ({ player: p, value: p.stats.ef.toFixed(2)}));
-
-    const selectClassNames = {
-        placeholder: () => "text-gray-400 bg-inherit",
-        container: () => "m-1 rounded bg-inherit",
-        control: () => "p-2 rounded-l bg-slate-700",
-        option: (state : { isDisabled: boolean }) => `${state.isDisabled ? 'text-gray-500' : ''} p-2 hover:bg-slate-900`,
-        input: () => "text-slate-200",
-        menu: () => "bg-slate-900",
-        menuList: () => "bg-slate-700",
-        multiValue: () => "bg-sky-700 p-1 mr-1 rounded",
-        multiValueLabel: () => "text-slate-200",
-        multiValueRemove: () => "text-slate-800 pl-1",
-        singleValue: () => "text-slate-200",
-        //valueContainer: () => "bg-slate-700",
-    };
 
     const tierButtonClass = "px-6 pb-2 pt-2.5 text-sm font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-blue-400 focus:bg-blue-400 focus:outline-none focus:ring-0 active:bg-blue-300";
 
@@ -168,25 +126,7 @@ export function LeaderBoards() {
             <div className="pt-6">
                 <div className="flex flex-row flex-wrap gap-6">
                     { selectedPage === "general" &&
-                    <>
-                        <StatsLeaderBoard title="Games Played" rows={gamesPlayed}/>
-                        <StatsLeaderBoard title="Most Kills" rows={kills}/>
-                        <StatsLeaderBoard title="Highest K/D Ratio" rows={killDeathRatio}/>
-                        <StatsLeaderBoard title="Most Aces" rows={aces}/>
-                        <StatsLeaderBoard title=" Damager Per Round" rows={damagePerRound}/>
-                        <StatsLeaderBoard title="Flash Assists per Match" rows={fAssists}/>
-                        <StatsLeaderBoard title="Awp Kills per Round" rows={awpKillsPerRound}/>
-                        <StatsLeaderBoard title="Utility Damage per Match" rows={utilDamagePerMatch}/>
-                        <StatsLeaderBoard title="CT-Side Rating" rows={ctRating}/>
-                        <StatsLeaderBoard title="T-Side Rating" rows={tRating}/>
-                        <StatsLeaderBoard title="Kill/Asset/Survived/Traded" rows={kastPercentage}/>
-                        <StatsLeaderBoard title="Utility Thrown Per Match" rows={utilThrownPerMatch}/>
-                        <StatsLeaderBoard title="Least Utility Thrown Per Match" rows={leastUtilThrownPerMatch}/>
-                        <StatsLeaderBoard title="Highest Headshot Percentage" rows={headshotPercentage}/>
-                        <StatsLeaderBoard title="Clutch Points Average per Match" rows={clutchAbility}/>                                     
-                        <StatsLeaderBoard title="Open Duels Per Round" rows={openDuels}/>                   
-                        <StatsLeaderBoard title="Enemies Flashed per Match" rows={ef}/>
-                    </>
+                        <GeneralLeaderBoards players={playerData} limit={limit} />
                     }
                     { selectedPage === "extended" && 
                         <Chickens players={playerData} limit={limit} />

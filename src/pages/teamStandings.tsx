@@ -71,10 +71,12 @@ function TeamRecordRow ({ team, index }: { team: any, index: number }) {
 }
 
 export function TeamStandings() {
+    const qs = new URLSearchParams(window.location.search);
+    const q = qs.get("q");
     const [, setLocation ] = useLocation();
     const queryParams = new URLSearchParams(useSearch());
     const { franchises = [], seasonAndTierConfig, dataConfig } = useDataContext();
-    const [ selectedTier, setSelectedTier ] = React.useState(queryParams.get("") || "Contender");
+    const [ selectedTier, setSelectedTier ] = React.useState(q ?? "Contender");
     
     const { data: matches = [], isLoading } = useCscSeasonMatches(selectedTier[0].toUpperCase() + selectedTier.slice(1), dataConfig?.season);
     const tieBreakers: string[] = [];
@@ -151,7 +153,7 @@ export function TeamStandings() {
                                 <button key={tier.name} 
                                     type="button" 
                                     onClick={() => { 
-                                        queryParams.set("", tier.name);
+                                        queryParams.set("q", tier.name);
                                         setLocation( window.location.pathname + '?' + queryParams.toString()); 
                                         setSelectedTier(tier.name)
                                     }}

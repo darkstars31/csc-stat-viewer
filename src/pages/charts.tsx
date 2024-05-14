@@ -16,13 +16,25 @@ import { PlayerRolesFilter } from '../common/components/filters/playerRoleFilter
 import * as Containers from "../common/components/containers";
 import { DistributionCurves } from './charts/distributionCurve';
 import { Overlay } from '../common/components/overlay';
+import { selectClassNames } from '../common/utils/select-utils';
   
 
 export function Charts() {
+
+    const tabs = [
+        { label: "MMR and Rating by Tier"},
+        { label: "Distribution Curves"},
+        { label: "Stat Bars by Tier"},
+        { label: "Role Distribution"},
+        { label: "Role Distribution By Tier"},
+        { label: "Correlations by Tier"}
+    ]
+
+    const q = new URLSearchParams(window.location.search).get("q");
     const inputRef = React.useRef<HTMLInputElement>(null);
     const { players, seasonAndTierConfig, isLoading } = useDataContext();
     const playersWithStats = players.filter( p => p.stats );
-    const [ currentTab, setCurrentTab ] = React.useState<number>(0);
+    const [ currentTab, setCurrentTab ] = React.useState<number>( tabs.findIndex( t => t.label === q ) || 0 );
 
     const [ filters, setFilters ] = React.useState<string[]>([]);
     const [ viewTierOptions, setViewTierOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
@@ -50,20 +62,6 @@ export function Charts() {
     ];
 
     const [ statPropertySelected, setStatPropertySelected ] = React.useState<SingleValue<{ label: string; value: string;}>>(statPropertyOptions[0]);
-
-    const selectClassNames = {
-        placeholder: () => "text-gray-400 bg-inherit",
-        container: () => "m-1 rounded bg-inherit",
-        control: () => "p-2 rounded-l bg-slate-700",
-        option: () => "p-2 hover:bg-slate-900",
-        input: () => "text-slate-200",
-        menu: () => "bg-slate-900",
-        menuList: () => "bg-slate-700",
-        multiValue: () => "bg-sky-700 p-1 mr-1 rounded",
-        multiValueLabel: () => "text-slate-200",
-        multiValueRemove: () => "text-slate-800 pl-1",
-        singleValue: () => "text-slate-200",
-    };
 
     const addFilter = () => {
         const searchValue = inputRef.current!.value; 
@@ -96,15 +94,6 @@ export function Charts() {
     if( playersWithStats.length === 0) {
         return <Container><i>No Players with stats for season {seasonAndTierConfig?.number} yet.. Check back later</i></Container>;
     }
-
-    const tabs = [
-        { label: "MMR and Rating by Tier"},
-        { label: "Distribution Curves"},
-        { label: "Stat Bars by Tier"},
-        { label: "Role Distribution"},
-        { label: "Role Distribution By Tier"},
-        { label: "Correlations by Tier"}
-    ]
 
     return (
         <Container>
