@@ -243,9 +243,9 @@ export function determinePlayerRole( stats: CscStats ){
     const roles = {
         AWPER: clamp(stats["awpR"],0, .40) / .40, // Awper
         ENTRY: clamp(stats.odr*(stats["odaR"]*3), 0, 1) / 1, // Entry
-        FRAGGER: clamp(stats["multiR"], 0, 1.25) / 1.25, // Fragger
+        FRAGGER: clamp(stats["multiR"], 0, 1.3) / 1.3, // Fragger
         RIFLER: clamp(stats.adr, 0, 230) / 230, // Rifler
-        SUPPORT: clamp((stats.suppR*12)+stats.suppXR, 0, 55) / 55, // Support
+        SUPPORT: clamp((stats.suppR*12)+stats.suppXR, 0, 57) / 57, // Support
         //clamp(player.stats["wlpL"], 0, 5), // Lurker
     };
 
