@@ -8,8 +8,7 @@ import { selectClassNames } from "../common/utils/select-utils";
 import { PlayerCompareRadar } from "./charts/playerCompareRadar";
 import { Player } from "../models/player";
 import { useEnableFeature } from "../common/hooks/enableFeature";
-import { getCssColorGradientBasedOnPercentage } from "../common/utils/string-utils";
-import { Card } from "../common/components/card";
+import { ComparisonTable } from "./playerComparison/comparisonTable";
 
 
 export function PlayerComparison() {
@@ -104,44 +103,7 @@ export function PlayerComparison() {
                     startAngle={180}
                 />
             </div>
-            <Card>
-            <div className="w-full flex flex-row">
-                    <table className="table-auto w-full font-light">
-                        <thead>
-                            <tr>
-                                <td>Name</td>
-                                <td>Games Played</td>
-                                <td>Rating</td>
-                                <td>Pit</td>
-                                <td>KAST</td>
-                                <td>ADR</td>
-                                <td>K/R</td>
-                                <td>HS%</td>
-                                <td>UtilDmg</td>
-                                <td>EF</td> 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                Array.from(selectedPlayers.values()).map( p => p.value).map( player => 
-                                    <tr key={player.name}>
-                                        <td>{player.name}</td>
-                                        <td>{player.stats.gameCount}</td>
-                                        <td className={`${getCssColorGradientBasedOnPercentage(player.stats.rating*51)}`}>{player.stats.rating.toFixed(2)}</td>
-                                        <td className={`${getCssColorGradientBasedOnPercentage(player.stats.pit*70)}`}>{player.stats.pit.toFixed(2)}</td>
-                                        <td className={`${getCssColorGradientBasedOnPercentage(player.stats.kast*100)}`}>{player.stats.kast.toFixed(2)}</td>
-                                        <td className={`${getCssColorGradientBasedOnPercentage(player.stats.adr*.6)}`}>{player.stats.adr.toFixed(2)}</td>
-                                        <td className={`${getCssColorGradientBasedOnPercentage(player.stats.kr*70)}`}>{player.stats.kr.toFixed(2)}</td>
-                                        <td className={`${getCssColorGradientBasedOnPercentage(player.stats.hs)}`}>{player.stats.hs.toFixed(2)}</td>
-                                        <td className={`${getCssColorGradientBasedOnPercentage(player.stats.utilDmg*.3)}`}>{player.stats.utilDmg.toFixed(2)}</td>
-                                        <td className={`${getCssColorGradientBasedOnPercentage(player.stats.ef*3)}`}>{player.stats.ef.toFixed(2)}</td>
-                                    </tr>
-                                )
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </Card>
+            <ComparisonTable selectedPlayers={Array.from(selectedPlayers.values()).map( p => p.value)} />
         </Container>
     );
 }
