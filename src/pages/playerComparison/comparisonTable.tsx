@@ -5,6 +5,8 @@ import { getCssColorGradientBasedOnPercentage } from "../../common/utils/string-
 import { useDataContext } from "../../DataContext";
 import { getPlayerPercentileStatInTier } from "../../common/utils/player-utils";
 import { Toggle } from "../../common/components/toggle";
+import { FaExternalLinkAlt } from "react-icons/fa";
+import { Link } from "wouter";
 
 export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[] }) {
     const [ showPercentile, setShowPercentile ] = React.useState(false);
@@ -45,18 +47,18 @@ export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[]
                         {
                             Array.from(selectedPlayersWithPercentile).map( (player, rowIndex) => 
                                 <tr key={player.name} className={`${rowIndex % 2 === 1 ? "bg-midnight1" : "bg-midnight2"} rounded h-8`}>
-                                    <td>{player.team?.franchise.prefix ?? ""} {player.name}</td>
+                                    <td>{player.team?.franchise.prefix ?? ""} {player.name} <Link className="inline hover:text-blue-400" target="_blank" rel="noreferrer" href={`/players/${encodeURIComponent(player.name)}`}><FaExternalLinkAlt size={12} className="inline leading-4" /></Link></td>
                                     <td>{player.tier.name}</td>
                                     <td>{player.mmr !== 0 ? player.mmr : "???"}</td>
                                     <td>{player.stats.gameCount}</td>
-                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.rating)}`}>{(showPercentile ? player.percentile : player.stats)["rating"].toFixed(2)}</td>
-                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.pit)}`}>{(showPercentile ? player.percentile : player.stats)["pit"].toFixed(2)}</td>
-                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.kast)}`}>{(showPercentile ? player.percentile : player.stats)["kast"].toFixed(2)}</td>
-                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.adr)}`}>{(showPercentile ? player.percentile : player.stats)["adr"].toFixed(2)}</td>
-                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.kr)}`}>{(showPercentile ? player.percentile : player.stats)["kr"].toFixed(2)}</td>
-                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.hs)}`}>{(showPercentile ? player.percentile : player.stats)["hs"].toFixed(2)}</td>
-                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.utilDmg)}`}>{(showPercentile ? player.percentile : player.stats)["utilDmg"].toFixed(2)}</td>
-                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.ef)}`}>{(showPercentile ? player.percentile : player.stats)["ef"].toFixed(2)}</td>
+                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.rating)}`}>{(showPercentile ? player.percentile : player.stats)["rating"].toFixed( showPercentile ? 0 : 2)}</td>
+                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.pit)}`}>{(showPercentile ? player.percentile : player.stats)["pit"].toFixed(showPercentile ? 0 : 2)}</td>
+                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.kast)}`}>{(showPercentile ? player.percentile : player.stats)["kast"].toFixed(showPercentile ? 0 : 2)}</td>
+                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.adr)}`}>{(showPercentile ? player.percentile : player.stats)["adr"].toFixed(showPercentile ? 0 : 2)}</td>
+                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.kr)}`}>{(showPercentile ? player.percentile : player.stats)["kr"].toFixed(showPercentile ? 0 : 2)}</td>
+                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.hs)}`}>{(showPercentile ? player.percentile : player.stats)["hs"].toFixed(showPercentile ? 0 : 2)}</td>
+                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.utilDmg)}`}>{(showPercentile ? player.percentile : player.stats)["utilDmg"].toFixed(showPercentile ? 0 : 2)}</td>
+                                    <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.ef)}`}>{(showPercentile ? player.percentile : player.stats)["ef"].toFixed(showPercentile ? 0 : 2)}</td>
                                 </tr>
                             )
                         }
