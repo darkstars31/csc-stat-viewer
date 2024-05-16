@@ -30,7 +30,7 @@ export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[]
                     <thead className="text-left underline decoration-yellow-400">
                         <tr>
                             <td>Name</td>
-                            <td>Tier</td>
+                            <td>Role</td>
                             <td>MMR</td>
                             <td>Games</td>
                             <td>Rating</td>
@@ -48,7 +48,7 @@ export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[]
                             Array.from(selectedPlayersWithPercentile).map( (player, rowIndex) => 
                                 <tr key={player.name} className={`${rowIndex % 2 === 1 ? "bg-midnight1" : "bg-midnight2"} rounded h-8`}>
                                     <td>{player.team?.franchise.prefix ?? ""} {player.name} <Link className="inline hover:text-blue-400" target="_blank" rel="noreferrer" href={`/players/${encodeURIComponent(player.name)}`}><FaExternalLinkAlt size={12} className="inline leading-4" /></Link></td>
-                                    <td>{player.tier.name}</td>
+                                    <td>{player.role}</td>
                                     <td>{player.mmr !== 0 ? player.mmr : "???"}</td>
                                     <td>{player.stats.gameCount}</td>
                                     <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.rating)}`}>{(showPercentile ? player.percentile : player.stats)["rating"].toFixed( showPercentile ? 0 : 2)}</td>

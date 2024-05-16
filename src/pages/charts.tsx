@@ -34,7 +34,7 @@ export function Charts() {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const { players, seasonAndTierConfig, isLoading } = useDataContext();
     const playersWithStats = players.filter( p => p.stats );
-    const [ currentTab, setCurrentTab ] = React.useState<number>( tabs.findIndex( t => t.label === q ) || 0 );
+    const [ currentTab, setCurrentTab ] = React.useState<number>( tabs.findIndex( t => t.label === q ) );
 
     const [ filters, setFilters ] = React.useState<string[]>([]);
     const [ viewTierOptions, setViewTierOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
@@ -160,7 +160,7 @@ export function Charts() {
                 </Containers.StandardContentThinBox>
             
                 <div> 
-                    { currentTab === 0 && 
+                    { currentTab < 1 && 
                     <div
                         className="relative transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                         id="tabs-home"
