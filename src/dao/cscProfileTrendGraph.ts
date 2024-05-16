@@ -41,6 +41,7 @@ const fetchPlayerGraph = async ( steamId: string | undefined, season?: number ) 
                         ctRating
                         match {
                             matchDay
+                            matchId
                             __typename
                         }
                         __typename
@@ -63,6 +64,7 @@ const fetchPlayerGraph = async ( steamId: string | undefined, season?: number ) 
 
     interface Match {
         matchDay: string;
+        matchId: number;
         __typename: string;
         }
       

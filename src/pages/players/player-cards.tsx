@@ -13,7 +13,7 @@ type Props = {
 export function MemoizedPlayerCard( { player }: Props) {
     const teamNameTranslated = teamNameTranslator(player);
     return (
-        <Link to={`/players/${player.tier.name}/${encodeURIComponent(player.name)}`}>
+        <Link to={`/players/${encodeURIComponent(player.name)}`}>
         <div className="fade-in block bg-midnight2 rounded-xl border border-gray-800 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10">
             <div className="justify-between">
                 <div className="flex flex-row w-full">
@@ -36,6 +36,12 @@ export function MemoizedPlayerCard( { player }: Props) {
                             <div className="flex"><BiStats size="1.5em" className="mr-1 text-orange-500"/> {player.stats?.rating.toFixed(2) ?? 'N/A'}</div>                             
                             <div className="flex"><GiMoneyStack size="1.5em" className="mr-1 text-green-500"/> <Mmr player={player}/></div>          
                         </div>
+                        {
+                            window.debug === true && <code>
+                                DiscordId {player.discordId}<br />
+                                SteamId {player.steam64Id}
+                            </code>
+                        }
                     </div>  
                 </div>
             </div>

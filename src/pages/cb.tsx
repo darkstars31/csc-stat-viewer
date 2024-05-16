@@ -1,27 +1,36 @@
 import * as React from 'react';
 import { Container } from '../common/components/container';
 import { Loading } from '../common/components/loading';
-import { discordFetchUser, discordLoginCallback } from '../dao/oAuth';
+import { discordLoginCallback } from '../dao/oAuth';
 import { useDataContext } from '../DataContext';
 import { useLocation } from 'wouter';
+import cookie from 'js-cookie';
 
 
 export function LoginCallBack() {
-    const { setDiscordUser } = useDataContext();
+    const { discordUser, setDiscordUser } = useDataContext();
     const [, setLocation ] = useLocation();
 
-    React.useEffect( () => {
-        const queryParams = new URLSearchParams(window.location.search);
-        const code = queryParams.get("code");
-        if( code ){
-            ( async () => {
-                const { access_token } = await discordLoginCallback(code);
-                const discordUser = await discordFetchUser( access_token );
-                setDiscordUser(discordUser);
-                setLocation("/");
-            })();
+    console.info( discordUser );
+
+    const queryParams = new URLSearchParams(window.location.search);
+    const code = queryParams.get("code");
+    const returnPath = cookie.get( "return_path" );
+    if( code ){
+        console.info('returnpath:', returnPath );
+        if( returnPath ){
+            cookie.remove( "return_path" );
+            setLocation( returnPath );
+        } else {
+            setLocation("/");
         }
-    }, [ setLocation, setDiscordUser] );
+        ( async () => {
+            const { discordUser } = await discordLoginCallback(code);
+            if( discordUser?.id ) {
+                setDiscordUser(discordUser);
+            }
+        })();
+    }
 
     return (
         <Container>

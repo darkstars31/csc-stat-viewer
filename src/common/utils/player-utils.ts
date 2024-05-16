@@ -2,6 +2,7 @@ import { clamp } from "lodash";
 import { CscStats } from "../../models/csc-stats-types";
 import { Player } from "../../models/player";
 import get from 'lodash/get';
+import { calculatePercentage } from "./string-utils";
 
 export enum PlayerTypes {
     SIGNED = 'SIGNED',
@@ -17,6 +18,7 @@ export enum PlayerTypes {
     UNROSTERED_AGM = 'UNROSTERED_AGM',
     INACTIVE = 'INACTIVE',
     SIGNED_PROMOTED = 'SIGNED_PROMOTED',
+    EXPIRED = 'EXPIRED',
   }
 
 export const PlayerMappings: Record<string,string> = {
@@ -64,6 +66,51 @@ export const PlayerMappings: Record<string,string> = {
     "deaths": "Total Deaths",
     "eaR": "Rounds with Opening Duel on T-side",
 }
+export const statDescriptionsShort: Record<string,string> = {
+    "name": "Name",
+    "gameCount": "Games Played",
+    "rating": "Rating",
+    "kr": "Kills/Round",
+    "adr": "ADR",
+    "kast": "KAST",
+    "odr": "Opening Duel (%)",
+    "impact": "Impact",
+    "adp": "Average Death Placement",
+    "utilDmg": "Util Dmg",
+    "ef": "EF/Match",
+    "fAssists": "FAssists/Match",
+    "util": "Utility Thrown / Match",
+    "hs": "HS(%)",
+    "awpR": "Awp Kills / Round",
+    "multiR": "Multi-Kills / Round", // points based on difficulty/remaining players
+    "clutchR": "Clutch-ability", // points based on difficulty/remaining players
+    "suppR": "Support Rounds",
+    "suppXR": "Support Damage / Round",
+    "odaR": "Open Duel Attempts / Round",
+    "entriesR": "Entry Kill on T-side / Round",
+    "tradesR": "Trade Kills / Round",
+    "tRatio": "Deaths Traded Out (%)",
+    "savesR": "Saves / Round",
+    "sRate": "Rounds Survived (%)",
+    "twoK": "2K Rounds",
+    "threeK": "3K Rounds",
+    "fourK": "4K Rounds",
+    "fiveK": "Ace Rounds",
+    "cl_1": "1v1 Clutches",
+    "cl_2": "1v2 Clutches",
+    "cl_3": "1v3 Clutches",
+    "cl_4": "1v4 Clutches",
+    "cl_5": "Ace Clutches",
+    "rounds": "Total Rounds Played",
+    "peak": "Single Match Rating Peak",
+    "pit": "Single Match Rating Pit",
+    "form": "Avg Rating from last 3 games",
+    "consistency": "Std Deviation from Rating (Lower is better)",
+    "kills": "Total Kills",
+    "assists": "Total Assists",
+    "deaths": "Total Deaths",
+    "eaR": "Rounds with Opening Duel on T-side",
+}
 
 export const tiers = ["Premier", "EliPrem", "Elite", "Challenger", "Contender", "Prospect", "New Tier"];
 
@@ -73,6 +120,17 @@ export const teamNameTranslator = ( player?: Player ) => {
         case "DRAFT_ELIGIBLE": return "Draft Eligible";
         case "PERMANENT_FREE_AGENT": return "Perm FA";
         case "FREE_AGENT": return "Free Agent";
+        case "UNROSTERED_GM": return `GM`;
+        default: return name;
+    }
+}
+
+export const shortTeamNameTranslator = ( player?: Player ) => {
+    const name = player?.team?.franchise.prefix ?? player?.type ?? "";
+    switch( name?.toUpperCase() ){
+        case "DRAFT_ELIGIBLE": return "DE";
+        case "PERMANENT_FREE_AGENT": return "PFA";
+        case "FREE_AGENT": return "FA";
         case "UNROSTERED_GM": return `GM`;
         default: return name;
     }
@@ -101,7 +159,28 @@ export function _sort<T>(arr: T[], property: ((item: T) => number) | string, opt
 
 export const getPlayersInTier = ( player: Player, allPlayers: Player[] ) => allPlayers.filter( ap => ap.tier.name === player.tier.name );
 export const getPlayersInTier3GP = (player: Player, allPlayers: Player[]) => allPlayers.filter(ap => ap.tier.name === player.tier.name && ap.stats?.gameCount > 3);
-export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Player[] ) => getPlayersInTier( player, allPlayers).sort( (a,b) => { if( !a.stats?.rating) return 1;  return a.stats?.rating < b.stats?.rating ? 1 : -1});
+export const getPlayersInTierOrderedByRating = ( player: Player, allPlayers: Player[] ) => 
+    getPlayersInTier( player, allPlayers).sort( (a,b) => {
+        const aPlayerGameCount = a.stats?.gameCount ?? 0;
+        const bPlayerGameCount = b.stats?.gameCount ?? 0;
+        return aPlayerGameCount > bPlayerGameCount ? 1 : -1
+    }).sort( (a,b) => 
+        {   if( !a.stats?.rating || a.stats.gameCount < 3 ){
+                return 1;
+            }
+            if( !b.stats?.rating || b.stats.gameCount < 3) {
+                return -1;
+            }
+            return a.stats?.rating < b.stats?.rating ? 1 : -1}
+        );
+
+export const getPlayerPercentileStatInTier = ( player: Player, allPlayers: Player[], property: keyof CscStats ) => {
+    const playersInTier = getPlayersInTier(player, allPlayers);
+    const sortedPlayers = playersInTier.filter( p => p.stats).sort((a, b) => (a.stats[property] as any) - (b.stats[property] as any));
+    const indexOfPlayer = sortedPlayers.findIndex( p => p.name === player.name);
+    return calculatePercentage(indexOfPlayer + 1, sortedPlayers.length, 0);
+}
+
 export const getTop10PlayersInTier3GP = (
     player: Player,
     allPlayers: Player[],
@@ -192,11 +271,11 @@ function calcuateMedian(players: CscStats[], prop: keyof CscStats) {
 export function determinePlayerRole( stats: CscStats ){
     if( !stats?.gameCount || stats?.gameCount < 3 ) return 'RIFLER';
     const roles = {
-        AWPER: clamp(stats["awpR"],0, .5) / .5, // Awper
-        ENTRY: clamp(stats.odr*(stats["odaR"]*3), 0, 1.1) / 1.1, // Entry
+        AWPER: clamp(stats["awpR"],0, .40) / .40, // Awper
+        ENTRY: clamp(stats.odr*(stats["odaR"]*3), 0, 1) / 1, // Entry
         FRAGGER: clamp(stats["multiR"], 0, 1.3) / 1.3, // Fragger
         RIFLER: clamp(stats.adr, 0, 230) / 230, // Rifler
-        SUPPORT: clamp((stats.suppR*12)+stats.suppXR, 0, 55) / 55, // Support
+        SUPPORT: clamp((stats.suppR*12)+stats.suppXR, 0, 57) / 57, // Support
         //clamp(player.stats["wlpL"], 0, 5), // Lurker
     };
 
@@ -223,4 +302,3 @@ export function calculateHltvTwoPointOApproximation( kast: number, killsPerRound
 
     return xkast + xkillsPerRound + xdeathsPerRound + ximpact + xavgDmgPerRround + 0.1587;
 }
-

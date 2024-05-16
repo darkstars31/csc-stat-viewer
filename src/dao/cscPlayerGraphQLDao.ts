@@ -13,6 +13,7 @@ const fetchGraph = async ( playerType: keyof typeof PlayerTypes ) => await fetch
             "operationName": "",
             "query": `query CscPlayers ( $playerType: PlayerTypes) {
                 players ( type: $playerType ) {
+                    id
                     steam64Id
                     name
                     discordId
@@ -39,7 +40,8 @@ const fetchGraph = async ( playerType: keyof typeof PlayerTypes ) => await fetch
             }      
         }),
         headers: {
-            'Content-Type': "application/json"
+            'Content-Type': "application/json",
+            // 'Authorization': put your CSC JWT HERE 
         }
     })
     .then( async response => {
@@ -61,10 +63,12 @@ const fetchCachedGraph = async (playerType: keyof typeof PlayerTypes) =>
         fetchGraph( playerType );
     });
 
-export function useCscPlayersGraph( playerType: keyof typeof PlayerTypes ): UseQueryResult<CscPlayer[]> {
+export function useCscPlayersGraph( playerType: keyof typeof PlayerTypes, options?: Record<string, unknown> ): UseQueryResult<CscPlayer[]> {
     return useQuery( 
         [`cscplayers-${playerType}-graph`], 
-        () => fetchCachedGraph( playerType ), 
+        () => options?.skipCache 
+            ? fetchGraph( playerType ) 
+            : fetchCachedGraph( playerType ), 
         {
             staleTime: OneHour,
         }

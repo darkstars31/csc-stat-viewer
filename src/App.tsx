@@ -13,6 +13,13 @@ export const queryClient = new QueryClient();
 const env : string = process.env.NODE_ENV!;
 console.info( env );
 
+declare global {
+  interface Window { debug: any; beta: any; }
+}
+
+window.debug = false;
+window.beta = false;
+
 function App() {
 
   return (

@@ -16,7 +16,7 @@ export function CartesianCompare( { playerData = [] }: Props) {
 
     const getPreferredRating = ( p: Player ) => isHltvRating ? p.hltvTwoPointO! : p.stats?.rating;
 
-	const filteredPlayers = playerData.filter( p => p.stats?.gameCount >= extraFilters.minGamesPlayed);
+	  const filteredPlayers = playerData.filter( p => p.stats?.gameCount >= extraFilters.minGamesPlayed);
 
     const data = filteredPlayers.map( p => ( [ getPreferredRating(p), p.mmr, p.tier.name, p.name, p]));
     const playerTotalStats = getTotalPlayerAverages(playerData ?? []);

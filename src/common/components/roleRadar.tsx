@@ -2,25 +2,27 @@ import { EChartsOption, graphic } from "echarts";
 import * as React from "react";
 import { PlayerRadar } from "./charts/radar";
 import { clamp } from "lodash";
-import { Player } from "../../models/player";
+import { CscStats } from "../../models";
 
 type Props = {
-    player: Player,
+    stats: CscStats,
 }
 
-export function RoleRadar( { player }: Props ){
+const multiplier = 1.5;
+
+export function RoleRadar( { stats }: Props ){
     const options: EChartsOption = {
             //legend: { data: ["Role"] },
             darkMode: true,
             radar:{
                 //shape: "circle",
                 indicator: [
+                    { name: "Entry", max: .95 },
+                    { name: "Fragger", max: 1.35 },
+                    { name: "Rifler", max: 230 },
+                    { name: "Support", max: 54 },
                     { name: "Awper", max: .55 },
-                    { name: "Entry", max: 1 },
-                    { name: "Fragger", max: 1 },
-                    { name: "Rifler", max: 200 },
-                    { name: "Support", max: 50 },
-                    { name: "Lurker", max: 4 },
+                    //{ name: "Lurker", max: 4 },
                 ]
             },
             series: [ 
@@ -31,11 +33,12 @@ export function RoleRadar( { player }: Props ){
                     { 
                         symbol: "none",
                         name: "Role", 
-                        value: [ clamp(player.stats["awpR"],0, .6), // Awper
-                                clamp(player.stats.odr*(player.stats["odaR"]*2), 0, 1.1), // Entry
-                                clamp(player.stats["multiR"], 0, 1.1), // Fragger
-                                clamp(player.stats.adr, 0, 220), // Rifler
-                                clamp((player.stats.suppR*10)+player.stats.suppXR, 0, 55), // Support
+                        value: [
+                                clamp(stats.odr*(stats["odaR"]*2*multiplier), 0, 1), // Entry
+                                clamp(stats["multiR"]*multiplier, 0, 1.35), // Fragger
+                                clamp(stats.adr*multiplier, 0, 230), // Rifler
+                                clamp(((stats.suppR*12)+stats.suppXR)*multiplier, 0, 54), // Support
+                                clamp(stats["awpR"]*multiplier,0, .55), // Awper
                                 // clamp(player.stats["wlp/L"], 0, 5), // Lurker
                             ],
                         areaStyle: {

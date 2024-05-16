@@ -18,6 +18,10 @@ export function MapRecord( { matches, team }: Props) {
 
 	const teamRecord: TeamRecord = calculateTeamRecord( team, matches );
 
+    if( teamRecord.record === undefined ) {
+        return null;
+    }
+
     return (
         <div className='p-2'>
             <div className='text-center text-sm'>Total RWP {teamRecord.record.roundsWon}:{teamRecord.record.roundsLost} ({calcPercentage(teamRecord.record.roundsWon, teamRecord.record.roundsWon+teamRecord.record.roundsLost)}%)</div>
@@ -25,7 +29,7 @@ export function MapRecord( { matches, team }: Props) {
                 {
                     Object.values(teamRecord.maps).map( ( record ) => 
                         <div key={`record ${record.name}`} className=''>
-                            <div className='text-sm'><img className='w-16 h-16 mx-auto' src={mapImages[record.name]} alt=""/></div>
+                            <div className='text-sm text-center'><img className='w-16 h-16 mx-auto' src={mapImages[record.name]} alt="FFW"/></div>
                             <div className='text-center'>
                                 <span className='text-green-400'>{record.wins}</span>
                                 :

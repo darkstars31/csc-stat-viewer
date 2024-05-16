@@ -2,18 +2,18 @@ import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { CscStats, CscStatsQuery } from "../models/csc-stats-types";
 import { appConfig } from "../dataConfig";
 
-const cachedUrl = `/getTierSeasonStats`;
+const cachedUrl = `/csc/cached-tier-season-stats`;
 
 type CscTiers = "Recruit" | "Prospect" | "Contender" | "Challenger" | "Elite" | "Premier";
 
 const OneHour = 1000 * 60 * 60;
 
-const fetchGraph = async ( tier: CscTiers, season?: number ) => await fetch(appConfig.endpoints.cscGraphQL.stats,
+const fetchGraph = async ( tier: CscTiers, season?: number, matchType?: string ) => await fetch(appConfig.endpoints.cscGraphQL.stats,
     { method: "POST", 
         body: JSON.stringify({
             "operationName": "getTierSeasonStats",
-            "query": `query getTierSeasonStats($tier: String!, $season: Int!) {
-                tierSeasonStats(tier: $tier, season: $season) {
+            "query": `query getTierSeasonStats($tier: String!, $season: Int!, $matchType: String!) {
+                tierSeasonStats(tier: $tier, season: $season, matchType: $matchType) {
                     adp
                     adr
                     assists
@@ -44,6 +44,8 @@ const fetchGraph = async ( tier: CscTiers, season?: number ) => await fetch(appC
                     peak
                     pit
                     rating
+                    ctRating
+                    tRating
                     rounds
                     saveRate
                     savesR
@@ -62,6 +64,7 @@ const fetchGraph = async ( tier: CscTiers, season?: number ) => await fetch(appC
             "variables": {
                 "tier": tier,
                 "season": season,
+                "matchType": matchType
             }      
         }),
         headers: {
@@ -70,25 +73,25 @@ const fetchGraph = async ( tier: CscTiers, season?: number ) => await fetch(appC
     })
     .then( async response => {
         return response.json().then( (json: CscStatsQuery) => {
-            return json.data.tierSeasonStats;
+            return json.data?.tierSeasonStats;
         });
     } );
 
-const fetchCachedGraph = async (tier: CscTiers, season?: number) => await fetch(`${appConfig.endpoints.cloudfrontCache}${cachedUrl}/season_${season}_tier_${tier}.json?q=${new Date().getTime()}`,
+const fetchCachedGraph = async (tier: CscTiers, season?: number, matchType?: string) => await fetch(`${appConfig.endpoints.analytikill}${cachedUrl}?season=${season}&tier=${tier}&matchType=${matchType}`,
         {
             method: "GET",    
             headers: {'Content-Type': "application/json" }
         }).then( async response => 
             response.json().then( (json: CscStatsQuery) => 
-                json.data.tierSeasonStats
+                json.data?.tierSeasonStats
         ) ).catch( () => {
-            fetchGraph( tier, season );
+            fetchGraph( tier, season, matchType );
         });
 
-export function useCscStatsGraph( tier: CscTiers, season?: number ): UseQueryResult<CscStats[]> {
+export function useCscStatsGraph( tier: CscTiers, season?: number, matchType?: string ): UseQueryResult<CscStats[]> {
     return useQuery( 
         [`cscstats-${tier}-graph`], 
-        () => fetchCachedGraph(tier, season), 
+        () => fetchCachedGraph(tier, season, matchType), 
         {
             staleTime: OneHour,
         }

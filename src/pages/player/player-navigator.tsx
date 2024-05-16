@@ -19,7 +19,6 @@ export function PlayerNavigator( { player, playerIndex }: Props ) {
     if( !player ) {
         return null;
     }
-    //const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
     const playerInTierOrderedByRating = getPlayersInTierOrderedByRating( player, players );
     const pageMax = playerInTierOrderedByRating.length / pageSize;
     if( pageCurrent > pageMax ) {
@@ -35,7 +34,7 @@ export function PlayerNavigator( { player, playerIndex }: Props ) {
                     { pageCurrent > 0 && <button className="grow-0" onClick={ () => setPageCurrent( pageCurrent-1 )}><ImArrowLeft /></button> }
                         { playerInTierOrderedByRating.slice(pageCurrent*pageSize, pageCurrent*pageSize+pageSize).map(
                             (player, index) =>
-                                <Link key={`closeby-${player.name}`} to={`/players/${player.tier.name}/${player.name}`}>
+                                <Link key={`closeby-${player.name}`} to={`/players/${player.name}`}>
                                     <div
                                         style={{userSelect:'none', lineHeight: '95%' }}
                                         className="my-[5px] mr-4 flex h-[32px] cursor-pointer items-center rounded-[4px] bg-[#eceff1] px-[12px] py-0 text-[11px] font-normal normal-case leading-loose text-[#4f4f4f] shadow-none hover:!shadow-none active:bg-[#cacfd1] dark:bg-midnight2 dark:text-neutral-200">
@@ -43,7 +42,7 @@ export function PlayerNavigator( { player, playerIndex }: Props ) {
                                         {player.name}
                                         <span
                                             className="ml-2 inline-block whitespace-nowrap rounded-[0.27rem] bg-midnight1 px-[0.65em] pb-[0.25em] pt-[0.35em] text-center align-baseline text-[0.9em] font-bold leading-none text-neutral-200"
-                                        >{pageCurrent*pageSize+index+1}</span>
+                                        >{ player?.stats?.gameCount > 2 ? pageCurrent*pageSize+index+1 : "U" }</span>
                                     </div>
                                 </Link>
                             )

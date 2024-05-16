@@ -2,6 +2,7 @@ import * as React from "react";
 import Select, { MultiValue } from "react-select";
 import { PlayerTypes } from "../../utils/player-utils";
 import { useDataContext } from "../../../DataContext";
+import { selectClassNames } from "../../utils/select-utils";
 
 interface Props {
     //onChange: React.Dispatch<React.SetStateAction<MultiValue<{label: string;value: PlayerTypes[];}>>>;
@@ -13,20 +14,7 @@ export const PlayerTypeFilter = React.memo(({ onChange, selectedOptions }: Props
 
     const { players } = useDataContext();
     const isDraftEligibleDisabled = !players.some( player => player.type === PlayerTypes.DRAFT_ELIGIBLE);
-
-    const selectClassNames = {
-        placeholder: () => "text-gray-400 bg-inherit",
-        container: () => "m-1 rounded bg-inherit",
-        control: () => "p-2 rounded-l bg-slate-700",
-        option: (state : { isDisabled: boolean }) => `${state.isDisabled ? 'text-gray-500' : ''} p-2 hover:bg-slate-900`,
-        input: () => "text-slate-200",
-        menu: () => "bg-slate-900",
-        menuList: () => "bg-slate-700",
-        multiValue: () => "bg-sky-700 p-1 mr-1 rounded",
-        multiValueLabel: () => "text-slate-200",
-        multiValueRemove: () => "text-slate-800 pl-1",
-        singleValue: () => "text-slate-200",
-    };
+    const isExpiredDisabled = !players.some( player => player.type === PlayerTypes.EXPIRED);
     
     const viewPlayerTypeList = React.useMemo(() => ([
         { label: `Signed`, value: [PlayerTypes.SIGNED,PlayerTypes.INACTIVE_RESERVE,PlayerTypes.SIGNED_PROMOTED,PlayerTypes.SIGNED_SUBBED] },
@@ -34,7 +22,8 @@ export const PlayerTypeFilter = React.memo(({ onChange, selectedOptions }: Props
         { label: `Draft Eligible`, value: [PlayerTypes.DRAFT_ELIGIBLE], isDisabled: isDraftEligibleDisabled },
         { label: `Perma FA`, value: [PlayerTypes.PERMANENT_FREE_AGENT,PlayerTypes.PERMFA_TEMP_SIGNED]},
         { label: `Inactive Reserve`, value: [PlayerTypes.INACTIVE_RESERVE]},
-    ]), [isDraftEligibleDisabled]);
+        { label: `Expired`, value: [PlayerTypes.EXPIRED], isDisabled: isExpiredDisabled },
+    ]), [isDraftEligibleDisabled, isExpiredDisabled]);
 
 
     return (
@@ -53,6 +42,7 @@ export const PlayerTypeFilter = React.memo(({ onChange, selectedOptions }: Props
                 classNames={selectClassNames}
                 options={viewPlayerTypeList}
                 onChange={onChange}
+                defaultValue={JSON.parse(localStorage.getItem("viewPlayerTypeOptions") ?? "[]") as MultiValue<{label: string;value: PlayerTypes[];}>}             
             />
         </div>
     );

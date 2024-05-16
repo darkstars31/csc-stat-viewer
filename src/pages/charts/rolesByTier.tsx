@@ -25,7 +25,7 @@ type LineSeriesType = {
   smooth: boolean;
 };
 export function RoleByTierBarChart({ playerData = [] }: Props) {
-  const [showProportions, setShowProportions] = React.useState(false);
+  const [showProportions, setShowProportions] = React.useState(true);
 
   const getByRoleAndTier = (role: string, tier: string) => {
     const roleAndTierCount = playerData.filter(p => p.role === role && p.tier.name === tier).length;

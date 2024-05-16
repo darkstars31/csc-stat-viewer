@@ -6,10 +6,11 @@ type Props = {
     type: string,
     placeHolder: string,
     value: string | number | undefined,
+    isDisabled?: boolean,
     onChange: (e: React.FormEvent<HTMLInputElement>) => void
 }
 
-export function Input( { label, className, type, placeHolder, onChange, value }: Props ){
+export function Input( { label, className, type, placeHolder, onChange, value, isDisabled }: Props ){
     return (
         <label
             htmlFor="textInput"
@@ -21,6 +22,7 @@ export function Input( { label, className, type, placeHolder, onChange, value }:
                 placeholder={placeHolder}
                 onChange={onChange}
                 value={value}
+                disabled={isDisabled}
                 className={"peer h-8 w-full border-none bg-transparent p-0 placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm ".concat(className ?? "")}
             />
 

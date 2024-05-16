@@ -2,7 +2,7 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import { Input } from "../common/components/input";
 import { Pill } from "../common/components/pill";
-import Select, { MultiValue } from "react-select";
+import Select, { MultiValue, SingleValue } from "react-select";
 import { useDataContext } from "../DataContext";
 import { MdGridView, MdOutlineViewHeadline } from "react-icons/md";
 import { TbDatabaseExport } from "react-icons/tb";
@@ -21,8 +21,22 @@ const sortOptionsList = [
     { label: "MMR", value: "mmr"},
 ];
 
+
 const exportAsCsv = ( players: Player[]) => {
-    var csv = Papa.unparse(players.filter( p => Boolean(p.stats)).map( p => p.stats ));
+    const playerData = players.filter( p => Boolean(p.stats))
+        .map( p => {
+            // Hack to remove properties from stats and include player first class properties
+            const { name, team, __typename, rating, ...rest } = p.stats; 
+            const stats = Object.keys(rest)
+                .reduce( (acc, k) => {
+                    const value = rest[k as keyof typeof rest];
+                    acc[k] = typeof value === "number" && !Number.isInteger(value) ? value.toFixed(2) : value;
+                    return acc
+                }, {} as any);
+            return ({ name: p.name, tier: p.tier.name, role: p.role, mmr: p.mmr, rating: p.stats.rating, ...stats });
+            }
+        );
+    var csv = Papa.unparse(  playerData );
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -32,20 +46,53 @@ const exportAsCsv = ( players: Player[]) => {
 };
 
 export function Players() {
+    //const queryParams = new URLSearchParams(window.location.search);
+    // const types = queryParams.get("types");
+    // const tiers = queryParams.get("tiers");
+    // const roles = queryParams.get("roles");
+
     const { players } = useDataContext();
     const [ displayStyle, setDisplayStyle ] = useLocalStorage("displayStyle", "cards");
     const [ searchValue, setSearchValue ] = React.useState("");
     const [ filters, setFilters ] = React.useState<string[]>([]);
     const [ orderBy, setOrderBy ] = useLocalStorage("orderBy", JSON.stringify(sortOptionsList[0])); // React.useState<SingleValue<{label: string;value: string;}>>(sortOptionsList[0]);
-    const [ viewTierOptions, setViewTierOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
-    const [ viewPlayerTypeOptions, setViewPlayerTypeOptions ] = React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>();
-    const [ viewPlayerRoleOptions, setViewPlayerRoleOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
+    const [ viewTierOptions, setViewTierOptions ] = useLocalStorage("viewTierOptions", JSON.stringify([])) //React.useState<MultiValue<{label: string;value: string;}>>();
+    const [ viewPlayerTypeOptions, setViewPlayerTypeOptions ] = useLocalStorage("viewPlayerTypeOptions", JSON.stringify([])); //React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>();
+    const [ viewPlayerRoleOptions, setViewPlayerRoleOptions ] = useLocalStorage("viewPlayerRoleOptions", JSON.stringify([])); //React.useState<MultiValue<{label: string;value: string;}>>();
 
-    const viewPlayerTypeOptionsCumulative = viewPlayerTypeOptions?.flatMap( option => option.value);
-    const filteredByPlayerType = viewPlayerTypeOptions?.length ? players.filter( player => viewPlayerTypeOptionsCumulative?.some( type => type === player.type )) : players;
-    const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( tier => tier.value === player.tier.name)) : filteredByPlayerType;
-    const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( role => role.value === player.role)) : filteredByTier;
+    const viewPlayerTypeOptionsCumulative = viewPlayerTypeOptions?.flatMap( (option: SingleValue<{label: string;value: string;}>) => option?.value);
+    const filteredByPlayerType = viewPlayerTypeOptions?.length ? players.filter( player => viewPlayerTypeOptionsCumulative?.some( (type: PlayerTypes | undefined) => type === player.type )) : players;
+    const filteredByTier = viewTierOptions?.length ? filteredByPlayerType.filter( player => viewTierOptions?.some( (tier: { value: string; }) => tier.value === player.tier.name)) : filteredByPlayerType;
+    const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( (role: { value: string | undefined; }) => role.value === player.role)) : filteredByTier;
     const filteredBySearchPlayers = filters.length > 0 ? filteredByRole.filter( player => filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ))) : filteredByRole;
+
+    // React.useEffect(() => {
+    //     console.info( 'first', viewPlayerTypeOptions?.length )
+    //     if( viewPlayerTypeOptionsCumulative?.length ){
+    //         console.info( viewPlayerTypeOptions )
+    //         queryParams.append("types", JSON.stringify(viewPlayerTypeOptionsCumulative));
+    //     }
+
+    //     if( viewTierOptions?.length ){
+    //         queryParams.append("tiers", JSON.stringify(viewTierOptions));
+    //     }
+
+    //     if( viewPlayerRoleOptions?.length ){
+    //         queryParams.append("roles", JSON.stringify(viewPlayerRoleOptions));
+    //     }
+    // }, [ viewPlayerTypeOptionsCumulative?.length,  viewTierOptions?.length, viewPlayerRoleOptions?.length]);
+
+    // if( !queryParams.has("types") ){
+    //     queryParams.append("types", JSON.stringify(viewPlayerTypeOptionsCumulative));
+    // }
+    // if( !queryParams.has("tiers") ){
+    //     queryParams.append("tiers", JSON.stringify(viewTierOptions));
+    // }
+    // if( !queryParams.has("roles") ){
+    //     queryParams.append("roles", JSON.stringify(viewPlayerRoleOptions));
+    // }
+
+    //window.history.replaceState({}, "", `?${queryParams.toString()}`);
 
     const addFilter = () => {
         setSearchValue(""); 
@@ -115,7 +162,9 @@ export function Players() {
                 <PlayerTiersFilter onChange={setViewTierOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
             </div>
             <div className="basis-1/5">
-                <PlayerRolesFilter onChange={setViewPlayerRoleOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
+                <PlayerRolesFilter onChange={
+                    setViewPlayerRoleOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>
+                    } />
             </div>
             <div className="basis-1/5">
                 <div className="flex flex-row text-xs my-2 mx-1">

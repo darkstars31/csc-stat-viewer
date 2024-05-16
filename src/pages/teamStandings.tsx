@@ -1,153 +1,149 @@
-import * as React from 'react';
-import { useDataContext } from '../DataContext';
-import { Container } from '../common/components/container';
-import { useFetchMultipleTeamsMatchesGraph } from '../dao/cscMatchesGraphQLDao';
+import React from "react";
+import { useDataContext } from "../DataContext";
+import { useCscSeasonMatches } from "../dao/cscSeasonMatches";
+import { Container } from "../common/components/container";
+import { Card } from "../common/components/card";
+import { Loading } from "../common/components/loading";
+import { Link, useSearch, useLocation } from "wouter";
+import { franchiseImages } from "../common/images/franchise";
 import { sortBy } from 'lodash';
-import { Loading } from '../common/components/loading';
-import { franchiseImages } from '../common/images/franchise';
-import { calculateTeamRecord } from '../common/utils/match-utils';
-import { useCscSeasonDivisionsByTier } from '../dao/cscSeasonDivisionsByTierDao';
-import { Card } from '../common/components/card';
-import { Link } from 'wouter';
-import { Team } from '../models/franchise-types';
+import { Franchise } from "../models/franchise-types";
+import { calculatePercentage, getCssColorGradientBasedOnPercentage } from "../common/utils/string-utils";
+import { Exandable } from "../common/components/containers/Expandable";
+import csclogo from "../assets/images/placeholders/csc-logo.png";
+
+type ProcessedTeamStandings = {
+     franchise?: Franchise, 
+     name: string, 
+     wins: number, 
+     losses: number, 
+     roundsWon: number, 
+     roundsLost: number, 
+     ctRoundsWon: number, 
+     tRoundsWon: number, 
+     ctTotalRounds: number, 
+     tTotalRounds: number, 
+     pistolRoundsWon: number, 
+     pistolTotalRounds: number 
+}
 
 
 function TeamRecordRow ({ team, index }: { team: any, index: number }) {
+
     return (
-        <div key={`${team.name}${index}`} className='grid grid-cols-3 gap-2 m-4'>
-            <div><Link 
-                to={`/franchises/${team.franchise.name}/${team.name}`} 
+        <tr key={`${team.name}${index}`} className={`${index % 2 === 0 ? 'bg-slate-800' : ''} p-2`}>
+            <td className="font-bold pl-4">{index+1}</td>
+            <td className="uppercase leading-10">
+                <Link 
+                to={`/franchises/${team?.franchise?.name}/${team.name}`} 
                 className='hover:cursor-pointer hover:text-sky-400 transition ease-in-out hover:-translate-x-1 duration-300'>
-                    <img className='w-8 h-8 mr-2 float-left' src={franchiseImages[team.franchise.prefix]} alt="" /> 
-                    {team.name} ({team.franchise.prefix})
+                    <img className='w-8 h-8 md:w-10 md:h-10 mr-2 float-left' src={franchiseImages[team?.franchise?.prefix]} alt="" /> 
+                    {team.name} ({team?.franchise?.prefix})
                 </Link>
-            </div>
-            <div>
-                <b>
-                    <span className='text-green-400'>{team.teamRecord.record.wins}</span> : <span className='text-red-400'>{team.teamRecord.record.losses}</span>
-                </b> 
-                <span className='text-gray-400 text-xs pl-2'>
-                    ({(team.teamRecord.record.wins / (team.teamRecord.record.wins + team.teamRecord.record.losses)*100).toFixed(2)}%)
-                </span>
-                <div className='text-gray-400 text-xs pl-2'>
-                    (Conf. {team.teamRecord.record.conferenceWins}:{team.teamRecord.record.conferenceLosses})
+            </td>
+            <td>
+                <div>
+                    <span className='text-green-400 font-bold'>{team.wins}</span> : <span className='text-red-400'>{team.losses}</span>
                 </div>
-            </div>
-            <div><span className='text-green-400'>{team.teamRecord.record.roundsWon}</span> : <span className='text-red-400'>{team.teamRecord.record.roundsLost}</span> <span className='text-gray-400 text-xs'>(diff {team.teamRecord.record.roundsWon - team.teamRecord.record.roundsLost > 0 ? '+': ''}{team.teamRecord.record.roundsWon - team.teamRecord.record.roundsLost}</span> <span className='text-gray-400 text-xs'>{(team.teamRecord.record.roundsWon / (team.teamRecord.record.roundsWon + team.teamRecord.record.roundsLost)*100).toFixed(1)}%)</span></div>
-            {/* <div><span className='text-green-400'>{team.teamRecord.record.conferenceWins}</span> : <span className='text-red-400'>{team.teamRecord.record.conferenceLosses}</span></div> */}
-        </div>
+                <div className='text-gray-400 text-xs pl-2'>
+                    {calculatePercentage(team.wins , (team.wins + team.losses),2)}%
+                </div> 
+            </td>
+            <td>
+                <div>
+                    <span className='text-green-400'>{team.roundsWon}</span> : <span className='text-red-400'>{team.roundsLost}</span> 
+                </div>
+                <div>
+                    <span className='text-gray-400 text-xs'>diff {team.roundsWon - team.roundsLost > 0 ? '+': ''}{team.roundsWon - team.roundsLost}</span> <span className='text-gray-400 text-xs'>{calculatePercentage(team.roundsWon , (team.roundsWon + team.roundsLost),1)}%</span>
+                </div>
+            </td>
+            <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.ctRoundsWon,team.ctTotalRounds,1))} collapse md:visible`}>
+                {calculatePercentage(team.ctRoundsWon,team.ctTotalRounds,1)}%
+            </td>
+            <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.tRoundsWon,team.tTotalRounds,1))} collapse md:visible`}>
+                {calculatePercentage(team.tRoundsWon,team.tTotalRounds,1)}%
+            </td>
+            <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1))} collapse md:visible`}>
+                {calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1)}%
+            </td>
+        </tr>
     );
 }
 
 export function TeamStandings() {
-    const { franchises } = useDataContext();
-    const [ selectedTier, setSelectedTier ] = React.useState('');
-    const [ showConferences, setShowConferences ] = React.useState(true);
-    const { data: season = [] } = useCscSeasonDivisionsByTier(11);
-    const divisions = season.find(s => s.tier.name === selectedTier)?.divisions;
-    const teamsInDivision = divisions?.reduce( (acc, division) => {
-        acc[division.name] = division.teams.map( team => team.team.name ) ;
-        return acc;
-    }, {} as Record<string, string[]>);
+    const qs = new URLSearchParams(window.location.search);
+    const q = qs.get("q");
+    const [, setLocation ] = useLocation();
+    const queryParams = new URLSearchParams(useSearch());
+    const { franchises = [], seasonAndTierConfig, dataConfig } = useDataContext();
+    const [ selectedTier, setSelectedTier ] = React.useState(q ?? "Contender");
     
-    const teamsInTiers = franchises.reduce( ( acc, franchise) => {
-        franchise.teams.forEach( team => {
-            if( !acc[team.tier.name] ) acc[team.tier.name] = [];
-            acc[team.tier.name].push( { ...team, franchise: { name: franchise.name, prefix: franchise.prefix } } );
-        });
-        return acc; 
-    }, {} as any);
-
-    const sortedTeamsInTier = sortBy(teamsInTiers[selectedTier], 'id');
-    const responses = useFetchMultipleTeamsMatchesGraph(selectedTier, sortedTeamsInTier);
-
-    if ( responses.some( response => response.isError ) ) {
-        // TODO: Make better error message, suggest using different portion of app
-        return ( <Container>
-                <div className='my-4 text-center text-l'>
-                    An error occured loading data from the server for franchise standings. Please try again later.
-                </div>          
-            </Container>
-            );
-    }
-
-    const teamsWithMatches = sortedTeamsInTier.map( (team, index) => { return { ...team, matches: responses[index] } } );
-
-    const teamsWithMatchesCalculatedWinLoss = teamsWithMatches.map( (team, index) => {
-        const conferenceName = Object.keys(teamsInDivision ?? {}).find( key => teamsInDivision![key].includes( team.name ) );
-        const conferenceTeams = teamsInDivision![conferenceName ?? ''];
-        const teamMatches = responses[index].data as [];
-        const teamRecord = calculateTeamRecord( team, teamMatches, conferenceTeams );
-
-        return { ...team, matches: responses[index], teamRecord, conferenceName };
-    });
-
-    // TODO: Custom sort algorithm that accounts for tie-breakers
+    const { data: matches = [], isLoading } = useCscSeasonMatches(selectedTier[0].toUpperCase() + selectedTier.slice(1), dataConfig?.season);
     const tieBreakers: string[] = [];
-    const sortedTeamRecordsByTier = sortBy(teamsWithMatchesCalculatedWinLoss, "teamRecord.record.wins");
 
-    const sortedTeamRecords = sortedTeamRecordsByTier.sort( ( a, b ) => {
-        const isSameConference = a.conferenceName === b.conferenceName;
-        const isRecordSame = a.teamRecord?.record.wins === b.teamRecord?.record.wins;
-        const isConferenceRecordSame = a.teamRecord?.record.conferenceWins === b.teamRecord?.record.conferenceWins;
-
-        // if( a.name.includes('Neon') && b.name.includes('Holy') || a.name.includes('Holy') && b.name.includes('Neon')) {
-        //     console.info( a, b,'isRecordSame', isRecordSame, 'isConferenceRecordSame', isConferenceRecordSame);
-        // }
-
-        if( isSameConference && isRecordSame ) {
-            if( isConferenceRecordSame ) {
-                const teamAHasDefeatedTeamB = a.teamRecord?.record.teamsDefeated?.includes( b.name );
-                //console.info( a.name, teamAHasDefeatedTeamB ? 'beats' : 'lost', b.name ); 
-                return teamAHasDefeatedTeamB ? -1 : 1;
-            } else {
-                return b.teamRecord?.record.conferenceWins - a.teamRecord?.record.conferenceWins;
+    const teamsWithScores = matches.reduce( ( acc, match ) => {
+       match.teamStats.forEach( team => {
+            if( !acc[team.name] ) {
+                const franchise = franchises.find( f => f.teams.find( t => t.name === team.name));
+                acc[team.name] = { franchise: franchise, name: team.name, wins: 0, losses: 0, roundsWon: 0, roundsLost: 0, ctRoundsWon: 0, tRoundsWon: 0, ctTotalRounds: 0, tTotalRounds: 0, pistolRoundsWon: 0, pistolTotalRounds: 0 };
             }
-        }
-        
-        return b.teamRecord?.record.wins - a.teamRecord?.record.wins;
-        
-    });
 
-    const sortedTeamRecordsInConferences = showConferences ? sortedTeamRecords.reduce( ( acc, team ) => {
-        if ( !acc[team.conferenceName]) acc[team.conferenceName] = [];
-        acc[team.conferenceName].push(team);
-        return acc;
-        
-    }, {} as any) 
-    : 
-    // eslint-disable-next-line no-useless-computed-key
-    { ['']: sortedTeamRecords };
+            if( team.score > match.totalRounds/2 ){
+                acc[team.name].wins += 1;
+            } else {
+                acc[team.name].losses += 1;
+            }
+
+            acc[team.name].roundsWon += team.score;
+            acc[team.name].roundsLost += match.totalRounds - team.score;
+            acc[team.name].ctRoundsWon += team.ctRW;
+            acc[team.name].tRoundsWon += team.TRW;
+            acc[team.name].ctTotalRounds += team.ctR;
+            acc[team.name].tTotalRounds += team.TR
+            acc[team.name].pistolRoundsWon += team.pistolsW
+            acc[team.name].pistolTotalRounds += team.pistols
+       });
+       
+
+       return acc;
+
+    }, {} as Record<string,ProcessedTeamStandings>);
+
+    const sorted = sortBy(Object.values(teamsWithScores), "wins").reverse();
+    sorted.sort( (a,b) => {
+        if( a.wins === b.wins ){
+           const foundMatches = matches.filter( m => m.teamStats.find( t => t.name === a.name ) && m.teamStats.find( t => t.name === b.name ));
+           if( foundMatches.length === 1 ) {
+                const match = foundMatches[0];
+                const teamA = match.teamStats.find( t => t.name === a.name );
+                tieBreakers.push( teamA?.score! > match.totalRounds/2 ? `${a.name} over ${b.name} in Head-to-Head` : `${b.name} over ${a.name} in Head-to-Head` );
+                return teamA?.score! > match.totalRounds/2 ? -1 : 1;
+           } else if ( foundMatches.length > 1 ) {
+                tieBreakers.push( `Standings currently does not account for multiple head-to-head matches between ${a.name} and ${b.name}` );
+           }
+           tieBreakers.push( (a.roundsWon / (a.roundsWon+a.roundsLost)) > (b.roundsWon / (b.roundsWon+b.roundsLost)) ? `${a.name} over ${b.name} in RWP` : `${b.name} over ${a.name} in RWP` );
+           return (a.roundsWon / (a.roundsWon+a.roundsLost)) > (b.roundsWon / (b.roundsWon+b.roundsLost)) ? -1 : 1; 
+        }
+        return 0;
+    })
 
     const tierButtonClass = "rounded-md flex-grow px-6 pb-2 pt-2.5 text-sm font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-blue-400 focus:bg-blue-400 focus:outline-none focus:ring-0 active:bg-blue-300";
 
     const tiers = [
-        { name: "Recruit", color: 'red'},
-        { name: "Prospect", color: 'orange'},
-        { name: "Contender", color: 'yellow'},
-        { name: "Challenger", color: 'green'},
-        { name: "Elite", color: 'blue'},
-        { name: "Premier", color: 'purple'},
+        { name: "Recruit", color: 'red', playoffLine: 10},
+        { name: "Prospect", color: 'orange', playoffLine: 14},
+        { name: "Contender", color: 'yellow', playoffLine: 16 },
+        { name: "Challenger", color: 'green', playoffLine: 12},
+        { name: "Elite", color: 'blue', playoffLine: 10 },
+        { name: "Premier", color: 'purple', playoffLine: 12},
     ];
 
-    return ( 
+    const matchDaysPlayed = matches.length > 0 ? sorted[0].wins+sorted[0].losses : 0;
+
+    return (
         <Container>
-            <div>
-                <div>
-                <h1 className='text-2xl text-center my-4'>Team Standings</h1>    
+            <div>             
                 <div className="mb-[0.125rem] block min-h-[1.5rem] pl-[1.5rem]">
-                    <input
-                        className="relative float-left -ml-[1.5rem] mr-[6px] mt-[0.15rem] h-[1.125rem] w-[1.125rem] appearance-none rounded-[0.25rem] border-[0.125rem] border-solid border-neutral-300 outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                        type="checkbox"
-                        value=""
-                        onChange={ () => setShowConferences(!showConferences) }
-                        id="checkboxChecked"
-                        checked={ showConferences } />
-                    <label
-                        className="inline-block pl-[0.15rem] hover:cursor-pointer"
-                        htmlFor="checkboxChecked">
-                        Show Conferences
-                    </label>
                     </div>
                     <div
                         className="justify-center flex flex-wrap rounded-md shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out bg-blue-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-blue-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-blue-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
@@ -156,7 +152,11 @@ export function TeamStandings() {
                             tiers.map( tier => 
                                 <button key={tier.name} 
                                     type="button" 
-                                    onClick={() => setSelectedTier(tier.name)} 
+                                    onClick={() => { 
+                                        queryParams.set("q", tier.name);
+                                        setLocation( window.location.pathname + '?' + queryParams.toString()); 
+                                        setSelectedTier(tier.name)
+                                    }}
                                     className={`${selectedTier === tier.name ? 'bg-blue-500' : 'bg-blue-700'} text-${tier.color}-400 ${tierButtonClass}`}
                                 >
                                     {tier.name}
@@ -166,54 +166,72 @@ export function TeamStandings() {
                     </div>
                 </div>
                 <div className='pt-2'>
-                    { responses.some( response => response.isLoading ) ? 
+                    { isLoading ? 
                         <Loading /> 
                         :
-                        Object.entries(sortedTeamRecordsInConferences).map( ([key, value], index) => {
-                            return (
-                                <Card key={key}>
-                                    { key && <div className='text-l'>
-                                        <i>{key} Conference</i>
+                            <Card>                          
+                                <div>
+                                    <h1 className='text-4xl font-black uppercase'>{selectedTier}</h1>
+                                    <h3 className='text-xl font-bold' style={{backgroundImage: `url(${csclogo})`, overflow:'auto'}}>MATCH DAY <span className="text-yellow-400">{matchDaysPlayed}</span></h3>
+                                </div>
+                                <div className='flex'>
+                                    <div className="basis-1/12 collapse md:visible">
+                                        <div className='text-3xl -rotate-90 font-black translate-y-16'>
+                                            SEASON {seasonAndTierConfig?.number}
+                                        </div>
                                     </div>
-                                    }
-                                    <div className='grid grid-cols-3 gap-2 mx-4 text-sm'>
-                                        <div></div>
-                                        <div>W : L</div>
-                                        <div>Rounds</div>                                       
-                                    </div>
-                                    <div>
-                                        {(value as Team[]).map( (team, index) => 
-                                            <>
-                                                <TeamRecordRow key={`${index}-${team.name}`} team={team} index={index} />
-                                                { key &&
-                                                    Math.ceil(( value as []).length / 2 ) === index+1 && 
-                                                    <span className='text-gray-600 text-xs'><i>Playoff Line</i><div className='-mt-[.8em] ml-20 border-dotted border-b border-gray-500' /></span>
-                                                }
-                                            </>
-                                        )}
-                                    </div>                               
-                                </Card>
-                            )
+                                    <div className="basis-11/12 md:basis-full min-h-[300px]">
+                                        <table className='table-auto w-full'>
+                                            <thead className="underline decoration-yellow-400">
+                                                <tr className="text-left">
+                                                    <th>POS.</th>                                     
+                                                    <th>Team</th>
+                                                    <th>Win : Loss</th>
+                                                    <th>Rounds</th>
+                                                    <th className="collapse md:visible">CT</th>
+                                                    <th className="collapse md:visible">T</th>
+                                                    <th className="collapse md:visible">Pistols</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            { matches.length < 1 ? 
+                                                <tr className="text-center text-xl font-italic">
+                                                    Season {seasonAndTierConfig?.number} hasn't started yet! Check back after Match Day 1.
+                                                </tr> 
+                                                : sorted.map( (team: any, index: number) => 
+                                                    <>
+                                                        <TeamRecordRow key={`${index}`} team={team} index={index} />
+                                                        { 
+                                                            tiers.find( (tier) => tier.name === selectedTier)?.playoffLine === index+1 && 
+                                                            <tr className='text-gray-500 text-xs italic'>
+                                                                <td className='-mt-[.8em] ml-20 border-dotted border-b border-gray-400'>Playoff Line</td>
+                                                                <td className='-mt-[.8em] ml-20 border-dotted border-b border-gray-400'></td>
+                                                            </tr>
+                                                        }
+                                                    </>
+                                            )}
+                                            </tbody>                                                 
+                                        </table>                  
+                                    </div>               
+                                </div>                                                   
+                            </Card>                                            
+                    }
+                    { tieBreakers.length > 0 &&<Exandable title='Tie-Breakers'>
+                        <div className='m-4'>                
+                            {tieBreakers.map( (tieBreaker, index) =>
+                                    <li className="text-xs">{tieBreaker}</li> )
                             }
-                        )                       
-                    }                   
-                    { tieBreakers.length > 0 && <div className='m-4'>
-                        <li>
-                            {tieBreakers.length > 0 &&
-                                tieBreakers.map( (tieBreaker, index) =>
-                                    <ul>{tieBreaker}</ul> )
-                            }
-                        </li>
-                    </div> }           
-                    { selectedTier && <div className='text-center text-xs m-4 text-slate-400'>
-                        * Tie-Breakers partially-implemented: Conference Record, Head-to-Head <br />
-                        * Unofficial Standings, could contain inaccuracies. <br />
-                        * Playoff line is estimated and not guaranteed. <br />
-                        * Bo1 Play-Ins not currently shown.
+                        </div>
+                    </Exandable>
+                    }     
+                    { selectedTier && 
+                        <div className='text-center text-xs m-4 text-slate-400'>
+                            * Tie-Breakers implemented in order: Head-to-Head Record, Round Win Percentage <br />
+                            * Unofficial Standings, calculated based on available match data. <br />
+                            * Design inspired by <a href="/players/spidey">Spidey</a> <br />
                         </div>}    
                     { !selectedTier && <div className='text-center text-xl m-4'>Select a tier to get started.</div>}                    
-                </div>       
-            </div>
+                </div>
         </Container>
     );
 }

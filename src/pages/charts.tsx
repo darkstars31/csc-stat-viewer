@@ -14,13 +14,27 @@ import { PlayerTypeFilter } from '../common/components/filters/playerTypeFilter'
 import { PlayerTiersFilter } from '../common/components/filters/playerTiersFilter';
 import { PlayerRolesFilter } from '../common/components/filters/playerRoleFilter';
 import * as Containers from "../common/components/containers";
+import { DistributionCurves } from './charts/distributionCurve';
+import { Overlay } from '../common/components/overlay';
+import { selectClassNames } from '../common/utils/select-utils';
   
 
 export function Charts() {
+
+    const tabs = [
+        { label: "MMR and Rating by Tier"},
+        { label: "Distribution Curves"},
+        { label: "Stat Bars by Tier"},
+        { label: "Role Distribution"},
+        { label: "Role Distribution By Tier"},
+        { label: "Correlations by Tier"}
+    ]
+
+    const q = new URLSearchParams(window.location.search).get("q");
     const inputRef = React.useRef<HTMLInputElement>(null);
-    const { players } = useDataContext();
+    const { players, seasonAndTierConfig, isLoading } = useDataContext();
     const playersWithStats = players.filter( p => p.stats );
-    const [ currentTab, setCurrentTab ] = React.useState<number>(0);
+    const [ currentTab, setCurrentTab ] = React.useState<number>( tabs.findIndex( t => t.label === q ) );
 
     const [ filters, setFilters ] = React.useState<string[]>([]);
     const [ viewTierOptions, setViewTierOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
@@ -34,31 +48,20 @@ export function Charts() {
     const filteredBySearchPlayers = filters.length > 0 ? filteredByRole.filter( player => filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ))) : filteredByRole;
 
     const statPropertyOptions = [
-        { label: "HeadShot %", value: "hs"},
+        { label: "Rating", value: "rating"},
+        { label: "Avg Damage/Round", value: "adr"},
+        { label: "Kill Assists", value: "assists"},
+        { label: "Kill/Assists/Surivived/Traded (KAST)", value: "kast"},
+        { label: "Multi Kill Rounds", value: "multiR"},
+        { label: "Headshot %", value: "hs"},
         { label: "Util Thrown per Match", value: "util"},
         { label: "Util Damage per Match", value: "utilDmg"},
         { label: "Average Damage per Round", value: "adr"},
         { label: "Flash Assists", value: "fAssists"},
-        { label: "Multi Kill Rounds", value: "multiR"},
-        { label: "Kill/Assists/Surivived/Traded", value: "kast"},
         { label: "Trade Kill Ratio", value: "tRatio"},
     ];
 
     const [ statPropertySelected, setStatPropertySelected ] = React.useState<SingleValue<{ label: string; value: string;}>>(statPropertyOptions[0]);
-
-    const selectClassNames = {
-        placeholder: () => "text-gray-400 bg-inherit",
-        container: () => "m-1 rounded bg-inherit",
-        control: () => "p-2 rounded-l bg-slate-700",
-        option: () => "p-2 hover:bg-slate-900",
-        input: () => "text-slate-200",
-        menu: () => "bg-slate-900",
-        menuList: () => "bg-slate-700",
-        multiValue: () => "bg-sky-700 p-1 mr-1 rounded",
-        multiValueLabel: () => "text-slate-200",
-        multiValueRemove: () => "text-slate-800 pl-1",
-        singleValue: () => "text-slate-200",
-    };
 
     const addFilter = () => {
         const searchValue = inputRef.current!.value; 
@@ -84,23 +87,17 @@ export function Charts() {
         }
     }, [currentTab]);
       
-
-    if( playersWithStats.length === 0) {
+    if( isLoading ) {
         return <Container><Loading /></Container>;
     }
 
-    const tabs = [
-        { label: "MMR and Rating by Tier"},
-        { label: "Stat Bars by Tier"},
-        { label: "Role Distribution"},
-        { label: "Role Distribution By Tier"},
-        { label: "Correlations by Tier"}
-    ]
+    if( playersWithStats.length === 0) {
+        return <Container><i>No Players with stats for season {seasonAndTierConfig?.number} yet.. Check back later</i></Container>;
+    }
 
     return (
         <Container>
-            <div>
-                
+            <div>        
             <ul className="mb-5 flex justify-center list-none flex-row flex-wrap border-b-0 pl-0" role="tablist" data-te-nav-ref>
                 { tabs.map( (tab, index) => (
                      <li role="presentation" key={index}>
@@ -162,17 +159,29 @@ export function Charts() {
                     </div>     
                 </Containers.StandardContentThinBox>
             
-                <div className=""> 
-                    { currentTab === 0 && <div
-                        className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                <div> 
+                    { currentTab < 1 && 
+                    <div
+                        className="relative transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                         id="tabs-home"
                         role="tabpanel"
                         aria-labelledby="tabs-home-tab"
                         data-te-tab-active>
+                        <Overlay condition={(filteredBySearchPlayers[0].mmr || 0) < 1} message={<><div>This chart is not very useful without MMR. </div><div>Please check back closer to the draft when MMR is released publicly.</div></>}/>
                         <CartesianCompare playerData={filteredBySearchPlayers} />
                     </div>
                     }
-                    { currentTab === 1 && <div
+                     { currentTab === 1 && <div
+                            className="relative transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                            id="tabs-home"
+                            role="tabpanel"
+                            aria-labelledby="tabs-home-tab"
+                            data-te-tab-active>
+                            <Overlay condition={(filteredBySearchPlayers[0].mmr || 0) < 1} message={<><div>This chart is not very useful without MMR. </div><div>Please check back closer to the draft when MMR is released publicly.</div></>}/>
+                            <DistributionCurves playerData={filteredBySearchPlayers} />
+                        </div>
+                    }
+                    { currentTab === 2 && <div
                         className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                         id="tabs-profile"
                         role="tabpanel"
@@ -191,29 +200,31 @@ export function Charts() {
                         </Containers.ChartButtonBoundingBox>
                     </div>
                     }
-                    { currentTab === 2 && <div
-                        className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-                        id="tabs-messages"
-                        role="tabpanel"
-                        aria-labelledby="tabs-profile-tab">
-                        <RolePieChart playerData={filteredBySearchPlayers} />
-                    </div>
+                    { currentTab === 3 && 
+                        <div
+                            className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                            id="tabs-messages"
+                            role="tabpanel"
+                            aria-labelledby="tabs-profile-tab">
+                            <RolePieChart playerData={filteredBySearchPlayers} />
+                        </div>
                     }
-                    { currentTab === 3 && <div
-                        className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-                        id="tabs-contact"
-                        role="tabpanel"
-                        aria-labelledby="tabs-contact-tab">
-                        <RoleByTierBarChart playerData={filteredBySearchPlayers} />
-                    </div>
+                    { currentTab === 4 && 
+                        <div
+                            className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                            id="tabs-contact"
+                            role="tabpanel"
+                            aria-labelledby="tabs-contact-tab">
+                            <RoleByTierBarChart playerData={filteredBySearchPlayers} />
+                        </div>
                     }
-                    {
-                        currentTab === 4 && <div
-                        className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-                        id="tabs-correlation"
-                        role="tabpanel"
-                        aria-labelledby="tabs-correlation-tab">
-                        <CorrelationByTier playerData={filteredBySearchPlayers} />
+                    {currentTab === 5 && 
+                        <div
+                            className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+                            id="tabs-correlation"
+                            role="tabpanel"
+                            aria-labelledby="tabs-correlation-tab">
+                            <CorrelationByTier playerData={filteredBySearchPlayers} />
                         </div>
                     }
                 </div>

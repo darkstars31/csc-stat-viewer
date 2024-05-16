@@ -9,6 +9,8 @@ module.exports = {
   safelist: [
     { pattern: /grid-cols-./ },
     { pattern: /text-./ },
+    { pattern: /border-./ },
+    { pattern: /hue-rotate-./ },
     /* ["animate-[fade-out-right_1s_ease-in-out]", "animate-[fade-out-left_1s_ease-in-out]"] */
   ],
   theme: {
@@ -36,5 +38,7 @@ module.exports = {
     }),
   },
 },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
 }

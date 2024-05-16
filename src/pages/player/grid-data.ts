@@ -1,13 +1,11 @@
 import {PlayerMappings} from "../../common/utils/player-utils";
 import { CscStats } from "../../models/csc-stats-types";
-import { Player } from "../../models/player";
 
-export const getGridData = (currentPlayer: Player) => {
+export const getGridData = (currentStats: CscStats) => {
 
     const {  
         rating,
         rounds,
-        // ppR,
         gameCount,
         kills,
         assists,
@@ -16,12 +14,11 @@ export const getGridData = (currentPlayer: Player) => {
         "threeK": threeKills,
         "fourK": fourKills,
         "fiveK": aces,
+        awpR,
         hs,
         kast,
         adr,
         kr: avgKillsPerRound,
-        // "CT #": ctRating,
-        // "T #": tRating,
         "cl_1": clutch1v1,
         "cl_2": clutch1v2,
         "cl_3": clutch1v3,
@@ -44,6 +41,7 @@ export const getGridData = (currentPlayer: Player) => {
         // "ea/R": avgRoundsOpenDuelOnTside,
         "tradesR": tradesPerRound,
         "savesR": savesPerRound,
+        saveRate: survivalRate,
         // RWK,
         adp,
         // ctADP,
@@ -55,7 +53,6 @@ export const getGridData = (currentPlayer: Player) => {
         "clutchR": clutchPerRound,
         suppR,
         suppXR,
-        saveRate,
         tRatio,
         // ATD,
         // "lurks/tR": lurksPerTsideRound,
@@ -67,7 +64,7 @@ export const getGridData = (currentPlayer: Player) => {
         // awpR: awpKillsPerRound,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ...playerRest
-    } = currentPlayer.stats as CscStats;
+    } = currentStats as CscStats;
 
     return [
         [
@@ -80,7 +77,7 @@ export const getGridData = (currentPlayer: Player) => {
         ],
         [
             {name: PlayerMappings["kr"], value: `${avgKillsPerRound.toFixed(2)}`, rowIndex: 0},
-            {name: PlayerMappings["sRate"], value: `${(savesPerRound*100).toFixed(2)}%`, rowIndex: 1},
+            {name: PlayerMappings["sRate"], value: `${(survivalRate*100).toFixed(2)}%`, rowIndex: 1},
             // {name: PlayerMappings["ATD"], value: `${ATD}s`, rowIndex: 0},
             {name: PlayerMappings["multiR"], value: `${multiKillRound.toFixed(2)}`, rowIndex: 1},
             {name: PlayerMappings["clutchR"], value: `${(clutchPerRound*100).toFixed(2)}%`, rowIndex: 0},
@@ -100,7 +97,7 @@ export const getGridData = (currentPlayer: Player) => {
             {name: PlayerMappings["odaR"], value: `${openDuelsPerRound.toFixed(2)}`, rowIndex: 0},
             // {name: "Average Opening Duel T-side", value: `${avgRoundsOpenDuelOnTside}`, rowIndex: 1},
             {name: PlayerMappings["tradesR"], value: `${tradesPerRound.toFixed(2)}`, rowIndex: 0},
-            // {name: PlayerMappings["RWK"], value: `${(RWK * 100).toFixed(0)}%`, rowIndex: 1},
+            {name: PlayerMappings["awpR"], value: `${(awpR).toFixed(4)}`, rowIndex: 1},
         ],
         [
             {name: PlayerMappings["util"], value: `${utilThrownPerMatch}`, rowIndex: 0},

@@ -3,6 +3,7 @@ import { Container } from "../common/components/container";
 import {
     teamNameTranslator,
     getPlayerRatingIndex,
+    PlayerTypes,
 } from "../common/utils/player-utils";
 import { getGridData } from "./player/grid-data"
 import { GridContainer, GridStat } from "./player/grid-container";
@@ -23,16 +24,24 @@ import { PlayerAwards } from "./player/playerAwards";
 import { FaceitRank } from "../common/components/faceitRank";
 import { ToolTip } from "../common/utils/tooltip-utils";
 import * as Containers from "../common/components/containers";
-
-
+import { StatsOutOfTier } from "./player/statsOutOfTier";
+import { tiers } from "../common/constants/tiers";
+import { PlayerMatchHistory } from "./player/matchHistory";
+import { TiWarningOutline } from "react-icons/ti";
+import { Exandable } from "../common/components/containers/Expandable";
+import { Hitbox } from "./player/hitbox";
+import { PlayerWeaponsExtended } from "./player/weapons-extended";
 
 export function Player() {
     const divRef = React.useRef<HTMLDivElement>(null);
     const { players = [], franchises = [], loading } = useDataContext();
-    const [, params] = useRoute("/players/:tier/:id");
-    //const tierParam = decodeURIComponent(params?.tier ?? "");
+    const [, params] = useRoute("/players/:id");
     const nameParam = decodeURIComponent(params?.id ?? "");
-    const currentPlayer = players.find( p => p.name === nameParam);
+    const nameFromUrl = window.location.href.split("/").pop();
+    if(nameFromUrl?.includes("?")){
+        console.warn( "Player URL contains a query string '?'. This should not be allowed, but unfortunately it is.")
+    }
+    const currentPlayer = players.find( p => p.name === nameParam || p.name === nameFromUrl );
     const currentPlayerStats = currentPlayer?.stats;
 
     React.useEffect(() => {
@@ -44,17 +53,8 @@ export function Player() {
     }
 
     if( !currentPlayer ){
-        return <Container>x</Container>;
+        return <Container>An error occured. Player could not found. Please inform Camps of this error.</Container>;
     }
-
-    // else if ( !currentPlayer?.stats ){
-	// 	return <Container>
-	// 		No {selectedDataOption?.label} stats found for {nameParam} in {tierParam}
-    //         <div className="text-xs mt-4 pl-4">
-    //             {/* { linksToDifferentTier.length > 0 && <div>This player has stats in a different tier. {linksToDifferentTier}</div> } */}
-    //         </div>
-	// 	</Container>
-	// }
 
     const teamAndFranchise = currentPlayer?.team?.franchise ? `${currentPlayer?.team?.franchise.name} (${currentPlayer?.team?.franchise.prefix}) > ${currentPlayer?.team?.name}` : teamNameTranslator(currentPlayer);
     const teammates = getTeammates( currentPlayer, players, franchises);
@@ -89,27 +89,25 @@ export function Player() {
                                     <i>
                                         <b>{currentPlayer?.role ? `${currentPlayer?.role} — ` : ""}</b>
                                         { currentPlayer?.team?.franchise.name ? 
-                                            <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
+                                            <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer.type === PlayerTypes.EXPIRED ? <ToolTip type="generic" message="This players contract has expired."><TiWarningOutline className="inline text-red-500" /></ToolTip> : ""} {currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
                                             : <span>{teamNameTranslator(currentPlayer)}</span>                         
                                         }                              
                                     </i>
                                 </div>
                                 <ul className="text-[0.8rem]">
                                     <li>
-                                        {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <b><i>{currentPlayer.tier.name}</i></b>
-                                        <br />
-                                        <ToolTip type="generic" message="Estimated HLTV2.0 Rating formula based on CSC matches">
-                                            <span className=" bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent pointer-events-none">
-                                                    {currentPlayer.hltvTwoPointO?.toFixed(2)} HLTV2.0 
-                                            </span>
-                                        </ToolTip>
-                                        <span className="text-xs">
-                                            {' '}<Mmr player={currentPlayer}/> MMR
+                                    {String(playerRatingIndex+1).concat(nth(playerRatingIndex+1))} Overall in <span className={`text-${tiers.find( t => t.name === currentPlayer.tier.name )?.color}-500`}><b><i>{currentPlayer.name.toLowerCase() === "comradsniper" ? "Super ": ""} {currentPlayer.tier.name}</i></b></span>
+                                    <br /> <Mmr player={currentPlayer}/> MMR
+                                    <div>
+                                        <span className="flex leading-7">
+                                        <FaceitRank player={currentPlayer} />
+                                            <ToolTip type="generic" message="HLTV2.0 Rating formula w/ <1% margin of error.">
+                                                <span className="ml-2 bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">
+                                                    ~{currentPlayer.hltvTwoPointO?.toFixed(2)} HLTV
+                                                </span>
+                                            </ToolTip>
                                         </span>
-                                        <div>
-                                    
-                                </div> 
-
+                                    </div> 
                                     </li>
                                 </ul>
                             </div>
@@ -126,7 +124,7 @@ export function Player() {
                         
                         <Containers.StandardBoxRow>
                             <Containers.StandardContentBox title="Ratings">
-                                <PlayerRatings player={currentPlayer} />
+                                <PlayerRatings player={currentPlayer} stats={currentPlayerStats} />
                             </Containers.StandardContentBox>
                             <Containers.StandardContentBox title="Trends">
                                 <PlayerRatingTrendGraph player={currentPlayer} />
@@ -134,11 +132,11 @@ export function Player() {
                         </Containers.StandardBoxRow>
                         <Containers.StandardBoxRow>
                             <Containers.StandardContentBox title="Role Radar">
-                                <RoleRadar player={currentPlayer!}/>         
+                                <RoleRadar stats={currentPlayerStats!}/>         
                             </Containers.StandardContentBox>
                             <Containers.StandardContentBox title="Team">
                                 <TeamSideRatingPie player={currentPlayer} />
-                                <KillsAssistsDeathsPie player={currentPlayer} />
+                                <KillsAssistsDeathsPie stats={currentPlayerStats} />
                             </Containers.StandardContentBox>
                         </Containers.StandardBoxRow>
                     </div>
@@ -149,7 +147,7 @@ export function Player() {
                 Teammates - {teamAndFranchise}
                 <div className="grid grid-cols-1 md:grid-cols-5">
                 { teammates.map( teammate => 
-                        <Link key={`closeby-${teammate.name}`} to={`/players/${teammate.tier.name}/${teammate.name}`}>
+                        <Link key={`closeby-${teammate.name}`} to={`/players/${teammate.name}`}>
                         <div
                             style={{userSelect:'none', lineHeight: '95%' }}
                             className="my-[5px] mr-4 flex h-[32px] cursor-pointer items-center rounded-[4px] bg-[#eceff1] px-[12px] py-0 text-[11px] font-normal normal-case leading-loose text-[#4f4f4f] shadow-none hover:!shadow-none active:bg-[#cacfd1] dark:bg-midnight2 dark:text-neutral-200">
@@ -165,8 +163,8 @@ export function Player() {
             <br />
             { currentPlayerStats &&
                 <div className="py-2">
-                {Array(Math.ceil(getGridData(currentPlayer).length / 2)).fill(0).map((_, i) => {
-                    const pair = getGridData(currentPlayer).slice(i * 2, (i + 1) * 2);
+                {Array(Math.ceil(getGridData(currentPlayerStats).length / 2)).fill(0).map((_, i) => {
+                    const pair = getGridData(currentPlayerStats).slice(i * 2, (i + 1) * 2);
                     return (
                         <React.Fragment key={`pair-${i}`}>
                             <GridContainer>
@@ -183,7 +181,7 @@ export function Player() {
                                     </div>
                                 ))}
                             </GridContainer>
-                            {i < Math.ceil(getGridData(currentPlayer).length / 2) - 1 && <br />}
+                            {i < Math.ceil(getGridData(currentPlayerStats).length / 2) - 1 && <br />}
                         </React.Fragment>
                     );
                 })}
@@ -192,10 +190,58 @@ export function Player() {
             { !currentPlayerStats &&
                 <div className="text-center">
                     <strong><i>This player has no stats in {currentPlayer.tier.name} for the current season.</i></strong>
-                    {currentPlayer.statsOutOfTier?.length > 0 &&
-                        <div className="text-xs">Stats found in another tier and will be visible soon(TM).</div>
+                    {currentPlayer.statsOutOfTier !== null &&
+                        <div className="text-xs">Stats found in non-primary tier(s).</div>
                     }
                 </div>
+            }
+            <br />
+            { currentPlayer?.extendedStats && 
+            <>
+                <Exandable title="Extended Stats (beta)">
+                    <div className="flex flex-row flex-wrap">
+                        <div>CHICKEN STUFF</div>
+                        { Object.entries(currentPlayer.extendedStats.chickens).map( ([key,value]) => (
+                            <div className="m-2 p-2"><div>{key}</div><div className="text-center">{value}</div></div>
+                        ))}
+                    </div>
+                    <div className="flex flex-row flex-wrap">
+                        { Object.entries(currentPlayer.extendedStats.trackedObj).map( ([key,value]) => (
+                            <div className="m-2 p-2"><div>{key}</div><div className="text-center">{value}</div></div>
+                        ))}
+                    </div>
+                    <div className="flex flex-row flex-wrap">
+                        <div>PISTOL ROUND</div>
+                        { Object.entries(currentPlayer.extendedStats.averages).map( ([key,value]) => (
+                            <div className="m-2 p-2"><div>{key}</div><div className="text-center">{String(value.toFixed(2))}</div></div>
+                        ))}
+                    </div>
+                    <div className="flex flex-row flex-wrap">
+                        <div>FLASH AVERAGES</div>
+                        { Object.entries(currentPlayer.extendedStats.durationAverages).map( ([key,value]) => (
+                            <div className="m-2 p-2"><div>{key}</div><div className="text-center">{String(value.toFixed(2))}</div></div>
+                        ))}
+                    </div>
+                </Exandable>
+                <Exandable title="Weapons">
+                    <PlayerWeaponsExtended extendedStats={currentPlayer?.extendedStats} />
+                </Exandable>
+                <Exandable title="HITBOXES">
+                    <Hitbox hitboxTags={currentPlayer?.extendedStats.hitboxTags} />
+                </Exandable>
+            </>
+            }
+            <br />
+            <PlayerMatchHistory player={currentPlayer} />
+            <br />
+            {
+                currentPlayer.statsOutOfTier && 
+                    currentPlayer.statsOutOfTier.map( outOfTierStats => (
+                        <StatsOutOfTier stats={outOfTierStats} />
+                    ))
+            }
+            {
+                
             }
             </Container>
         </>

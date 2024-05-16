@@ -42,13 +42,13 @@ const config = {
         use: [stylesHandler, "css-loader"],
       },
       {
-        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
+        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif|webp)$/i,
         type: "asset",
       },
       {
-        test: /\.(png|j?g|svg|gif)?$/,
+        test: /\.(png|j?g|svg|gif|webp)?$/,
         use: 'file-loader?name=./assets/images/[name].[ext]'
-       }
+       },
       // Add your rules for custom modules here
       // Learn more about loaders from https://webpack.js.org/loaders/
     ],

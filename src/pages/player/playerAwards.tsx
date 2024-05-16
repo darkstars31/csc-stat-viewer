@@ -11,6 +11,10 @@ type Props = {
 
 export function PlayerAwards( { player, players }: Props ){
 
+    if( player.stats === undefined ){
+        return null;
+    }
+
     const numberOneProperties = propertiesCurrentPlayerIsNumberOneFor(player, players, awardProperties);
     const top10Properties = propertiesCurrentPlayerIsInTop10For(player, players, awardProperties);
 

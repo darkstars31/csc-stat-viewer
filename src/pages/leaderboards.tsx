@@ -8,10 +8,15 @@ import * as aslb from "./charts/allStatsLeaderBoards";
 //import _sort from "lodash/sortBy";
 
 export function LeaderBoards() {
+    const qs = new URLSearchParams(window.location.search);
+    const q = qs.get("q");
+    const [, setLocation ] = useLocation();
     const { players = [], loading } = useDataContext();
+    const [ selectedPage, setSelectedPage ] = React.useState<string>(q ?? "general");
     const [ filterBy, setFilterBy ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: `All`, value: "All"});
+    const [ limit, setLimit ] = React.useState<number>(5);
     
-    const player = players.filter( p => p.stats?.gameCount ?? 0 >= 3);
+    const player = players.filter( p => (p.stats?.gameCount ?? 0) >= 3);
     
     const playerData = filterBy?.value.includes("All") ? player : player.filter( f => f.tier.name.toLowerCase() === filterBy?.value.toLowerCase());
 
