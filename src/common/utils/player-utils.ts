@@ -3,6 +3,7 @@ import { CscStats } from "../../models/csc-stats-types";
 import { Player } from "../../models/player";
 import get from 'lodash/get';
 import { calculatePercentage } from "./string-utils";
+import { sortBy } from "lodash";
 
 export enum PlayerTypes {
     SIGNED = 'SIGNED',
@@ -141,21 +142,11 @@ export interface SortOptions {
   order?: 'asc' | 'desc';
 }
 
-export function _sort<T>(arr: T[], property: ((item: T) => number) | string, options: SortOptions = {}): T[] {
-  const { limit, order = 'desc' } = options;
-
-
-  return arr
-    .sort((a: T, b: T) => {
-      const aValue = typeof property === 'function' ? property(a) : get(a, property);
-      const bValue = typeof property === 'function' ? property(b) : get(b, property);
-      if (aValue > bValue) return order === 'desc' ? -1 : 1;
-      if (aValue < bValue) return order === 'desc' ? 1 : -1;
-      return 0;
-    })
-    .slice(0, limit);
+export function _sort<T>( items: T[], property: string, n?: number, order?: "asc" | "desc" ) {
+    const sorted = sortBy(items, property);
+    const orderDirection = order === "desc" ? sorted.reverse() : sorted;
+    return n ? orderDirection.slice(0,n) : orderDirection;
 }
-
 
 export const getPlayersInTier = ( player: Player, allPlayers: Player[] ) => allPlayers.filter( ap => ap.tier.name === player.tier.name );
 export const getPlayersInTier3GP = (player: Player, allPlayers: Player[]) => allPlayers.filter(ap => ap.tier.name === player.tier.name && ap.stats?.gameCount > 3);
