@@ -12,7 +12,7 @@ export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[]
     const [ showPercentile, setShowPercentile ] = React.useState(false);
     const { players } = useDataContext();
 
-    const selectedPlayersWithPercentile = React.useMemo(() => Array.from(selectedPlayers.values())
+    const selectedPlayersWithPercentile = React.useMemo(() => Array.from(selectedPlayers.filter( p => p.stats).values())
         .map( p => ({ ...p, percentile: Object.assign({}, ...Object.keys(p.stats)
             .map( key => {
                 return { [key]: +getPlayerPercentileStatInTier(p, players, key as keyof CscStats) }
