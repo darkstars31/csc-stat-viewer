@@ -6,3 +6,4 @@ export { StandardContentThinBox } from "./StandardContentThinBox";
 export { StandardBoxRow } from "./StandardBoxRow";
 export { UnselectedChartButton } from "./UnselectedChartButton";
 export { SelectedChartButton } from "./SelectedChartButton";
+export { ThreeColumnBoxRow } from "./ThreeColumnBoxRow";

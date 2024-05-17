@@ -4,7 +4,7 @@ import { Loading } from "../common/components/loading";
 import { useDataContext } from "../DataContext";
 import Select, { SingleValue } from "react-select";
 import { StandardBackgroundPage } from "../common/components/containers/StandardBackgroundPage";
-import { ChartButtonBoundingBox } from "../common/components/containers/ChartButtonBoundingBox";
+import { StandardContentThinBox } from "../common/components/containers/StandardContentThinBox";
 import { WeaponLeaderboards } from "./leaderboards/weapons";
 import { useLocation } from "wouter";
 import { Chickens } from "./leaderboards/chickens";
@@ -23,21 +23,6 @@ export function LeaderBoards() {
     const player = players.filter( p => (p.stats?.gameCount ?? 0) >= 3);
     
     const playerData = filterBy?.value.includes("All") ? player : player.filter( f => f.tier.name.toLowerCase() === filterBy?.value.toLowerCase());
-
-    const selectClassNames = {
-        placeholder: () => "text-gray-400 bg-inherit",
-        container: () => "m-1 rounded bg-inherit",
-        control: () => "p-2 rounded-l bg-slate-700",
-        option: (state : { isDisabled: boolean }) => `${state.isDisabled ? 'text-gray-500' : ''} p-2 hover:bg-slate-900`,
-        input: () => "text-slate-200",
-        menu: () => "bg-slate-900",
-        menuList: () => "bg-slate-700",
-        multiValue: () => "bg-sky-700 p-1 mr-1 rounded",
-        multiValueLabel: () => "text-slate-200",
-        multiValueRemove: () => "text-slate-800 pl-1",
-        singleValue: () => "text-slate-200",
-    };
-
     const tierButtonClass = "px-6 pb-2 pt-2.5 text-sm font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-blue-400 focus:bg-blue-400 focus:outline-none focus:ring-0 active:bg-blue-300";
 
     const tierCounts = {
@@ -107,7 +92,7 @@ export function LeaderBoards() {
                 
                 </div>
             <StandardBackgroundPage>
-                <ChartButtonBoundingBox>
+                <StandardContentThinBox isFlexRow={true}>
                     <div className="basis-1/2">
                             <div className="flex flex-row text-sm m-2">
                                 <label title="Order By" className="p-1 leading-9">
@@ -141,7 +126,7 @@ export function LeaderBoards() {
                                 />
                         </div>
                     </div>
-                </ChartButtonBoundingBox>
+                </StandardContentThinBox>
             </StandardBackgroundPage>
             { playerData.length > 0 && 
             <div className="pt-6">

@@ -2,6 +2,7 @@ import * as React from "react";
 import { StatsLeaderBoard } from "./stats";
 import { CscStats, Player } from "../../models";
 import { _sort } from "../../common/utils/player-utils";
+import * as Containers from "../../common/components/containers";
 
 function buildTableRow( player: Player, columnName: string, property: keyof CscStats ){
     return { player, value: player.stats[property]};
@@ -33,24 +34,26 @@ export function GeneralLeaderBoards( { players, limit} : { players: Player[], li
     const ef = _sort(players, "stats.ef", limit, "desc").map( p => ({ player: p, value: p.stats.ef.toFixed(2)}));
 
     return (
-        <>
-        <StatsLeaderBoard title="Games Played" rows={gamesPlayed}/>
-        <StatsLeaderBoard title="Most Kills" rows={kills}/>
-        <StatsLeaderBoard title="Highest K/D Ratio" rows={killDeathRatio}/>
-        <StatsLeaderBoard title="Most Aces" rows={aces}/>
-        <StatsLeaderBoard title=" Damager Per Round" rows={damagePerRound}/>
-        <StatsLeaderBoard title="Flash Assists per Match" rows={fAssists}/>
-        <StatsLeaderBoard title="Awp Kills per Round" rows={awpKillsPerRound}/>
-        <StatsLeaderBoard title="Utility Damage per Match" rows={utilDamagePerMatch}/>
-        <StatsLeaderBoard title="CT-Side Rating" rows={ctRating}/>
-        <StatsLeaderBoard title="T-Side Rating" rows={tRating}/>
-        <StatsLeaderBoard title="Kill/Asset/Survived/Traded" rows={kastPercentage}/>
-        <StatsLeaderBoard title="Utility Thrown Per Match" rows={utilThrownPerMatch}/>
-        <StatsLeaderBoard title="Least Utility Thrown Per Match" rows={leastUtilThrownPerMatch}/>
-        <StatsLeaderBoard title="Highest Headshot Percentage" rows={headshotPercentage}/>
-        <StatsLeaderBoard title="Clutch Points Average per Match" rows={clutchAbility}/>                                     
-        <StatsLeaderBoard title="Open Duels Per Round" rows={openDuels}/>                   
-        <StatsLeaderBoard title="Enemies Flashed per Match" rows={ef}/>
-    </>
+        <Containers.StandardBackgroundPage>
+            <Containers.ThreeColumnBoxRow>
+                <StatsLeaderBoard title="Games Played" rows={gamesPlayed}/>
+                <StatsLeaderBoard title="Most Kills" rows={kills}/>
+                <StatsLeaderBoard title="Highest K/D Ratio" rows={killDeathRatio}/>
+                <StatsLeaderBoard title="Most Aces" rows={aces}/>
+                <StatsLeaderBoard title=" Damager Per Round" rows={damagePerRound}/>
+                <StatsLeaderBoard title="Flash Assists per Match" rows={fAssists}/>
+                <StatsLeaderBoard title="Awp Kills per Round" rows={awpKillsPerRound}/>
+                <StatsLeaderBoard title="Utility Damage per Match" rows={utilDamagePerMatch}/>
+                <StatsLeaderBoard title="CT-Side Rating" rows={ctRating}/>
+                <StatsLeaderBoard title="T-Side Rating" rows={tRating}/>
+                <StatsLeaderBoard title="Kill/Asset/Survived/Traded" rows={kastPercentage}/>
+                <StatsLeaderBoard title="Utility Thrown Per Match" rows={utilThrownPerMatch}/>
+                <StatsLeaderBoard title="Least Utility Thrown Per Match" rows={leastUtilThrownPerMatch}/>
+                <StatsLeaderBoard title="Highest Headshot Percentage" rows={headshotPercentage}/>
+                <StatsLeaderBoard title="Clutch Points Average per Match" rows={clutchAbility}/>                                     
+                <StatsLeaderBoard title="Open Duels Per Round" rows={openDuels}/>                   
+                <StatsLeaderBoard title="Enemies Flashed per Match" rows={ef}/>
+            </Containers.ThreeColumnBoxRow>
+        </Containers.StandardBackgroundPage>
     );
 }

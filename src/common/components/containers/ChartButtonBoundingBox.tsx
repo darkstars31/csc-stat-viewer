@@ -5,5 +5,5 @@ export function ChartButtonBoundingBox({
   }: {
     children: React.ReactNode;
   }) {
-    return <div className="flex space-x-4 mb-3">{children}</div>;
+    return <div className="flex space-x-4">{children}</div>;
   }

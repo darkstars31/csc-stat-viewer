@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Card } from "../../common/components/card";
 import { Player } from "../../models";
 import { Link } from "wouter";
+import * as Containers from "../../common/components/containers";
 
 type Props = {
     title: string,
@@ -16,13 +16,14 @@ type Props = {
 export function StatsLeaderBoard( { title, rows, header = true, headerImage }: Props ){
     return (
         <div className="basis-1/4 grow">
-            <Card>
-                <div className="text-center text-xl uppercase font-extrabold m-4">
+            <Containers.StandardContentBox>
+                <div className="w-full">
+                <div className="text-center text-xl uppercase font-extrabold m-4 align-middle">
+                    { headerImage && <img className="inline mr-3 h-6" src={headerImage} alt="Header" /> }
                     {title}
-                    { headerImage && <div className="ml-4 w-24 h-24 mx-auto inline"><img className="inline" src={headerImage} alt="Header" /></div> }
                 </div>
                 <div className="overflow-hidden overflow-x-auto rounded">
-                    <table className="table-auto min-w-full text-sm">
+                    <table className="table-auto w-full text-sm">
                         { header && 
                             <thead className="text-left underline decoration-yellow-400">
                                 <tr>                                
@@ -60,7 +61,8 @@ export function StatsLeaderBoard( { title, rows, header = true, headerImage }: P
                         </tbody>
                     </table>
                 </div>
-            </Card>
+                </div>
+            </Containers.StandardContentBox>
         </div>
     );
 }

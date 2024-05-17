@@ -11,7 +11,7 @@ const StandardContentThinBoxBase: React.FC<StandardContentThinBoxProps> = ({ tit
   return (
     <section className={`${className} bg-midnight1 rounded-lg shadow-md p-2 mb-3  shadow-black/20 dark:shadow-black/40`}>
       { title && <h1 className="font-bold text-md mb-3 px-2">{title}</h1> }
-      <div className="place-content-center flex flex-row px-[1.5%]">
+      <div className="place-content-center flex flex-row">
         {children}
       </div>
     </section>

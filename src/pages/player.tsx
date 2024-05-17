@@ -71,7 +71,6 @@ export function Player() {
                             <div className="object-contain">
                                 { currentPlayer?.avatarUrl && <img className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px]" src={currentPlayer?.avatarUrl} alt="Missing Discord Profile"/> }
                                 { !currentPlayer?.avatarUrl && <div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border"/>}
-                                
                             </div>
                             <div className="text-left basis-3/4">
                                 <div className="text-2xl font-extrabold text-white-100 flex flex-row md:text-4xl pb-0">

@@ -14,6 +14,10 @@ import { PlayerTiersFilter } from "../common/components/filters/playerTiersFilte
 import { PlayerList } from "./players/player-list";
 import { Player } from "../models";
 import Papa from "papaparse";
+import { selectClassNames } from "../common/utils/select-utils";
+import { StandardBackgroundPage } from "../common/components/containers/StandardBackgroundPage";
+import { ChartButtonBoundingBox } from "../common/components/containers/ChartButtonBoundingBox";
+
 
 const sortOptionsList = [
     { label: "Name", value: "name"}, 
@@ -106,20 +110,6 @@ export function Players() {
         setFilters( newFilters.filter(Boolean) );
     }
 
-    const selectClassNames = {
-        placeholder: () => "text-gray-400 bg-inherit",
-        container: () => "m-1 rounded bg-inherit",
-        control: () => "p-2 rounded-l bg-slate-700",
-        option: () => "p-2 hover:bg-slate-900",
-        input: () => "text-slate-200",
-        menu: () => "bg-slate-900",
-        menuList: () => "bg-slate-700",
-        multiValue: () => "bg-sky-700 p-1 mr-1 rounded",
-        multiValueLabel: () => "text-slate-200",
-        multiValueRemove: () => "text-slate-800 pl-1",
-        singleValue: () => "text-slate-200",
-    };
-
     return (
     <Container>
         <div className="mx-auto max-w-lg text-center">
@@ -154,35 +144,37 @@ export function Players() {
                 }
             </div>
         </div>
-        <div className={`flex flex-col mt-48 md:flex-row md:mt-0 h-12 justify-end`}>
-            <div className="basis-1/3">
-                <PlayerTypeFilter onChange={setViewPlayerTypeOptions as typeof React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>} />
-            </div>
-            <div className="basis-1/3">
-                <PlayerTiersFilter onChange={setViewTierOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
-            </div>
-            <div className="basis-1/5">
-                <PlayerRolesFilter onChange={
-                    setViewPlayerRoleOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>
-                    } />
-            </div>
-            <div className="basis-1/5">
-                <div className="flex flex-row text-xs my-2 mx-1">
-                    <label title="Sort" className="p-1 leading-9">
-                        Sort
-                    </label>
-                    <Select
-                        className="grow"
-                        unstyled
-                        defaultValue={orderBy}
-                        isSearchable={false}
-                        classNames={selectClassNames}
-                        options={sortOptionsList}
-                        onChange={setOrderBy}
-                    />
-                </div>
-            </div>
-        </div>
+        <StandardBackgroundPage>
+                <ChartButtonBoundingBox>
+                    <div className="basis-1/3">
+                        <PlayerTypeFilter onChange={setViewPlayerTypeOptions as typeof React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>} />
+                    </div>
+                    <div className="basis-1/3">
+                        <PlayerTiersFilter onChange={setViewTierOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>} />
+                    </div>
+                    <div className="basis-1/5">
+                        <PlayerRolesFilter onChange={
+                            setViewPlayerRoleOptions as typeof React.useState<MultiValue<{label: string;value: string;}>>
+                            } />
+                    </div>
+                    <div className="basis-1/5">
+                        <div className="flex flex-row text-xs my-2 mx-1">
+                            <label title="Sort" className="p-1 leading-9">
+                                Sort
+                            </label>
+                            <Select
+                                className="grow"
+                                unstyled
+                                defaultValue={orderBy}
+                                isSearchable={false}
+                                classNames={selectClassNames}
+                                options={sortOptionsList}
+                                onChange={setOrderBy}
+                            />
+                        </div>
+                    </div>
+                </ChartButtonBoundingBox>
+        </StandardBackgroundPage>
         <hr className="h-px my-4 border-0 bg-gray-800" />
         <div className="m-2 justify-end flex">
             <button title="Export Stats as CSV" className={`p-2 m-1 rounded border bg-indigo-600 border-indigo-600`} onClick={ () => exportAsCsv(filteredBySearchPlayers) }><TbDatabaseExport /></button>
