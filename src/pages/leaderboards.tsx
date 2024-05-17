@@ -104,38 +104,7 @@ export function LeaderBoards() {
                 }                    
             </div>
             <div className="flex flex-box h-12 mx-auto justify-end">
-                <div className="basis-1/4">
-                            <div className="flex flex-row text-sm m-2">
-                                <label title="Order By" className="p-1 leading-9">
-                                    Show
-                                </label>
-                                <Select
-                                    className="grow"
-                                    unstyled              
-                                    defaultValue={showLimitOptionsList[0]}
-                                    isSearchable={false}
-                                    classNames={selectClassNames}
-                                    options={showLimitOptionsList}
-                                    onChange={( item ) => setLimit( parseInt(item!.value) )}
-                                />
-                        </div>
-                    </div>
-                    <div className="basis-1/4">
-                            <div className="flex flex-row text-sm m-2">
-                                <label title="Order By" className="p-1 leading-9">
-                                    Tier
-                                </label>
-                                <Select
-                                    className="grow"
-                                    unstyled              
-                                    defaultValue={tierOptionsList[0]}
-                                    isSearchable={false}
-                                    classNames={selectClassNames}
-                                    options={tierOptionsList}
-                                    onChange={setFilterBy}
-                                />
-                        </div>
-                    </div>
+                
                 </div>
             <StandardBackgroundPage>
                 <ChartButtonBoundingBox>
@@ -152,6 +121,23 @@ export function LeaderBoards() {
                                     classNames={selectClassNames}
                                     options={tierOptionsList}
                                     onChange={setFilterBy}
+                                />
+                        </div>
+
+                    </div>
+                    <div className="basis-1/2">
+                            <div className="flex flex-row text-sm m-2">
+                                <label title="Order By" className="p-1 leading-9">
+                                    Show
+                                </label>
+                                <Select
+                                    className="grow"
+                                    unstyled              
+                                    defaultValue={showLimitOptionsList[0]}
+                                    isSearchable={false}
+                                    classNames={selectClassNames}
+                                    options={showLimitOptionsList}
+                                    onChange={( item ) => setLimit( parseInt(item!.value) )}
                                 />
                         </div>
                     </div>

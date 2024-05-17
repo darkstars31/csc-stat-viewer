@@ -1,7 +1,6 @@
 import { clamp } from "lodash";
 import { CscStats } from "../../models/csc-stats-types";
 import { Player } from "../../models/player";
-import get from 'lodash/get';
 import { calculatePercentage } from "./string-utils";
 import { sortBy } from "lodash";
 
