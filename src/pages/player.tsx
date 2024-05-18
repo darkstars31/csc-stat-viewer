@@ -64,7 +64,9 @@ export function Player() {
         <>
         <div ref={divRef} />
         <Container>
-            <PlayerNavigator player={currentPlayer} playerIndex={playerRatingIndex} />
+                <Containers.StandardContentThinBox>
+                    <PlayerNavigator player={currentPlayer} playerIndex={playerRatingIndex} />
+                </Containers.StandardContentThinBox>
             <Containers.StandardBackgroundPage>
                 <Containers.StandardContentThinBox>
                         <div className="flex space-x-4 flex-row pb-0 w-full h-fill">
@@ -117,7 +119,12 @@ export function Player() {
                         </div>
                         
                     </Containers.StandardContentThinBox>
+                    <Containers.StandardBoxRow>
                         <PlayerAwards player={currentPlayer} players={players} />
+                        <Containers.StandardContentThinBox title="All-CSC Awards">
+                            WIP
+                        </Containers.StandardContentThinBox>
+                    </Containers.StandardBoxRow>
                 { currentPlayerStats &&
                     <div className="space-y-2">
                         

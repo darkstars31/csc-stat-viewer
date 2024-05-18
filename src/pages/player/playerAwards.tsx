@@ -24,7 +24,7 @@ export function PlayerAwards( { player, players }: Props ){
 
     return (
         <Containers.StandardContentThinBox title="Tier Awards">
-            <div className="flex flex-wrap place-items-start gap-3">
+            <div className="flex flex-wrap gap-3">
                 {
                     numberOneProperties.map((property) => (
                         <div
