@@ -119,12 +119,7 @@ export function Player() {
                         </div>
                         
                     </Containers.StandardContentThinBox>
-                    <Containers.StandardBoxRow>
-                        <PlayerAwards player={currentPlayer} players={players} />
-                        <Containers.StandardContentThinBox title="All-CSC Awards">
-                            WIP
-                        </Containers.StandardContentThinBox>
-                    </Containers.StandardBoxRow>
+                <PlayerAwards player={currentPlayer} players={players} />
                 { currentPlayerStats &&
                     <div className="space-y-2">
                         
