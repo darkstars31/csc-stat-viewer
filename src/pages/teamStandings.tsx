@@ -11,9 +11,12 @@ import { Franchise } from "../models/franchise-types";
 import { calculatePercentage, getCssColorGradientBasedOnPercentage } from "../common/utils/string-utils";
 import { Exandable } from "../common/components/containers/Expandable";
 import csclogo from "../assets/images/placeholders/csc-logo.png";
+import { ToolTip } from "../common/utils/tooltip-utils";
+import { Toggle } from "../common/components/toggle";
 
 type ProcessedTeamStandings = {
-     franchise?: Franchise, 
+     franchise?: Franchise,
+     elo: number,
      name: string, 
      wins: number, 
      losses: number, 
@@ -27,8 +30,15 @@ type ProcessedTeamStandings = {
      pistolTotalRounds: number 
 }
 
+const calclulateElo = (team1 : ProcessedTeamStandings, team2Elo: number, team1Won: boolean) => {
+    const k = 21.333;
+    const c = 266.66;
+    const team1Win = team1Won ? 1 : 0;
+    return team1.elo + k * (team1Win - (1 / (1 + 10 ** ((team2Elo - team1.elo) / c))))
+}
 
-function TeamRecordRow ({ team, index }: { team: any, index: number }) {
+
+function TeamRecordRow ({ team, index, SoS, showExtras }: { team: any, index: number, SoS: number, showExtras: boolean }) {
 
     return (
         <tr key={`${team.name}${index}`} className={`${index % 2 === 0 ? 'bg-slate-800' : ''} p-2`}>
@@ -66,6 +76,12 @@ function TeamRecordRow ({ team, index }: { team: any, index: number }) {
             <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1))} collapse md:visible`}>
                 {calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1)}%
             </td>
+            { showExtras && 
+                <>
+                    <td>{team.elo.toFixed(0)}</td>
+                    <td className={`${getCssColorGradientBasedOnPercentage(SoS)}`}>{SoS.toFixed(1)}%</td>
+                </>
+            }
         </tr>
     );
 }
@@ -77,6 +93,7 @@ export function TeamStandings() {
     const queryParams = new URLSearchParams(useSearch());
     const { franchises = [], seasonAndTierConfig, dataConfig } = useDataContext();
     const [ selectedTier, setSelectedTier ] = React.useState(q ?? "Contender");
+    const [ showExtras, setShowExtras ] = React.useState(false);
     
     const { data: matches = [], isLoading } = useCscSeasonMatches(selectedTier[0].toUpperCase() + selectedTier.slice(1), dataConfig?.season);
     const tieBreakers: string[] = [];
@@ -85,7 +102,21 @@ export function TeamStandings() {
        match.teamStats.forEach( team => {
             if( !acc[team.name] ) {
                 const franchise = franchises.find( f => f.teams.find( t => t.name === team.name));
-                acc[team.name] = { franchise: franchise, name: team.name, wins: 0, losses: 0, roundsWon: 0, roundsLost: 0, ctRoundsWon: 0, tRoundsWon: 0, ctTotalRounds: 0, tTotalRounds: 0, pistolRoundsWon: 0, pistolTotalRounds: 0 };
+                acc[team.name] = { elo: 1000, franchise: franchise, name: team.name, wins: 0, losses: 0, roundsWon: 0, roundsLost: 0, ctRoundsWon: 0, tRoundsWon: 0, ctTotalRounds: 0, tTotalRounds: 0, pistolRoundsWon: 0, pistolTotalRounds: 0 };
+            }
+
+            const opponent = match.teamStats.find( t => t.name !== team.name );
+            if( acc[opponent?.name ?? ""] ) {
+                const opponentElo = acc[opponent!.name].elo;
+                if( team.score > match.totalRounds/2 ){
+                    // win elo
+                    acc[team.name].elo = calclulateElo(acc[team.name], opponentElo, true);
+                    acc[opponent!.name].elo = calclulateElo(acc[opponent!.name], acc[team.name].elo, false);
+                } else {
+                    //lose elo
+                    acc[team.name].elo = calclulateElo(acc[team.name], opponentElo, false);
+                    acc[opponent!.name].elo = calclulateElo(acc[opponent!.name], acc[team.name].elo, true);
+                }
             }
 
             if( team.score > match.totalRounds/2 ){
@@ -93,6 +124,7 @@ export function TeamStandings() {
             } else {
                 acc[team.name].losses += 1;
             }
+
 
             acc[team.name].roundsWon += team.score;
             acc[team.name].roundsLost += match.totalRounds - team.score;
@@ -108,6 +140,26 @@ export function TeamStandings() {
        return acc;
 
     }, {} as Record<string,ProcessedTeamStandings>);
+
+    const SoS = Object.values(teamsWithScores).reduce( (acc: any, team: ProcessedTeamStandings) => {
+        if( acc[team.name] ) {
+            acc[team.name] = 0;
+        }
+
+        const opponents = matches.reduce( (acc, match) => {
+            if( match.teamStats.find( t => t.name === team.name ) ) {
+                const oppName = match.teamStats.find( t => t.name !== team.name )?.name;
+                acc.push( oppName ?? "");
+            }
+            return acc;
+        }, [] as string[]);
+
+        const opponentsOP = Object.values(teamsWithScores).filter( t => opponents.includes(t.name) ).map( opponent => opponent.wins/( opponent.wins + opponent.losses) );
+        const oow = +opponentsOP.reduce( (acc: number, opp: number) => acc + opp, 0) / opponentsOP.length;
+        acc[team.name] = oow * 100;
+        return acc;
+    }, {} as Record<string,number>);
+
 
     const sorted = sortBy(Object.values(teamsWithScores), "wins").reverse();
     sorted.sort( (a,b) => {
@@ -170,8 +222,11 @@ export function TeamStandings() {
                         <Loading /> 
                         :
                             <Card>                          
-                                <div>
-                                    <h1 className='text-4xl font-black uppercase'>{selectedTier}</h1>
+                                <div className="w-full">
+                                    <div className="flex flex-row">
+                                        <h1 className='text-4xl font-black uppercase'>{selectedTier}</h1>
+                                        <div className="flex flex-row w-full justify-end m-1 text-sm"><Toggle checked={showExtras} onChange={() => setShowExtras(!showExtras)}></Toggle> Show Extras</div>
+                                    </div>
                                     <h3 className='text-xl font-bold' style={{backgroundImage: `url(${csclogo})`, overflow:'auto'}}>MATCH DAY <span className="text-yellow-400">{matchDaysPlayed}</span></h3>
                                 </div>
                                 <div className='flex'>
@@ -191,6 +246,12 @@ export function TeamStandings() {
                                                     <th className="collapse md:visible">CT</th>
                                                     <th className="collapse md:visible">T</th>
                                                     <th className="collapse md:visible">Pistols</th>
+                                                    { showExtras && 
+                                                        <>
+                                                            <th><ToolTip type="generic" message="Calculated based on opponent record and the weighted odds of winning against each opponent. Base Elo is 1000."><span className="underline decoration-yellow-400">Elo</span></ToolTip></th>
+                                                            <th><ToolTip type="generic" message="Strength of schedule."><span className="underline decoration-yellow-400">SoS</span></ToolTip></th>
+                                                        </>                                                  
+                                                    }
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -200,7 +261,7 @@ export function TeamStandings() {
                                                 </tr> 
                                                 : sorted.map( (team: any, index: number) => 
                                                     <>
-                                                        <TeamRecordRow key={`${index}`} team={team} index={index} />
+                                                        <TeamRecordRow key={`${index}`} team={team} SoS={SoS[team.name]} showExtras={showExtras} index={index} />
                                                         { 
                                                             tiers.find( (tier) => tier.name === selectedTier)?.playoffLine === index+1 && 
                                                             <tr className='text-gray-500 text-xs italic'>
