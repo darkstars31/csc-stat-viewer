@@ -19,6 +19,12 @@ import { Overlay } from '../common/components/overlay';
 import { selectClassNames } from '../common/utils/select-utils';
   
 
+const updateURL = (key: string, value: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set(key, decodeURIComponent(value));
+    window.history.pushState(null, "", url);
+} 
+
 export function Charts() {
 
     const tabs = [
@@ -107,7 +113,7 @@ export function Charts() {
                      data-te-toggle="pill"
                      role="tab"
                      aria-selected={currentTab === index}
-                     onClick={() => setCurrentTab(index)}
+                     onClick={() => { updateURL("q", String(index)); setCurrentTab(index)}}
                      >{tab.label}</button
                      >
                  </li>
