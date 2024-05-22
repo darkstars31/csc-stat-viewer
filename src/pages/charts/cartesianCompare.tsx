@@ -4,6 +4,7 @@ import { Player } from "../../models";
 import ReactECharts from "echarts-for-react";
 import { linearRegression, linearRegressionLine, max, min } from "simple-statistics";
 import * as Containers from "../../common/components/containers";
+import { Toggle } from "../../common/components/toggle";
 
 
 type Props = {
@@ -198,34 +199,31 @@ export function CartesianCompare( { playerData = [] }: Props) {
             <Containers.StandardContentBox>
               <ReactECharts option={optionRatingMMR} className="w-full pr-4" style={{height: 600}} />
             </Containers.StandardContentBox>
-            <Containers.ChartButtonBoundingBox>
-              <Containers.ChartButtonBox>
-                  <input
-                  className="inline-block"
-                  type="checkbox"
-                  value=""
-                  onChange={ () => setIsHltvRating(!isHltvRating) }
-                  id="checkboxChecked"
-                  checked={ isHltvRating } />
-                  <label className="inline-block pl-[0.15rem] hover:cursor-pointer" htmlFor="checkboxChecked">
-                    Use HLTV Rating
-                  </label>
-              </Containers.ChartButtonBox>
-              <Containers.ChartButtonBox>
-                  <label htmlFor="customRange1" className="flex text-neutral-700 dark:text-neutral-200">
-                    Minimum Games Played ({extraFilters.minGamesPlayed})
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="12"
-                    step="1"
-                    className="transparent h-1.5 w-full cursor-pointer appearance-none rounded-lg border-transparent bg-neutral-200"
-                    id="customRange1"
-                    value={extraFilters.minGamesPlayed}
-                    onChange={(e) => setExtraFilters({ ...extraFilters, minGamesPlayed: Number(e.target.value) })}/>
+            <div className="m-2">
+              <Containers.ChartButtonBoundingBox>
+                <Containers.ChartButtonBox>
+                  <div className="flex flex-row">
+                    <Toggle checked={isHltvRating} onChange={ () => setIsHltvRating(!isHltvRating)} /> 
+                    HLTV Rating
+                  </div>
+                  
                 </Containers.ChartButtonBox>
-            </Containers.ChartButtonBoundingBox>
+                <Containers.ChartButtonBox>
+                    <label htmlFor="customRange1" className="flex text-neutral-700 dark:text-neutral-200">
+                      Minimum Games Played ({extraFilters.minGamesPlayed})
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="12"
+                      step="1"
+                      className="transparent h-1.5 w-full cursor-pointer appearance-none rounded-lg border-transparent bg-neutral-200"
+                      id="customRange1"
+                      value={extraFilters.minGamesPlayed}
+                      onChange={(e) => setExtraFilters({ ...extraFilters, minGamesPlayed: Number(e.target.value) })}/>
+                  </Containers.ChartButtonBox>
+              </Containers.ChartButtonBoundingBox>
+            </div>
         </>
     );
 }

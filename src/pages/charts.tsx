@@ -27,20 +27,20 @@ const updateURL = (key: string, value: string) => {
 
 export function Charts() {
 
-    const tabs = [
+    const tabs = React.useMemo(() => [
         { label: "MMR and Rating by Tier"},
         { label: "Distribution Curves"},
         { label: "Stat Bars by Tier"},
         { label: "Role Distribution"},
         { label: "Role Distribution By Tier"},
         { label: "Correlations by Tier"}
-    ]
+    ], []);
 
     const q = new URLSearchParams(window.location.search).get("q");
     const inputRef = React.useRef<HTMLInputElement>(null);
     const { players, seasonAndTierConfig, isLoading } = useDataContext();
     const playersWithStats = players.filter( p => p.stats );
-    const [ currentTab, setCurrentTab ] = React.useState<number>( tabs.findIndex( t => t.label === q ) );
+    const [ currentTab, setCurrentTab ] = React.useState<string>( tabs.find( t => t.label === q )?.label ?? tabs[0].label );
 
     const [ filters, setFilters ] = React.useState<string[]>([]);
     const [ viewTierOptions, setViewTierOptions ] = React.useState<MultiValue<{label: string;value: string;}>>();
@@ -82,16 +82,14 @@ export function Charts() {
         setFilters( newFilters.filter(Boolean) );
     }
 
-    // const filteredPlayers = filters.length > 0 ? playersWithStats.filter( player => {
-    //     return filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ) );
-    // } ) : playersWithStats;
+
     React.useEffect(() => {
-        if (currentTab === 4) {
+        if (currentTab === tabs[3].label) {
             setViewPlayerTypeOptions([{ label: "Signed", value: [PlayerTypes.SIGNED,PlayerTypes.INACTIVE_RESERVE,PlayerTypes.SIGNED_PROMOTED,PlayerTypes.SIGNED_SUBBED] }]);
         } else {
             setViewPlayerTypeOptions([]); 
         }
-    }, [currentTab]);
+    }, [tabs, currentTab]);
       
     if( isLoading ) {
         return <Container><Loading /></Container>;
@@ -109,11 +107,11 @@ export function Charts() {
                      <li role="presentation" key={index}>
                      <button
                      id={tab.label}
-                     className={`my-2 block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight hover:isolate hover:border-transparent hover:bg-neutral-700 focus:isolate ${index === currentTab ? "border-primary text-primary dark:border-primary-400 dark:text-primary-400": "text-neutral-500"}`}
+                     className={`my-2 block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight hover:isolate hover:border-transparent hover:bg-neutral-700 focus:isolate ${tabs[index].label === currentTab ? "border-primary text-primary dark:border-primary-400 dark:text-primary-400": "text-neutral-500"}`}
                      data-te-toggle="pill"
                      role="tab"
-                     aria-selected={currentTab === index}
-                     onClick={() => { updateURL("q", String(index)); setCurrentTab(index)}}
+                     aria-selected={currentTab === tabs[index].label}
+                     onClick={() => { updateURL("q", tab.label); setCurrentTab(tab.label)}}
                      >{tab.label}</button
                      >
                  </li>
@@ -166,7 +164,7 @@ export function Charts() {
                 </Containers.StandardContentThinBox>
             
                 <div> 
-                    { currentTab < 1 && 
+                    { currentTab === tabs[0].label && 
                     <div
                         className="relative transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                         id="tabs-home"
@@ -177,7 +175,7 @@ export function Charts() {
                         <CartesianCompare playerData={filteredBySearchPlayers} />
                     </div>
                     }
-                     { currentTab === 1 && <div
+                     { currentTab === tabs[1].label && <div
                             className="relative transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                             id="tabs-home"
                             role="tabpanel"
@@ -187,7 +185,7 @@ export function Charts() {
                             <DistributionCurves playerData={filteredBySearchPlayers} />
                         </div>
                     }
-                    { currentTab === 2 && <div
+                    { currentTab === tabs[2].label && <div
                         className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                         id="tabs-profile"
                         role="tabpanel"
@@ -206,7 +204,7 @@ export function Charts() {
                         </Containers.ChartButtonBoundingBox>
                     </div>
                     }
-                    { currentTab === 3 && 
+                    { currentTab === tabs[3].label && 
                         <div
                             className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                             id="tabs-messages"
@@ -215,7 +213,7 @@ export function Charts() {
                             <RolePieChart playerData={filteredBySearchPlayers} />
                         </div>
                     }
-                    { currentTab === 4 && 
+                    { currentTab === tabs[4].label && 
                         <div
                             className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                             id="tabs-contact"
@@ -224,7 +222,7 @@ export function Charts() {
                             <RoleByTierBarChart playerData={filteredBySearchPlayers} />
                         </div>
                     }
-                    {currentTab === 5 && 
+                    {currentTab === tabs[5].label && 
                         <div
                             className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
                             id="tabs-correlation"
