@@ -40,6 +40,7 @@ export function Team(){
 	const currentTeam = currentFranchise?.teams.find( t => t.name === teamName );
 	const currentTier = seasonAndTierConfig?.league.leagueTiers.find( t => t.tier.name === currentTeam?.tier.name );
 	const currentTeamTotalMmr = currentTeam?.players.reduce((sum, next) => sum+next.mmr ?? 0, 0) ?? 0;
+	const currentTeamMMRMinusCapDiff = (currentTier?.tier.mmrCap ?? 0) - currentTeamTotalMmr;
 	const currentTeamTotalMmrPercent = ((currentTeamTotalMmr / (currentTier?.tier.mmrCap ?? 0) ) * 100).toFixed(2);
 	const playersWithStats = currentTeam?.players.map( t => cscPlayers.find( p => p.steam64Id === t.steam64Id));
 	let iterations = 0;
@@ -104,8 +105,8 @@ export function Team(){
 							</div>
 							<div className="flex flex-wrap justify-between">
 								<div className="flex-initial m-2 p-2 text-center">
-									<div><b>{currentTeam?.players.map( player => player.mmr ).reduce((acc, val) => acc + val, 0)} / {currentTier?.tier.mmrCap} ({currentTeamTotalMmrPercent}%)</b></div>
-									<div className="text-sm">MMR Cap</div>
+									<div><b>{currentTeamTotalMmr} / {currentTier?.tier.mmrCap} <span className={`text-sm ${currentTeamMMRMinusCapDiff < 0 ? "text-red-400" : "hidden"}`}>({currentTeamMMRMinusCapDiff})</span></b></div>
+									<div className="text-sm">{currentTeamTotalMmrPercent}% MMR Cap</div>
 								</div>
 							</div>
 							<div className="p-4 rounded">
@@ -121,7 +122,7 @@ export function Team(){
 								{ isLoadingMatches && <Loading />}							
 								{ playoffMatches.length > 0 && 
 									<div className="pt-8 relative">
-										<div className="-rotate-90 absolute bottom-[5em] text-2xl pb-16 bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent"><b>PLAY-OFFS</b></div>										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ml-16">
+										<div className="-rotate-90 absolute bottom-[5em] text-2xl pb-16 bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent"><b>PLAY-OFFS</b></div><div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ml-16">
 											{ playoffMatches.map( match => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
 										</div>											
 									</div>

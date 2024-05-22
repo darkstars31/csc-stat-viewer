@@ -10,7 +10,7 @@ import { Link } from "wouter";
 
 export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[] }) {
     const [ showPercentile, setShowPercentile ] = React.useState(false);
-    const { players } = useDataContext();
+    const { players, seasonAndTierConfig } = useDataContext();
 
     const selectedPlayersWithPercentile = React.useMemo(() => Array.from(selectedPlayers.filter( p => p.stats).values())
         .map( p => ({ ...p, percentile: Object.assign({}, ...Object.keys(p.stats)
@@ -18,6 +18,8 @@ export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[]
                 return { [key]: +getPlayerPercentileStatInTier(p, players, key as keyof CscStats) }
             }
             ) )})), [ selectedPlayers, players ]);
+
+    const currentTierMMRCap = seasonAndTierConfig?.league.leagueTiers.find( t => t.tier.name === selectedPlayers[0]?.tier.name );
 
     return (
         <Card>
@@ -49,7 +51,7 @@ export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[]
                                 <tr key={player.name} className={`${rowIndex % 2 === 1 ? "bg-midnight1" : "bg-midnight2"} rounded h-8`}>
                                     <td>{player.team?.franchise.prefix ?? ""} {player.name} <Link className="inline hover:text-blue-400" target="_blank" rel="noreferrer" href={`/players/${encodeURIComponent(player.name)}`}><FaExternalLinkAlt size={12} className="inline leading-4" /></Link></td>
                                     <td>{player.role}</td>
-                                    <td>{player.mmr !== 0 ? player.mmr : "???"}</td>
+                                    <td>{player.mmr !== 0 ? player.mmr : "???"} { player.mmr && currentTierMMRCap && <span>({player.mmr/(currentTierMMRCap.tier.mmrCap || 1)})</span>}</td>
                                     <td>{player.stats.gameCount}</td>
                                     <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.rating)}`}>{(showPercentile ? player.percentile : player.stats)["rating"].toFixed( showPercentile ? 0 : 2)}</td>
                                     <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.pit)}`}>{(showPercentile ? player.percentile : player.stats)["pit"].toFixed(showPercentile ? 0 : 2)}</td>
