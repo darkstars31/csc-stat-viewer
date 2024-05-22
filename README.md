@@ -1,4 +1,4 @@
-# CSC Stattrak (Analytikill)
+# Analytikill (csc-stat-viewer)
 
 Unofficial Counter-Strike: Confederation League Statistics and Analysis tools
 
@@ -17,10 +17,12 @@ The page will reload when you make changes.
 You may also see any lint errors in the console.
 
 ### `Requirements`
+
 Git
 Node v18+
 
 ### `Libraries to know`
+
 React (Front-End Framework & Component composition)
 Wouter (React Routing)
 React-Query (Requests and Data Caching)
