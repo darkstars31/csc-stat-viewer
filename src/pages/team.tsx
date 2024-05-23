@@ -14,6 +14,7 @@ import { TeamPlayerCards } from "./team/playerCards";
 import { MapAnalysis } from "./team/mapBans";
 import { CompareLink } from "../common/components/compareLink";
 import { useEnableFeature } from "../common/hooks/enableFeature";
+import { ToolTip } from "../common/utils/tooltip-utils";
 
 
 export function Team(){
@@ -105,8 +106,10 @@ export function Team(){
 							</div>
 							<div className="flex flex-wrap justify-between">
 								<div className="flex-initial m-2 p-2 text-center">
-									<div><b>{currentTeamTotalMmr} / {currentTier?.tier.mmrCap} <span className={`text-sm ${currentTeamMMRMinusCapDiff < 0 ? "text-red-400" : "hidden"}`}>({currentTeamMMRMinusCapDiff})</span></b></div>
-									<div className="text-sm">{currentTeamTotalMmrPercent}% MMR Cap</div>
+									<ToolTip type="generic" message={ currentTeamMMRMinusCapDiff > 0 ? `Available MMR: ${currentTeamMMRMinusCapDiff}` : ""}>
+										<div><b>{currentTeamTotalMmr} / {currentTier?.tier.mmrCap} <span className={`text-sm ${currentTeamMMRMinusCapDiff < 0 ? "text-red-400" : "hidden"}`}>({currentTeamMMRMinusCapDiff})</span></b></div>
+										<div className="text-sm">{currentTeamTotalMmrPercent}% MMR Cap</div>
+									</ToolTip>
 								</div>
 							</div>
 							<div className="p-4 rounded">

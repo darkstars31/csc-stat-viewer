@@ -3,7 +3,7 @@ import * as React from "react";
 import { tiertopincategory } from "../../svgs";
 
 interface ToolTipProps {
-    message: string | React.ReactElement;
+    message: string | React.ReactElement | null;
     children?: React.ReactNode;
     pos?: string;
     type: "rating" | "icon" | "explain" | "generic" | "award";
@@ -137,10 +137,11 @@ const GenericTooltip: React.FC<ToolTipProps> = ({ message, children, classNames 
                 onTouchEnd={onMouseLeave}           
         >     
             {children}  
-                <div className={`${baseTooltipClass} ${wideTooltipClass} -translate-x-1/4 translate-y-[-110%] ${classNames?.join(' ')} z-50 ${childrenIsString ? 'bg-zinc-500 shadow-lg' : ''} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                { message && <div className={`${baseTooltipClass} ${wideTooltipClass} -translate-x-1/4 translate-y-[-110%] ${classNames?.join(' ')} z-50 ${childrenIsString ? 'bg-zinc-500 shadow-lg' : ''} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
                 >
                     {message}
                 </div>
+                }
         </div>
     );
 };
