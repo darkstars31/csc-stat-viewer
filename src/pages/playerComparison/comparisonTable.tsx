@@ -20,6 +20,8 @@ export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[]
             ) )})), [ selectedPlayers, players ]);
 
     const currentTierMMRCap = seasonAndTierConfig?.league.leagueTiers.find( t => t.tier.name === selectedPlayers[0]?.tier.name );
+    const totalMMR = selectedPlayers.reduce((accumulator, player) => accumulator + (player?.mmr ?? 0), 0);
+    const overCap = totalMMR > (currentTierMMRCap?.tier.mmrCap ?? 0);
 
     return (
         <Card>
@@ -33,7 +35,7 @@ export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[]
                         <tr>
                             <td>Name</td>
                             <td>Role</td>
-                            <td>MMR</td>
+                            <td>MMR <span className={`${overCap ? "text-red-500" : ""}`}>({(totalMMR/(currentTierMMRCap?.tier.mmrCap || 1)*100).toFixed(1)}% Cap)</span></td>
                             <td>Games</td>
                             <td>Rating</td>
                             <td>Pit</td>
@@ -51,7 +53,7 @@ export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[]
                                 <tr key={player.name} className={`${rowIndex % 2 === 1 ? "bg-midnight1" : "bg-midnight2"} rounded h-8`}>
                                     <td>{player.team?.franchise.prefix ?? ""} {player.name} <Link className="inline hover:text-blue-400" target="_blank" rel="noreferrer" href={`/players/${encodeURIComponent(player.name)}`}><FaExternalLinkAlt size={12} className="inline leading-4" /></Link></td>
                                     <td>{player.role}</td>
-                                    <td>{player.mmr !== 0 ? player.mmr : "???"} { player.mmr && currentTierMMRCap && <span>({player.mmr/(currentTierMMRCap.tier.mmrCap || 1)})</span>}</td>
+                                    <td>{player.mmr !== 0 ? player.mmr : "???"} { player.mmr && currentTierMMRCap && <span>({(player.mmr/(currentTierMMRCap.tier.mmrCap || 1)*100).toFixed(1)}%)</span>}</td>
                                     <td>{player.stats.gameCount}</td>
                                     <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.rating)}`}>{(showPercentile ? player.percentile : player.stats)["rating"].toFixed( showPercentile ? 0 : 2)}</td>
                                     <td className={`${getCssColorGradientBasedOnPercentage(player.percentile.pit)}`}>{(showPercentile ? player.percentile : player.stats)["pit"].toFixed(showPercentile ? 0 : 2)}</td>
