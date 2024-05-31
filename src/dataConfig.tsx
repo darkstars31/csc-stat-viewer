@@ -32,6 +32,13 @@ export const betaUsers = {
 export const dataConfiguration = [
     {
         season: 14,
+        seasonStartDate: "2024-05-30",
+        seasonEndDate: "2024-06-30",
+        name: "Season 14",
+        spreadsheetUrl: googleSheetsUrl("18qgpc4NdPNg4I5Q9lmzaEgUYyxHtq25JKZfTxiQg_lc",334898684),
+    },
+    {
+        season: 14,
         seasonStartDate: "2024-04-21",
         seasonEndDate: "2024-06-30",
         name: "Season 14 (Combines)",
