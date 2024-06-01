@@ -13,14 +13,12 @@ import { queryClient } from "../App";
 import { TeamPlayerCards } from "./team/playerCards";
 import { MapAnalysis } from "./team/mapBans";
 import { CompareLink } from "../common/components/compareLink";
-import { useEnableFeature } from "../common/hooks/enableFeature";
 import { ToolTip } from "../common/utils/tooltip-utils";
 
 
 export function Team(){
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { franchises = [], players: cscPlayers = [], dataConfig, seasonAndTierConfig, loggedinUser, loading } = useDataContext();
-	const compareFeatureEnabled = useEnableFeature("canUsePlayerComparison");
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [, params] = useRoute("/franchises/:franchiseName/:teamName");
 	const franchiseName = decodeURIComponent(params?.franchiseName ?? "");
@@ -115,7 +113,7 @@ export function Team(){
 							<div className="p-4 rounded">
 								<hr className="h-px my-4 border-0" />
 								<div>
-									{ compareFeatureEnabled && <CompareLink players={playersWithStats} /> }
+									<CompareLink players={playersWithStats} />
 									<div className="flex flex-row justify-center gap-2 flex-wrap pt-4">
 									{
 										currentTeam?.players?.map( player => <TeamPlayerCards key={player.name} franchisePlayer={player} team={currentTeam} /> )

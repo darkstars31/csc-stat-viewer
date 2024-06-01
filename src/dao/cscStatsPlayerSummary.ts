@@ -10,7 +10,7 @@ const fetchGraph = async ( steamId: string | undefined, season?: number ) => awa
             "query": `query PlayerProfile($steamId: String!, $season: Int!) {
                 playerSummary(steamId: $steamId, season: $season) {
                   ctRating
-                  tRating
+                  TRating
                 }
               }`
             ,

@@ -6,7 +6,7 @@ import {
   LeaderBoards, Franchises, Franchise, 
   Players, Player, Profile, 
   Playground, Team, 
-  PlayerComparison, ExportData, TeamStandings,
+  PlayerComparison, ExportData, TeamStandings, Servers
 } from './pages';
 import { ArticleRoutes } from './pages/articles/routes';
 import { useDataContext } from './DataContext';
@@ -42,6 +42,7 @@ export function Router(){
     { path: `/playground`, component: () => <Playground /> },
     { path: `/profile`, component: () => <Profile /> },
     { path: `/standings`, component: () => <TeamStandings />},
+    { path: `/servers`, component: () => <Servers /> },
   ];
 
   React.useEffect( () => {

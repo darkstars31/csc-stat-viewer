@@ -93,6 +93,19 @@ export function HeaderProfile() {
                                     </Link>
                                 )}
                             </Menu.Item>
+                            <hr />
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <Link to={`/servers`}>
+                                        <button
+                                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700 w-full')}
+                                        >
+                                            Request Server
+                                        </button>
+                                    </Link>
+                                )}
+                            </Menu.Item>
+                            <hr />
                         </>
                     }
                     <Menu.Item>
