@@ -7,6 +7,8 @@ import { appConfig } from "../dataConfig";
 import cookie from "js-cookie";
 import { useEnableFeature } from "../common/hooks/enableFeature";
 import { useDataContext } from "../DataContext";
+import { TbClipboardCopy } from "react-icons/tb";
+import { ToolTip } from "../common/utils/tooltip-utils";
 
 
 export function Servers() {
@@ -181,11 +183,28 @@ export function Servers() {
             {result && 
                 <Card>
                     Connect
-                    <pre>{result.result}</pre>
+                    <pre>{result.result}</pre> <ToolTip type="generic" message="Copy to clipboard"><TbClipboardCopy onClick={() => navigator.clipboard.writeText(result.result)} /></ToolTip>
                 </Card>
             }
+            {/* {
+               ownedServers && 
+               <Card>
+                    <pre>
+                        {JSON.stringify(ownedServers, null, 2)}
+                    </pre>
+                    <div className="flex items-center justify-center m-2 p-2">
+                            <button type="submit" disabled={false} className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{false ? "Shutting Down..." : "Shutdown"}</button>
+                        </div>
+                </Card>
+            } */}
             {
-               ownedServers && ownedServers?.map( (server: { id: any; name: any; }) => <Card><pre>{JSON.stringify(server, null, 2)}</pre></Card> )
+               ownedServers && ownedServers?.map( (server: { id: any; name: any; }) => 
+                <Card>
+                    <pre>{JSON.stringify(server, null, 2)}</pre>
+                    <div className="flex items-center justify-center m-2 p-2 w-32">
+                        <button type="submit" disabled={false} className="w-full bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">{false ? "Shutting Down..." : "Shutdown"}</button>
+                    </div>
+                </Card> )
             }
         </Container>
     )
