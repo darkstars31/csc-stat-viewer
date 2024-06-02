@@ -9,7 +9,53 @@ import { useEnableFeature } from "../common/hooks/enableFeature";
 import { useDataContext } from "../DataContext";
 import { TbClipboardCopy } from "react-icons/tb";
 import { ToolTip } from "../common/utils/tooltip-utils";
+import { FaCheck } from "react-icons/fa";
+import { ImSpinner9 } from "react-icons/im";
 
+
+export function OwnedServers ( { server, onChange } : { server : any, onChange: (x: boolean) => void} ) {
+    const [isShuttingDown, setIsShuttingDown] = React.useState<boolean>(false);
+    const [hasCopied, setHasCopied] = React.useState<boolean>(false);
+
+    React.useEffect(() => {
+        if (hasCopied) {
+            setTimeout(() => {
+                setHasCopied(!hasCopied);
+            }, 2000);
+        }
+    }, [hasCopied]);
+
+    const shutdown = async () => {
+        console.info( server );
+        setIsShuttingDown(true);
+        const response = await fetch(`${appConfig.endpoints.analytikill}/servers/stop`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${cookie.get("jwt")}`
+            },
+            body: JSON.stringify({
+                id: server.screenid
+            })
+        });
+
+        if (response.ok) {
+            onChange(true);
+        }
+        setIsShuttingDown(false);
+    }
+
+    return (
+        <Card className="basis-1/3 grow">
+            <div className="text-3xl font-bold text-center uppercase">{server.type?.split(".")[0]}</div>
+            <pre>connect servers.analytikill.com:{server.port}</pre>
+            <div className="flex items-center gap-4 justify-center m-2 p-2">
+                <button onClick={() => {navigator.clipboard.writeText(`connect servers.analytikill.com:${server.port}`); setHasCopied(true)}}  className="w-48 bg-blue-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">{hasCopied ? <FaCheck className="inline animate-bounce" /> : "Copy to Clipboard"}</button>
+                <button onClick={() => shutdown()} disabled={isShuttingDown} className="w-48 bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">{isShuttingDown ? <ImSpinner9 className="inline animate-spin" /> : "Shutdown"}</button>
+            </div>
+        </Card> 
+    )
+}
 
 export function Servers() {
     const { loggedinUser } = useDataContext();
@@ -17,6 +63,7 @@ export function Servers() {
     const [selectedServerType, setSelectedServerType] = React.useState<SingleValue<{label: string; value: string;}>>({label: "Pug/Prac", value: "match"});
     const [password, setPassword] = React.useState<string>("");
     const [result, setResult] = React.useState<any>();
+    const [shouldRefresh, setShouldRefresh] = React.useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
     const [ownedServers, setOwnedServers] = React.useState<any>([]);
     const enableFeature = useEnableFeature('canRequestServers');
@@ -34,7 +81,8 @@ export function Servers() {
                 setOwnedServers(data);
             }
         })()
-    }, [ result ]);
+        setShouldRefresh(false);
+    }, [ result, shouldRefresh ]);
 
 
     const onSubmit = async (e: { preventDefault: () => void; }) => {
@@ -157,17 +205,14 @@ export function Servers() {
                             </div>
                         </div>
                         <div className="flex items-center justify-center m-2 p-2">
-                            <button type="submit" disabled={isSubmitting} className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{isSubmitting ? "Requesting..." : "Request"}</button>
+                            <button type="submit" disabled={isSubmitting} className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{isSubmitting ? <ImSpinner9 className="inline animate-spin" /> : "Request"}</button>
                         </div>
 
                     </form>
                 </Card>
                 <Card>
                     <div>
-                        How to use
-                    </div>
-                    <div>
-                        Pug/Prac Commands
+                        <div className="font-bold uppercase">Pug/Prac Commands</div>
                         <pre>
                             .help - Shows available commands<br />
                             .prac - Enter Practice Mode<br />
@@ -186,26 +231,11 @@ export function Servers() {
                     <pre>{result.result}</pre> <ToolTip type="generic" message="Copy to clipboard"><TbClipboardCopy onClick={() => navigator.clipboard.writeText(result.result)} /></ToolTip>
                 </Card>
             }
-            {/* {
-               ownedServers && 
-               <Card>
-                    <pre>
-                        {JSON.stringify(ownedServers, null, 2)}
-                    </pre>
-                    <div className="flex items-center justify-center m-2 p-2">
-                            <button type="submit" disabled={false} className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{false ? "Shutting Down..." : "Shutdown"}</button>
-                        </div>
-                </Card>
-            } */}
+            <div className="flex flex-row flex-wrap gap-4 w-full">
             {
-               ownedServers && ownedServers?.map( (server: { id: any; name: any; }) => 
-                <Card>
-                    <pre>{JSON.stringify(server, null, 2)}</pre>
-                    <div className="flex items-center justify-center m-2 p-2 w-32">
-                        <button type="submit" disabled={false} className="w-full bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">{false ? "Shutting Down..." : "Shutdown"}</button>
-                    </div>
-                </Card> )
+               ownedServers && ownedServers?.map( (server: { id: any; name: any; }) => <OwnedServers key={server.id} server={server} onChange={setShouldRefresh} /> )
             }
+            </div>
         </Container>
     )
 }
