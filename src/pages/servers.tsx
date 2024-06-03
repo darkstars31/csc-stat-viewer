@@ -8,9 +8,38 @@ import cookie from "js-cookie";
 import { useEnableFeature } from "../common/hooks/enableFeature";
 import { useDataContext } from "../DataContext";
 import { TbClipboardCopy } from "react-icons/tb";
-import { ToolTip } from "../common/utils/tooltip-utils";
 import { FaCheck } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
+
+type server = {
+    screenid: number,
+    owner: string,
+    port: number,
+    type: string,
+    password: string,
+    datetime: string,
+    deets: serverDeets
+}
+
+type serverDeets = {
+    "protocol": number,
+    "name": string,
+    "map": string,
+    "folder": string,
+    "game": string,
+    "appId": number,
+    "players": number,
+    "maxPlayers": number,
+    "bots": number,
+    "serverType": string,
+    "environment": string,
+    "visibility": number,
+    "vac": number,
+    "version": string,
+    "port": number,
+    "keywords": string,
+    "gameId": string
+}
 
 
 export function OwnedServers ( { server, onChange } : { server : any, onChange: (x: boolean) => void} ) {
@@ -21,12 +50,11 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
         if (hasCopied) {
             setTimeout(() => {
                 setHasCopied(!hasCopied);
-            }, 2000);
+            }, 2250);
         }
     }, [hasCopied]);
 
     const shutdown = async () => {
-        console.info( server );
         setIsShuttingDown(true);
         const response = await fetch(`${appConfig.endpoints.analytikill}/servers/stop`, {
             method: "POST",
@@ -42,47 +70,60 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
         if (response.ok) {
             onChange(true);
         }
-        setIsShuttingDown(false);
     }
 
+    const connectCode = `connect servers.analytikill.com:${server.port}${server.password ? `;password ${server.password}` : ""}`
+
     return (
-        <Card className="basis-1/3 grow">
-            <div className="text-3xl font-bold text-center uppercase">{server.type?.split(".")[0]}</div>
-            <pre>connect servers.analytikill.com:{server.port}</pre>
-            <div className="flex items-center gap-4 justify-center m-2 p-2">
-                <button onClick={() => {navigator.clipboard.writeText(`connect servers.analytikill.com:${server.port}`); setHasCopied(true)}}  className="w-48 bg-blue-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">{hasCopied ? <FaCheck className="inline animate-bounce" /> : "Copy to Clipboard"}</button>
-                <button onClick={() => shutdown()} disabled={isShuttingDown} className="w-48 bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">{isShuttingDown ? <ImSpinner9 className="inline animate-spin" /> : "Shutdown"}</button>
-            </div>
-        </Card> 
+        <tr>
+            <td>{server.deets?.name}</td>
+            <td className="uppercase">{server.type?.split(".")[0]}</td>
+            <td>{server.deets?.map}</td>
+            <td>{server.deets?.players}/{server.deets?.maxPlayers} ({server.deets?.bots} bots)</td>
+            <td className="flex flex-row justify-between m-1 p-1 rounded bg-gray-800 inset-0 gap-2">
+                <pre>{connectCode}</pre> 
+                { !hasCopied ?<TbClipboardCopy className="mt-1 inlinecursor-pointer" onClick={() =>{ setHasCopied(!hasCopied); navigator.clipboard.writeText(connectCode)}} /> : <FaCheck className="text-green-500 mt-1 inlinecursor-pointer animate-bounce" /> }
+            </td>
+            <td>
+                <div className="flex flex-col gap-2 justify-center">
+                    <button onClick={() => shutdown()} disabled={isShuttingDown} className="w-32 bg-blue-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">{isShuttingDown ? <ImSpinner9 className="inline animate-spin" /> : "Shutdown"}</button>
+                </div>
+            </td>
+        </tr> 
     )
 }
 
 export function Servers() {
-    const { loggedinUser } = useDataContext();
+    const { loggedinUser, isLoading } = useDataContext();
     const [selectedMap, setSelectedMap] = React.useState<SingleValue<{label: string; value: string;}>>({label: "Anbuis", value: "de_anubis"});
     const [selectedServerType, setSelectedServerType] = React.useState<SingleValue<{label: string; value: string;}>>({label: "Pug/Prac", value: "match"});
     const [password, setPassword] = React.useState<string>("");
-    const [result, setResult] = React.useState<any>();
-    const [shouldRefresh, setShouldRefresh] = React.useState<boolean>(false);
+    const [, setResult] = React.useState<any>();
+    const [shouldRefresh, setShouldRefresh] = React.useState<boolean>(true);
     const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
-    const [ownedServers, setOwnedServers] = React.useState<any>([]);
+    const [ownedServers, setOwnedServers] = React.useState<server[]>([]);
     const enableFeature = useEnableFeature('canRequestServers');
 
     React.useEffect(() => {
-        (async () => { const response = await fetch(`${appConfig.endpoints.analytikill}/servers/owned`, {
+        (async () => {
+            if(shouldRefresh === true && !isLoading ){
+                setTimeout( async () => {
+            const response = await fetch(`${appConfig.endpoints.analytikill}/servers/owned`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${cookie.get("jwt")}`
                 }
             })
-            if( (response).ok ){
+            if( response.ok ){
                 const data = await response.json();
                 setOwnedServers(data);
             }
+            setShouldRefresh(false);
+            }, 1500);
+        }
         })()
-        setShouldRefresh(false);
-    }, [ result, shouldRefresh ]);
+    }, [ shouldRefresh, isLoading ]);
 
 
     const onSubmit = async (e: { preventDefault: () => void; }) => {
@@ -97,12 +138,14 @@ export function Servers() {
             },
             body: JSON.stringify({
                 map: selectedMap?.value,
-                serverType: selectedServerType?.value
+                serverType: selectedServerType?.value,
+                password
             })
         })
         if( response.ok ){
             
             const data = await response.json();
+            setShouldRefresh(true);
             setResult(data);
         }
         setIsSubmitting(false);
@@ -132,9 +175,11 @@ export function Servers() {
 
     return (
         <Container>
-            <h2 className="text-3xl font-bold sm:text-4xl text-center m-4 p-4">AnalytiKill Pug/Prac/Retake Servers</h2>
+            <h2 className="text-3xl font-bold sm:text-4xl text-center m-2 p-2">Servers On-Demand</h2>
+            <h2 className="font-bold text-center m-1 text-gray-500">(Beta)</h2>
             <div className="flex flex-row flex-wrap w-full gap-4">
                 <Card className="grow">
+                    <div className="text-xl font-bold text-center uppercase">Server Settings</div>
                     <form className="w-full max-w-lg" onSubmit={onSubmit}>
                     <div className="flex flex-wrap gap-3">
                             <div className="basis-1/4">
@@ -163,6 +208,8 @@ export function Servers() {
                                         {label: "Overpass", value: "de_overpass"},
                                         {label: "Vertigo", value: "de_vertigo"},
                                         //{label: "Train", value: "de_train"},
+                                        //{label: "Dust", value: "de_dust"},
+                                        //{label: "Cobblestone", value: "de_cbbl"},
                                         //{label: "Cache", value: "de_cache"},
                                         //{label: "Cobblestone", value: "de_cobblestone"},
                                     ]}
@@ -205,7 +252,7 @@ export function Servers() {
                             </div>
                         </div>
                         <div className="flex items-center justify-center m-2 p-2">
-                            <button type="submit" disabled={isSubmitting} className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{isSubmitting ? <ImSpinner9 className="inline animate-spin" /> : "Request"}</button>
+                            <button type="submit" disabled={isSubmitting} className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">{isSubmitting ? <ImSpinner9 className="inline animate-spin" /> : "Request"}</button>
                         </div>
 
                     </form>
@@ -225,16 +272,30 @@ export function Servers() {
                     </div>
                 </Card>
             </div>
-            {result && 
+            {/* {result && 
                 <Card>
                     Connect
                     <pre>{result.result}</pre> <ToolTip type="generic" message="Copy to clipboard"><TbClipboardCopy onClick={() => navigator.clipboard.writeText(result.result)} /></ToolTip>
                 </Card>
-            }
-            <div className="flex flex-row flex-wrap gap-4 w-full">
-            {
-               ownedServers && ownedServers?.map( (server: { id: any; name: any; }) => <OwnedServers key={server.id} server={server} onChange={setShouldRefresh} /> )
-            }
+            } */}
+            <div className="w-full">
+                <table className="table-auto w-full">
+                    <thead className="text-left text-gray-500 decoration-1 border-b border-yellow-200">
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Map</th>
+                            <th>Players</th>
+                            <th>Server</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {
+                        ownedServers && ownedServers?.map( (server) => <OwnedServers key={server.screenid} server={server} onChange={setShouldRefresh} /> )
+                    }
+                    </tbody>
+                </table>
             </div>
         </Container>
     )
