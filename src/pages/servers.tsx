@@ -10,6 +10,10 @@ import { useDataContext } from "../DataContext";
 import { TbClipboardCopy } from "react-icons/tb";
 import { FaCheck } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+import dayjs from "dayjs";
+dayjs.extend(relativeTime);
 
 type server = {
     screenid: number,
@@ -43,6 +47,7 @@ type serverDeets = {
 
 
 export function OwnedServers ( { server, onChange } : { server : any, onChange: (x: boolean) => void} ) {
+    const { loggedinUser } = useDataContext();
     const [isShuttingDown, setIsShuttingDown] = React.useState<boolean>(false);
     const [hasCopied, setHasCopied] = React.useState<boolean>(false);
 
@@ -77,16 +82,17 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
     return (
         <tr>
             <td>{server.deets?.name}</td>
+            <td>{dayjs(server.datetime).fromNow()}</td>
             <td className="uppercase">{server.type?.split(".")[0]}</td>
             <td>{server.deets?.map}</td>
-            <td>{server.deets?.players}/{server.deets?.maxPlayers} ({server.deets?.bots} bots)</td>
+            <td>{server.deets?.players-server.deets?.bots}/{server.deets?.maxPlayers}</td>
             <td className="flex flex-row justify-between m-1 p-1 rounded bg-gray-800 inset-0 gap-2">
-                <pre>{connectCode}</pre> 
-                { !hasCopied ?<TbClipboardCopy className="mt-1 inlinecursor-pointer" onClick={() =>{ setHasCopied(!hasCopied); navigator.clipboard.writeText(connectCode)}} /> : <FaCheck className="text-green-500 mt-1 inlinecursor-pointer animate-bounce" /> }
+                <pre>{ loggedinUser?.name === server.owner && server.password ?  connectCode : "Private"}</pre> 
+                { !hasCopied ?<TbClipboardCopy className="mt-1 inline cursor-pointer" onClick={() =>{ setHasCopied(!hasCopied); navigator.clipboard.writeText(connectCode)}} /> : <FaCheck className="text-green-500 mt-1 inlinecursor-pointer animate-bounce" /> }
             </td>
             <td>
                 <div className="flex flex-col gap-2 justify-center">
-                    <button onClick={() => shutdown()} disabled={isShuttingDown} className="w-32 bg-blue-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">{isShuttingDown ? <ImSpinner9 className="inline animate-spin" /> : "Shutdown"}</button>
+                    { loggedinUser?.name === server.owner && <button onClick={() => shutdown()} disabled={isShuttingDown} className="w-32 bg-blue-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">{isShuttingDown ? <ImSpinner9 className="inline animate-spin" /> : "Shutdown"}</button> }
                 </div>
             </td>
         </tr> 
@@ -181,12 +187,28 @@ export function Servers() {
                 <Card className="grow">
                     <div className="text-xl font-bold text-center uppercase">Server Settings</div>
                     <form className="w-full max-w-lg" onSubmit={onSubmit}>
-                    <div className="flex flex-wrap gap-3">
+                        <div className="flex flex-wrap gap-3">
+                            <div className="basis-1/4">
+                                Duration (Hours)
+                            </div>
+                            <div className="basis-1/4">
+                                <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover:cursor-not-allowed"
+                                    type="number" 
+                                    value={3} 
+                                    disabled 
+                                />
+                            </div>
+                        </div>
+                        <div className="flex flex-wrap gap-3">
                             <div className="basis-1/4">
                                 Player Slots
                             </div>
                             <div className="basis-1/4">
-                            10
+                                <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover:cursor-not-allowed"
+                                    type="number" 
+                                    value={10} 
+                                    disabled 
+                                />
                             </div>
                         </div>
                         <div className="flex flex-wrap gap-3">
@@ -283,6 +305,7 @@ export function Servers() {
                     <thead className="text-left text-gray-500 decoration-1 border-b border-yellow-200">
                         <tr>
                             <th>Name</th>
+                            <th>Time</th>
                             <th>Type</th>
                             <th>Map</th>
                             <th>Players</th>
