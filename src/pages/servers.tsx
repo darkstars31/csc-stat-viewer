@@ -79,6 +79,10 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
 
     const connectCode = `connect servers.analytikill.com:${server.port}${server.password ? `;password ${server.password}` : ""}`
 
+    // console.info("test1 owner", loggedinUser?.name === server.owner ?  connectCode : server.password ? "Private" : connectCode)
+    // console.info("test2 not owner no pass", loggedinUser?.name !== server.owner ?  connectCode : server.password ? "Private" : connectCode)
+    // console.info("test3 not owner has pass", loggedinUser?.name !== server.owner ?  connectCode : !server.password ? "Private" : connectCode)
+
     return (
         <tr>
             <td>{server.deets?.name}</td>
@@ -87,7 +91,7 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
             <td>{server.deets?.map}</td>
             <td>{server.deets?.players-server.deets?.bots}/{server.deets?.maxPlayers}</td>
             <td className="flex flex-row justify-between m-1 p-1 rounded bg-gray-800 inset-0 gap-2">
-                <pre>{ loggedinUser?.name === server.owner && server.password ?  connectCode : "Private"}</pre> 
+                <pre>{ loggedinUser?.name === server.owner ?  connectCode : server.password ? "Private" : connectCode}</pre> 
                 { !hasCopied ?<TbClipboardCopy className="mt-1 inline cursor-pointer" onClick={() =>{ setHasCopied(!hasCopied); navigator.clipboard.writeText(connectCode)}} /> : <FaCheck className="text-green-500 mt-1 inlinecursor-pointer animate-bounce" /> }
             </td>
             <td>
@@ -108,6 +112,7 @@ export function Servers() {
     const [shouldRefresh, setShouldRefresh] = React.useState<boolean>(true);
     const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
     const [ownedServers, setOwnedServers] = React.useState<server[]>([]);
+    const [error, setError] = React.useState<string>("");
     const enableFeature = useEnableFeature('canRequestServers');
 
     React.useEffect(() => {
@@ -149,10 +154,14 @@ export function Servers() {
             })
         })
         if( response.ok ){
-            
             const data = await response.json();
             setShouldRefresh(true);
             setResult(data);
+        }
+        if( !response.ok ){
+            const data = await response.json();
+            setError(data.result);
+            setTimeout(() => {setError("")}, 5000);
         }
         setIsSubmitting(false);
     };
@@ -276,8 +285,12 @@ export function Servers() {
                         <div className="flex items-center justify-center m-2 p-2">
                             <button type="submit" disabled={isSubmitting} className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">{isSubmitting ? <ImSpinner9 className="inline animate-spin" /> : "Request"}</button>
                         </div>
-
                     </form>
+                    { error &&
+                    <div className="text-red-500">
+                        {error}
+                    </div>
+                    }
                 </Card>
                 <Card>
                     <div>

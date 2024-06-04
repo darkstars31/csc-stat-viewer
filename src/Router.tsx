@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Router as Wouter, Route, Switch, useLocation } from 'wouter';
+import { Router as Wouter, Route, Switch, useLocation, Link } from 'wouter';
 import { Container } from './common/components/container';
 import { 
   About, LoginCallBack, Charts, 
@@ -15,14 +15,16 @@ import ReactGA from 'react-ga4';
 import { ErrorBoundary } from './common/components/errorBoundary';
 import { discordFetchUser } from './dao/oAuth';
 import cookie from 'js-cookie';
-// import { useLocalStorage } from './common/hooks/localStorage';
-// import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { useLocalStorage } from './common/hooks/localStorage';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { useEnableFeature } from './common/hooks/enableFeature';
 
 export function Router(){
-  //const [ closeNotificationBanner, setCloseNotificationBanner] = useLocalStorage("closeNotificationBanner", "")
+  const [ closeNotificationBanner, setCloseNotificationBanner] = useLocalStorage("closeNotificationBannerRequestAServer", "")
   const { loading, discordUser, setDiscordUser } = useDataContext();
   const BASE_ROUTE = "";
   const [ location ] = useLocation();
+  const enableFeature = useEnableFeature("canRequestServers");
 
   const routes = [
     { path: `/`, component: () => <Players /> },
@@ -66,12 +68,12 @@ export function Router(){
       { loading.isLoadingCscPlayers && <ProgressBar />}
       <Wouter base={BASE_ROUTE}>
         <div>
-        {/* { !closeNotificationBanner && 
+        { !closeNotificationBanner && enableFeature && 
                 <button className='w-full h-8 bg-teal-600 text-center' onClick={() => setCloseNotificationBanner("true")}>
-                  Season 13 Combine Stats now available, MMR hidden until the draft. 
+                  Need a retake server to warm-up on match days? Request a server (beta) <Link className='hover:underline text-white font-bold hover:text-sky-400' to="/servers">here.</Link>
                   <AiOutlineCloseCircle className='float-right mr-4' size="1.5em"/>
                 </button>
-              } */}
+              }
             <ErrorBoundary>
               <ArticleRoutes base={`/articles`} />
               <Switch>
