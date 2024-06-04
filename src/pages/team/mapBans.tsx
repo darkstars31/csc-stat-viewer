@@ -13,7 +13,7 @@ type MapBansType = {
     de_mirage: number,
     de_ancient: number,
     de_anubis: number,
-    de_overpass: number
+    de_dust2: number,
 }
 type Props = {
     matches?: Match[],
@@ -24,10 +24,12 @@ export function MapBans( { matches, team }: Props) {
     const mapBans: Record<"Round 1"|"Round 2"|"Round 3", MapBansType> = calculateMapBans( team, matches );
     const mapFloats = calculateMapBanFloat( team, matches );
     const roundLabels = Object.keys( mapBans ?? {});
-    const mapLabels = ["de_inferno","de_vertigo","de_nuke", "de_mirage", "de_ancient", "de_anubis", "de_overpass"];
+    const mapLabels = ["de_inferno","de_vertigo","de_nuke", "de_mirage", "de_ancient", "de_anubis", "de_dust2"];
     const data = Object.values( mapBans ?? {})
         .map( (i) => Object.values(i) )
         .map( (round, row) => round.map( (_, column) => [column, row, round[column] || "-"]));
+
+        console.info(data);
     
     const mapBanMatrixOptions: EChartsOption = {
         title: { 

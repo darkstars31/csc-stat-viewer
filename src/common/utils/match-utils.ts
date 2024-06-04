@@ -14,7 +14,7 @@ export const getTeamRecord = ( team?: Team, matches?: Match[] ) => matches?.redu
 }, { wins: 0, losses: 0 });
 
 
-const initialMapBans = { de_inferno: 0, de_vertigo: 0, de_nuke: 0, de_mirage: 0, de_ancient: 0, de_anubis: 0, de_overpass: 0};
+const initialMapBans = { de_inferno: 0, de_vertigo: 0, de_nuke: 0, de_mirage: 0, de_ancient: 0, de_anubis: 0, de_dust2: 0 };
 
 export const calculateMapBans = (team?: Team, matches?: Match[]) => {
    
