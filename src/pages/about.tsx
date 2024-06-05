@@ -52,6 +52,11 @@ export function About(){
                 </div>
                 <br />
                 <h2>FAQ</h2>
+                <Exandable title="What is the Counter Strike: Confederation (CSC)?">
+                    <p className="mt-4 text-gray-300 text-sm">
+                        A free to join, community maintained draft esports league based on Counter-Strike 2. A nice blend of casual competitive team-based play. Think "beer league" but for esports. We have tiers that cover all ranges of skills
+                    </p>
+                </Exandable>
                 <Exandable title="Where does this data come from?">
                     <p className="mt-4 text-gray-300 text-sm">
                         Most of the data comes directly from <a className="text-blue-300" href="https://csconfederation.com/" target="_blank" rel="noreferrer">CSC</a>. Some of the data is cached every 15 minutes to avoid excessive requests. Data is also aggregate from other sources such as Faceit.
@@ -80,6 +85,11 @@ export function About(){
                             <br />
                             Impact combines every kill, assist, multikill, clutch, and successful bomb detonation and defusal. Points are awarded for each of these actions. Points for kills are contextualized based on the economy of both players, whether the round was won, and what type of kill it was (entry, trade, etc). The final Impact rating combines a players relative points for the whole game, relative points on won rounds, and opening dual rate.
                         </code>
+                    </p>
+                </Exandable>
+                <Exandable title="Beta Features">
+                    <p className="mt-4 text-gray-300 text-sm">
+                        These are typically new and/or experiemntal features. If you see a "beta" tag near a feature, it means that it is still in development or being tested. Some times beta features are available to everyone and some times they are available only to a select group of individuals when logged in.
                     </p>
                 </Exandable>
             </div>
