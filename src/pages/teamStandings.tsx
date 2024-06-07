@@ -182,7 +182,7 @@ export function TeamStandings() {
     const tierButtonClass = "rounded-md flex-grow px-6 pb-2 pt-2.5 text-sm font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-blue-400 focus:bg-blue-400 focus:outline-none focus:ring-0 active:bg-blue-300";
 
     const tiers = [
-        { name: "Recruit", color: 'red', playoffLine: 10},
+        { name: "Recruit", color: 'red', playoffLine: 12},
         { name: "Prospect", color: 'orange', playoffLine: 14},
         { name: "Contender", color: 'yellow', playoffLine: 16 },
         { name: "Challenger", color: 'green', playoffLine: 12},
