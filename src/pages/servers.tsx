@@ -8,11 +8,12 @@ import cookie from "js-cookie";
 import { useEnableFeature } from "../common/hooks/enableFeature";
 import { useDataContext } from "../DataContext";
 import { TbClipboardCopy } from "react-icons/tb";
-import { FaCheck } from "react-icons/fa";
+import { FaCheck, FaServer } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 import dayjs from "dayjs";
+import { Loading } from "../common/components/loading";
 dayjs.extend(relativeTime);
 
 type server = {
@@ -22,7 +23,6 @@ type server = {
     type: string,
     password: string,
     datetime: string,
-    deets: serverDeets
 }
 
 type serverDeets = {
@@ -48,8 +48,29 @@ type serverDeets = {
 
 export function OwnedServers ( { server, onChange } : { server : any, onChange: (x: boolean) => void} ) {
     const { loggedinUser } = useDataContext();
+    const [serverDeets, setServerDeets] = React.useState<serverDeets | null>(null);
     const [isShuttingDown, setIsShuttingDown] = React.useState<boolean>(false);
     const [hasCopied, setHasCopied] = React.useState<boolean>(false);
+
+    React.useEffect( () => {
+        ( async () => {
+            const response = await fetch(`${appConfig.endpoints.analytikill}/servers/deets`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${cookie.get("jwt")}`
+                },
+                body: JSON.stringify({
+                    port: server.port
+                })
+            });
+            if (response.ok) {
+                setServerDeets(await response.json());
+            }
+        }
+        )()
+
+    },[ server ]);
 
     React.useEffect(() => {
         if (hasCopied) {
@@ -83,13 +104,15 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
     // console.info("test2 not owner no pass", loggedinUser?.name !== server.owner ?  connectCode : server.password ? "Private" : connectCode)
     // console.info("test3 not owner has pass", loggedinUser?.name !== server.owner ?  connectCode : !server.password ? "Private" : connectCode)
 
+    console.info(server.datetime, dayjs(), dayjs().fromNow(server.datetime.trim()) )
+
     return (
         <tr>
-            <td>{server.deets?.name}</td>
+            <td>{serverDeets?.name}</td>
             <td>{dayjs(server.datetime).fromNow()}</td>
             <td className="uppercase">{server.type?.split(".")[0]}</td>
-            <td>{server.deets?.map}</td>
-            <td>{server.deets?.players-server.deets?.bots}/{server.deets?.maxPlayers}</td>
+            <td>{serverDeets?.map}</td>
+            <td>{serverDeets ? serverDeets?.players-serverDeets?.bots : 0}/{serverDeets?.maxPlayers}</td>
             <td className="flex flex-row justify-between m-1 p-1 rounded bg-gray-800 inset-0 gap-2">
                 <pre>{ loggedinUser?.name === server.owner ?  connectCode : server.password ? "Private" : connectCode}</pre> 
                 { !hasCopied ?<TbClipboardCopy className="mt-1 inline cursor-pointer" onClick={() =>{ setHasCopied(!hasCopied); navigator.clipboard.writeText(connectCode)}} /> : <FaCheck className="text-green-500 mt-1 inlinecursor-pointer animate-bounce" /> }
@@ -111,7 +134,7 @@ export function Servers() {
     const [, setResult] = React.useState<any>();
     const [shouldRefresh, setShouldRefresh] = React.useState<boolean>(true);
     const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
-    const [ownedServers, setOwnedServers] = React.useState<server[]>([]);
+    const [servers, setServers] = React.useState<server[]>([]);
     const [error, setError] = React.useState<string>("");
     const enableFeature = useEnableFeature('canRequestServers');
 
@@ -119,19 +142,22 @@ export function Servers() {
         (async () => {
             if(shouldRefresh === true && !isLoading ){
                 setTimeout( async () => {
-            const response = await fetch(`${appConfig.endpoints.analytikill}/servers/owned`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${cookie.get("jwt")}`
-                }
-            })
-            if( response.ok ){
-                const data = await response.json();
-                setOwnedServers(data);
-            }
-            setShouldRefresh(false);
+                    const response = await fetch(`${appConfig.endpoints.analytikill}/servers/owned`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${cookie.get("jwt")}`
+                        }
+                    })
+                    if( response.ok ){
+                        const data = await response.json();
+                        setServers(data);
+                    }
+                    setShouldRefresh(false);
             }, 1500);
+            setInterval( () => {
+                setShouldRefresh(true);
+            }, 1000 * 60 * 5);
         }
         })()
     }, [ shouldRefresh, isLoading ]);
@@ -259,8 +285,9 @@ export function Servers() {
                                         unstyled
                                         isSearchable={false}
                                         options={[
-                                            {label: "Pug/Prac", value: "match"},
+                                            {label: "Pug & Prac", value: "match"},
                                             {label: "Retakes", value: "retakes"},
+                                            {label: "Deathmatch", value: "deathmatch"},
                                         ]}
                                         onChange={setSelectedServerType}
                                         value={selectedServerType}
@@ -283,7 +310,7 @@ export function Servers() {
                             </div>
                         </div>
                         <div className="flex items-center justify-center m-2 p-2">
-                            <button type="submit" disabled={isSubmitting} className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">{isSubmitting ? <ImSpinner9 className="inline animate-spin" /> : "Request"}</button>
+                            <button type="submit" disabled={isSubmitting || shouldRefresh} className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">{isSubmitting || shouldRefresh ? <ImSpinner9 className="inline animate-spin" /> : "Request"}</button>
                         </div>
                     </form>
                     { error &&
@@ -314,9 +341,10 @@ export function Servers() {
                 </Card>
             } */}
             <div className="w-full">
+
                 <table className="table-auto w-full">
-                    <thead className="text-left text-gray-500 decoration-1 border-b border-yellow-200">
-                        <tr>
+                    <thead className="text-left underline decoration-yellow-400">
+                        <tr className="">
                             <th>Name</th>
                             <th>Time</th>
                             <th>Type</th>
@@ -328,10 +356,12 @@ export function Servers() {
                     </thead>
                     <tbody>
                     {
-                        ownedServers && ownedServers?.map( (server) => <OwnedServers key={server.screenid} server={server} onChange={setShouldRefresh} /> )
+                        servers && servers?.map( (server) => <OwnedServers key={server.screenid} server={server} onChange={setShouldRefresh} /> )
                     }
                     </tbody>
                 </table>
+                { shouldRefresh && <div className="flex flex-row justify-center m-4 p-2"><Loading /></div>}
+                { servers.length === 0 && !shouldRefresh && <div className="text-center font-bold m-4 p-2 text-gray-500"> <FaServer size={64} className="inline p-4" />There aren't any servers running, start one, maybe?</div> }
             </div>
         </Container>
     )
