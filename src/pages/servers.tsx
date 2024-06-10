@@ -10,10 +10,10 @@ import { useDataContext } from "../DataContext";
 import { TbClipboardCopy } from "react-icons/tb";
 import { FaCheck, FaServer } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
+import { Loading } from "../common/components/loading";
+import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-import dayjs from "dayjs";
-import { Loading } from "../common/components/loading";
 dayjs.extend(relativeTime);
 
 type server = {
@@ -52,25 +52,29 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
     const [isShuttingDown, setIsShuttingDown] = React.useState<boolean>(false);
     const [hasCopied, setHasCopied] = React.useState<boolean>(false);
 
-    React.useEffect( () => {
-        ( async () => {
-            const response = await fetch(`${appConfig.endpoints.analytikill}/servers/deets`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${cookie.get("jwt")}`
-                },
-                body: JSON.stringify({
-                    port: server.port
-                })
-            });
-            if (response.ok) {
-                setServerDeets(await response.json());
-            }
-        }
-        )()
+    const isDeetsNull = !serverDeets
 
-    },[ server ]);
+    React.useEffect( () => {
+        setTimeout(() => {
+            ( async () => {
+                const response = await fetch(`${appConfig.endpoints.analytikill}/servers/deets`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${cookie.get("jwt")}`
+                    },
+                    body: JSON.stringify({
+                        port: server.port
+                    })
+                });
+                if (response.ok) {
+                    setServerDeets(await response.json());
+                }
+            }
+            )()
+        }, 1500 )
+
+    },[ server, isDeetsNull ]);
 
     React.useEffect(() => {
         if (hasCopied) {
@@ -99,17 +103,13 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
     }
 
     const connectCode = `connect servers.analytikill.com:${server.port}${server.password ? `;password ${server.password}` : ""}`
-
-    // console.info("test1 owner", loggedinUser?.name === server.owner ?  connectCode : server.password ? "Private" : connectCode)
-    // console.info("test2 not owner no pass", loggedinUser?.name !== server.owner ?  connectCode : server.password ? "Private" : connectCode)
-    // console.info("test3 not owner has pass", loggedinUser?.name !== server.owner ?  connectCode : !server.password ? "Private" : connectCode)
-
-    console.info(server.datetime, dayjs(), dayjs().fromNow(server.datetime.trim()) )
+    //const timeSinceServerStart = dayjs(+server.datetime).fromNow()
+    const timeTilServerShutdown = dayjs().to(+server.datetime+1000*60*60*3,true)
 
     return (
         <tr>
             <td>{serverDeets?.name}</td>
-            <td>{dayjs(server.datetime).fromNow()}</td>
+            <td>{timeTilServerShutdown}</td>
             <td className="uppercase">{server.type?.split(".")[0]}</td>
             <td>{serverDeets?.map}</td>
             <td>{serverDeets ? serverDeets?.players-serverDeets?.bots : 0}/{serverDeets?.maxPlayers}</td>
@@ -129,7 +129,7 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
 export function Servers() {
     const { loggedinUser, isLoading } = useDataContext();
     const [selectedMap, setSelectedMap] = React.useState<SingleValue<{label: string; value: string;}>>({label: "Anbuis", value: "de_anubis"});
-    const [selectedServerType, setSelectedServerType] = React.useState<SingleValue<{label: string; value: string;}>>({label: "Pug/Prac", value: "match"});
+    const [selectedServerType, setSelectedServerType] = React.useState<SingleValue<{label: string; value: string;}>>({label: "Pug & Prac", value: "match"});
     const [password, setPassword] = React.useState<string>("");
     const [, setResult] = React.useState<any>();
     const [shouldRefresh, setShouldRefresh] = React.useState<boolean>(true);
@@ -157,7 +157,7 @@ export function Servers() {
             }, 1500);
             setInterval( () => {
                 setShouldRefresh(true);
-            }, 1000 * 60 * 5);
+            }, 1000 * 60 * 3);
         }
         })()
     }, [ shouldRefresh, isLoading ]);
@@ -346,7 +346,7 @@ export function Servers() {
                     <thead className="text-left underline decoration-yellow-400">
                         <tr className="">
                             <th>Name</th>
-                            <th>Time</th>
+                            <th>Time Left</th>
                             <th>Type</th>
                             <th>Map</th>
                             <th>Players</th>
