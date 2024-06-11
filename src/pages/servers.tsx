@@ -13,6 +13,7 @@ import { ImSpinner9 } from "react-icons/im";
 import { Loading } from "../common/components/loading";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Toggle } from "../common/components/toggle";
 
 dayjs.extend(relativeTime);
 
@@ -45,12 +46,23 @@ type serverDeets = {
     "gameId": string
 }
 
+export function CopyToClipboard ({ text } : { text: string } ) {
+    const [hasCopied, setHasCopied] = React.useState<boolean>(false);
+    React.useEffect(() => {
+        if (hasCopied) {
+            setTimeout(() => {
+                setHasCopied(!hasCopied);
+            }, 2250);
+        }
+    }, [hasCopied]);
+    return !hasCopied ? <TbClipboardCopy className="mt-1 inline cursor-pointer" onClick={() =>{ setHasCopied(!hasCopied); navigator.clipboard.writeText(text)}} /> : <FaCheck className="text-green-500 mt-1 inlinecursor-pointer animate-bounce" />
+}
+
 
 export function OwnedServers ( { server, onChange } : { server : any, onChange: (x: boolean) => void} ) {
     const { loggedinUser } = useDataContext();
     const [serverDeets, setServerDeets] = React.useState<serverDeets | null>(null);
     const [isShuttingDown, setIsShuttingDown] = React.useState<boolean>(false);
-    const [hasCopied, setHasCopied] = React.useState<boolean>(false);
 
     const isDeetsNull = !serverDeets
 
@@ -76,14 +88,6 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
 
     },[ server, isDeetsNull ]);
 
-    React.useEffect(() => {
-        if (hasCopied) {
-            setTimeout(() => {
-                setHasCopied(!hasCopied);
-            }, 2250);
-        }
-    }, [hasCopied]);
-
     const shutdown = async () => {
         setIsShuttingDown(true);
         const response = await fetch(`${appConfig.endpoints.analytikill}/servers/stop`, {
@@ -104,18 +108,28 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
 
     const connectCode = `connect servers.analytikill.com:${server.port}${server.password ? `;password ${server.password}` : ""}`
     //const timeSinceServerStart = dayjs(+server.datetime).fromNow()
-    const timeTilServerShutdown = dayjs().to(+server.datetime+1000*60*60*3,true)
+    const timeTilServerShutdown = dayjs().to(+server.datetime+1000*60*60*3,true);
+    const isOwner = loggedinUser?.name === server.owner;
+
+    const skeletonClassNames = "animate-pulse bg-gray-900 rounded inset-0 m-1 p-1"
 
     return (
         <tr>
-            <td>{serverDeets?.name}</td>
+            <td className={ !serverDeets ? skeletonClassNames : ""}>{serverDeets?.name}</td>
             <td>{timeTilServerShutdown}</td>
             <td className="uppercase">{server.type?.split(".")[0]}</td>
-            <td>{serverDeets?.map}</td>
-            <td>{serverDeets ? serverDeets?.players-serverDeets?.bots : 0}/{serverDeets?.maxPlayers}</td>
+            <td className={ !serverDeets ? skeletonClassNames : ""}>{serverDeets?.map}</td>
+            <td className={ !serverDeets ? skeletonClassNames : ""}>{serverDeets?.players}{serverDeets ? `/` : ""}{serverDeets?.maxPlayers}</td>
             <td className="flex flex-row justify-between m-1 p-1 rounded bg-gray-800 inset-0 gap-2">
-                <pre>{ loggedinUser?.name === server.owner ?  connectCode : server.password ? "Private" : connectCode}</pre> 
-                { !hasCopied ?<TbClipboardCopy className="mt-1 inline cursor-pointer" onClick={() =>{ setHasCopied(!hasCopied); navigator.clipboard.writeText(connectCode)}} /> : <FaCheck className="text-green-500 mt-1 inlinecursor-pointer animate-bounce" /> }
+                { (isOwner || !server.password) &&
+                    <>
+                        <pre>{connectCode}</pre>
+                        <CopyToClipboard text={connectCode} />
+                    </>
+                }
+                { !isOwner && server.password &&
+                    <pre>Private</pre>
+                }
             </td>
             <td>
                 <div className="flex flex-col gap-2 justify-center">
@@ -126,10 +140,24 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
     )
 }
 
+const Field = ({label, children}: {label: string, children: React.ReactNode}) => {
+    return (
+        <div className="flex flex-wrap gap-3">
+            <div className="basis-1/3">
+                {label}
+            </div>
+            <div className="basis-1/3 grow">
+                {children}
+            </div>
+        </div>
+    )
+}
+
 export function Servers() {
     const { loggedinUser, isLoading } = useDataContext();
     const [selectedMap, setSelectedMap] = React.useState<SingleValue<{label: string; value: string;}>>({label: "Anbuis", value: "de_anubis"});
     const [selectedServerType, setSelectedServerType] = React.useState<SingleValue<{label: string; value: string;}>>({label: "Pug & Prac", value: "match"});
+    const [isPrivate, setIsPrivate] = React.useState<boolean>(false);
     const [password, setPassword] = React.useState<string>("");
     const [, setResult] = React.useState<any>();
     const [shouldRefresh, setShouldRefresh] = React.useState<boolean>(true);
@@ -176,7 +204,8 @@ export function Servers() {
             body: JSON.stringify({
                 map: selectedMap?.value,
                 serverType: selectedServerType?.value,
-                password
+                password,
+                isPrivate
             })
         })
         if( response.ok ){
@@ -214,6 +243,30 @@ export function Servers() {
         )
     }
 
+    const serverTypeOptions = [
+        {label: "Pug & Prac", value: "pug&prac", isDisabled: false},
+        {label: "Retakes", value: "retakes", isDisabled: false},
+        {label: "Deathmatch (WIP)", value: "deathmatch", isDisabled: true},
+        {label: "Match (WIP)", value: "match", isDisabled: true},
+    ]
+
+    const mapOptions = [
+        {label: "Anbuis", value: "de_anubis"},
+        {label: "Ancient", value: "de_ancient"},
+        {label: "Dust2", value: "de_dust2"},
+        {label: "Inferno", value: "de_inferno"},
+        {label: "Nuke", value: "de_nuke"},
+        {label: "Mirage", value: "de_mirage"},
+        {label: "Overpass", value: "de_overpass"},
+        {label: "Vertigo", value: "de_vertigo"},
+        //{label: "Train", value: "de_train"},
+        //{label: "Dust", value: "de_dust"},
+        //{label: "Cobblestone", value: "de_cbbl"},
+        //{label: "Cache", value: "de_cache"},
+        //{label: "Cobblestone", value: "de_cobblestone"},
+    ]
+
+
     return (
         <Container>
             <h2 className="text-3xl font-bold sm:text-4xl text-center m-2 p-2">Servers On-Demand</h2>
@@ -222,83 +275,45 @@ export function Servers() {
                 <Card className="grow">
                     <div className="text-xl font-bold text-center uppercase">Server Settings</div>
                     <form className="w-full max-w-lg" onSubmit={onSubmit}>
-                        <div className="flex flex-wrap gap-3">
-                            <div className="basis-1/4">
-                                Duration (Hours)
-                            </div>
-                            <div className="basis-1/4">
-                                <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover:cursor-not-allowed"
-                                    type="number" 
-                                    value={3} 
-                                    disabled 
-                                />
-                            </div>
-                        </div>
-                        <div className="flex flex-wrap gap-3">
-                            <div className="basis-1/4">
-                                Player Slots
-                            </div>
-                            <div className="basis-1/4">
-                                <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover:cursor-not-allowed"
-                                    type="number" 
-                                    value={10} 
-                                    disabled 
-                                />
-                            </div>
-                        </div>
-                        <div className="flex flex-wrap gap-3">
-                            <div className="basis-1/4">
-                                Map
-                            </div>
-                            <div className="basis-1/4">
-                                <Select
-                                    classNames={selectClassNames}
-                                    unstyled
-                                    isSearchable={false}
-                                    options={[
-                                        {label: "Anbuis", value: "de_anubis"},
-                                        {label: "Ancient", value: "de_ancient"},
-                                        {label: "Dust2", value: "de_dust2"},
-                                        {label: "Inferno", value: "de_inferno"},
-                                        {label: "Nuke", value: "de_nuke"},
-                                        {label: "Mirage", value: "de_mirage"},
-                                        {label: "Overpass", value: "de_overpass"},
-                                        {label: "Vertigo", value: "de_vertigo"},
-                                        //{label: "Train", value: "de_train"},
-                                        //{label: "Dust", value: "de_dust"},
-                                        //{label: "Cobblestone", value: "de_cbbl"},
-                                        //{label: "Cache", value: "de_cache"},
-                                        //{label: "Cobblestone", value: "de_cobblestone"},
-                                    ]}
-                                    onChange={setSelectedMap}
-                                    value={selectedMap}
-                                />
-                            </div>
-                        </div>
-                        <div className="flex flex-wrap gap-3">
-                            <div className="basis-1/4">
-                                Type
-                            </div>
-                            <div className="basis-1/4">
-                                <Select
-                                        classNames={selectClassNames}
-                                        unstyled
-                                        isSearchable={false}
-                                        options={[
-                                            {label: "Pug & Prac", value: "match"},
-                                            {label: "Retakes", value: "retakes"},
-                                            {label: "Deathmatch", value: "deathmatch"},
-                                        ]}
-                                        onChange={setSelectedServerType}
-                                        value={selectedServerType}
-                                />
-                            </div>
-                        </div>
-                        <div className="flex flex-wrap gap-3">
-                            <div className="basis-1/4">
-                                Password
-                            </div>
-                            <div className="basis-1/4">
+                        <Field key={"duration"} label="Duration (Hours)">
+                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover:cursor-not-allowed"
+                                type="number" 
+                                value={3} 
+                                disabled 
+                            />
+                        </Field>
+                        <Field key={"slots"} label="Player Slots">
+                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover:cursor-not-allowed"
+                                type="number" 
+                                value={10} 
+                                disabled 
+                            />
+                        </Field>
+                        <Field key={"map"} label="Map">
+                            <Select
+                                classNames={selectClassNames}
+                                unstyled
+                                isSearchable={false}
+                                options={mapOptions}
+                                onChange={setSelectedMap}
+                                value={selectedMap}
+                            />
+                        </Field>
+                        <Field key={"type"} label="Type">
+                            <Select
+                                classNames={selectClassNames}
+                                unstyled
+                                isSearchable={false}
+                                options={serverTypeOptions}
+                                onChange={setSelectedServerType}
+                                value={selectedServerType}
+                            />
+                        </Field>
+                        <Field key={"private"} label="Private Server">
+                            <Toggle checked={isPrivate} onChange={setIsPrivate} />
+                        </Field>
+                        <div className={ isPrivate ? "" : "hidden"}>
+                            <Field key={"password"} label="Password">
                                 <input
                                     type="text"
                                     name="password"
@@ -307,9 +322,9 @@ export function Servers() {
                                     value={password}
                                     onChange={e => setPassword(e.target.value)}
                                 />
-                            </div>
-                        </div>
-                        <div className="flex items-center justify-center m-2 p-2">
+                            </Field>  
+                        </div>                                         
+                        <div className="flex items-center justify-end m-2 p-2">
                             <button type="submit" disabled={isSubmitting || shouldRefresh} className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">{isSubmitting || shouldRefresh ? <ImSpinner9 className="inline animate-spin" /> : "Request"}</button>
                         </div>
                     </form>
@@ -319,7 +334,7 @@ export function Servers() {
                     </div>
                     }
                 </Card>
-                <Card>
+                <Card className="basis-1/2">
                     <div>
                         <div className="font-bold uppercase">Pug/Prac Commands</div>
                         <pre>
@@ -329,19 +344,11 @@ export function Servers() {
                             .exitprac - Exit Practice Mode<br />
                             .r - Ready Up for pug<br />
                             .map &#123;map_name&#125; - Changes the Map<br />
-                        </pre>
-                        
+                        </pre> 
                     </div>
                 </Card>
             </div>
-            {/* {result && 
-                <Card>
-                    Connect
-                    <pre>{result.result}</pre> <ToolTip type="generic" message="Copy to clipboard"><TbClipboardCopy onClick={() => navigator.clipboard.writeText(result.result)} /></ToolTip>
-                </Card>
-            } */}
             <div className="w-full">
-
                 <table className="table-auto w-full">
                     <thead className="text-left underline decoration-yellow-400">
                         <tr className="">
