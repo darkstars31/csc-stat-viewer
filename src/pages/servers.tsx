@@ -64,7 +64,7 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
     const [serverDeets, setServerDeets] = React.useState<serverDeets | null>(null);
     const [isShuttingDown, setIsShuttingDown] = React.useState<boolean>(false);
 
-    const isDeetsNull = !serverDeets
+    const isDeetsNull = serverDeets === null
 
     React.useEffect( () => {
         setTimeout(() => {
@@ -119,7 +119,7 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
             <td>{timeTilServerShutdown}</td>
             <td className="uppercase">{server.type?.split(".")[0]}</td>
             <td className={ !serverDeets ? skeletonClassNames : ""}>{serverDeets?.map}</td>
-            <td className={ !serverDeets ? skeletonClassNames : ""}>{serverDeets?.players}{serverDeets ? `/` : ""}{serverDeets?.maxPlayers}</td>
+            <td className={ !serverDeets ? skeletonClassNames : ""}>{serverDeets ? serverDeets?.players-serverDeets?.bots : ""}{serverDeets ? `/` : ""}{serverDeets?.maxPlayers}</td>
             <td className="flex flex-row justify-between m-1 p-1 rounded bg-gray-800 inset-0 gap-2">
                 { (isOwner || !server.password) &&
                     <>
@@ -275,18 +275,14 @@ export function Servers() {
                 <Card className="grow">
                     <div className="text-xl font-bold text-center uppercase">Server Settings</div>
                     <form className="w-full max-w-lg" onSubmit={onSubmit}>
-                        <Field key={"duration"} label="Duration (Hours)">
-                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover:cursor-not-allowed"
-                                type="number" 
-                                value={3} 
-                                disabled 
-                            />
-                        </Field>
-                        <Field key={"slots"} label="Player Slots">
-                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover:cursor-not-allowed"
-                                type="number" 
-                                value={10} 
-                                disabled 
+                        <Field key={"type"} label="Type">
+                            <Select
+                                classNames={selectClassNames}
+                                unstyled
+                                isSearchable={false}
+                                options={serverTypeOptions}
+                                onChange={setSelectedServerType}
+                                value={selectedServerType}
                             />
                         </Field>
                         <Field key={"map"} label="Map">
@@ -299,14 +295,18 @@ export function Servers() {
                                 value={selectedMap}
                             />
                         </Field>
-                        <Field key={"type"} label="Type">
-                            <Select
-                                classNames={selectClassNames}
-                                unstyled
-                                isSearchable={false}
-                                options={serverTypeOptions}
-                                onChange={setSelectedServerType}
-                                value={selectedServerType}
+                        <Field key={"duration"} label="Duration (Hours)">
+                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover:cursor-not-allowed"
+                                type="number" 
+                                value={3} 
+                                disabled 
+                            />
+                        </Field>
+                        <Field key={"slots"} label="Player Slots">
+                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover:cursor-not-allowed"
+                                type="number" 
+                                value={10} 
+                                disabled 
                             />
                         </Field>
                         <Field key={"private"} label="Private Server">
@@ -325,7 +325,7 @@ export function Servers() {
                             </Field>  
                         </div>                                         
                         <div className="flex items-center justify-end m-2 p-2">
-                            <button type="submit" disabled={isSubmitting || shouldRefresh} className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">{isSubmitting || shouldRefresh ? <ImSpinner9 className="inline animate-spin" /> : "Request"}</button>
+                            <button type="submit" disabled={isSubmitting} className="w-32 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">{isSubmitting || shouldRefresh ? <ImSpinner9 className="inline animate-spin" /> : "Request"}</button>
                         </div>
                     </form>
                     { error &&

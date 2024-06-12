@@ -60,6 +60,12 @@ export function Player() {
     const teammates = getTeammates( currentPlayer, players, franchises);
     const playerRatingIndex = getPlayerRatingIndex( currentPlayer, players ) ?? 0;
 
+    const isSubbing = currentPlayer.type === PlayerTypes.TEMPSIGNED ? "FA Sub" 
+        : currentPlayer.type === PlayerTypes.PERMFA_TEMP_SIGNED ? "PFA Sub" 
+        : currentPlayer.type === PlayerTypes.SIGNED_SUBBED ? "Sub Out" 
+        : currentPlayer.type === PlayerTypes.INACTIVE_RESERVE ? "Inactive Reserve"
+        : "";
+
     return (
         <>
         <div ref={divRef} />
@@ -76,14 +82,19 @@ export function Player() {
                             <div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
                                 { currentPlayer?.name ?? "n/a"}
                             </div>
-                            <div className={"text-[1.1rem] pb-5"}>
-                                <i>
-                                    <b>{currentPlayer?.role ? `${currentPlayer?.role} — ` : ""}</b>
+                            <div className="flex flex-row gap-1 text-[1.1rem] pb-5 italic">
+                                    <div className="font-bold">{currentPlayer?.role ? `${currentPlayer?.role} — ` : ""}</div>
                                     { currentPlayer?.team?.franchise.name ? 
-                                        <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}><span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer.type === PlayerTypes.EXPIRED ? <ToolTip type="generic" message="This players contract has expired."><TiWarningOutline className="inline text-red-500" /></ToolTip> : ""} {currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}</span></Link>
-                                        : <span>{teamNameTranslator(currentPlayer)}</span>                         
-                                    }                              
-                                </i>
+                                        <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}>
+                                            <span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer.type === PlayerTypes.EXPIRED ? 
+                                                <ToolTip type="generic" message="This players contract has expired."><TiWarningOutline className="inline text-red-500" /></ToolTip> 
+                                                : ""}
+                                                <span>{currentPlayer?.team?.franchise.prefix} {currentPlayer?.team?.name}{isSubbing ? "*" : ""}</span>
+                                                <div className="flex justify-end text-sm text-gray-300 text-right">{isSubbing}</div>
+                                            </span>
+                                            </Link>
+                                        : <span>{teamNameTranslator(currentPlayer)}</span>                  
+                                    }                                                       
                             </div>
                             <ul className="text-[0.8rem]">
                                 <li>
@@ -140,13 +151,13 @@ export function Player() {
                 <div className="grid grid-cols-1 md:grid-cols-5">
                 { teammates.map( teammate => 
                         <Link key={`closeby-${teammate.name}`} to={`/players/${teammate.name}`}>
-                        <div
-                            style={{userSelect:'none', lineHeight: '95%' }}
-                            className="my-[5px] mr-4 flex h-[32px] cursor-pointer items-center rounded-[4px] bg-[#eceff1] px-[12px] py-0 text-[11px] font-normal normal-case leading-loose text-[#4f4f4f] shadow-none hover:!shadow-none active:bg-[#cacfd1] dark:bg-midnight2 dark:text-neutral-200">
-                            <img className="my-0 -ml-[12px] mr-[8px] h-[inherit] w-[inherit] rounded-[4px]" src={teammate?.avatarUrl} alt=""/>
-                            {teammate.name}
-                        </div>
-                    </Link>
+                            <div
+                                style={{userSelect:'none', lineHeight: '95%' }}
+                                className="my-[5px] mr-4 flex h-[32px] cursor-pointer items-center rounded-[4px] bg-[#eceff1] px-[12px] py-0 text-[11px] font-normal normal-case leading-loose text-[#4f4f4f] shadow-none hover:!shadow-none active:bg-[#cacfd1] dark:bg-midnight2 dark:text-neutral-200">
+                                <img className="my-0 -ml-[12px] mr-[8px] h-[inherit] w-[inherit] rounded-[4px]" src={teammate?.avatarUrl} alt=""/>
+                                {teammate.name}
+                            </div>
+                        </Link>
                     )
                 }
                 </div>
@@ -231,9 +242,6 @@ export function Player() {
                     currentPlayer.statsOutOfTier.map( outOfTierStats => (
                         <StatsOutOfTier stats={outOfTierStats} />
                     ))
-            }
-            {
-                
             }
             </Container>
         </>

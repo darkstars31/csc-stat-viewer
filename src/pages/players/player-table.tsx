@@ -61,7 +61,16 @@ export function MemoizedPlayerTable( { players}: Props) {
                                             </span>
                                             : 
                                             teamNameTranslator(player)
-                                        }</td>
+                                        }
+                                        <div className="pl-8 text-gray-300 text-xs">
+                                            {   player.type === PlayerTypes.TEMPSIGNED ? "*FA Sub" 
+                                                : player.type === PlayerTypes.PERMFA_TEMP_SIGNED ? "*PFA Sub" 
+                                                : player.type === PlayerTypes.SIGNED_SUBBED ? "*Sub Out" 
+                                                : player.type === PlayerTypes.INACTIVE_RESERVE ? "*IR"
+                                                : ""
+                                            }
+                                        </div>
+                                    </td>
                                     <td className="whitespace-nowrap px-6 py-4">{player.stats?.rating.toFixed(2)} <span className="text-xs text-slate-600">{player.stats?.gameCount < 3 ? `(GP:${player.stats?.gameCount})` : ""}</span></td>
                                     <td className="whitespace-nowrap px-6 py-4"><Mmr player={player}/></td>
                             </tr>

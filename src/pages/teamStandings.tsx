@@ -249,7 +249,7 @@ export function TeamStandings() {
                                                     { showExtras && 
                                                         <>
                                                             <th><ToolTip type="generic" message="Calculated based on opponent record and the weighted odds of winning against each opponent. Base Elo is 1000."><span className="underline decoration-yellow-400">Elo</span></ToolTip></th>
-                                                            <th><ToolTip type="generic" message="Strength of schedule."><span className="underline decoration-yellow-400">SoS</span></ToolTip></th>
+                                                            <th><ToolTip type="generic" message="Strength of Schedule"><span className="underline decoration-yellow-400">SoS</span></ToolTip></th>
                                                         </>                                                  
                                                     }
                                                 </tr>
