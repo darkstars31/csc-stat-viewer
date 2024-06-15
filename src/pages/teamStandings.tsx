@@ -183,7 +183,7 @@ export function TeamStandings() {
 
     const tiers = [
         { name: "Recruit", color: 'red', playoffLine: 12},
-        { name: "Prospect", color: 'orange', playoffLine: 14},
+        { name: "Prospect", color: 'orange', playoffLine: 16},
         { name: "Contender", color: 'yellow', playoffLine: 16 },
         { name: "Challenger", color: 'green', playoffLine: 12},
         { name: "Elite", color: 'blue', playoffLine: 10 },

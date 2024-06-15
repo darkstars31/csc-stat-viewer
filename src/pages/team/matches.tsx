@@ -69,12 +69,21 @@ const ScoreboardPopover = ( matchId : string ) => {
         2: "T"
     }
     const fullMatchRounds = 24
+    const roundsPerOvertime = 6
     const matches = useFetchMultipleMatchInfoGraph([matchId]);
     const match = matches.find( m => m.data?.at(0)?.matchId === matchId)?.data?.at(0);
-    const rounds = match?.rounds.slice(0, -1);
+    const rounds = match?.rounds.slice(0);
     const firstHalf = rounds?.slice(0, fullMatchRounds/2);
     const secondHalf = rounds?.slice(fullMatchRounds/2, fullMatchRounds);
     const overtime = rounds?.slice(fullMatchRounds) ?? [];
+    const overtime1 = overtime?.slice(0, roundsPerOvertime) ?? [];
+    const overtime2 = overtime?.slice(roundsPerOvertime, roundsPerOvertime*2) ?? [];
+    const overtime3 = overtime?.slice(roundsPerOvertime*2, roundsPerOvertime*3) ?? [];
+    const overtime4 = overtime?.slice(roundsPerOvertime*3, roundsPerOvertime*4) ?? [];
+    const overtime5 = overtime?.slice(roundsPerOvertime*4) ?? [];
+
+    console.info(rounds?.length, overtime, overtime1, overtime2, overtime3, overtime4, overtime5 );
+
 
     const ctTeam = match?.rounds.find( r => r.winnerENUM === 3)?.winnerClanName;
     const tTeam = match?.rounds.find( r => r.winnerENUM === 2)?.winnerClanName;
@@ -112,15 +121,48 @@ const ScoreboardPopover = ( matchId : string ) => {
                 <div className="text-sky-500"><strong>{tTeam}</strong></div>
                 <div className="text-rose-500"><strong>{ctTeam}</strong></div>
             </div>
-            { overtime.length > 0 && <div className='text-gray-600 text-xs w-full p-1'>
-                    <i>Overtime</i>
-                    <div className='-mt-[.5em] border-dotted border-b border-gray-500' />
-            </div>
+            { overtime.length > 0 && 
+                <div className='text-gray-600 text-xs w-full p-1'>
+                        <i>Overtime</i>
+                        <div className='-mt-[.5em] border-dotted border-b border-gray-500' />
+                </div>
             }
-            <div className="flex flex-row">
-            { overtime?.map( ( round, index ) =>
+            <div className="flex flex-row justify-center">
+            { overtime1?.map( ( round, index ) =>
+                    <div>
+                        {index+25} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
+                    </div>
+                )
+            }
+            </div>
+            <div className="flex flex-row justify-center">
+            { overtime2?.map( ( round, index ) =>
                     <div>
                         {index+31} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
+                    </div>
+                )
+            }
+            </div>
+            <div className="flex flex-row justify-center">
+            { overtime3?.map( ( round, index ) =>
+                    <div>
+                        {index+37} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
+                    </div>
+                )
+            }
+            </div>
+            <div className="flex flex-row justify-center">
+            { overtime4?.map( ( round, index ) =>
+                    <div>
+                        {index+43} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
+                    </div>
+                )
+            }
+            </div>
+            <div className="flex flex-row justify-center">
+            { overtime5?.map( ( round, index ) =>
+                    <div>
+                        {index+49} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
                     </div>
                 )
             }

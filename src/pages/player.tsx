@@ -82,8 +82,9 @@ export function Player() {
                             <div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
                                 { currentPlayer?.name ?? "n/a"}
                             </div>
-                            <div className="flex flex-row gap-1 text-[1.1rem] pb-5 italic">
-                                    <div className="font-bold">{currentPlayer?.role ? `${currentPlayer?.role} — ` : ""}</div>
+                            <div className="flex flex-row flex-wrap gap-1 text-[1.1rem] pb-5 italic">
+                                    <div className="font-bold">{currentPlayer?.role ? `${currentPlayer?.role}` : ""}</div>
+                                    { currentPlayer?.role && <div>—</div> }
                                     { currentPlayer?.team?.franchise.name ? 
                                         <Link to={`/franchises/${currentPlayer.team.franchise.name}/${currentPlayer.team.name}`}>
                                             <span className="hover:cursor-pointer hover:text-blue-400">{currentPlayer.type === PlayerTypes.EXPIRED ? 

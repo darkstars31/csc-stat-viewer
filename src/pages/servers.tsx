@@ -113,6 +113,8 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
 
     const skeletonClassNames = "animate-pulse bg-gray-900 rounded inset-0 m-1 p-1"
 
+    console.info(server);
+
     return (
         <tr>
             <td className={ !serverDeets ? skeletonClassNames : ""}>{serverDeets?.name}</td>
@@ -358,7 +360,7 @@ export function Servers() {
                             <th>Map</th>
                             <th>Players</th>
                             <th>Server</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
