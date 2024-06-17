@@ -82,9 +82,6 @@ const ScoreboardPopover = ( matchId : string ) => {
     const overtime4 = overtime?.slice(roundsPerOvertime*3, roundsPerOvertime*4) ?? [];
     const overtime5 = overtime?.slice(roundsPerOvertime*4) ?? [];
 
-    console.info(rounds?.length, overtime, overtime1, overtime2, overtime3, overtime4, overtime5 );
-
-
     const ctTeam = match?.rounds.find( r => r.winnerENUM === 3)?.winnerClanName;
     const tTeam = match?.rounds.find( r => r.winnerENUM === 2)?.winnerClanName;
     

@@ -19,7 +19,8 @@ export const useEnableFeature = ( featureString: string ) => {
                         'U0FW',
                         'ZEI=',
                         'SEc=',
-                        'TkFO'
+                        'TkFO',
+                        'QUNB',
                     ]) 
                 || isIn( loggedinUser, "steam64Id", 
                     [

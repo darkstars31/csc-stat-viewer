@@ -28,13 +28,18 @@ export function MapBans( { matches, team }: Props) {
     const data = Object.values( mapBans ?? {})
         .map( (i) => Object.values(i) )
         .map( (round, row) => round.map( (_, column) => [column, row, round[column] || "-"]));
-
-        console.info(data);
+    const tabulateMapBansWithWeights = Object.values(mapBans).reduce( (acc, round: { [s: string]: unknown; } | ArrayLike<unknown>, index) => {
+      for (const [key, value] of Object.entries(round)) {
+        acc[key] = (acc[key] || 0) + Number(value) * (3 - index);
+      }
+      return acc;
+    }, {} as any);
+    const permaBansInOrder = Object.keys(tabulateMapBansWithWeights).sort((a, b) => tabulateMapBansWithWeights[b] - tabulateMapBansWithWeights[a]);
     
     const mapBanMatrixOptions: EChartsOption = {
         title: { 
             text: `Ban Matrix`,
-            subtext: "(Beta Feature)",
+            subtext: `PermaBans - ${permaBansInOrder.splice(0, 3).map( i => i.split("de_")[1]).join(", ")}`,
             subtextStyle: {
               align: 'center',
             },
@@ -179,6 +184,13 @@ export function MapBans( { matches, team }: Props) {
       <div className="flex flex-row flex-wrap">
         <ReactECharts className="w-full md:w-1/2" option={mapBanMatrixOptions} style={{ height: 320 }}/>
         <ReactECharts className="w-full md:w-1/2" option={mapBanFloatOptions} style={{ height: 320 }}/>
+        {/* <div className="basis-1/3text-center">
+          <div className="font-bold text-center uppercase">Perma Bans</div>
+          { permaBansInOrder.splice(0, 3).map( (permaBan, index) => 
+              (<span key={index} className="capitalize px-1">{permaBan.split("de_")[1]}</span>)
+            )
+          }
+        </div> */}
       </div>
     );
 }
