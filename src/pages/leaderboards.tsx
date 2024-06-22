@@ -2,12 +2,13 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
 import { useDataContext } from "../DataContext";
-import Select, { SingleValue } from "react-select";
+import Select, { MultiValue, SingleValue } from "react-select";
 import { WeaponLeaderboards } from "./leaderboards/weapons";
 import { useLocation } from "wouter";
 import { Chickens } from "./leaderboards/chickens";
 import { GeneralLeaderBoards } from "./leaderboards/general";
 import { selectClassNames } from "../common/utils/select-utils";
+import { Toggle } from "../common/components/toggle";
 
 
 export function LeaderBoards() {
@@ -16,12 +17,15 @@ export function LeaderBoards() {
     const [, setLocation ] = useLocation();
     const { players = [], loading } = useDataContext();
     const [ selectedPage, setSelectedPage ] = React.useState<string>(q ?? "general");
-    const [ filterBy, setFilterBy ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: `All`, value: "All"});
+    const [ filterThreeGameMinumum, setFilterThreeGameMinumum ] = React.useState<boolean>(true);
+    const [ filterByFranchise, setFilterByFranchise ] = React.useState<MultiValue<{label: string;value: string;}>>([]);
+    const [ filterByTier, setFilterByTier ] = React.useState<SingleValue<{label: string;value: string;}>>({ label: `All`, value: "All"});
     const [ limit, setLimit ] = React.useState<number>(5);
     
-    const player = players.filter( p => (p.stats?.gameCount ?? 0) >= 3);
+    const player = players.filter( p => (p.stats?.gameCount ?? 0) >= (filterThreeGameMinumum ? 3 : 1));
     
-    const playerData = filterBy?.value.includes("All") ? player : player.filter( f => f.tier.name.toLowerCase() === filterBy?.value.toLowerCase());
+    const franchiseFilter = filterByFranchise.length === 0 ? player : player?.filter( p => filterByFranchise.some( f => f.value === p.team?.franchise?.name ?? ""));
+    const playerData = filterByTier?.value.includes("All") ? franchiseFilter : franchiseFilter.filter( f => f.tier.name.toLowerCase() === filterByTier?.value.toLowerCase());
 
     const tierButtonClass = "px-6 pb-2 pt-2.5 text-sm font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-blue-400 focus:bg-blue-400 focus:outline-none focus:ring-0 active:bg-blue-300";
 
@@ -34,6 +38,9 @@ export function LeaderBoards() {
         recruit: player.filter(f => f.tier.name.toLowerCase() === "recruit").length
     };
     const sumTierCount = Object.values(tierCounts).reduce( (sum, num) => sum + num, 0);
+
+    const franchiseOptionList = [...new Set(player.map( p => p.team?.franchise))].map( t => ({ label: `${t?.prefix}`, value: t?.name }));
+
     const tierOptionsList = [
         { label: `All (${sumTierCount})`, value: "All"}, 
         { label: `Premier (${tierCounts.premier})`, value: "Premier", isDisabled: !tierCounts.premier },
@@ -48,6 +55,7 @@ export function LeaderBoards() {
         { label: `5`, value: "5"},
         { label: `10`, value: "10"},
         { label: `20`, value: "20"},
+        { label: `50`, value: "50"},
     ];
 
     const pages = [
@@ -88,40 +96,64 @@ export function LeaderBoards() {
                     )
                 }                    
             </div>
-            <div className="flex flex-box h-12 mx-auto justify-end">
-                <div className="basis-1/4">
-                            <div className="flex flex-row text-sm m-2">
-                                <label title="Order By" className="p-1 leading-9">
-                                    Show
-                                </label>
-                                <Select
-                                    className="grow"
-                                    unstyled              
-                                    defaultValue={showLimitOptionsList[0]}
-                                    isSearchable={false}
-                                    classNames={selectClassNames}
-                                    options={showLimitOptionsList}
-                                    onChange={( item ) => setLimit( parseInt(item!.value) )}
-                                />
-                        </div>
-                    </div>
-                    <div className="basis-1/4">
-                            <div className="flex flex-row text-sm m-2">
-                                <label title="Order By" className="p-1 leading-9">
-                                    Tier
-                                </label>
-                                <Select
-                                    className="grow"
-                                    unstyled              
-                                    defaultValue={tierOptionsList[0]}
-                                    isSearchable={false}
-                                    classNames={selectClassNames}
-                                    options={tierOptionsList}
-                                    onChange={setFilterBy}
-                                />
-                        </div>
+            <div className="flex flex-box  h-12 mx-auto justify-end text-xs">
+                <div className="basis-1/3">
+                    <div className="flex flex-row text-sm m-2">
+                        <label title="Order By" className="p-1 leading-9">
+                            Franchises
+                        </label>
+                        <Select
+                            className="grow"
+                            unstyled
+                            isMulti                          
+                            isSearchable={true}
+                            classNames={selectClassNames}
+                            options={franchiseOptionList}
+                            onChange={setFilterByFranchise as typeof React.useState<MultiValue<{label: string;value: string;}>>}
+                        />
                     </div>
                 </div>
+                <div className="basis-1/7">
+                    <div className="flex flex-row text-sm m-2 items-center">
+                        <label title="Order By" className="p-1 leading-9">
+                            Min 3 Games
+                        </label>
+                       <div className=""><Toggle checked={filterThreeGameMinumum} onChange={setFilterThreeGameMinumum} /></div>
+                    </div>
+                </div>
+                <div className="basis-1/5">
+                        <div className="flex flex-row text-sm m-2">
+                            <label title="Order By" className="p-1 leading-9">
+                                Tier
+                            </label>
+                            <Select
+                                className="grow"
+                                unstyled              
+                                defaultValue={tierOptionsList[0]}
+                                isSearchable={false}
+                                classNames={selectClassNames}
+                                options={tierOptionsList}
+                                onChange={setFilterByTier}
+                            />
+                    </div>
+                </div>
+                <div className="basis-1/7">
+                    <div className="flex flex-row text-sm m-2">
+                        <label title="Order By" className="p-1 leading-9">
+                            Show
+                        </label>
+                        <Select
+                            className="grow"
+                            unstyled              
+                            defaultValue={showLimitOptionsList[0]}
+                            isSearchable={false}
+                            classNames={selectClassNames}
+                            options={showLimitOptionsList}
+                            onChange={( item ) => setLimit( parseInt(item!.value) )}
+                        />
+                    </div>
+                </div>
+            </div>
             { playerData.length > 0 && 
             <div className="pt-6">
                 <div className="flex flex-row flex-wrap gap-6">

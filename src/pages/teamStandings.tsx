@@ -78,7 +78,7 @@ function TeamRecordRow ({ team, index, SoS, showExtras }: { team: any, index: nu
             </td>
             { showExtras && 
                 <>
-                    <td>{team.elo.toFixed(0)}</td>
+                    {/* <td>{team.elo.toFixed(0)}</td> */}
                     <td className={`${getCssColorGradientBasedOnPercentage(SoS)}`}>{SoS.toFixed(1)}%</td>
                 </>
             }
@@ -93,7 +93,7 @@ export function TeamStandings() {
     const queryParams = new URLSearchParams(useSearch());
     const { franchises = [], seasonAndTierConfig, dataConfig } = useDataContext();
     const [ selectedTier, setSelectedTier ] = React.useState(q ?? "Contender");
-    const [ showExtras, setShowExtras ] = React.useState(false);
+    const [ showExtras, setShowExtras ] = React.useState(true);
     
     const { data: matches = [], isLoading } = useCscSeasonMatches(selectedTier[0].toUpperCase() + selectedTier.slice(1), dataConfig?.season);
     const tieBreakers: string[] = [];
@@ -248,7 +248,7 @@ export function TeamStandings() {
                                                     <th className="collapse md:visible">Pistols</th>
                                                     { showExtras && 
                                                         <>
-                                                            <th><ToolTip type="generic" message="Calculated based on opponent record and the weighted odds of winning against each opponent. Base Elo is 1000."><span className="underline decoration-yellow-400">Elo</span></ToolTip></th>
+                                                            {/* <th><ToolTip type="generic" message="Calculated based on opponent record and the weighted odds of winning against each opponent. Base Elo is 1000."><span className="underline decoration-yellow-400">Elo</span></ToolTip></th> */}
                                                             <th><ToolTip type="generic" message="Strength of Schedule"><span className="underline decoration-yellow-400">SoS</span></ToolTip></th>
                                                         </>                                                  
                                                     }

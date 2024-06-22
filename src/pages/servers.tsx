@@ -14,6 +14,8 @@ import { Loading } from "../common/components/loading";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Toggle } from "../common/components/toggle";
+import { shortTeamNameTranslator } from "../common/utils/player-utils";
+import { Player } from "../models";
 
 dayjs.extend(relativeTime);
 
@@ -155,10 +157,40 @@ const Field = ({label, children}: {label: string, children: React.ReactNode}) =>
     )
 }
 
+
+const MatchPlayerSelect = ( { index, availablePlayers, onChange }: { index: number, availablePlayers: Player[], onChange: ( { index, player } : {index: number, player: Player} ) => void}) => {
+    const [selectedPlayers, setSelectedPlayers] = React.useState<SingleValue<{label: string;value: Player;}>>();
+
+    const playerOptions = availablePlayers.map( player => ({ label: `${player.name} (${player.tier.name} ${shortTeamNameTranslator(player)}) ${player.role}`, value: player }))
+
+    const changeHandler = (newValue: SingleValue<{label: string;value: Player;}>) => {
+        if (newValue) {
+            setSelectedPlayers(newValue);
+            onChange( {index, player: newValue.value });
+        }
+    }
+
+    return  (
+        <div className="flex flex-row w-full text-xs">
+                        <Select
+                            placeholder={`Player ${index}`}
+                            isClearable={true}
+                            className="grow"
+                            unstyled
+                            value={selectedPlayers}
+                            isSearchable={true}
+                            classNames={selectClassNames}
+                            options={playerOptions}
+                            onChange={changeHandler}
+                        />
+                    </div>
+    )
+}
+
 export function Servers() {
-    const { loggedinUser, isLoading } = useDataContext();
+    const { loggedinUser, isLoading, players } = useDataContext();
     const [selectedMap, setSelectedMap] = React.useState<SingleValue<{label: string; value: string;}>>({label: "Anbuis", value: "de_anubis"});
-    const [selectedServerType, setSelectedServerType] = React.useState<SingleValue<{label: string; value: string;}>>({label: "Pug & Prac", value: "match"});
+    const [selectedServerType, setSelectedServerType] = React.useState<SingleValue<{label: string; value: string;}>>({label: "Pug & Prac", value: "pug&prac"});
     const [isPrivate, setIsPrivate] = React.useState<boolean>(false);
     const [password, setPassword] = React.useState<string>("");
     const [, setResult] = React.useState<any>();
@@ -167,6 +199,13 @@ export function Servers() {
     const [servers, setServers] = React.useState<server[]>([]);
     const [error, setError] = React.useState<string>("");
     const enableFeature = useEnableFeature('canRequestServers');
+
+    const [ matchPlayers, setMatchPlayers ] = React.useState<Player[]>([]);
+    const [ matchSettings, setMatchSettings ] = React.useState<{ [key: string]: string | number | boolean | string[]}>({ team1Name: "Team 1", team2Name: "Team 2" });
+    const [ matchConVars, setMatchConVars ] = React.useState<{ [key: string]: string | number | boolean | string[]}>({});
+
+    const availableMatchPlayers = players.filter( p => !matchPlayers.includes(p) );
+    console.info(matchPlayers)
 
     React.useEffect(() => {
         (async () => {
@@ -196,7 +235,6 @@ export function Servers() {
     const onSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault()
         setIsSubmitting(true);
-        console.info("Submitted");
         const response = await fetch(`${appConfig.endpoints.analytikill}/servers/request`, {
             method: "POST",
             headers: {
@@ -207,7 +245,8 @@ export function Servers() {
                 map: selectedMap?.value,
                 serverType: selectedServerType?.value,
                 password,
-                isPrivate
+                isPrivate,
+                matchConfig: { players: matchPlayers, maps: [selectedMap?.value], ...matchConVars }
             })
         })
         if( response.ok ){
@@ -248,8 +287,8 @@ export function Servers() {
     const serverTypeOptions = [
         {label: "Pug & Prac", value: "pug&prac", isDisabled: false},
         {label: "Retakes", value: "retakes", isDisabled: false},
-        {label: "Deathmatch (WIP)", value: "deathmatch", isDisabled: true},
-        {label: "Match (WIP)", value: "match", isDisabled: true},
+        {label: "Deathmatch (WIP)", value: "deathmatch", isDisabled: process.env.NODE_ENV! === "production"},
+        {label: "Match (WIP)", value: "match", isDisabled: process.env.NODE_ENV! === "production"},
     ]
 
     const mapOptions = [
@@ -267,6 +306,21 @@ export function Servers() {
         //{label: "Cache", value: "de_cache"},
         //{label: "Cobblestone", value: "de_cobblestone"},
     ]
+
+    const onPlayerChange = ( {index, player}: any ) => {
+        setMatchPlayers(prev => {
+            const newMatchPlayers = [...prev];
+            newMatchPlayers[index-1] = player;
+            return newMatchPlayers
+        });
+    }
+
+    const handleMatchSettingsChange = ( property: { [key: string]: any } ) => {
+        setMatchSettings( prev => ({ ...prev, ...property}));
+    }
+    const handleMatchConVarsChange = ( {key, value}: any ) => {
+        setMatchConVars(prev => ({ ...prev, [key]: value }));
+    }
 
 
     return (
@@ -350,6 +404,36 @@ export function Servers() {
                     </div>
                 </Card>
             </div>
+            {
+                selectedServerType?.value === "match" &&
+                <div>
+                    <Card>
+                        <div className="text-xl font-bold text-center uppercase">Match Configuration</div>
+                        <div className="flex flex-row w-full justify-around">
+                            <div className="basis-1/3">
+                                <div className="text-xl font-bold text-center">
+                                <span><input className="bg-midnight2 uppercase text-center shadow appearance-none border-solid border-0 border-b-1 rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" type="text" value={matchSettings.team1Name as string} onChange={e => handleMatchSettingsChange( {"team1Name": e.target.value})} /></span>
+                                </div>
+                                { [...Array(5)].map((_,index) => <MatchPlayerSelect key={index} index={index+1} availablePlayers={availableMatchPlayers} onChange={onPlayerChange} />) }
+                                </div>
+                                <div className="basis-1/4 flex flex-col gap-1 w-full bg-midnight1 rounded m-2 p-2">                               
+                                    <div className="flex flex-row justify-between">
+                                        <div>Team Damange</div> <Toggle checked={matchConVars.friendlyFire as boolean} onChange={ () => handleMatchConVarsChange( {"friendlyFire": !matchConVars.friendlyFire})} />
+                                    </div>
+                                    <div className="flex flex-row justify-between">
+                                        <div>Play Out (24 Rounds)</div> <Toggle checked={matchConVars.playOut as boolean} onChange={ () => handleMatchConVarsChange( {"playOut": !matchConVars.playOut})} />
+                                    </div>                                   
+                                </div>
+                            <div className="basis-1/3">
+                                <div className="text-xl font-bold text-center ">
+                                <span><input className="bg-midnight2 uppercase text-center shadow appearance-none border-solid border-0 border-b-1 rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline" type="text" value={matchSettings.team2Name as string} onChange={e => handleMatchSettingsChange( {"team2Name": e.target.value})} /></span>
+                                </div>
+                                { [...Array(5)].map((_,index) => <MatchPlayerSelect key={index} index={index+6} availablePlayers={availableMatchPlayers} onChange={onPlayerChange} />) }
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+            }
             <div className="w-full">
                 <table className="table-auto w-full">
                     <thead className="text-left underline decoration-yellow-400">

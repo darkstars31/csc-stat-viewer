@@ -2,7 +2,7 @@ import * as React from "react";
 
 
 
-export function Toggle( { checked, onChange }: { checked: boolean, onChange: (checked: boolean) => void } ) {
+export function Toggle( { checked, onChange }: { checked: boolean, onChange: (checked: boolean ) => void } ) {
     return (
         <label className="h-6 relative inline-block">
             <input
