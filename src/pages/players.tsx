@@ -14,6 +14,7 @@ import { PlayerTiersFilter } from "../common/components/filters/playerTiersFilte
 import { PlayerList } from "./players/player-list";
 import { Player } from "../models";
 import Papa from "papaparse";
+import { selectClassNames } from "../common/utils/select-utils";
 
 const sortOptionsList = [
     { label: "Name", value: "name"}, 
@@ -66,34 +67,6 @@ export function Players() {
     const filteredByRole = viewPlayerRoleOptions?.length ? filteredByTier.filter( player => viewPlayerRoleOptions?.some( (role: { value: string | undefined; }) => role.value === player.role)) : filteredByTier;
     const filteredBySearchPlayers = filters.length > 0 ? filteredByRole.filter( player => filters.some( f => player.name.toLowerCase().includes( f.toLowerCase() ))) : filteredByRole;
 
-    // React.useEffect(() => {
-    //     console.info( 'first', viewPlayerTypeOptions?.length )
-    //     if( viewPlayerTypeOptionsCumulative?.length ){
-    //         console.info( viewPlayerTypeOptions )
-    //         queryParams.append("types", JSON.stringify(viewPlayerTypeOptionsCumulative));
-    //     }
-
-    //     if( viewTierOptions?.length ){
-    //         queryParams.append("tiers", JSON.stringify(viewTierOptions));
-    //     }
-
-    //     if( viewPlayerRoleOptions?.length ){
-    //         queryParams.append("roles", JSON.stringify(viewPlayerRoleOptions));
-    //     }
-    // }, [ viewPlayerTypeOptionsCumulative?.length,  viewTierOptions?.length, viewPlayerRoleOptions?.length]);
-
-    // if( !queryParams.has("types") ){
-    //     queryParams.append("types", JSON.stringify(viewPlayerTypeOptionsCumulative));
-    // }
-    // if( !queryParams.has("tiers") ){
-    //     queryParams.append("tiers", JSON.stringify(viewTierOptions));
-    // }
-    // if( !queryParams.has("roles") ){
-    //     queryParams.append("roles", JSON.stringify(viewPlayerRoleOptions));
-    // }
-
-    //window.history.replaceState({}, "", `?${queryParams.toString()}`);
-
     const addFilter = () => {
         setSearchValue(""); 
         const newFilters = [ ...filters, searchValue ].filter(Boolean);
@@ -105,20 +78,6 @@ export function Players() {
         delete newFilters[filters.indexOf(label)];
         setFilters( newFilters.filter(Boolean) );
     }
-
-    const selectClassNames = {
-        placeholder: () => "text-gray-400 bg-inherit",
-        container: () => "m-1 rounded bg-inherit",
-        control: () => "p-2 rounded-l bg-slate-700",
-        option: () => "p-2 hover:bg-slate-900",
-        input: () => "text-slate-200",
-        menu: () => "bg-slate-900",
-        menuList: () => "bg-slate-700",
-        multiValue: () => "bg-sky-700 p-1 mr-1 rounded",
-        multiValueLabel: () => "text-slate-200",
-        multiValueRemove: () => "text-slate-800 pl-1",
-        singleValue: () => "text-slate-200",
-    };
 
     return (
     <Container>
