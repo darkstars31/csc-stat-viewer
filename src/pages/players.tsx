@@ -86,9 +86,6 @@ export function Players() {
             <p className="mt-4 text-gray-300">
                 Find players, view stats, see how you stack up against your peers.
             </p>
-            <p className="mt-4 text-gray-300">
-                Showing {filteredBySearchPlayers.length} of {players.length} Players
-            </p>
             <form className="flex flex-box h-12 mx-auto" onSubmit={(e)=>{e.preventDefault()}}>
                 <Input
                     className="basis-1/2 grow"
@@ -113,7 +110,7 @@ export function Players() {
                 }
             </div>
         </div>
-        <div className={`flex flex-col mt-48 md:flex-row md:mt-0 h-12 justify-end`}>
+        <div className={`flex flex-col mt-40 md:flex-row md:mt-0 h-12 justify-end`}>
             <div className="basis-1/3">
                 <PlayerTypeFilter onChange={setViewPlayerTypeOptions as typeof React.useState<MultiValue<{label: string;value: PlayerTypes[];}>>} />
             </div>
@@ -126,7 +123,7 @@ export function Players() {
                     } />
             </div>
             <div className="basis-1/5">
-                <div className="flex flex-row text-xs my-2 mx-1">
+                <div className="flex flex-row text-xs">
                     <label title="Sort" className="p-1 leading-9">
                         Sort
                     </label>
@@ -142,11 +139,16 @@ export function Players() {
                 </div>
             </div>
         </div>
-        <hr className="h-px my-4 border-0 bg-gray-800" />
-        <div className="m-2 justify-end flex">
-            <button title="Export Stats as CSV" className={`p-2 m-1 rounded border bg-indigo-600 border-indigo-600`} onClick={ () => exportAsCsv(filteredBySearchPlayers) }><TbDatabaseExport /></button>
-            <button title="Card View" className={`p-2 m-1 rounded border ${displayStyle === "cards" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "cards" )}><MdGridView /></button>
-            <button title="List View" className={`p-2 m-1 rounded border ${displayStyle === "list" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "list" )}><MdOutlineViewHeadline /></button>
+        <hr className="h-px my-2 border-0 bg-gray-800" />
+        <div className="flex justify-between">
+            <p className="mt-4 text-sx text-gray-500">
+                Showing {filteredBySearchPlayers.length} of {players.length} Players
+            </p>
+            <div className="m-2 justify-end flex">
+                <button title="Export Stats as CSV" className={`p-2 m-1 rounded border bg-indigo-600 border-indigo-600`} onClick={ () => exportAsCsv(filteredBySearchPlayers) }><TbDatabaseExport /></button>
+                <button title="Card View" className={`p-2 m-1 rounded border ${displayStyle === "cards" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "cards" )}><MdGridView /></button>
+                <button title="List View" className={`p-2 m-1 rounded border ${displayStyle === "list" ? "border-gold-600" : "border-indigo-600"} bg-indigo-600`} onClick={() => setDisplayStyle( "list" )}><MdOutlineViewHeadline /></button>
+            </div>
         </div>
         <div className="pb-8">
             <PlayerList 

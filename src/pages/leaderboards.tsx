@@ -24,7 +24,7 @@ export function LeaderBoards() {
     
     const player = players.filter( p => (p.stats?.gameCount ?? 0) >= (filterThreeGameMinumum ? 3 : 1));
     
-    const franchiseFilter = filterByFranchise.length === 0 ? player : player?.filter( p => filterByFranchise.some( f => f.value === p.team?.franchise?.name ?? ""));
+    const franchiseFilter = filterByFranchise.length === 0 ? player : player?.filter( p => filterByFranchise.some( f => f.value === p.team?.franchise?.prefix ?? ""));
     const playerData = filterByTier?.value.includes("All") ? franchiseFilter : franchiseFilter.filter( f => f.tier.name.toLowerCase() === filterByTier?.value.toLowerCase());
 
     const tierButtonClass = "px-6 pb-2 pt-2.5 text-sm font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-blue-400 focus:bg-blue-400 focus:outline-none focus:ring-0 active:bg-blue-300";
@@ -39,7 +39,7 @@ export function LeaderBoards() {
     };
     const sumTierCount = Object.values(tierCounts).reduce( (sum, num) => sum + num, 0);
 
-    const franchiseOptionList = [...new Set(player.map( p => p.team?.franchise))].map( t => ({ label: `${t?.prefix}`, value: t?.name }));
+    const franchiseOptionList = [...new Set(player.map( p => p.team?.franchise.prefix))].map( t => ({ label: `${t ?? "FA/PFA/Other"}`, value: t }));
 
     const tierOptionsList = [
         { label: `All (${sumTierCount})`, value: "All"}, 
@@ -74,7 +74,7 @@ export function LeaderBoards() {
             <div className="mx-auto max-w-lg text-center">
                 <h2 className="text-3xl font-bold sm:text-4xl">Leaderboards</h2>
                 <p className="mt-4 text-gray-300">
-                    See who's at the top (or bottom, we won't judge). Requirement of 3 games played before stats are included on the leaderboards.
+                    See who's at the top (or bottom, we won't judge).
                 </p>
             </div>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
@@ -96,9 +96,9 @@ export function LeaderBoards() {
                     )
                 }                    
             </div>
-            <div className="flex flex-box  h-12 mx-auto justify-end text-xs">
+            <div className="flex flex-col md:flex-row flex-wrap mx-auto justify-end text-xs">
                 <div className="basis-1/3">
-                    <div className="flex flex-row text-sm m-2">
+                    <div className="flex flex-row m-1">
                         <label title="Order By" className="p-1 leading-9">
                             Franchises
                         </label>
@@ -113,16 +113,8 @@ export function LeaderBoards() {
                         />
                     </div>
                 </div>
-                <div className="basis-1/7">
-                    <div className="flex flex-row text-sm m-2 items-center">
-                        <label title="Order By" className="p-1 leading-9">
-                            Min 3 Games
-                        </label>
-                       <div className=""><Toggle checked={filterThreeGameMinumum} onChange={setFilterThreeGameMinumum} /></div>
-                    </div>
-                </div>
                 <div className="basis-1/5">
-                        <div className="flex flex-row text-sm m-2">
+                        <div className="flex flex-row m-1">
                             <label title="Order By" className="p-1 leading-9">
                                 Tier
                             </label>
@@ -137,20 +129,30 @@ export function LeaderBoards() {
                             />
                     </div>
                 </div>
-                <div className="basis-1/7">
-                    <div className="flex flex-row text-sm m-2">
-                        <label title="Order By" className="p-1 leading-9">
-                            Show
-                        </label>
-                        <Select
-                            className="grow"
-                            unstyled              
-                            defaultValue={showLimitOptionsList[0]}
-                            isSearchable={false}
-                            classNames={selectClassNames}
-                            options={showLimitOptionsList}
-                            onChange={( item ) => setLimit( parseInt(item!.value) )}
-                        />
+                <div className="flex flex-row justify-end">
+                    <div className="basis-1/7">
+                        <div className="flex flex-row m-1 items-center">
+                            <label title="Order By" className="p-1 leading-9">
+                                Min 3 Games
+                            </label>
+                        <div className=""><Toggle checked={filterThreeGameMinumum} onChange={setFilterThreeGameMinumum} /></div>
+                        </div>
+                    </div>
+                    <div className="basis-1/7">
+                        <div className="flex flex-row m-1">
+                            <label title="Order By" className="p-1 leading-9">
+                                Show
+                            </label>
+                            <Select
+                                className="grow"
+                                unstyled              
+                                defaultValue={showLimitOptionsList[0]}
+                                isSearchable={false}
+                                classNames={selectClassNames}
+                                options={showLimitOptionsList}
+                                onChange={( item ) => setLimit( parseInt(item!.value) )}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

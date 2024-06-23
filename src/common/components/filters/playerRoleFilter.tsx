@@ -20,7 +20,7 @@ export const viewRolesList = [
 export function PlayerRolesFilter( { onChange, hideLabel, placeHolder }: Props) {
 
     return (
-        <div className="flex flex-row text-xs my-2 mx-1">
+        <div className="flex flex-row text-xs m-1">
             <label title="Tiers" className={`p-1 leading-9 ${ hideLabel ? "hidden" : ""}`}>
                 Roles
             </label>

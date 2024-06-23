@@ -67,13 +67,13 @@ function TeamRecordRow ({ team, index, SoS, showExtras }: { team: any, index: nu
                     <span className='text-gray-400 text-xs'>diff {team.roundsWon - team.roundsLost > 0 ? '+': ''}{team.roundsWon - team.roundsLost}</span> <span className='text-gray-400 text-xs'>{calculatePercentage(team.roundsWon , (team.roundsWon + team.roundsLost),1)}%</span>
                 </div>
             </td>
-            <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.ctRoundsWon,team.ctTotalRounds,1))} collapse md:visible`}>
+            <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.ctRoundsWon,team.ctTotalRounds,1))} hidden md:table-cell`}>
                 {calculatePercentage(team.ctRoundsWon,team.ctTotalRounds,1)}%
             </td>
-            <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.tRoundsWon,team.tTotalRounds,1))} collapse md:visible`}>
+            <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.tRoundsWon,team.tTotalRounds,1))} hidden md:table-cell`}>
                 {calculatePercentage(team.tRoundsWon,team.tTotalRounds,1)}%
             </td>
-            <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1))} collapse md:visible`}>
+            <td className={`${getCssColorGradientBasedOnPercentage(calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1))} hidden md:table-cell`}>
                 {calculatePercentage(team.pistolRoundsWon,team.pistolTotalRounds,1)}%
             </td>
             { showExtras && 
@@ -235,7 +235,7 @@ export function TeamStandings() {
                                             SEASON {seasonAndTierConfig?.number}
                                         </div>
                                     </div>
-                                    <div className="basis-11/12 md:basis-full min-h-[300px]">
+                                    <div className="basis-full min-h-[300px]">
                                         <table className='table-auto w-full'>
                                             <thead className="underline decoration-yellow-400">
                                                 <tr className="text-left">
@@ -243,9 +243,9 @@ export function TeamStandings() {
                                                     <th>Team</th>
                                                     <th>Win : Loss</th>
                                                     <th>Rounds</th>
-                                                    <th className="collapse md:visible">CT</th>
-                                                    <th className="collapse md:visible">T</th>
-                                                    <th className="collapse md:visible">Pistols</th>
+                                                    <th className="hidden md:visible">CT</th>
+                                                    <th className="hidden md:visible">T</th>
+                                                    <th className="hidden md:visible">Pistols</th>
                                                     { showExtras && 
                                                         <>
                                                             {/* <th><ToolTip type="generic" message="Calculated based on opponent record and the weighted odds of winning against each opponent. Base Elo is 1000."><span className="underline decoration-yellow-400">Elo</span></ToolTip></th> */}
