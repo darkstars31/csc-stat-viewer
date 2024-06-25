@@ -63,7 +63,7 @@ const roundWinner = ( side: string, round: Round ) => {
     );
 }
 
-const ScoreboardPopover = ( matchId : string ) => {
+export const ScoreboardPopover = ( { matchId } :  {matchId :string }) => {
     const winnerEnum: Record<number, string> = {
         3: "CT",
         2: "T"
@@ -219,7 +219,7 @@ export function MatchCards( { match, team }: Props ) {
                 }
                 <div className="flex flex-row justify-end text-xs gap-2">
                     { !isPlayoffMatch && 
-                    <ToolTip type="generic" classNames={["-translate-x-48","right-4"]} message={ScoreboardPopover( match.id ) }>
+                    <ToolTip type="generic" classNames={["-translate-x-48","right-4"]} message={<ScoreboardPopover matchId={match.id} />}>
                         <span className="text-gray-900">Scoreline</span>
                     </ToolTip>
                     }

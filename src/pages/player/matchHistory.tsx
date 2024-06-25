@@ -10,12 +10,13 @@ import { ToolTip } from "../../common/utils/tooltip-utils";
 import { getCssColorGradientBasedOnPercentage } from "../../common/utils/string-utils";
 import * as Containers from "../../common/components/containers";
 import { Exandable } from "../../common/components/containers/Expandable";
+import { ScoreboardPopover } from "../team/matches";
 
 type Props = {
     player: Player;
 }
 
-function PlayerMatchStatLine( { playerStat, player }: { playerStat: any, player: Player } ) {
+function PlayerMatchStatLine( { playerStat }: { playerStat: any } ) {
     return (
         <tr>
             <td>{playerStat.name}</td>
@@ -30,45 +31,49 @@ function PlayerMatchStatLine( { playerStat, player }: { playerStat: any, player:
     )
 }
 
-export function MatchHistory( { player, match }: { player: Player, match: Match } ) {
-    const team1 = match.teamStats[0].name;
-    const team2 = match.teamStats[1].name;
-    const teamHome = match?.matchStats.filter( p => p.teamClanName === team1 ).sort( (a, b) => b.rating - a.rating );
-    const teamAway = match?.matchStats.filter( p => p.teamClanName === team2 ).sort( (a, b) => b.rating - a.rating );
-   
+function MatchStatsTableHeader() {
+    return (
+        <thead className="text-left border-b border-gray-600">
+            <th>Name</th>
+            <th>Rating</th>
+            <th>K / D / A</th>
+            <th>Damage</th>
+            <th>ADR</th>
+            <th>HS%</th>
+            <th>F Asst</th>
+            <th>Util Dmg</th>
+        </thead>
+    )
+}
 
+function MatchStatsTeamScoreLine( { teamIndex, match }: { teamIndex: number, match: Match } ) {
+    const team = match.teamStats[teamIndex].name;
+    const teamPlayers = match?.matchStats.filter( p => p.teamClanName === team ).sort( (a, b) => b.rating - a.rating );
+
+    return (
+    <>
+        <div className="relative">
+            <div className={`absolute -left-20 top-8 -rotate-90 w-28 mr-16 text-center bg-gradient-to-r ${teamIndex ? 'from-orange-500' : 'from-indigo-500'} font-bold capitalize`}>{ team.replace("_", " ") }</div>
+        </div>
+        { teamPlayers?.map( (playerStat, index) => 
+                    <PlayerMatchStatLine key={index} playerStat={playerStat} />
+            )}
+    </>
+    )
+}
+
+export function MatchHistory( { match }: { match: Match } ) {
     return (
         <div className="relative text-xs pb-4">
              <Containers.StandardBackgroundPage>
                 <table className="table-auto w-full border-spacing-0.5">
-                    <thead className="text-left border-b border-gray-600">
-                        <th>Name</th>
-                        <th>Rating</th>
-                        <th>K / D / A</th>
-                        <th>Damage</th>
-                        <th>ADR</th>
-                        <th>HS%</th>
-                        <th>F Asst</th>
-                        <th>Util Dmg</th>
-                    </thead>
+                    <MatchStatsTableHeader />
                     <tbody>
-                        <div className="relative">
-                            <div className="absolute -left-20 top-4 -rotate-90 w-28 mr-16 text-center bg-gradient-to-r from-indigo-500 font-bold capitalize">{ team1.replace("_", " ") }</div>
-                        </div>
-                        { teamHome?.map( (playerStat, index) => 
-                                    <PlayerMatchStatLine key={index} playerStat={playerStat} player={player} />
-                            )
-                        }
+                        <MatchStatsTeamScoreLine teamIndex={0} match={match} />
                         <tr>
-                            <td colSpan={8} className="text-center h-4"></td>
+                            <td colSpan={8} className="text-center h-6"></td>
                         </tr>
-                        <div className="relative">
-                            <div className="absolute -left-20 top-8 -rotate-90 w-28 mr-16 text-center bg-gradient-to-r from-orange-500 font-bold capitalize">{ team2.replace("_", " ") }</div>
-                        </div>
-                        { teamAway?.map( (playerStat, index) => 
-                                <PlayerMatchStatLine key={index} playerStat={playerStat} player={player} />
-                            )
-                        }
+                        <MatchStatsTeamScoreLine teamIndex={1} match={match} />
                     </tbody>
                 </table>
             </Containers.StandardBackgroundPage>
@@ -117,7 +122,7 @@ function MatchRow( { player, match }: { player: Player, match: Match } ) {
                 <div className="basis-1/12">{p?.utilDmg}</div>
             </div>
             {
-                isExpanded && <MatchHistory player={player} match={match} />
+                isExpanded && <MatchHistory match={match} />
             }
         </div>
         
@@ -181,15 +186,26 @@ export function TeamMatchHistory( { teamName, matchIds }: { teamName: string, ma
         <div className="my-4 p-4">
             <h2 className="text-2xl p-2 text-center"><span className="font-bold">Match History</span> - {teamMatchHistory?.length} matches</h2>
             <h2 className="text-center text-sm text-gray-600">Work in Progress Feature</h2>
-            {
-                ( showAll ? sortedPlayerMatchHistory : sortedPlayerMatchHistory?.slice(0,5))?.map( (match) => 
-                    <div>
-                        <Exandable title={<div><img src={mapImages[match.mapName]} className="w-8 inline" alt="match score line"/> Home {match.teamStats[0].name} vs. {match.teamStats[1].name} Away</div>}>
-                            <MatchHistory key={match.matchId} player={{} as Player} match={match} />
-                        </Exandable>
-                    </div>
-            )
-            }
+            {( showAll ? sortedPlayerMatchHistory : sortedPlayerMatchHistory?.slice(0,5))?.map( (match) => 
+                <div>
+                    <Exandable title={<div><img src={mapImages[match.mapName]} className="w-8 inline" alt="match score line"/> Home {match.teamStats[0].name} vs. {match.teamStats[1].name} Away</div>}>
+                    <div className="relative text-xs pb-4">
+                            <Containers.StandardBackgroundPage>
+                                <table className="table-auto w-full border-spacing-0.5">
+                                    <MatchStatsTableHeader />
+                                    <tbody>
+                                        <MatchStatsTeamScoreLine teamIndex={0} match={match} />
+                                        <tr>
+                                            <ScoreboardPopover matchId={String(match.matchId)} />
+                                        </tr>
+                                        <MatchStatsTeamScoreLine teamIndex={1} match={match} />
+                                    </tbody>
+                                </table>
+                            </Containers.StandardBackgroundPage>
+                        </div>
+                    </Exandable>
+                </div>
+            )}
             { !showAll && (teamMatchHistory ?? []).length > 5 && <div className="text-center hover:cursor-pointer hover:bg-midnight2 rounded" onClick={() => setShowAll(!showAll)}>Show All</div>}
         </div>
     )
