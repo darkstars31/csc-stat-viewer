@@ -14,6 +14,7 @@ import { TeamPlayerCards } from "./team/playerCards";
 import { MapAnalysis } from "./team/mapBans";
 import { CompareLink } from "../common/components/compareLink";
 import { ToolTip } from "../common/utils/tooltip-utils";
+import { PlayerMatchHistory } from "./player/matchHistory";
 
 
 export function Team(){
@@ -158,7 +159,10 @@ export function Team(){
 											{ regularSeasonMatches.map( (match) => <MatchCards key={match.id} match={match} team={currentTeam} /> ) }
 										</div>											
 									</div>
-								}								
+								}	
+								{
+									playersWithStats?.length && <PlayerMatchHistory player={playersWithStats[0]!} /> 				
+								}										
 							</div>	
 						</div>
 					</Container>

@@ -5,7 +5,7 @@ import { CscPlayerMatchHistoryQuery } from "../models/csc-player-match-history-t
 
 const OneHour = 1000 * 60 * 60;
 
-const fetchGraph = async ( player: Player ) => await fetch(appConfig.endpoints.cscGraphQL.stats,
+const fetchGraph = async ( filter: Record<string, any> ) => await fetch(appConfig.endpoints.cscGraphQL.stats,
     { method: "POST", 
         body: JSON.stringify({
             "operationName": "getMatchesHistoryByPlayerName",
@@ -39,18 +39,7 @@ const fetchGraph = async ( player: Player ) => await fetch(appConfig.endpoints.c
                 }
             }`,
             "variables": {
-                "whereFilter": {
-                    "matchStats": {
-                        "some": {
-                            "name": {
-                                "equals": player.name
-                            }
-                        }
-                    },
-                    "season": {
-                        "equals": dataConfiguration[0].season // Current Season
-                    }
-                }
+                filter
             }      
         }),
         headers: {
@@ -69,7 +58,40 @@ export function useCscPlayerMatchHistoryGraph( player: Player ): UseQueryResult<
     return useQuery( 
         [`cscplayermatchhistory-${player.name}-graph`], 
         () =>  
-            fetchGraph( player ),           
+            fetchGraph( 
+                { "whereFilter": {
+                    "matchStats": {
+                        "some": {
+                            "name": {
+                                "equals": player.name
+                            }
+                        }
+                    },
+                    "season": {
+                        "equals": dataConfiguration[0].season // Current Season
+                    }
+                }
+            } ),           
+        {
+            staleTime: OneHour,
+        }
+    );
+}
+
+export function useCscTeamMatchHistoryGraph( teamname: string, matchIds: number[] ): UseQueryResult<CscPlayerMatchHistoryQuery["data"]["findManyMatch"]> {
+    return useQuery( 
+        [`cscteammatchhistory-${teamname}-graph`], 
+        () =>  
+            fetchGraph( 
+                { "whereFilter": {
+                    "matchId": {
+                        "in": matchIds
+                    },
+                    "season": {
+                        "equals": dataConfiguration[0].season // Current Season
+                    }
+                }
+            }),           
         {
             staleTime: OneHour,
         }

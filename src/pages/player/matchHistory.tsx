@@ -26,20 +26,10 @@ function PlayerMatchStatLine( { playerStat, player }: { playerStat: any, player:
             <td>{playerStat.FAss}</td>
             <td>{playerStat.utilDmg}</td>
         </tr>
-        // <div className={`flex flex-nowrap gap-4 py-1 hover:cursor-pointer hover:bg-midnight2 rounded ${ playerStat.name === player.name ? "bg-slate-900" : ""}`}>
-        //     <div className={`basis-2/12`}>{playerStat.name}</div>
-        //     <div className="basis-1/12">{playerStat.rating.toFixed(2)}</div>
-        //     <div className="basis-1/12">{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</div>
-        //     <div className={`basis-1/12`}>{playerStat.damage}</div>
-        //     <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(playerStat.adr)}`}>{playerStat.adr.toFixed(1)}</div>
-        //     <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(Math.round(playerStat.hs / playerStat.kills * 100) || 0)}`}>{Math.round(playerStat.hs / playerStat.kills * 100) || 0}</div>
-        //     <div className="basis-1/12">{playerStat.FAss}</div>
-        //     <div className="basis-1/12">{playerStat.utilDmg}</div>
-        // </div> 
     )
 }
 
-function MatchHistory( { player, match }: { player: Player, match: Match } ) {
+export function MatchHistory( { player, match }: { player: Player, match: Match } ) {
     const team1 = match.teamStats[0].name;
     const team2 = match.teamStats[1].name;
     const teamHome = match?.matchStats.filter( p => p.teamClanName === team1 ).sort( (a, b) => b.rating - a.rating );
@@ -81,31 +71,6 @@ function MatchHistory( { player, match }: { player: Player, match: Match } ) {
                     </tbody>
                 </table>
             </Containers.StandardBackgroundPage>
-            {/* <div className="flex flex-row pl-2 gap-4 h-8 items-center border-b border-gray-600">
-                <div className="basis-2/12">Name</div>
-                <div className="basis-1/12">Rating</div>
-                <div className="basis-1/12">K / D / A</div>
-                <div className="basis-1/12">Damage</div>
-                <div className="basis-1/12">ADR</div>
-                <div className="basis-1/12">HS%</div>
-                <div className="basis-1/12">Flash AST</div>
-                <div className="basis-1/12">Util Dmg</div>
-            </div>
-            <div className="relative">
-                <div className="absolute -left-20 top-14 -rotate-90 w-28 border-b border-gray-600 mr-16 text-center bg-gradient-to-r from-indigo-500 font-bold capitalize">{ team1.replace("_", " ") }</div>
-                { teamHome?.map( (playerStat, index) => 
-                        <PlayerMatchStatLine key={index} playerStat={playerStat} player={player} />
-                    )
-                }
-            </div>
-            <br />
-            <div className="relative">
-                <div className="absolute -left-20 top-14 -rotate-90 w-28 border-b border-gray-600 mr-16 text-center bg-gradient-to-r from-orange-500 font-bold capitalize">{ team2.replace("_", " ") }</div>
-                { teamAway?.map( (playerStat, index) => 
-                        <PlayerMatchStatLine key={index} playerStat={playerStat} player={player} />
-                    )
-                }
-            </div> */}
         </div>
     )
 };
@@ -183,7 +148,7 @@ export function PlayerMatchHistory( { player }: Props ) {
                 <div className="basis-1/6">Map</div>
                 <div className="basis-1/12">Score</div>
                 <div className="basis-1/12">Rating</div>
-                <div className="basis-1/12">K / D / A</div>
+                <div className="basis-1/12">K D A</div>
                 <div className="basis-1/12">Damage</div>
                 <div className="basis-1/12">ADR</div>
                 <div className="basis-1/12">HS%</div>
