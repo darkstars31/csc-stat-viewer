@@ -195,7 +195,7 @@ export function TeamMatchHistory( { teamName, matchIds }: { teamName: string, ma
                                     <MatchStatsTableHeader />
                                     <tbody>
                                         <MatchStatsTeamScoreLine teamIndex={0} match={match} />
-                                        <tr>
+                                        <tr className="text-center items-center justify-center w-full">
                                             <ScoreboardPopover matchId={String(match.matchId)} />
                                         </tr>
                                         <MatchStatsTeamScoreLine teamIndex={1} match={match} />

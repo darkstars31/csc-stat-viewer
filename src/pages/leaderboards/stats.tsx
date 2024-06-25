@@ -16,7 +16,7 @@ type Props = {
 export function StatsLeaderBoard( { title, rows, header = true, headerImage }: Props ){
     return (
         <div className="basis-1/4 grow">
-            <Card>
+            <Card className="min-h-[285px]">
                 <div className="text-center text-xl uppercase font-extrabold m-4">
                     {title}
                     { headerImage && <div className="ml-4 w-24 h-24 mx-auto inline"><img className="inline" src={headerImage} alt="Header" /></div> }

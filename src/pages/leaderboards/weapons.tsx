@@ -54,7 +54,7 @@ export function WeaponLeaderboards( { players, limit }: { players: Player[], lim
 
     return (
         <>
-            { weaponLeaderBoards.map( (board) => <StatsLeaderBoard key={board.title} title={board.title} headerImage={cs2icons[board.title]} rows={board.rows} /> ) }
+            { weaponLeaderBoards.map( (board) => <StatsLeaderBoard key={board.title} title={board.title} headerImage={cs2icons[board.title]} rows={board.rows.filter( (row) => row.value > 0 )} /> ) }
         </>
     );
 }
