@@ -3,12 +3,13 @@ import { Player } from "../../models";
 import { Loading } from "../../common/components/loading";
 import { mapImages } from "../../common/images/maps";
 import { MdKeyboardArrowRight, MdKeyboardArrowDown } from 'react-icons/md'
-import { useCscPlayerMatchHistoryGraph } from "../../dao/cscPlayerMatchHistoryGraph";
+import { useCscPlayerMatchHistoryGraph, useCscTeamMatchHistoryGraph } from "../../dao/cscPlayerMatchHistoryGraph";
 import { Match } from "../../models/csc-player-match-history-types";
 import { GoStarFill } from "react-icons/go";
 import { ToolTip } from "../../common/utils/tooltip-utils";
 import { getCssColorGradientBasedOnPercentage } from "../../common/utils/string-utils";
 import * as Containers from "../../common/components/containers";
+import { Exandable } from "../../common/components/containers/Expandable";
 
 type Props = {
     player: Player;
@@ -139,8 +140,7 @@ export function PlayerMatchHistory( { player }: Props ) {
 
     return (
         <div className="my-4 p-4">
-            <h2 className="text-2xl text-center"><span className="font-bold">Match History</span> - {playerMatchHistory?.length} matches</h2>
-            <h2 className="text-center text-sm text-gray-600">Beta Feature</h2>
+            <h2 className="text-2xl p-2 text-center"><span className="font-bold">Match History</span> - {playerMatchHistory?.length} matches</h2>
             <div className="flex flex-row pl-2 gap-4 h-16 items-center border-b border-gray-600">
                 <div className="w-8"></div>
                 <div className="basis-1/12">Type</div>
@@ -159,6 +159,38 @@ export function PlayerMatchHistory( { player }: Props ) {
                 ( showAll ? sortedPlayerMatchHistory : sortedPlayerMatchHistory?.slice(0,5))?.map( (match) => <MatchRow key={match.matchId} player={player} match={match} /> )
             }
             { !showAll && (playerMatchHistory ?? []).length > 5 && <div className="text-center hover:cursor-pointer hover:bg-midnight2 rounded" onClick={() => setShowAll(!showAll)}>Show All</div>}
+        </div>
+    )
+}
+
+export function TeamMatchHistory( { teamName, matchIds }: { teamName: string, matchIds: string[] } ) {
+    const { data: teamMatchHistory, isLoading: isLoadingPlayerMatchHistory } = useCscTeamMatchHistoryGraph(teamName, matchIds );
+    const [ showAll, setShowAll ] = React.useState( false );
+
+    const sortedPlayerMatchHistory = teamMatchHistory?.sort( (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime() );
+
+    if( teamMatchHistory?.length === 0 && !teamMatchHistory) {
+        return null;
+    }
+
+    if( isLoadingPlayerMatchHistory ){
+        return <div><Loading /></div>;
+    }
+
+    return (
+        <div className="my-4 p-4">
+            <h2 className="text-2xl p-2 text-center"><span className="font-bold">Match History</span> - {teamMatchHistory?.length} matches</h2>
+            <h2 className="text-center text-sm text-gray-600">Work in Progress Feature</h2>
+            {
+                ( showAll ? sortedPlayerMatchHistory : sortedPlayerMatchHistory?.slice(0,5))?.map( (match) => 
+                    <div>
+                        <Exandable title={<div><img src={mapImages[match.mapName]} className="w-8 inline" alt="match score line"/> Home {match.teamStats[0].name} vs. {match.teamStats[1].name} Away</div>}>
+                            <MatchHistory key={match.matchId} player={{} as Player} match={match} />
+                        </Exandable>
+                    </div>
+            )
+            }
+            { !showAll && (teamMatchHistory ?? []).length > 5 && <div className="text-center hover:cursor-pointer hover:bg-midnight2 rounded" onClick={() => setShowAll(!showAll)}>Show All</div>}
         </div>
     )
 }

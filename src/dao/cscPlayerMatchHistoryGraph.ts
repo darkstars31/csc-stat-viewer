@@ -38,9 +38,7 @@ const fetchGraph = async ( filter: Record<string, any> ) => await fetch(appConfi
                     }
                 }
             }`,
-            "variables": {
-                filter
-            }      
+            "variables": filter   
         }),
         headers: {
             'Content-Type': "application/json",
@@ -78,7 +76,7 @@ export function useCscPlayerMatchHistoryGraph( player: Player ): UseQueryResult<
     );
 }
 
-export function useCscTeamMatchHistoryGraph( teamname: string, matchIds: number[] ): UseQueryResult<CscPlayerMatchHistoryQuery["data"]["findManyMatch"]> {
+export function useCscTeamMatchHistoryGraph( teamname: string, matchIds: string[] ): UseQueryResult<CscPlayerMatchHistoryQuery["data"]["findManyMatch"]> {
     return useQuery( 
         [`cscteammatchhistory-${teamname}-graph`], 
         () =>  

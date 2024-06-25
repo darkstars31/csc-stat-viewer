@@ -14,7 +14,7 @@ import { TeamPlayerCards } from "./team/playerCards";
 import { MapAnalysis } from "./team/mapBans";
 import { CompareLink } from "../common/components/compareLink";
 import { ToolTip } from "../common/utils/tooltip-utils";
-import { PlayerMatchHistory } from "./player/matchHistory";
+import { TeamMatchHistory } from "./player/matchHistory";
 
 
 export function Team(){
@@ -73,6 +73,8 @@ export function Team(){
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph( dataConfig?.season ,currentTeam?.id );
+	const matchIds = React.useMemo(() => matches.map( match => match.id ), [matches]);
+
 	//const presesasonMatches = matches.filter( match => match.stats.length <= 1 && match.matchDay.number.includes("P"));
 	const regularSeasonMatches = matches.filter( match => match.stats.length <= 1 && match.matchDay.number.includes("M"));
 	const playoffMatches = matches.filter( match => match.stats.length > 1 );
@@ -161,7 +163,7 @@ export function Team(){
 									</div>
 								}	
 								{
-									playersWithStats?.length && <PlayerMatchHistory player={playersWithStats[0]!} /> 				
+									matchIds?.length && <TeamMatchHistory teamName={currentTeam?.name ?? ""} matchIds={matchIds} /> 				
 								}										
 							</div>	
 						</div>

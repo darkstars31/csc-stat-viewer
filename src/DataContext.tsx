@@ -44,7 +44,7 @@ const useDataContextProvider = () => {
 
 	React.useEffect(() => {
 		const fetchData = async () => {
-			const extendedStatsResult = await fetch(`./extendedStats.json?t=${(new Date()).getTime()}`).then( (response) => response.json() );
+			const extendedStatsResult = await fetch(`./extendedStats.json?t=${(new Date()).getTime()}`).then( (response) => response.json() ).catch( (error) => console.error(error) );
 			setExtendStats(extendedStatsResult as unknown as ExtendedStats);
 		};
 		fetchData();
