@@ -24,9 +24,11 @@ function PlayerMatchStatLine( { playerStat }: { playerStat: any } ) {
             <td>{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</td>
             <td>{playerStat.damage}</td>
             <td className={`${getCssColorGradientBasedOnPercentage(playerStat.adr)}`}>{playerStat.adr.toFixed(1)}</td>
+            <div className="basis-1/12">{playerStat.ok} : {playerStat.ol}</div>
             <td className={`${getCssColorGradientBasedOnPercentage(Math.round(playerStat.hs / playerStat.kills * 100) || 0)}`}>{Math.round(playerStat.hs / playerStat.kills * 100) || 0}</td>
             <td>{playerStat.FAss}</td>
             <td>{playerStat.utilDmg}</td>
+            <div className="basis-1/12">{playerStat.cl_1+playerStat.cl_2+playerStat.cl_3+playerStat.cl_4+playerStat.cl_5}</div>
         </tr>
     )
 }
@@ -36,12 +38,14 @@ function MatchStatsTableHeader() {
         <thead className="text-left border-b border-gray-600">
             <th>Name</th>
             <th>Rating</th>
-            <th>K / D / A</th>
+            <th>K/D/A</th>
             <th>Damage</th>
             <th>ADR</th>
+            <th>FKill/FD</th>
             <th>HS%</th>
             <th>F Asst</th>
             <th>Util Dmg</th>
+            <th>Clutches</th>
         </thead>
     )
 }
@@ -117,9 +121,15 @@ function MatchRow( { player, match }: { player: Player, match: Match } ) {
                 <div className="basis-1/12">{p.kills} / {p.deaths} / {p.assists}</div>
                 <div className="basis-1/12">{p.damage}</div>
                 <div className={`basis-1/12 ${ p.adr > 100 ? "text-yellow-400" : ""}`}>{p.adr.toFixed(1)} {p.adr > 100 ? <GoStarFill className="text-yellow-400 inline" /> : ""}</div>
+                <div className="basis-1/12">{p.ok} : {p.ol}</div>
                 <div className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(Math.round(p.hs / p.kills * 100) || 0)}`}>{Math.round(p.hs / p.kills * 100) || 0}</div>
-                <div className="basis-1/12">{p?.FAss}</div>
-                <div className="basis-1/12">{p?.utilDmg}</div>
+                <div className="basis-2/12">
+                    <div className="flex flex-row justify-between">
+                        <div>{p.FAss}</div>
+                        <div>{p?.utilDmg}</div>
+                        <div>{p.cl_1+p.cl_2+p.cl_3+p.cl_4+p.cl_5}</div>
+                    </div>
+                </div>
             </div>
             {
                 isExpanded && <MatchHistory match={match} />
@@ -154,11 +164,17 @@ export function PlayerMatchHistory( { player }: Props ) {
                 <div className="basis-1/12">Score</div>
                 <div className="basis-1/12">Rating</div>
                 <div className="basis-1/12">K D A</div>
-                <div className="basis-1/12">Damage</div>
+                <div className="basis-1/12">Dmg</div>
                 <div className="basis-1/12">ADR</div>
+                <div className="basis-1/12">FKill/FD</div>
                 <div className="basis-1/12">HS%</div>
-                <div className="basis-1/12">Flash AST</div>
-                <div className="basis-1/12">Util. Damage</div>
+                <div className="basis-2/12 text-xs">
+                    <div className="flex flex-row justify-between">
+                        <div>F Asst</div>
+                        <div>Util Dmg</div>
+                        <div>Clutch</div>
+                    </div>
+                </div>
             </div>
             {
                 ( showAll ? sortedPlayerMatchHistory : sortedPlayerMatchHistory?.slice(0,5))?.map( (match) => <MatchRow key={match.matchId} player={player} match={match} /> )
@@ -185,18 +201,18 @@ export function TeamMatchHistory( { teamName, matchIds }: { teamName: string, ma
     return (
         <div className="my-4 p-4">
             <h2 className="text-2xl p-2 text-center"><span className="font-bold">Match History</span> - {teamMatchHistory?.length} matches</h2>
-            <h2 className="text-center text-sm text-gray-600">Work in Progress Feature</h2>
+            <h2 className="text-center text-sm text-gray-600">Feature in Progress</h2>
             {( showAll ? sortedPlayerMatchHistory : sortedPlayerMatchHistory?.slice(0,5))?.map( (match) => 
                 <div>
-                    <Exandable title={<div><img src={mapImages[match.mapName]} className="w-8 inline" alt="match score line"/> Home {match.teamStats[0].name} vs. {match.teamStats[1].name} Away</div>}>
+                    <Exandable title={<div><img src={mapImages[match.mapName]} className="w-8 inline" alt="match score line"/> Home <span className="text-indigo-400">{match.teamStats[0].name}</span> vs. <span className="text-orange-400">{match.teamStats[1].name}</span> Away</div>}>
                     <div className="relative text-xs pb-4">
                             <Containers.StandardBackgroundPage>
                                 <table className="table-auto w-full border-spacing-0.5">
                                     <MatchStatsTableHeader />
                                     <tbody>
                                         <MatchStatsTeamScoreLine teamIndex={0} match={match} />
-                                        <tr className="text-center items-center justify-center w-full">
-                                            <ScoreboardPopover matchId={String(match.matchId)} />
+                                        <tr>
+                                            <td colSpan={10}><ScoreboardPopover matchId={String(match.matchId)} /></td>
                                         </tr>
                                         <MatchStatsTeamScoreLine teamIndex={1} match={match} />
                                     </tbody>

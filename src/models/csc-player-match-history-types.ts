@@ -36,4 +36,11 @@ export type MatchStats = {
     RF: number;
     RA: number;
     utilDmg: number;
+    ok: number;
+    ol: number;
+    cl_1: number;
+    cl_2: number;
+    cl_3: number;
+    cl_4: number;
+    cl_5: number;
 }

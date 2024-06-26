@@ -35,6 +35,13 @@ const fetchGraph = async ( filter: Record<string, any> ) => await fetch(appConfi
                         RF
                         RA
                         utilDmg
+                        ok
+                        ol
+                        cl_1
+                        cl_2
+                        cl_3
+                        cl_4
+                        cl_5
                     }
                 }
             }`,
