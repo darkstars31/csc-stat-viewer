@@ -79,7 +79,7 @@ function TeamRecordRow ({ team, index, SoS, showExtras }: { team: any, index: nu
             { showExtras && 
                 <>
                     {/* <td>{team.elo.toFixed(0)}</td> */}
-                    <td className={`${getCssColorGradientBasedOnPercentage(SoS)}`}>{SoS.toFixed(1)}%</td>
+                    <td className={`${getCssColorGradientBasedOnPercentage(100 - SoS)}`}>{SoS.toFixed(1)}%</td>
                 </>
             }
         </tr>
