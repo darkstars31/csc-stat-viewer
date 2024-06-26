@@ -10,7 +10,7 @@ import { ToolTip } from "../../common/utils/tooltip-utils";
 import { getCssColorGradientBasedOnPercentage } from "../../common/utils/string-utils";
 import * as Containers from "../../common/components/containers";
 import { Exandable } from "../../common/components/containers/Expandable";
-import { ScoreboardPopover } from "../team/matches";
+import { Scoreboard } from "../team/matches";
 
 type Props = {
     player: Player;
@@ -24,7 +24,11 @@ function PlayerMatchStatLine( { playerStat }: { playerStat: any } ) {
             <td>{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}</td>
             <td>{playerStat.damage}</td>
             <td className={`${getCssColorGradientBasedOnPercentage(playerStat.adr)}`}>{playerStat.adr.toFixed(1)}</td>
-            <div className="basis-1/12">{playerStat.ok} : {playerStat.ol}</div>
+            <div className="basis-1/12">
+                <ToolTip type="generic" message={<span className="bg-gray-800 p-1 rounded text-xs">{(playerStat.ok / (playerStat.ok + playerStat.ol)*100).toFixed(2)}%</span>}>
+                <span className={`${playerStat.ok > playerStat.ol ? "text-green-500" : ''}`}>{playerStat.ok}</span> : <span className={`${playerStat.ok < playerStat.ol ? "text-red-500" : ''}`}>{playerStat.ol}</span>
+                </ToolTip>
+            </div>
             <td className={`${getCssColorGradientBasedOnPercentage(Math.round(playerStat.hs / playerStat.kills * 100) || 0)}`}>{Math.round(playerStat.hs / playerStat.kills * 100) || 0}</td>
             <td>{playerStat.FAss}</td>
             <td>{playerStat.utilDmg}</td>
@@ -41,7 +45,7 @@ function MatchStatsTableHeader() {
             <th>K/D/A</th>
             <th>Damage</th>
             <th>ADR</th>
-            <th>FKill/FD</th>
+            <th>FK/FD</th>
             <th>HS%</th>
             <th>F Asst</th>
             <th>Util Dmg</th>
@@ -166,7 +170,7 @@ export function PlayerMatchHistory( { player }: Props ) {
                 <div className="basis-1/12">K D A</div>
                 <div className="basis-1/12">Dmg</div>
                 <div className="basis-1/12">ADR</div>
-                <div className="basis-1/12">FKill/FD</div>
+                <div className="basis-1/12">FK/FD</div>
                 <div className="basis-1/12">HS%</div>
                 <div className="basis-2/12 text-xs">
                     <div className="flex flex-row justify-between">
@@ -212,7 +216,7 @@ export function TeamMatchHistory( { teamName, matchIds }: { teamName: string, ma
                                     <tbody>
                                         <MatchStatsTeamScoreLine teamIndex={0} match={match} />
                                         <tr>
-                                            <td colSpan={10}><ScoreboardPopover matchId={String(match.matchId)} /></td>
+                                            <td colSpan={10}><Scoreboard matchId={String(match.matchId)} /></td>
                                         </tr>
                                         <MatchStatsTeamScoreLine teamIndex={1} match={match} />
                                     </tbody>

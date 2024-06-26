@@ -63,7 +63,7 @@ const roundWinner = ( side: string, round: Round ) => {
     );
 }
 
-export const ScoreboardPopover = ( { matchId } :  {matchId :string }) => {
+export const Scoreboard = ( { matchId } : { matchId: string } ) => {
     const winnerEnum: Record<number, string> = {
         3: "CT",
         2: "T"
@@ -84,40 +84,35 @@ export const ScoreboardPopover = ( { matchId } :  {matchId :string }) => {
 
     const ctTeam = match?.rounds.find( r => r.winnerENUM === 3)?.winnerClanName;
     const tTeam = match?.rounds.find( r => r.winnerENUM === 2)?.winnerClanName;
-    
+
     return (
-        <div className="z-40 w-[25rem] bg-midnight2 m-2 p-2 rounded-lg text-xs">
-            <div className="flex flex-row justify-between px-4">
-                <div className="text-sky-500"><strong>{ctTeam}</strong></div>
+        <>
+        <div className="flex flex-row justify-between px-4">
+                <div className="text-sky-500 font-bold">{ctTeam}</div>
                 <div>Start Side</div>
-                <div className="text-rose-500"><strong>{tTeam}</strong></div>
+                <div className="text-rose-500 font-bold">{tTeam}</div>
             </div>
-            <div className="flex flex-row">
-            {
-                firstHalf?.map( ( round, index ) =>
-                        <div>
-                            {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)} {index+1}
-                        </div> 
-                )
-            }
+            <div className="flex flex-row flex-wrap">
+                <div className="flex flex-row basis-5/12">
+                    { firstHalf?.map( ( round, index ) =>
+                        <div>{roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)} {index+1}</div> 
+                    )}
+                </div>
+                <div className='text-gray-600 text-xs w-full p-1 basis-1/12 grow'>
+                        <i>Half</i>
+                        <div className='-mt-[.5em] border-dotted border-b border-gray-500' />
+                </div>
+                <div className="flex flex-row basis-5/12">
+                    { secondHalf?.map( ( round, index ) =>
+                        <div>{index+1+fullMatchRounds/2} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}</div>
+                    )}
+                </div>
+                <div className="flex flex-row justify-between px-4">
+                    <div className="text-sky-500 font-bold">{tTeam}</div>
+                    <div className="text-rose-500 font-bold">{ctTeam}</div>
+                </div>
             </div>
-            <div className='text-gray-600 text-xs w-full p-1'>
-                    <i>Half</i>
-                    <div className='-mt-[.5em] border-dotted border-b border-gray-500' />
-            </div>
-            <div className="flex flex-row">
-            {
-            secondHalf?.map( ( round, index ) =>
-                    <div>
-                        {index+1+fullMatchRounds/2} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
-                    </div>
-                )
-            }
-            </div>
-            <div className="flex flex-row justify-between px-4">
-                <div className="text-sky-500"><strong>{tTeam}</strong></div>
-                <div className="text-rose-500"><strong>{ctTeam}</strong></div>
-            </div>
+           
             { overtime.length > 0 && 
                 <div className='text-gray-600 text-xs w-full p-1'>
                         <i>Overtime</i>
@@ -165,6 +160,14 @@ export const ScoreboardPopover = ( { matchId } :  {matchId :string }) => {
             }
             </div>
             { !rounds && <div>Round information unavailable.</div> }
+            </>
+        );
+}
+
+export const ScoreboardPopover = ( { matchId } :  {matchId: string }) => {
+    return (
+        <div className="z-40 w-[25rem] bg-midnight2 m-2 p-2 rounded-lg text-xs">
+            <Scoreboard matchId={matchId} />
         </div>
     );
 }
