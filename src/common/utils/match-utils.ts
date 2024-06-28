@@ -1,3 +1,4 @@
+import { MatchStats } from "../../models/csc-player-match-history-types";
 import { Team } from "../../models/franchise-types";
 import { Match } from "../../models/matches-types";
 
@@ -125,3 +126,5 @@ export const calculateTeamRecord = (team?: Team, matches?: Match[], conferncesTe
     }
     return acc;
 }, {} as any);
+
+export const calculateClutchPoints = ( matchStats: MatchStats ) => matchStats.cl_1 + (matchStats.cl_2 * 2) + (matchStats.cl_3*3) + (matchStats.cl_4*5) + (matchStats.cl_5*8)

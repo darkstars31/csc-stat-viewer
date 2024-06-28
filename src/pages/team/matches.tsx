@@ -12,6 +12,7 @@ import { Round } from "../../models/match-scoreboard-types";
 import { IoMdTimer } from "react-icons/io";
 import { IoCut, IoSkullSharp } from "react-icons/io5";
 import { GiTimeDynamite } from "react-icons/gi";
+import _ from "lodash";
 
 type Props = {
     match: Match
@@ -76,11 +77,7 @@ export const Scoreboard = ( { matchId } : { matchId: string } ) => {
     const firstHalf = rounds?.slice(0, fullMatchRounds/2);
     const secondHalf = rounds?.slice(fullMatchRounds/2, fullMatchRounds);
     const overtime = rounds?.slice(fullMatchRounds) ?? [];
-    const overtime1 = overtime?.slice(0, roundsPerOvertime) ?? [];
-    const overtime2 = overtime?.slice(roundsPerOvertime, roundsPerOvertime*2) ?? [];
-    const overtime3 = overtime?.slice(roundsPerOvertime*2, roundsPerOvertime*3) ?? [];
-    const overtime4 = overtime?.slice(roundsPerOvertime*3, roundsPerOvertime*4) ?? [];
-    const overtime5 = overtime?.slice(roundsPerOvertime*4) ?? [];
+    const overtimeX = _.chunk(overtime, roundsPerOvertime);
 
     const ctTeam = match?.rounds.find( r => r.winnerENUM === 3)?.winnerClanName;
     const tTeam = match?.rounds.find( r => r.winnerENUM === 2)?.winnerClanName;
@@ -93,13 +90,13 @@ export const Scoreboard = ( { matchId } : { matchId: string } ) => {
                 <div className="text-rose-500 font-bold">{tTeam}</div>
             </div>
             <div className="flex flex-row flex-wrap">
-                <div className="flex flex-row basis-5/12">
+                <div className="flex flex-row basis-5/12 justify-end">
                     { firstHalf?.map( ( round, index ) =>
                         <div>{roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)} {index+1}</div> 
                     )}
                 </div>
-                <div className='text-gray-600 text-xs w-full p-1 basis-1/12 grow'>
-                        <i>Half</i>
+                <div className='text-gray-600 text-xs w-full p-1 basis-1/12 grow italic text-center'>
+                        Half
                         <div className='-mt-[.5em] border-dotted border-b border-gray-500' />
                 </div>
                 <div className="flex flex-row basis-5/12">
@@ -107,58 +104,22 @@ export const Scoreboard = ( { matchId } : { matchId: string } ) => {
                         <div>{index+1+fullMatchRounds/2} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}</div>
                     )}
                 </div>
-                <div className="flex flex-row justify-between px-4">
-                    <div className="text-sky-500 font-bold">{tTeam}</div>
-                    <div className="text-rose-500 font-bold">{ctTeam}</div>
+                <div className="flex flex-row justify-between px-4 w-full">
+                    <div className="text-rose-500 font-bold">{tTeam}</div>
+                    <div className="text-sky-500 font-bold">{ctTeam}</div>
                 </div>
             </div>
-           
-            { overtime.length > 0 && 
-                <div className='text-gray-600 text-xs w-full p-1'>
-                        <i>Overtime</i>
-                        <div className='-mt-[.5em] border-dotted border-b border-gray-500' />
+
+           { overtimeX?.map( ( overtime, overtimeIndex ) =>
+                <div className="flex flex-row justify-center">
+                 { overtime?.map( ( round, roundIndex ) =>
+                    <div>
+                        {overtimeIndex*roundIndex+25} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
+                    </div>
+                ) }
                 </div>
-            }
-            <div className="flex flex-row justify-center">
-            { overtime1?.map( ( round, index ) =>
-                    <div>
-                        {index+25} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
-                    </div>
-                )
-            }
-            </div>
-            <div className="flex flex-row justify-center">
-            { overtime2?.map( ( round, index ) =>
-                    <div>
-                        {index+31} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
-                    </div>
-                )
-            }
-            </div>
-            <div className="flex flex-row justify-center">
-            { overtime3?.map( ( round, index ) =>
-                    <div>
-                        {index+37} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
-                    </div>
-                )
-            }
-            </div>
-            <div className="flex flex-row justify-center">
-            { overtime4?.map( ( round, index ) =>
-                    <div>
-                        {index+43} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
-                    </div>
-                )
-            }
-            </div>
-            <div className="flex flex-row justify-center">
-            { overtime5?.map( ( round, index ) =>
-                    <div>
-                        {index+49} {roundWinner(winnerEnum[round.winnerENUM as keyof typeof winnerEnum], round)}
-                    </div>
-                )
-            }
-            </div>
+            )}
+
             { !rounds && <div>Round information unavailable.</div> }
             </>
         );

@@ -11,6 +11,7 @@ import { getCssColorGradientBasedOnPercentage } from "../../common/utils/string-
 import * as Containers from "../../common/components/containers";
 import { Exandable } from "../../common/components/containers/Expandable";
 import { Scoreboard } from "../team/matches";
+import { calculateClutchPoints } from "../../common/utils/match-utils";
 
 type Props = {
     player: Player;
@@ -32,7 +33,20 @@ function PlayerMatchStatLine( { playerStat }: { playerStat: any } ) {
             <td className={`${getCssColorGradientBasedOnPercentage(Math.round(playerStat.hs / playerStat.kills * 100) || 0)}`}>{Math.round(playerStat.hs / playerStat.kills * 100) || 0}</td>
             <td>{playerStat.FAss}</td>
             <td>{playerStat.utilDmg}</td>
-            <div className="basis-1/12">{playerStat.cl_1+playerStat.cl_2+playerStat.cl_3+playerStat.cl_4+playerStat.cl_5}</div>
+            <div className="basis-1/12">
+            <div><ToolTip type="generic" message={<div className="bg-gray-700 p-2 rounded">
+                    <div className="flex flex-col">
+                        <div>1v1: {playerStat.cl_1}</div>
+                        <div>1v2: {playerStat.cl_2}</div>
+                        <div>1v3: {playerStat.cl_3}</div>
+                        <div>1v4: {playerStat.cl_4}</div>
+                        <div>Aces: {playerStat.cl_5}</div>
+                    </div>
+                    </div>}>
+                {calculateClutchPoints(playerStat)}
+                </ToolTip>
+                </div>
+            </div>
         </tr>
     )
 }
@@ -49,7 +63,7 @@ function MatchStatsTableHeader() {
             <th>HS%</th>
             <th>F Asst</th>
             <th>Util Dmg</th>
-            <th>Clutches</th>
+            <th>Clutch Pts</th>
         </thead>
     )
 }
@@ -131,7 +145,15 @@ function MatchRow( { player, match }: { player: Player, match: Match } ) {
                     <div className="flex flex-row justify-between">
                         <div>{p.FAss}</div>
                         <div>{p?.utilDmg}</div>
-                        <div>{p.cl_1+p.cl_2+p.cl_3+p.cl_4+p.cl_5}</div>
+                        <div><ToolTip type="generic" message={<div className="bg-gray-700 p-2 rounded">
+                            <div className="flex flex-col">
+                                <div>1v1: {p.cl_1}</div>
+                                <div>1v2: {p.cl_2}</div>
+                                <div>1v3: {p.cl_3}</div>
+                                <div>1v4: {p.cl_4}</div>
+                                <div>Aces: {p.cl_5}</div>
+                            </div>
+                        </div>}>{calculateClutchPoints(p)}</ToolTip></div>
                     </div>
                 </div>
             </div>
@@ -170,13 +192,13 @@ export function PlayerMatchHistory( { player }: Props ) {
                 <div className="basis-1/12">K D A</div>
                 <div className="basis-1/12">Dmg</div>
                 <div className="basis-1/12">ADR</div>
-                <div className="basis-1/12">FK/FD</div>
+                <div className="basis-1/12"><ToolTip type="generic" message="First Kill / First Death">FK/FD</ToolTip></div>
                 <div className="basis-1/12">HS%</div>
                 <div className="basis-2/12 text-xs">
                     <div className="flex flex-row justify-between">
                         <div>F Asst</div>
                         <div>Util Dmg</div>
-                        <div>Clutch</div>
+                        <div>Clutch Pts</div>
                     </div>
                 </div>
             </div>
