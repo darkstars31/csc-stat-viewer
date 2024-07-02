@@ -79,6 +79,11 @@ const useDataContextProvider = () => {
 	//const players: Player[] = cscPlayers.map( cscPlayer => ({ ...cscPlayer, stats: stats.find( stats => (stats.name === cscPlayer?.name)) }));
 	//console.info( cscPlayers.reduce( (a, player) => { a[player.steam64Id] = ""; return a }, {} as any ));
 
+	const specialRoles = {
+		"76561198855758438": "BAITER",
+		"76561199389109923": "ECO FRAGGER",
+		"76561198368540894": "AWP CRUTCH",
+	}
 
 	const players: Player[] = cscPlayers?.reduce( (acc,cscPlayer) => {
 		const statsByTier = [
@@ -91,14 +96,8 @@ const useDataContextProvider = () => {
 		].filter( statsWithTier => statsWithTier?.stats );
 
 		if( statsByTier.length > 0 ){
-			var role = determinePlayerRole( statsByTier.find( s => s.tier === cscPlayer.tier.name)?.stats! );
+			var role = specialRoles[cscPlayer.steam64Id as keyof typeof specialRoles] ? specialRoles[cscPlayer.steam64Id as keyof typeof specialRoles] : determinePlayerRole( statsByTier.find( s => s.tier === cscPlayer.tier.name)?.stats! );
 			const stats = statsByTier.find( s => s.tier === cscPlayer.tier.name)?.stats!;
-			if(cscPlayer.steam64Id === "76561198855758438") {
-				role = "BAITER";
-			}
-			if(cscPlayer.steam64Id === "76561199389109923") {
-				role = "ECO FRAGGER";
-			}
 
 			const extendedStats = extendStats?.extended.find( (stats: { name: string; }) => stats.name === cscPlayer?.name) as ExtendedStats;
 
