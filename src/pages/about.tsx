@@ -83,7 +83,7 @@ export function About(){
                                 <li>IMPACT : Detailed below</li>
                             </ul>
                             <br />
-                            Impact combines every kill, assist, multikill, clutch, and successful bomb detonation and defusal. Points are awarded for each of these actions. Points for kills are contextualized based on the economy of both players, whether the round was won, and what type of kill it was (entry, trade, etc). The final Impact rating combines a players relative points for the whole game, relative points on won rounds, and opening dual rate.
+                            Impact combines every kill, assist, multikill, clutch, and successful bomb detonation and defusal. Points are awarded for each of these actions. Points for kills are contextualized based on the economy of both players, whether the round was won, and what type of kill it was (entry, trade, etc). The final Impact rating combines a players relative points for the whole game, relative points on won rounds, and opening duel rate.
                         </code>
                     </p>
                 </Exandable>

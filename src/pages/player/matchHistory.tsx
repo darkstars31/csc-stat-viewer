@@ -230,8 +230,19 @@ export function TeamMatchHistory( { teamName, matchIds }: { teamName: string, ma
             <h2 className="text-center text-sm text-gray-600">Feature in Progress</h2>
             {( showAll ? sortedPlayerMatchHistory : sortedPlayerMatchHistory?.slice(0,5))?.map( (match) => 
                 <div>
-                    <Exandable title={<div><img src={mapImages[match.mapName]} className="w-8 inline" alt="match score line"/> Home <span className="text-indigo-400">{match.teamStats[0].name}</span> vs. <span className="text-orange-400">{match.teamStats[1].name}</span> Away</div>}>
-                    <div className="relative text-xs pb-4">
+                    <Exandable title={<div><img src={mapImages[match.mapName]} className="w-8 inline mx-2" alt="match score line"/> 
+                        Home <span className="text-indigo-400 mx-2">
+                            {match.teamStats[0].name}
+                            </span> 
+                            
+                            vs. 
+                           
+                            <span className="text-orange-400 mx-2">
+                                {match.teamStats[1].name}
+                                </span>
+                            Away
+                        </div>}>
+                        <div className="relative text-xs pb-4">
                             <Containers.StandardBackgroundPage>
                                 <table className="table-auto w-full border-spacing-0.5">
                                     <MatchStatsTableHeader />
