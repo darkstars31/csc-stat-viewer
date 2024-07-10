@@ -97,6 +97,7 @@ export function TeamStandings() {
     
     const { data: matches = [], isLoading } = useCscSeasonMatches(selectedTier[0].toUpperCase() + selectedTier.slice(1), dataConfig?.season);
     const tieBreakers: string[] = [];
+    console.info(matches)
 
     const teamsWithScores = matches.reduce( ( acc, match ) => {
        match.teamStats.forEach( team => {
@@ -173,8 +174,13 @@ export function TeamStandings() {
            } else if ( foundMatches.length > 1 ) {
                 tieBreakers.push( `Standings currently does not account for multiple head-to-head matches between ${a.name} and ${b.name}` );
            }
-           tieBreakers.push( (a.roundsWon / (a.roundsWon+a.roundsLost)) > (b.roundsWon / (b.roundsWon+b.roundsLost)) ? `${a.name} over ${b.name} in RWP` : `${b.name} over ${a.name} in RWP` );
-           return (a.roundsWon / (a.roundsWon+a.roundsLost)) > (b.roundsWon / (b.roundsWon+b.roundsLost)) ? -1 : 1; 
+
+           tieBreakers.push( SoS[a.name] > SoS[b.name] ? `${a.name} over ${b.name} in SoS` : `${b.name} over ${a.name} in SoS` );
+           return SoS[a.name] > SoS[b.name] ? -1 : 1;
+
+           // Round Win Percentage (Old Tiebreaker)
+           //tieBreakers.push( (a.roundsWon / (a.roundsWon+a.roundsLost)) > (b.roundsWon / (b.roundsWon+b.roundsLost)) ? `${a.name} over ${b.name} in RWP` : `${b.name} over ${a.name} in RWP` );
+           //return (a.roundsWon / (a.roundsWon+a.roundsLost)) > (b.roundsWon / (b.roundsWon+b.roundsLost)) ? -1 : 1; 
         }
         return 0;
     })
@@ -287,7 +293,8 @@ export function TeamStandings() {
                     }     
                     { selectedTier && 
                         <div className='text-center text-xs m-4 text-slate-400'>
-                            * Tie-Breakers implemented in order: Head-to-Head Record, Round Win Percentage <br />
+                            * Tie-Breakers implemented in order: Head-to-Head Record, Strength of Schedule <br />
+                            * Strength of Schedule calculated based on played match ups (unplayed teams not included). <br />
                             * Unofficial Standings, calculated based on available match data. <br />
                             * Design inspired by <a href="/players/spidey">Spidey</a> <br />
                         </div>}    
