@@ -300,6 +300,8 @@ export function Servers() {
         {label: "Mirage", value: "de_mirage"},
         {label: "Overpass", value: "de_overpass"},
         {label: "Vertigo", value: "de_vertigo"},
+        {label: "Thera (Community)", value: "de_thera"},
+        {label: "Mills (Community)", value: "de_mills"},
         //{label: "Train", value: "de_train"},
         //{label: "Dust", value: "de_dust"},
         //{label: "Cobblestone", value: "de_cbbl"},
