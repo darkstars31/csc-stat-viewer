@@ -1,6 +1,6 @@
 import { downarrow, uparrow, updownarrow, questionmark } from "../../svgs";
 import * as React from "react";
-import { tiertopincategory } from "../../svgs";
+import { tiertopincategory, secondInCategory, thirdInCategory } from "../../svgs";
 
 interface ToolTipProps {
     message: string | React.ReactElement | null;
@@ -10,7 +10,7 @@ interface ToolTipProps {
     stat1?: number;
     stat2?: number;
     range?: number;
-    awardType?: "numberOne" | "top10";
+    awardType?: "numberOne" | "numberTwo" | "numberThree" | "top10";
     awardMapping?: string;
     property?: string;
     classNames?: string[]
@@ -147,31 +147,38 @@ const GenericTooltip: React.FC<ToolTipProps> = ({ message, children, classNames 
 };
 
 const AwardTooltip: React.FC<ToolTipProps> = ({ message, awardType, awardMapping}) => {
+
+    const awardConfig = {
+        numberOne: { classes: ["bg-yellow-400", "text-neutral-700", "h-7"], text: <img className="h-fit w-fit max-w-[30px] pl-1 pointer-events-none" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/> },
+        numberTwo: { classes: ["bg-stone-300", "text-neutral-700", "h-5"], text: <img className="h-fit w-fit max-w-[30px] pl-1 pointer-events-none" src={`data:image/svg+xml;utf-8,${secondInCategory}`} alt=""/> },
+        numberThree: { classes: [ "bg-orange-500", "text-neutral-700", "h-5"], text: <img className="h-fit w-fit max-w-[30px] pl-1 pointer-events-none" src={`data:image/svg+xml;utf-8,${thirdInCategory}`} alt=""/> },
+        top10: { classes: ["bg-green-100", "text-green-700", "h-4"], text: "Top 10" },
+    }
+    
+    const awardClass = awardConfig[awardType ?? "top10"];
+
     const { isHovered, onMouseEnter, onMouseLeave } = useHover();
-    const backgroundColor = awardType === "numberOne" ? "bg-yellow-400" : "bg-green-100";
-    const textColor = awardType === "numberOne" ? "text-neutral-700" : "text-green-700";
     const whiteSpaceClass = typeof message === "string" && message.length > 25 ? "whitespace-normal min-w-[200px] max-w-full" : "whitespace-nowrap";
 
     return (
         <div className="relative inline-block">
-            <button type="button" className={`place-items-center flex w-fit select-none whitespace-nowrap rounded-[0.27rem] 
-                ${backgroundColor} 
-                px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none
-                ${textColor}
-                ${ awardType === "numberOne" ? "h-7" : "h-4" }`
+            <button type="button" className={`group flex relative place-items-center justify-center items-center select-none whitespace-nowrap rounded-[0.27rem] px-[0.65em] pb-[0.25em] pt-[0.35em] text-left align-baseline text-[0.75em] font-bold leading-none
+                ${awardClass.classes.join(' ')}`
             } 
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             onTouchStart={onMouseEnter}
             onTouchEnd={onMouseLeave}
             >
-            {awardMapping} {awardType === "numberOne" ? <img className="h-fit w-fit max-w-[30px] pl-1 pointer-events-none" src={`data:image/svg+xml;utf-8,${tiertopincategory}`} alt=""/> : "Top 10"}
+            {awardMapping} {awardClass.text}
                 <div className={`${baseTooltipClass} ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} bg-zinc-500 shadow-lg'`}
                 style={{transform: 'translate(-50%, -120%)', top: '0', left: '50%'}}>
                     <div className={`${awardTooltipClass} ${whiteSpaceClass}`}>
                         {message}
                     </div>
                 </div>
+                {/* shine box */}
+                {/* <div className="absolute top-0 -inset-full h-full w-1/2 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-40 group-hover:animate-shine" /> */}
             </button>
         </div>
     );

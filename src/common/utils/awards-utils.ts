@@ -117,7 +117,20 @@ export const awardProperties = [
       };
 
   /* AWARDS logic */
-export const isCurrentPlayerNumberOneForProperty = (
+export const isCurrentPlayerNumberOneForProperty = (currentPlayer: Player,allPlayers: Player[],property: keyof CscStats): boolean => {
+    return isCurrentPlayerNumberXForProperty(0, currentPlayer, allPlayers, property);
+};
+
+export const isCurrentPlayerNumberTwoForProperty = (currentPlayer: Player,allPlayers: Player[],property: keyof CscStats): boolean => {
+    return isCurrentPlayerNumberXForProperty(1, currentPlayer, allPlayers, property);
+};
+
+export const isCurrentPlayerNumberThreeForProperty = (currentPlayer: Player,allPlayers: Player[],property: keyof CscStats): boolean => {
+    return isCurrentPlayerNumberXForProperty(2, currentPlayer, allPlayers, property);
+};
+
+export const isCurrentPlayerNumberXForProperty = (
+    x: number,
     currentPlayer: Player,
     allPlayers: Player[],
     property: keyof CscStats
@@ -125,8 +138,7 @@ export const isCurrentPlayerNumberOneForProperty = (
     if (currentPlayer.stats[property] === 0) {
         return false;
     }
-    const top10Players = getTop10PlayersInTier3GP(currentPlayer, allPlayers, property);
-    const numberOnePlayer = top10Players[0];
+    const numberOnePlayer = getTop10PlayersInTier3GP(currentPlayer, allPlayers, property)[x];
     return numberOnePlayer && numberOnePlayer.name === currentPlayer.name;
 };
 
@@ -155,4 +167,20 @@ export const propertiesCurrentPlayerIsNumberOneFor = (
     properties: (keyof CscStats)[]
 ): (keyof CscStats)[] => {
     return properties.filter((property) => isCurrentPlayerNumberOneForProperty(currentPlayer, allPlayers, property));
+};
+
+export const propertiesCurrentPlayerIsNumberTwoFor = (
+    currentPlayer: Player,
+    allPlayers: Player[],
+    properties: (keyof CscStats)[]
+): (keyof CscStats)[] => {
+    return properties.filter((property) => isCurrentPlayerNumberTwoForProperty(currentPlayer, allPlayers, property));
+};
+
+export const propertiesCurrentPlayerIsNumberThreeFor = (
+    currentPlayer: Player,
+    allPlayers: Player[],
+    properties: (keyof CscStats)[]
+): (keyof CscStats)[] => {
+    return properties.filter((property) => isCurrentPlayerNumberThreeForProperty(currentPlayer, allPlayers, property));
 };

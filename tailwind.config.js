@@ -24,7 +24,8 @@ module.exports = {
       },
       animation: {
         'fade-in': 'fadeIn 1s ease-in',
-        wiggle: "wiggle 200ms ease-in-out"
+        wiggle: "wiggle 200ms ease-in-out",
+        "shine": "shine 1s",
       },
       keyframes: theme => ({
         'fadeIn': {
@@ -34,7 +35,10 @@ module.exports = {
         wiggle: {
           "0%, 100%": { transform: "rotate(-3deg)" },
           "50%": { transform: "rotate(3deg)" }
-        }
+        },
+        shine: {
+          "100%": { left: "125%" },
+        },
     }),
   },
 },
