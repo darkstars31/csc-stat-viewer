@@ -16,6 +16,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { Toggle } from "../common/components/toggle";
 import { shortTeamNameTranslator } from "../common/utils/player-utils";
 import { Player } from "../models";
+import { CgAdd, CgRemove } from "react-icons/cg";
 
 dayjs.extend(relativeTime);
 
@@ -110,7 +111,7 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
 
     const connectCode = `connect servers.analytikill.com:${server.port}${server.password ? `;password ${server.password}` : ""}`
     //const timeSinceServerStart = dayjs(+server.datetime).fromNow()
-    const timeTilServerShutdown = dayjs().to(+server.datetime+1000*60*60*3,true);
+    const timeTilServerShutdown = dayjs().to(+server.datetime,true);
     const isOwner = loggedinUser?.name === server.owner;
 
     const skeletonClassNames = "animate-pulse bg-gray-900 rounded inset-0 m-1 p-1"
@@ -146,7 +147,7 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
 
 const Field = ({label, children}: {label: string, children: React.ReactNode}) => {
     return (
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 mb-2">
             <div className="basis-1/3">
                 {label}
             </div>
@@ -187,12 +188,35 @@ const MatchPlayerSelect = ( { index, availablePlayers, onChange }: { index: numb
     )
 }
 
+export const FieldIncremental = ({name, value, min, max, onChange}: { name:string, value: number, min?: number, max?: number, onChange: (property: {[key: string]: number}) => void}) => {
+    const maxValue = max ? max : 100;
+    const minValue = min ? min : 0;
+    const handleChange = ( increment : number) => {
+        if (value + increment >= minValue && value + increment <= maxValue) {
+            onChange({[name]: value + increment});
+        }
+    }
+    return (
+        <>
+            <CgRemove className={`inline mx-2 ${value === minValue ? "opacity-25" : "opacity-100"}`} aria-disabled={value < minValue} onClick={() => handleChange(-1)}/>
+            {value}
+            <CgAdd className={`inline mx-2 ${value === maxValue ? "opacity-25" : "opacity-100"}`} aria-disabled={value > maxValue} onClick={() => handleChange(1)}/>  
+        </>
+    )
+}
+
 export function Servers() {
     const { loggedinUser, isLoading, players } = useDataContext();
-    const [selectedMap, setSelectedMap] = React.useState<SingleValue<{label: string; value: string;}>>({label: "Anbuis", value: "de_anubis"});
-    const [selectedServerType, setSelectedServerType] = React.useState<SingleValue<{label: string; value: string;}>>({label: "Pug & Prac", value: "pug&prac"});
-    const [isPrivate, setIsPrivate] = React.useState<boolean>(false);
-    const [password, setPassword] = React.useState<string>("");
+    const [requestState, setRequestState] = React.useState<{ [key: string]: string | number | boolean | null}>({ 
+        map: "de_anubis",
+        serverDuration: 3,
+        playerSlots: 10,
+        serverType: "pug&prac", 
+        isPrivate: true, 
+        password: "",
+        gotv: false,
+        coachSlot: false,
+    });
     const [, setResult] = React.useState<any>();
     const [shouldRefresh, setShouldRefresh] = React.useState<boolean>(true);
     const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
@@ -205,7 +229,6 @@ export function Servers() {
     const [ matchConVars, setMatchConVars ] = React.useState<{ [key: string]: string | number | boolean | string[]}>({});
 
     const availableMatchPlayers = players.filter( p => !matchPlayers.includes(p) );
-    console.info(matchPlayers)
 
     React.useEffect(() => {
         (async () => {
@@ -242,11 +265,13 @@ export function Servers() {
                 "Authorization": `Bearer ${cookie.get("jwt")}`
             },
             body: JSON.stringify({
-                map: selectedMap?.value,
-                serverType: selectedServerType?.value,
-                password,
-                isPrivate,
-                matchConfig: { players: matchPlayers, maps: [selectedMap?.value], ...matchConVars }
+                map: requestState.map,
+                playerSlots: requestState.playerSlots,
+                serverDuration: requestState.serverDuration,
+                serverType: requestState.serverType,
+                password: requestState.password,
+                isPrivate: requestState.isPrivate,
+                matchConfig: { players: matchPlayers, maps: [requestState.selectedMap], ...matchConVars }
             })
         })
         if( response.ok ){
@@ -285,14 +310,15 @@ export function Servers() {
     }
 
     const serverTypeOptions = [
-        {label: "Pug & Prac", value: "pug&prac", isDisabled: false},
-        {label: "Retakes", value: "retakes", isDisabled: false},
-        {label: "Deathmatch (WIP)", value: "deathmatch", isDisabled: process.env.NODE_ENV! === "production"},
-        {label: "Match (WIP)", value: "match", isDisabled: process.env.NODE_ENV! === "production"},
+        {label: "Pug & Prac", value: "pug&prac", isDisabled: false, playerSlots: [2,10]},
+        {label: "Retakes", value: "retakes", isDisabled: false, playerSlots: [2,9]},
+        {label: "Wingman", value: "wingman", isDisabled: process.env.NODE_ENV! === "production", playerSlots: [4,4]},
+        {label: "Deathmatch (WIP)", value: "deathmatch", isDisabled: process.env.NODE_ENV! === "production", playerSlots: [2,15]},
+        {label: "Match (WIP)", value: "match", isDisabled: process.env.NODE_ENV! === "production", playerSlots: [2,11]},
     ]
 
     const mapOptions = [
-        {label: "Anbuis", value: "de_anubis"},
+        {label: "Anubis", value: "de_anubis"},
         {label: "Ancient", value: "de_ancient"},
         {label: "Dust2", value: "de_dust2"},
         {label: "Inferno", value: "de_inferno"},
@@ -317,6 +343,14 @@ export function Servers() {
         });
     }
 
+    const handleRequestStateUpdate = (property: { [key: string]: any}) => {
+        if( Object.keys(property).includes("serverType")){
+            property = { ...property, playerSlots: serverTypeOptions.find( (option) => option.value === property["serverType"])?.playerSlots[1] };
+            console.info( property );
+        }
+        setRequestState( { ...requestState, ...property } );
+    }
+
     const handleMatchSettingsChange = ( property: { [key: string]: any } ) => {
         setMatchSettings( prev => ({ ...prev, ...property}));
     }
@@ -339,8 +373,8 @@ export function Servers() {
                                 unstyled
                                 isSearchable={false}
                                 options={serverTypeOptions}
-                                onChange={setSelectedServerType}
-                                value={selectedServerType}
+                                onChange={ (selection) => handleRequestStateUpdate({serverType: selection?.value}) }
+                                value={serverTypeOptions.find(({value}) => value === requestState.serverType)}
                             />
                         </Field>
                         <Field key={"map"} label="Map">
@@ -349,36 +383,42 @@ export function Servers() {
                                 unstyled
                                 isSearchable={false}
                                 options={mapOptions}
-                                onChange={setSelectedMap}
-                                value={selectedMap}
+                                onChange={(selection) => handleRequestStateUpdate({map: selection?.value})}
+                                value={mapOptions.find(({value}) => value === requestState.map)}
                             />
                         </Field>
-                        <Field key={"duration"} label="Duration (Hours)">
-                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover:cursor-not-allowed"
-                                type="number" 
-                                value={3} 
-                                disabled 
-                            />
+                        <div className="flex flex-row flex-wrap grow justify-between w-full gap-4">
+                            <Field key={"duration"} label="Duration (Hours)">
+                                <FieldIncremental 
+                                    name={"serverDuration"}
+                                    value={requestState.serverDuration as number}
+                                    onChange={handleRequestStateUpdate}
+                                    min={1}
+                                    max={3}
+                                />
+                            </Field>
+                            <Field key={"slots"} label="Player Slots">
+                                <FieldIncremental 
+                                    name={"playerSlots"}
+                                    value={requestState.playerSlots as number}
+                                    onChange={handleRequestStateUpdate}
+                                    min={serverTypeOptions.find(({value}) => value === requestState.serverType)?.playerSlots[0] as number}
+                                    max={serverTypeOptions.find(({value}) => value === requestState.serverType)?.playerSlots[1] as number}
+                                />
                         </Field>
-                        <Field key={"slots"} label="Player Slots">
-                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline hover:cursor-not-allowed"
-                                type="number" 
-                                value={10} 
-                                disabled 
-                            />
-                        </Field>
+                        </div>
                         <Field key={"private"} label="Private Server">
-                            <Toggle checked={isPrivate} onChange={setIsPrivate} />
+                            <Toggle checked={requestState.isPrivate as boolean} onChange={() => handleRequestStateUpdate({isPrivate: !requestState.isPrivate})} />
                         </Field>
-                        <div className={ isPrivate ? "" : "hidden"}>
+                        <div className={ requestState.isPrivate ? "" : "hidden"}>
                             <Field key={"password"} label="Password">
                                 <input
                                     type="text"
                                     name="password"
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    placeholder="Password"
-                                    value={password}
-                                    onChange={e => setPassword(e.target.value)}
+                                    placeholder="If blank password will be random"
+                                    value={requestState.password as string}
+                                    onChange={e => handleRequestStateUpdate({password: e})}
                                 />
                             </Field>  
                         </div>                                         
@@ -400,14 +440,16 @@ export function Servers() {
                             .prac - Enter Practice Mode<br />
                             .rethrow - Rethrows last nade<br />
                             .exitprac - Exit Practice Mode<br />
+                            .playout - Play all rounds in a pug<br />
                             .r - Ready Up for pug<br />
+
                             .map &#123;map_name&#125; - Changes the Map<br />
                         </pre> 
                     </div>
                 </Card>
             </div>
             {
-                selectedServerType?.value === "match" &&
+                requestState.ServerType === "match" &&
                 <div>
                     <Card>
                         <div className="text-xl font-bold text-center uppercase">Match Configuration</div>
