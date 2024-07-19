@@ -5,7 +5,6 @@ import Select, { SingleValue } from "react-select";
 import { selectClassNames } from "../common/utils/select-utils";
 import { appConfig } from "../dataConfig";
 import cookie from "js-cookie";
-import { useEnableFeature } from "../common/hooks/enableFeature";
 import { useDataContext } from "../DataContext";
 import { TbClipboardCopy } from "react-icons/tb";
 import { FaCheck, FaServer } from "react-icons/fa";
@@ -116,8 +115,6 @@ export function OwnedServers ( { server, onChange } : { server : any, onChange: 
 
     const skeletonClassNames = "animate-pulse bg-gray-900 rounded inset-0 m-1 p-1"
 
-    console.info(server);
-
     return (
         <tr>
             <td className={ !serverDeets ? skeletonClassNames : ""}>{serverDeets?.name}</td>
@@ -173,18 +170,18 @@ const MatchPlayerSelect = ( { index, availablePlayers, onChange }: { index: numb
 
     return  (
         <div className="flex flex-row w-full text-xs">
-                        <Select
-                            placeholder={`Player ${index}`}
-                            isClearable={true}
-                            className="grow"
-                            unstyled
-                            value={selectedPlayers}
-                            isSearchable={true}
-                            classNames={selectClassNames}
-                            options={playerOptions}
-                            onChange={changeHandler}
-                        />
-                    </div>
+            <Select
+                placeholder={`Player ${index}`}
+                isClearable={true}
+                className="grow"
+                unstyled
+                value={selectedPlayers}
+                isSearchable={true}
+                classNames={selectClassNames}
+                options={playerOptions}
+                onChange={changeHandler}
+            />
+        </div>
     )
 }
 
@@ -222,7 +219,6 @@ export function Servers() {
     const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
     const [servers, setServers] = React.useState<server[]>([]);
     const [error, setError] = React.useState<string>("");
-    const enableFeature = useEnableFeature('canRequestServers');
 
     const [ matchPlayers, setMatchPlayers ] = React.useState<Player[]>([]);
     const [ matchSettings, setMatchSettings ] = React.useState<{ [key: string]: string | number | boolean | string[]}>({ team1Name: "Team 1", team2Name: "Team 2" });
@@ -293,17 +289,6 @@ export function Servers() {
                 <h2 className="text-3xl font-bold sm:text-4xl">Servers</h2>
                 <p>
                     You must be logged into to use this feature.
-                </p>
-            </Container>
-        )
-    }
-
-    if( !enableFeature ){
-        return (
-            <Container>
-                <h2 className="text-3xl font-bold sm:text-4xl">Servers</h2>
-                <p>
-                    This feature currently under development and only available to beta testers.
                 </p>
             </Container>
         )
