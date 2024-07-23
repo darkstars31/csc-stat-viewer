@@ -60,7 +60,7 @@ export function useFetchSearchFaceitPlayers( player?: Player, isDisabled?: boole
     );
 }
 
-export function useFetchFaceItPlayerWithCache( player?: Player, isDisabled?: boolean ): UseQueryResult<{ id: number, faceit_identifier: string, updated_at: string, rank: number, highest_rank: number, faceit_name: string, elo: number }> {
+export function useFetchFaceItPlayerWithCache( player?: Player, isDisabled?: boolean ): UseQueryResult<{ id: number, faceitIdentifier: string, updatedAt: string, rank: number, highestRank: number, faceitName: string, elo: number }> {
     return useQuery(
         ["faceitPlayerSearch", player?.steam64Id ], 
         () => searchPlayersWithCache( player?.steam64Id, player?.name ), 

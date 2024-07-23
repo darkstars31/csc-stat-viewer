@@ -12,7 +12,7 @@ type Props = {
 
 export function ExternalPlayerLinks( { player }: Props) {
     const { data: faceitSearchPlayer = undefined } = useFetchFaceItPlayerWithCache( player );
-    const faceitPlayerProfile = faceitSearchPlayer?.faceit_name;
+    const faceitPlayerProfile = faceitSearchPlayer?.faceitName;
     return (
     <div className="lg:flex flex-wrap gap-1">
         { player?.name && <div className="hover:cursor-pointer bg-slate-700 p-1 rounded w-6 float-left m-[1px]"><a href={`https://csconfederation.com/stats/profile/${player.name}`} target="_blank" rel="noreferrer"><img src={cscLogo} alt=""/></a></div>}
