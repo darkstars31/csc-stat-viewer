@@ -1,36 +1,36 @@
 import { PlayerTypes } from "../common/utils/player-utils";
 
 export type CscPlayersQuery = {
-    data: Data;
-}
+	data: Data;
+};
 
 export type Data = {
-   players: CscPlayer[]
-}
+	players: CscPlayer[];
+};
 
 export type CscPlayer = {
-    name: string,
-    avatarUrl: string,
-    steam64Id: string,
-    faceitName?: string,
-    discordId?: string,
-    mmr?: number,
-    contractDuration?: number,
-    tier: CscTier,
-    team?: CscTeam,
-    type?: PlayerTypes
-}
+	name: string;
+	avatarUrl: string;
+	steam64Id: string;
+	faceitName?: string;
+	discordId?: string;
+	mmr?: number;
+	contractDuration?: number;
+	tier: CscTier;
+	team?: CscTeam;
+	type?: PlayerTypes;
+};
 
 export type CscTier = {
-    name: string
-}
+	name: string;
+};
 
 export type CscTeam = {
-    name: string
-    franchise: CscFranchise
-}
+	name: string;
+	franchise: CscFranchise;
+};
 
 export type CscFranchise = {
-    name: string,
-    prefix: string,
-}
+	name: string;
+	prefix: string;
+};

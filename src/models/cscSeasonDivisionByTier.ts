@@ -1,34 +1,34 @@
 export type ConferencesQuery = {
-    data: Data;
-}
+	data: Data;
+};
 
 export type Data = {
-    season: Season;
-}
+	season: Season;
+};
 
 export type Season = {
-    standings: Standing[];
-}
+	standings: Standing[];
+};
 
 export type Standing = {
-    tier:      Tier;
-    divisions: Division[];
-}
+	tier: Tier;
+	divisions: Division[];
+};
 
 export type Division = {
-    name:  Name;
-    teams: Team[];
-}
+	name: Name;
+	teams: Team[];
+};
 
 export enum Name {
-    Froggers = "Froggers",
-    Kermits = "Kermits",
+	Froggers = "Froggers",
+	Kermits = "Kermits",
 }
 
 export type Team = {
-    team: Tier;
-}
+	team: Tier;
+};
 
 export type Tier = {
-    name: string;
-}
+	name: string;
+};

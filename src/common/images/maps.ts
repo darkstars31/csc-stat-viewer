@@ -10,4 +10,14 @@ import cs_office from "../../assets/images/maps/forfeitWin.png";
 
 type MapImages = Record<string, string>;
 
-export const mapImages: MapImages = {de_vertigo,de_mirage,de_ancient,de_anubis,de_nuke,de_overpass,de_inferno,de_dust2,cs_office};
+export const mapImages: MapImages = {
+	de_vertigo,
+	de_mirage,
+	de_ancient,
+	de_anubis,
+	de_nuke,
+	de_overpass,
+	de_inferno,
+	de_dust2,
+	cs_office,
+};

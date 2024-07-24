@@ -13,4 +13,17 @@ import faceitRank11 from "../../assets/images/faceitRanks/faceit11.png";
 
 type FaceitRankImages = React.FunctionComponent<React.SVGAttributes<SVGElement>>[];
 
-export const faceitRankImages: FaceitRankImages = [faceitRank0,faceitRank1,faceitRank2,faceitRank3,faceitRank4,faceitRank5,faceitRank6,faceitRank7,faceitRank8,faceitRank9,faceitRank10,faceitRank11 as any];
+export const faceitRankImages: FaceitRankImages = [
+	faceitRank0,
+	faceitRank1,
+	faceitRank2,
+	faceitRank3,
+	faceitRank4,
+	faceitRank5,
+	faceitRank6,
+	faceitRank7,
+	faceitRank8,
+	faceitRank9,
+	faceitRank10,
+	faceitRank11 as any,
+];

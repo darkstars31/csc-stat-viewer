@@ -6,18 +6,18 @@ import { Container } from "../common/components/container";
 // import { useDataContext } from "../DataContext";
 
 export function Playground() {
-    // const { players, isLoading } = useDataContext();
-    // const playerStats = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as CscStats[];
+	// const { players, isLoading } = useDataContext();
+	// const playerStats = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as CscStats[];
 
-    // if( isLoading ){
-    //     return <Container><Loading /></Container>
-    // }
+	// if( isLoading ){
+	//     return <Container><Loading /></Container>
+	// }
 
-    return (
-        <Container>
-            {/* <RoleRadar player={playerStats.at(1)!} /> */}
-            <hr />
-            <PieChart options={{}} />
-        </Container>
-    );
+	return (
+		<Container>
+			{/* <RoleRadar player={playerStats.at(1)!} /> */}
+			<hr />
+			<PieChart options={{}} />
+		</Container>
+	);
 }

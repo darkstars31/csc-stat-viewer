@@ -19,16 +19,18 @@ The page will reload when you make changes.
 You may also see any lint errors in the console.
 
 ### `Requirements`
-- Git
-- Node v18+
+
+-   Git
+-   Node v18+
 
 ### `Libraries to know`
-- React (Front-End Framework & Component composition)
-- Wouter (React Routing)
-- React-Query (Requests and Data Caching)
-- PapaParse (converting our CSV Data into something useful)
-- Tailwindcss (Layout and Design)
-- ECharts (Charting & Visual Design Library)
+
+-   React (Front-End Framework & Component composition)
+-   Wouter (React Routing)
+-   React-Query (Requests and Data Caching)
+-   PapaParse (converting our CSV Data into something useful)
+-   Tailwindcss (Layout and Design)
+-   ECharts (Charting & Visual Design Library)
 
 ### `npm test`
 
@@ -41,6 +43,3 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.
 Your app is ready to be deployed!
-
-
-

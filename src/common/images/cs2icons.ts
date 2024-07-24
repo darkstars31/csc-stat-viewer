@@ -8,7 +8,6 @@ import famas from "../../assets/images/cs2icons/famas.png";
 
 import scout from "../../assets/images/cs2icons/scout.png";
 
-
 import deagle from "../../assets/images/cs2icons/deagle.png";
 import usps from "../../assets/images/cs2icons/usp-s.png";
 import Glock from "../../assets/images/cs2icons/glock.png";
@@ -48,65 +47,80 @@ import wallBang from "../../assets/images/cs2icons/wallBang.png";
 import flashAssist from "../../assets/images/cs2icons/flashassist.png";
 import suicide from "../../assets/images/cs2icons/suicide.png";
 
-type Cs2Icons = Record<string,string>;
+type Cs2Icons = Record<string, string>;
 
 const rifles = {
-    "AK-47": ak47,
-    "M4A4": m4a4,
-    "M4A1": m4a1,
-    "Galil AR": galil,
-    "AUG": aug,
-    "FAMAS": famas,
-    "SG 553": krieg,
-}
+	"AK-47": ak47,
+	M4A4: m4a4,
+	M4A1: m4a1,
+	"Galil AR": galil,
+	AUG: aug,
+	FAMAS: famas,
+	"SG 553": krieg,
+};
 
 const snipers = {
-    "AWP": awp,
-    "SSG 08": scout
-}
+	AWP: awp,
+	"SSG 08": scout,
+};
 
 const subMachineGuns = {
-    "MP9": MP9,
-    "MP5-SD": mp5,
-    "MP7": mp7,
-    "P90": p90,
-    "UMP-45": ump,
-    "PP-Bizon": ppbizon,
-    "MAC-10": mac10,
-}
+	MP9: MP9,
+	"MP5-SD": mp5,
+	MP7: mp7,
+	P90: p90,
+	"UMP-45": ump,
+	"PP-Bizon": ppbizon,
+	"MAC-10": mac10,
+};
 
 const heavy = {
-    "M249": m249,
-    "Negev": negev,
-}
+	M249: m249,
+	Negev: negev,
+};
 
 const shotguns = {
-    "Sawed-Off": sawedoff,
-    "Nova": nova,
-    "XM1014": xm1014,
-    "MAG-7": mag7
-}
+	"Sawed-Off": sawedoff,
+	Nova: nova,
+	XM1014: xm1014,
+	"MAG-7": mag7,
+};
 
 const pistols = {
-    "Desert Eagle": deagle,
-    "USP-S": usps,
-    "Glock-18": Glock,
-    "Dual Berettas": duelies,
-    "Five-SeveN": fiveseven,
-    "P2000": p2000,
-    "P250": p250,
-    "Tec-9": tec9,
-    "CZ75 Auto": cz,
-    "R8 Revolver": r8revolver
-}
+	"Desert Eagle": deagle,
+	"USP-S": usps,
+	"Glock-18": Glock,
+	"Dual Berettas": duelies,
+	"Five-SeveN": fiveseven,
+	P2000: p2000,
+	P250: p250,
+	"Tec-9": tec9,
+	"CZ75 Auto": cz,
+	"R8 Revolver": r8revolver,
+};
 
 const other = {
-    "Knife": Knife,
-    "Zeus x27": zues,
-    "HE Grenade": he,
-    "Incendiary Grenade": molly,
-    "Molotov": molly,
-}
+	Knife: Knife,
+	"Zeus x27": zues,
+	"HE Grenade": he,
+	"Incendiary Grenade": molly,
+	Molotov: molly,
+};
 
-export const cs2killfeedIcons: Cs2Icons = { noScope, blindKill, smokeKill, wallBang, flashAssist, suicide };
-export const cs2icons: Cs2Icons = { ...rifles, ...snipers, ...subMachineGuns, ...shotguns, ...pistols, ...other, ...heavy };
+export const cs2killfeedIcons: Cs2Icons = {
+	noScope,
+	blindKill,
+	smokeKill,
+	wallBang,
+	flashAssist,
+	suicide,
+};
+export const cs2icons: Cs2Icons = {
+	...rifles,
+	...snipers,
+	...subMachineGuns,
+	...shotguns,
+	...pistols,
+	...other,
+	...heavy,
+};

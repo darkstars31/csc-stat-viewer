@@ -1,9 +1,8 @@
-import * as React from 'react'
-import { Container } from '../common/components/container'
-
+import * as React from "react";
+import { Container } from "../common/components/container";
 
 export const Articles = () => (
-    <Container>
-        <div>Articles</div>
-    </Container>
-)
+	<Container>
+		<div>Articles</div>
+	</Container>
+);
