@@ -1,9 +1,10 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const WorkboxWebpackPlugin = require("workbox-webpack-plugin");
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+import { resolve as _resolve } from "path";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import { GenerateSW } from "workbox-webpack-plugin";
+import { BundleAnalyzerPlugin as _BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+const { BundleAnalyzerPlugin } = _BundleAnalyzerPlugin;
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -12,7 +13,7 @@ const stylesHandler = "style-loader";
 const config = {
   entry: "./src/index.ts",
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: _resolve(__dirname, "dist"),
   },
   devServer: {
     open: true,
@@ -58,11 +59,11 @@ const config = {
   },
 };
 
-module.exports = () => {
+export default () => {
   if (isProduction) {
     config.mode = "production";
 
-    config.plugins.push(new WorkboxWebpackPlugin.GenerateSW());
+    config.plugins.push(new GenerateSW());
   } else {
     config.mode = "development";
   }

@@ -16,7 +16,7 @@ export function Profile() {
     const currentPlayer = players.find( p => p.discordId === discordUser?.id );
     const { data: profile, isFetching } = useFetchPlayerProfile(discordUser?.id);
     const [ isSaving, setIsSaving ] = React.useState(false);
-    console.info( profile?.preferred_roles?.split(",")?.map( r => ({ label: r, value: r })) );
+    console.info( profile?.preferredRoles?.split(",")?.map( r => ({ label: r, value: r })) );
     const [ profileSettings, setProfileSettings ] = React.useState<Partial<{ isIGL: boolean, twitchUsername: string, 
         youtubeChannel: string, 
         favoriteWeapon: string, 
@@ -27,11 +27,11 @@ export function Profile() {
     React.useEffect( () => {
         setProfileSettings({
             isIGL: profile?.isIGL ?? false,
-            twitchUsername: profile?.twitch_username ?? undefined,
-            youtubeChannel: profile?.youtube_channel ?? undefined,
-            favoriteWeapon: profile?.favorite_weapon ?? undefined,
-            favoriteRole: profile?.favorite_role ?? undefined,
-            favoriteMap: profile?.favorite_map ??undefined,
+            twitchUsername: profile?.twitchUsername ?? undefined,
+            youtubeChannel: profile?.youtubeChannel ?? undefined,
+            favoriteWeapon: profile?.favoriteWeapon ?? undefined,
+            favoriteRole: profile?.favoriteRole ?? undefined,
+            favoriteMap: profile?.favoriteMap ??undefined,
         });
     }, [ profile, isFetching ]);
 
