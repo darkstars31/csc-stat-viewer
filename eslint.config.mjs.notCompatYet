@@ -1,6 +1,8 @@
 import js from "@eslint/js"
 import react from 'eslint-plugin-react'
+import reacthooks from 'eslint-plugin-react-hooks'
 import jest from 'eslint-plugin-jest'
+import { fixupPluginRules } from "@eslint/compat";
 
 export default [
     js.configs.recommended,
@@ -16,6 +18,7 @@ export default [
     {
         plugins: {
             react,
+            "react-hooks": fixupPluginRules(reacthooks),
             jest
         },
         languageOptions: {

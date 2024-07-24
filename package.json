@@ -54,6 +54,7 @@
 	},
 	"devDependencies": {
 		"@babel/plugin-proposal-private-property-in-object": "7.21.11",
+		"@eslint/compat": "^1.1.1",
 		"@graphql-codegen/cli": "^4.0.1",
 		"@graphql-codegen/client-preset": "^4.0.1",
 		"@tailwindcss/forms": "^0.5.7",
@@ -70,9 +71,6 @@
 		"@types/react-draft-wysiwyg": "^1.13.4",
 		"@webpack-cli/generators": "^3.0.7",
 		"css-loader": "^6.8.1",
-		"eslint": "^9.7.0",
-		"eslint-plugin-jest": "^28.6.0",
-		"eslint-plugin-react": "^7.35.0",
 		"html-webpack-plugin": "^5.5.3",
 		"prettier": "^3.3.3",
 		"style-loader": "^3.3.3",
