@@ -1,8 +1,10 @@
 # Analytikill (csc-stat-viewer)
 
-Unofficial Counter-Strike: Confederation League Statistics and Analysis tools
+Unofficial Counter-Strike: Confederation League Statistics and Analysis
 
-## Get Started
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/L4L310VRKM)
+
+## Getting Started
 
 Install dependencies
 `npm i`
@@ -17,18 +19,16 @@ The page will reload when you make changes.
 You may also see any lint errors in the console.
 
 ### `Requirements`
-
-Git
-Node v18+
+- Git
+- Node v18+
 
 ### `Libraries to know`
-
-React (Front-End Framework & Component composition)
-Wouter (React Routing)
-React-Query (Requests and Data Caching)
-PapaParse (converting our CSV Data into something useful)
-Tailwindcss (Layout and Design)
-ECharts ( Charting & Visual Design Library )
+- React (Front-End Framework & Component composition)
+- Wouter (React Routing)
+- React-Query (Requests and Data Caching)
+- PapaParse (converting our CSV Data into something useful)
+- Tailwindcss (Layout and Design)
+- ECharts (Charting & Visual Design Library)
 
 ### `npm test`
 
@@ -42,10 +42,5 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.
 Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
