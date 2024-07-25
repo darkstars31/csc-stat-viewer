@@ -17,7 +17,7 @@ import { ToolTip } from "../common/utils/tooltip-utils";
 import { TeamMatchHistory } from "./player/matchHistory";
 
 export function Team() {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	// zeslint-disable-next-line @typescript-eslint/no-unused-vars
 	const {
 		franchises = [],
 		players: cscPlayers = [],
@@ -26,7 +26,7 @@ export function Team() {
 		loggedinUser,
 		loading,
 	} = useDataContext();
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	// zeslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [, params] = useRoute("/franchises/:franchiseName/:teamName");
 	const franchiseName = decodeURIComponent(params?.franchiseName ?? "");
 	const teamName = decodeURIComponent(params?.teamName ?? "");
@@ -92,7 +92,7 @@ export function Team() {
 		} as any,
 	);
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	// zeslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph(
 		dataConfig?.season,
 		currentTeam?.id,

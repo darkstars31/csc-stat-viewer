@@ -40,7 +40,7 @@ export const useEnableFeature = (featureString: string) => {
 		if (rule) {
 			setEnabled(rule.function());
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+		// zeslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return enabled;

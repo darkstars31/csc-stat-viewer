@@ -61,7 +61,7 @@ export const getGridData = (currentStats: CscStats) => {
 		// "MIP/r": mvpRounds,
 		// "K/ctr": killsCTside,
 		// awpR: awpKillsPerRound,
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		// zeslint-disable-next-line @typescript-eslint/no-unused-vars
 		...playerRest
 	} = currentStats as CscStats;
 

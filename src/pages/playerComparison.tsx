@@ -33,7 +33,7 @@ export function PlayerComparison() {
 					.filter(Boolean) as MultiValue<{ label: string; value: Player }>,
 			);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+		// zeslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	React.useEffect(() => {
