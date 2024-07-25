@@ -25,7 +25,7 @@ function mean(arr) {
     return num / ((n) * xStdDev * yStdDev);
 }
 
-
+// eslint-disable-next-line
 onmessage = (event) => {
     const { playerData, tiers, statsKeys, ratingKey } = event.data;
   
@@ -49,6 +49,7 @@ onmessage = (event) => {
       return [tier, coefficients];
     });
   
+    // eslint-disable-next-line
     postMessage(result);
   };
   
