@@ -39,6 +39,16 @@ export function Router() {
 	const [location] = useLocation();
 	const enableFeature = useEnableFeature("canRequestServers");
 
+	// const Player = React.lazy(() => import("./pages/player").then(module => { return { default: module.Player } }) );
+	// const Franchises = React.lazy(() => import("./pages/franchises").then(module => { return { default: module.Franchises } }) );
+	// const Franchise = React.lazy(() => import("./pages/franchise").then(module => { return { default: module.Franchise } }) );
+	// const Team = React.lazy(() => import("./pages/team").then(module => { return { default: module.Team } }) );
+	// const LeaderBoards = React.lazy(() => import("./pages/leaderboards").then(module => { return { default: module.LeaderBoards } }) );
+	// const TeamStandings = React.lazy(() => import("./pages/teamStandings").then(module => { return { default: module.TeamStandings } }) );
+	// const PlayerComparison = React.lazy(() => import("./pages/playerComparison").then(module => { return { default: module.PlayerComparison } }) );
+	// const Charts = React.lazy(() => import("./pages/charts").then(module => { return { default: module.Charts } }) );
+	// const About = React.lazy(() => import("./pages/about").then(module => { return { default: module.About } }) );
+
 	const routes = [
 		{ path: `/`, component: () => <Players /> },
 		{ path: `/articles`, component: () => <ArticleRoutes base={"articles"} /> },
@@ -94,20 +104,21 @@ export function Router() {
 						</button>
 					)}
 					<ErrorBoundary>
-						<ArticleRoutes base={`/articles`} />
-						<Switch>
-							{routes.map(route => (
-								<Route key={`route${route.path}`} {...route} />
-							))}
-							<Route
-								key="404, Page not found."
-								component={() => (
-									<Container>
-										<h1>404</h1>
-									</Container>
-								)}
-							/>
-						</Switch>
+						<ArticleRoutes base={`/articles`} />						
+							<Switch>					
+								{routes.map(route => {									
+										return <Route key={`route${route.path}`} {...route} />
+									})
+								}							
+								<Route
+									key="404, Page not found."
+									component={() => (
+										<Container>
+											<h1>404</h1>
+										</Container>
+									)}
+								/>				
+							</Switch>
 					</ErrorBoundary>
 				</div>
 			</Wouter>
