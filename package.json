@@ -34,7 +34,7 @@
 	},
 	"scripts": {
 		"start": "vite",
-		"build": "tsc && vite build",
+		"build": "tsc && vite build && cp ./build/index.html ./build/404.html",
 		"preview": "vite preview",
 		"lint": "eslint .",
 		"format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
