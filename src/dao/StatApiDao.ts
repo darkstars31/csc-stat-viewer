@@ -1,6 +1,6 @@
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { TwitchStream } from "../models/twitch-types";
-import { Profile } from "../models/profile-types";
+import { Profile, ProfileJson } from "../models/profile-types";
 
 export const fetchTwitchStreamData = (usernames: string[]) =>
 	fetch("https://tonysanti.com/prx/csc-stat-api/twitch/getTwitchUser", {
@@ -37,7 +37,7 @@ export function useFetchTwitchStreamData(usernames: string[]): UseQueryResult<Tw
 	});
 }
 
-export function useFetchPlayerProfile(discordId?: string): UseQueryResult<Profile> {
+export function useFetchPlayerProfile(discordId?: string): UseQueryResult<ProfileJson> {
 	return useQuery(["profile", discordId], () => fetchUserProfile(discordId), {
 		enabled: !!discordId,
 		staleTime: 1000 * 60 * 60,

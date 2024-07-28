@@ -1,6 +1,15 @@
 export type Profile = {
+	id: number;
+	cscId: number;
 	discordId: string;
-	discordUsername: string;
+	discordName: string;
+	name: string;
+	profileJson: string;
+	createdAt: string;
+	updatedAt: string;
+};
+
+export type ProfileJson = {
 	isIGL: boolean;
 	twitchUsername: string;
 	favoriteWeapon: string;
@@ -8,6 +17,4 @@ export type Profile = {
 	favoriteMap: string;
 	youtubeChannel: string;
 	preferredRoles: string;
-	updatedAt: string;
-	createdAt: string;
-};
+}

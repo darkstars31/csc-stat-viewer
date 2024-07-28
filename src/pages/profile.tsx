@@ -10,12 +10,68 @@ import { queryClient } from "../App";
 import Select from "react-select";
 import { selectClassNames } from "../common/utils/select-utils";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { deepEquals } from "../common/utils/object-utils";
+import { Toggle } from "../common/components/toggle";
+import { FaTrashAlt } from "react-icons/fa";
+
+
+export function SocialField( { onChange, profileSettings }: any ) {
+	const [ addSocial, setAddSocial ] = React.useState({ key: "twitter/x", value: "" });
+	const [ socials, setSocials ] = React.useState<Record<string, string>>({});
+
+	const socialOptions = [
+		{ label: "Twitter/X", value: "twitter/x" },
+		{ label: "Twitch", value: "twitch" },
+		{ label: "YouTube", value: "youtube" },
+		{ label: "TikTok", value: "tiktok" },
+		{ label: "Instagram", value: "instagram" },
+	];
+
+	return (
+		<>
+			{
+				Object.entries(socials).map(([key, value], index) => (
+					<div className="flex flex-row">{key} - {value} <span><FaTrashAlt onClick={() =>{ const s = {...socials}; delete s[key]; setSocials(s)}} /></span></div>
+				))
+			}
+			<div className="flex flex-row">
+				<Select
+					isClearable={false}
+					className="basis-1/6 text-xs"
+					unstyled
+					isSearchable={false}
+					classNames={selectClassNames}
+					value={socialOptions.find(
+						option => option.value === addSocial.key,
+					)}
+					options={socialOptions}
+					onChange={option => setAddSocial({  ...addSocial, key: option?.value ?? "" })}
+				/>
+				<Input
+					className="basis-1/2 grow"
+					label="value"
+					placeHolder={`Your ${addSocial.key}`}
+					type="text"
+					onChange={e => setAddSocial({ ...addSocial, value: e.currentTarget.value.trim()})}
+					value={addSocial.value}
+				/>
+				<div className="basis-1/6 flex justify-end">
+					<button onClick={() => setSocials({ ...socials, [addSocial.key]: addSocial.value })} className="flex flex-row bg-blue-500 text-white px-4 py-2 rounded">
+						Add Social
+					</button>
+				</div>
+			</div>
+		</>
+	)
+}
 
 export function Profile() {
 	const { discordUser, players } = useDataContext();
 	const currentPlayer = players.find(p => p.discordId === discordUser?.id);
 	const { data: profile, isFetching } = useFetchPlayerProfile(discordUser?.id);
+	console.info( 'profile', profile );
 	const [isSaving, setIsSaving] = React.useState(false);
+	//const profileFields: ProfileJson = JSON.parse(profile?.profileJson ?? "{}");
 	console.info(profile?.preferredRoles?.split(",")?.map(r => ({ label: r, value: r })));
 	const [profileSettings, setProfileSettings] = React.useState<
 		Partial<{
@@ -46,6 +102,28 @@ export function Profile() {
 		{ label: "M4A4", value: "M4A4" },
 		{ label: "M4A1-S", value: "M4A1-S" },
 		{ label: "Awp", value: "Awp" },
+		{ label: "Sawed-Off", value: "Sawed-Off" },
+		{ label: "Famas", value: "Famas" },
+		{ label: "Glock", value: "Glock" },
+		{ label: "P250", value: "P250" },
+		{ label: "UMP-45", value: "UMP-45" },
+		{ label: "M249", value: "M249" },
+		{ label: "Negev", value: "Negev" },
+		{ label: "Five-Seven", value: "Five-Seven" },
+		{ label: "Galil", value: "Galil" },
+		{ label: "SG-553", value: "SG-553" },
+		{ label: "Tec-9", value: "Tec-9" },
+		{ label: "Cz75-Auto", value: "Cz75-Auto" },
+		{ label: "Desert Eagle", value: "Desert Eagle" },
+		{ label: "MAC-10", value: "MAC-10" },
+		{ label: "MP9", value: "MP9" },
+		{ label: "MP7", value: "MP7" },
+		{ label: "P90", value: "P90" },
+		{ label: "UMP-45", value: "UMP-45" },
+		{ label: "PP-Bizon", value: "PP-Bizon" },
+		{ label: "Nova", value: "Nova" },
+		{ label: "MP5-SD", value: "MP5-SD" },
+		{ label: "MAG-7", value: "MAG-7" },
 	];
 
 	const roleOptions = [
@@ -77,7 +155,7 @@ export function Profile() {
 		e.preventDefault();
 		setIsSaving(true);
 		fetch("https://tonysanti.com/prx/csc-stat-api/profile", {
-			method: "POST",
+			method: "PATCH",
 			body: JSON.stringify(profileSettings),
 			headers: {
 				Authorization: "Bearer " + cookie.get("jwt"),
@@ -156,14 +234,7 @@ export function Profile() {
 									Are you an IGL?
 								</label>
 								<div className="inline-block text-center pt-4">
-									<input
-										className="inline-block w-4 h-4"
-										type="checkbox"
-										value=""
-										onChange={() => onChange("isIGL", !profileSettings?.isIGL)}
-										id="checkboxChecked"
-										checked={profileSettings?.isIGL}
-									/>
+									<Toggle onChange={() => onChange("isIGL", !profileSettings?.isIGL)} checked={profileSettings?.isIGL ?? false} />
 								</div>
 							</div>
 							<div className="basis-1/4 py-2">
@@ -218,39 +289,11 @@ export function Profile() {
 							</div>
 						</div>
 						<div>
-							<div className="basis-1/2 py-2">
-								<Input
-									className="basis-1/2 grow"
-									label="Twitter / X"
-									placeHolder="Twitter / X handle"
-									type="text"
-									onChange={e => onChange("twitchUsername", e.currentTarget.value.trim())}
-									value={profileSettings?.twitchUsername}
-								/>
-							</div>
-							<div className="basis-1/2 py-2">
-								<Input
-									className="basis-1/2 grow"
-									label="Twitch Channel"
-									placeHolder="Twitch Username"
-									type="text"
-									onChange={e => onChange("twitchUsername", e.currentTarget.value.trim())}
-									value={profileSettings?.twitchUsername}
-								/>
-							</div>
-							<div className="basis-1/2 py-2">
-								<Input
-									className="basis-1/2 grow"
-									label="Youtube Channel"
-									placeHolder="Youtube Channel"
-									type="text"
-									onChange={e => onChange("youtubeChannel", e.currentTarget.value.trim())}
-									value={profileSettings?.youtubeChannel}
-								/>
-							</div>
+							<SocialField />
 						</div>
+						{ !deepEquals(profile ?? {}, profileSettings ?? {}) &&
 						<div className="py-2 flex justify-end">
-							<button onClick={onSave} disabled={isSaving} className="flex flex-row">
+							<button onClick={onSave} disabled={isSaving} className="flex flex-row bg-blue-500 text-white px-4 py-2 rounded">
 								{isSaving && (
 									<div className="animate-spin h-[1em] w-[1em] m-1">
 										<AiOutlineLoading3Quarters />
@@ -259,6 +302,7 @@ export function Profile() {
 								{isSaving ? "Saving..." : "Save"}
 							</button>
 						</div>
+						}
 					</form>
 				:	<div className="mx-auto w-full text-xl text-center flex justify-center leading-8 gap-4">
 						<LuConstruction size={36} className="flex-left" />
