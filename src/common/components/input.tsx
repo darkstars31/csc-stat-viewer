@@ -1,7 +1,7 @@
 import * as React from "react";
 
 type Props = {
-	label: string;
+	label?: string;
 	className?: string;
 	type: string;
 	placeHolder: string;
@@ -21,11 +21,12 @@ export function Input({ label, className, type, placeHolder, onChange, value, is
 			<input
 				type={type}
 				id="textInput"
+				maxLength={255}
 				placeholder={placeHolder}
 				onChange={onChange}
 				value={value}
 				disabled={isDisabled}
-				className={"peer h-8 w-full border-none bg-transparent p-0 placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm ".concat(
+				className={"peer h-6 w-full border-none bg-transparent p-0 placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm ".concat(
 					className ?? "",
 				)}
 			/>

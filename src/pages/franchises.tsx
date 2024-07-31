@@ -89,7 +89,7 @@ export function Franchises() {
 							<div className="flex flex-col md:flex-row justify-between overflow-hidden backdrop-opacity-10 backdrop-brightness-90 bg-black/[.85]">
 								<div className="-mr-2 pt-4 h-24 w-24 md:w-36 md:h-36 relative">
 									<img
-										className="absolute h-full w-full"
+										className="h-full w-full"
 										src={franchiseImages[franchise.prefix]}
 										placeholder=""
 										alt=""

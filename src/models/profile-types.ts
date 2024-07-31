@@ -10,11 +10,16 @@ export type Profile = {
 };
 
 export type ProfileJson = {
+	age: string;
+	bio: string;
 	isIGL: boolean;
-	twitchUsername: string;
+	region: string;
+	aspectRatio: string;
+	dpi: number;
+	inGameSensitivity: string;
 	favoriteWeapon: string;
 	favoriteRole: string;
 	favoriteMap: string;
-	youtubeChannel: string;
 	preferredRoles: string;
+	socials: Record<string, string>;
 }

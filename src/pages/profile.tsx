@@ -13,34 +13,44 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { deepEquals } from "../common/utils/object-utils";
 import { Toggle } from "../common/components/toggle";
 import { FaTrashAlt } from "react-icons/fa";
+import { CgAdd } from "react-icons/cg";
+import { ProfileJson } from "../models/profile-types";
 
 
-export function SocialField( { onChange, profileSettings }: any ) {
+export function SocialFields( { onChange, profileSettings }: { onChange: (x: Record<string, string>) => void, profileSettings: Partial<{ socials: Record<string, string>}> | undefined} ) {
 	const [ addSocial, setAddSocial ] = React.useState({ key: "twitter/x", value: "" });
-	const [ socials, setSocials ] = React.useState<Record<string, string>>({});
+	const socials = profileSettings?.socials || {};
 
 	const socialOptions = [
-		{ label: "Twitter/X", value: "twitter/x" },
-		{ label: "Twitch", value: "twitch" },
-		{ label: "YouTube", value: "youtube" },
-		{ label: "TikTok", value: "tiktok" },
-		{ label: "Instagram", value: "instagram" },
-	];
+		{ label: "Twitter/X", value: "twitter/x", url: "https://x.com/" },
+		{ label: "Twitch", value: "twitch", url: "https://twitch.com/" },
+		{ label: "YouTube", value: "youtube", url: "https://youtube.com/" },
+		{ label: "TikTok", value: "tiktok", url: "https://tiktok.com/@" },
+		{ label: "Instagram", value: "instagram", url: "https://instagram.com/" },
+		{ label: "Personal Discord", value: "discord", url: "https://discord.gg/" },
+		{ label: "Metal", value: "metal.tv", url: "https://medal.tv/u/" },
+	].filter( option => !socials[option.value] );
 
 	return (
-		<>
+		<div className="relative content-between h-full">
+			<div className="flex flex-col justify-between text-xs">
 			{
-				Object.entries(socials).map(([key, value], index) => (
-					<div className="flex flex-row">{key} - {value} <span><FaTrashAlt onClick={() =>{ const s = {...socials}; delete s[key]; setSocials(s)}} /></span></div>
+				Object.entries(profileSettings?.socials ?? {}).map(([key, value], index) => (
+					<div className="flex flex-row">
+						<div className="grow">{value}</div>
+						<div className="w-6"><FaTrashAlt onClick={() =>{ const s = {...socials}; delete s[key]; onChange(s)}} /></div>
+					</div>
 				))
 			}
-			<div className="flex flex-row">
+			</div>
+			<div className="absolute bottom flex flex-row text-xs">
 				<Select
 					isClearable={false}
-					className="basis-1/6 text-xs"
+					className="basis-1/6 grow"
 					unstyled
 					isSearchable={false}
 					classNames={selectClassNames}
+					defaultValue={socialOptions.at(0)}
 					value={socialOptions.find(
 						option => option.value === addSocial.key,
 					)}
@@ -48,20 +58,19 @@ export function SocialField( { onChange, profileSettings }: any ) {
 					onChange={option => setAddSocial({  ...addSocial, key: option?.value ?? "" })}
 				/>
 				<Input
-					className="basis-1/2 grow"
-					label="value"
-					placeHolder={`Your ${addSocial.key}`}
+					className="grow"
 					type="text"
+					placeHolder={`Your ${addSocial.key}`}
 					onChange={e => setAddSocial({ ...addSocial, value: e.currentTarget.value.trim()})}
 					value={addSocial.value}
 				/>
-				<div className="basis-1/6 flex justify-end">
-					<button onClick={() => setSocials({ ...socials, [addSocial.key]: addSocial.value })} className="flex flex-row bg-blue-500 text-white px-4 py-2 rounded">
-						Add Social
+				<div className="">
+					<button onClick={(e) => {e.preventDefault(); onChange({ ...socials, [addSocial.key]: socialOptions.find(option => option.value === addSocial.key)?.url + addSocial.value })}} className="flex flex-row m-4 bg-blue-500 text-white p-2 rounded">
+						<CgAdd />
 					</button>
 				</div>
 			</div>
-		</>
+		</div>
 	)
 }
 
@@ -69,30 +78,23 @@ export function Profile() {
 	const { discordUser, players } = useDataContext();
 	const currentPlayer = players.find(p => p.discordId === discordUser?.id);
 	const { data: profile, isFetching } = useFetchPlayerProfile(discordUser?.id);
-	console.info( 'profile', profile );
 	const [isSaving, setIsSaving] = React.useState(false);
-	//const profileFields: ProfileJson = JSON.parse(profile?.profileJson ?? "{}");
-	console.info(profile?.preferredRoles?.split(",")?.map(r => ({ label: r, value: r })));
-	const [profileSettings, setProfileSettings] = React.useState<
-		Partial<{
-			isIGL: boolean;
-			twitchUsername: string;
-			youtubeChannel: string;
-			favoriteWeapon: string;
-			favoriteRole: string;
-			favoriteMap: string;
-		}>
-	>();
+	const [profileSettings, setProfileSettings] = React.useState<Partial<ProfileJson>>();
 
 	React.useEffect(() => {
 		setProfileSettings({
-			isIGL: profile?.isIGL ?? false,
-			twitchUsername: profile?.twitchUsername ?? undefined,
-			youtubeChannel: profile?.youtubeChannel ?? undefined,
-			favoriteWeapon: profile?.favoriteWeapon ?? undefined,
-			favoriteRole: profile?.favoriteRole ?? undefined,
-			favoriteMap: profile?.favoriteMap ?? undefined,
-		});
+		age: profile?.age ?? undefined,
+		bio: profile?.bio ?? undefined,
+		region: profile?.region ?? undefined,
+		isIGL: profile?.isIGL ?? false,
+		aspectRatio: profile?.aspectRatio ?? undefined,
+		dpi: profile?.dpi ?? undefined,
+		inGameSensitivity: profile?.inGameSensitivity ?? undefined,
+		favoriteWeapon: profile?.favoriteWeapon ?? undefined,
+		favoriteRole: profile?.favoriteRole ?? undefined,
+		favoriteMap: profile?.favoriteMap ?? undefined,
+		socials: profile?.socials ?? {},
+	});
 	}, [profile, isFetching]);
 
 	const isDevelopment = process.env.NODE_ENV !== "production";
@@ -151,6 +153,10 @@ export function Profile() {
 		{ label: "de_inferno", value: "de_inferno" },
 	];
 
+	const ageOptions = ["16-20","21-25","23-25","26-29","30-35","36+"].map((age) => ({ label: age, value: age }));
+	const aspectRatioOptions = ["4:3","16:9","16:10","Other???"].map((value) => ({ label: value, value: value }));
+	const regionOptions = ["US-East","US-West","US-Central","EU","Other"].map((value) => ({ label: value, value: value }));
+
 	const onSave = (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsSaving(true);
@@ -166,14 +172,24 @@ export function Profile() {
 			.finally(() => setIsSaving(false));
 	};
 
-	const onChange = (key: string, value: string | number | boolean | unknown) => {
+	const onChange = (key: string, value: string | number | boolean | Record<string,unknown> | unknown) => {
 		setProfileSettings({ ...profileSettings, [key]: value });
 	};
+
+	if ( !isDevelopment ) {
+		return (
+			<div className="mx-auto w-full text-xl text-center flex justify-center leading-8 gap-4">
+				<LuConstruction size={36} className="flex-left" />
+				Under Construction
+			</div>
+		)
+	}
 
 	return (
 		<Container>
 			<div className="mx-auto max-w-lg text-center">
-				<h2 className="text-3xl font-bold sm:text-4xl">{currentPlayer?.name} Profile</h2>
+				<h2 className="text-3xl font-bold sm:text-4xl">Your Profile</h2>
+				<h3 className="text-xl font-bold sm:text-2xl text-gray-600">Beta</h3>
 			</div>
 			<p className="mt-4 text-gray-300">Settings & Configuration</p>
 			<Containers.StandardBackgroundPage>
@@ -221,41 +237,22 @@ export function Profile() {
 			{/* <Containers.StandardBackgroundPage classNames={`${isFetching || isSaving || true ? "" : "hidden"} bg-opacity-75 fixed w-auto`}>
                 Loading
             </Containers.StandardBackgroundPage> */}
-			<Containers.StandardBackgroundPage>
-				<h1 className="text-xl mb-4">Settings</h1>
-				{isDevelopment ?
-					<form onSubmit={onSave}>
-						<div className="flex flex-wrap gap-4">
-							<div className="basis-1/4 py-2">
-								<label
-									className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer"
-									htmlFor="checkboxChecked"
-								>
-									Are you an IGL?
-								</label>
-								<div className="inline-block text-center pt-4">
-									<Toggle onChange={() => onChange("isIGL", !profileSettings?.isIGL)} checked={profileSettings?.isIGL ?? false} />
-								</div>
+			<form onSubmit={onSave}>
+				<div className="flex flex-wrap gap-4">
+					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
+						<h2 className="text-xl font-bold uppercase text-center mb-2">Roles</h2>
+						<div className="py-2">
+							<label
+								className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer"
+								htmlFor="checkboxChecked"
+							>
+								Are you an IGL?
+							</label>
+							<div className="inline-block text-center pt-4">
+								<Toggle onChange={() => onChange("isIGL", !profileSettings?.isIGL)} checked={profileSettings?.isIGL ?? false} />
 							</div>
-							<div className="basis-1/4 py-2">
-								<label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
-									Favorite Weapon
-								</label>
-								<Select
-									placeholder="Not Specified"
-									isClearable={true}
-									className="grow text-xs"
-									unstyled
-									isSearchable={false}
-									classNames={selectClassNames}
-									value={weaponOptions.find(
-										option => option.value === profileSettings?.favoriteWeapon,
-									)}
-									options={weaponOptions}
-									onChange={option => onChange("favoriteWeapon", option?.value)}
-								/>
-							</div>
-							<div className="basis-1/4 py-2">
+						</div>
+						<div className="basis-1/4 py-2">
 								<label className="pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
 									Preferred Role
 								</label>
@@ -271,9 +268,54 @@ export function Profile() {
 									onChange={option => onChange("favoriteRole", option?.value)}
 								/>
 							</div>
-							<div className="basis-1/4 my-2 py-2">
+					</Containers.StandardBackgroundPage>
+					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
+						<h2 className="text-xl font-bold uppercase text-center mb-2">Favorites</h2>
+						<div className="py-2">
+							<label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
+								Weapon
+							</label>
+							<Select
+								placeholder="Not Specified"
+								isClearable={true}
+								className="grow text-xs"
+								unstyled
+								isSearchable={false}
+								classNames={selectClassNames}
+								value={weaponOptions.find(
+									option => option.value === profileSettings?.favoriteWeapon,
+								)}
+								options={weaponOptions}
+								onChange={option => onChange("favoriteWeapon", option?.value)}
+							/>
+						</div>
+						<div className="my-2 py-2">
+							<label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
+								Map
+							</label>
+							<Select
+								placeholder="Not Specified"
+								isClearable={true}
+								className="grow text-xs"
+								unstyled
+								isSearchable={false}
+								classNames={selectClassNames}
+								value={mapOptions.find(option => option.value === profileSettings?.favoriteMap)}
+								options={mapOptions}
+								onChange={option => onChange("favoriteMap", option?.value)}
+							/>
+						</div>
+					</Containers.StandardBackgroundPage>
+					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
+						<h2 className="text-xl font-bold uppercase text-center mb-2">Socials</h2>
+						<SocialFields profileSettings={profileSettings} onChange={(socials: Record<string,string>) => onChange("socials", socials)} />
+					</Containers.StandardBackgroundPage>
+					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
+						<h2 className="text-xl font-bold uppercase text-center mb-2">About me</h2>
+						<div className="flex flex-row">
+							<div className="basis-1/3 m-2">
 								<label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
-									Favorite Map
+									Approx. Age
 								</label>
 								<Select
 									placeholder="Not Specified"
@@ -282,34 +324,82 @@ export function Profile() {
 									unstyled
 									isSearchable={false}
 									classNames={selectClassNames}
-									value={mapOptions.find(option => option.value === profileSettings?.favoriteMap)}
-									options={mapOptions}
-									onChange={option => onChange("favoriteMap", option?.value)}
+									value={ageOptions.find(option => option.value === profileSettings?.age)}
+									options={ageOptions}
+									onChange={option => onChange("age", option?.value)}
+								/>
+							</div>
+							<div className="basis-1/3 m-2">
+								<label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
+									Region
+								</label>
+								<Select
+									placeholder="Not Specified"
+									isClearable={true}
+									className="grow text-xs"
+									unstyled
+									isSearchable={false}
+									classNames={selectClassNames}
+									value={regionOptions.find(option => option.value === profileSettings?.region)}
+									options={regionOptions}
+									onChange={option => onChange("region", option?.value)}
 								/>
 							</div>
 						</div>
-						<div>
-							<SocialField />
+					</Containers.StandardBackgroundPage>
+					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
+						<h2 className="text-xl font-bold uppercase text-center mb-2">In-Game</h2>
+						<div className="flex flex-row">
+							<div className="basis-1/3 m-2">
+								Aspect Ratio
+								<Select
+									placeholder="Not Specified"
+									isClearable={true}
+									className="grow text-xs"
+									unstyled
+									isSearchable={false}
+									classNames={selectClassNames}
+									value={aspectRatioOptions.find(option => option.value === profileSettings?.aspectRatio)}
+									options={aspectRatioOptions}
+									onChange={option => onChange("aspectRatio", option?.value)}
+								/>
+							</div>
+							<div className="basis-1/3 m-2">
+								<br />
+								<Input
+									label="DPI"
+									type="text"
+									placeHolder="Not Specified"
+									onChange={(e) => onChange("dpi", e.currentTarget.value)}
+									value={profileSettings?.dpi}
+								/>
+							</div>
+							<div className="basis-1/3 m-2">
+								<br />
+								<Input
+									label="Sens"
+									type="text"
+									placeHolder="Not Specified"
+									onChange={(e) => onChange("dpi", e.currentTarget.value)}
+									value={profileSettings?.inGameSensitivity}
+								/>
+							</div>							
 						</div>
-						{ !deepEquals(profile ?? {}, profileSettings ?? {}) &&
-						<div className="py-2 flex justify-end">
-							<button onClick={onSave} disabled={isSaving} className="flex flex-row bg-blue-500 text-white px-4 py-2 rounded">
-								{isSaving && (
-									<div className="animate-spin h-[1em] w-[1em] m-1">
-										<AiOutlineLoading3Quarters />
-									</div>
-								)}
-								{isSaving ? "Saving..." : "Save"}
-							</button>
-						</div>
-						}
-					</form>
-				:	<div className="mx-auto w-full text-xl text-center flex justify-center leading-8 gap-4">
-						<LuConstruction size={36} className="flex-left" />
-						Under Construction
-					</div>
+					</Containers.StandardBackgroundPage>
+				</div>
+				{ !deepEquals(profile ?? {}, profileSettings ?? {}) &&
+				<div className="py-2 flex justify-end">
+					<button onClick={onSave} disabled={isSaving} className="flex flex-row bg-blue-500 text-white px-4 py-2 rounded">
+						{isSaving && (
+							<div className="animate-spin h-[1em] w-[1em] m-1">
+								<AiOutlineLoading3Quarters />
+							</div>
+						)}
+						{isSaving ? "Saving..." : "Save"}
+					</button>
+				</div>
 				}
-			</Containers.StandardBackgroundPage>
+			</form>
 		</Container>
 	);
 }
