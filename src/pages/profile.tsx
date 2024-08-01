@@ -23,6 +23,7 @@ export function SocialFields( { onChange, profileSettings }: { onChange: (x: Rec
 
 	const socialOptions = [
 		{ label: "Twitter/X", value: "twitter/x", url: "https://x.com/" },
+		{ label: "Reddit", value: "reddit", url: "https://reddit.com/u/" },
 		{ label: "Twitch", value: "twitch", url: "https://twitch.com/" },
 		{ label: "YouTube", value: "youtube", url: "https://youtube.com/" },
 		{ label: "TikTok", value: "tiktok", url: "https://tiktok.com/@" },
@@ -60,7 +61,7 @@ export function SocialFields( { onChange, profileSettings }: { onChange: (x: Rec
 				<Input
 					className="grow"
 					type="text"
-					placeHolder={`Your ${addSocial.key}`}
+					placeHolder={`Just your social id`}
 					onChange={e => setAddSocial({ ...addSocial, value: e.currentTarget.value.trim()})}
 					value={addSocial.value}
 				/>
@@ -97,7 +98,7 @@ export function Profile() {
 	});
 	}, [profile, isFetching]);
 
-	const isDevelopment = process.env.NODE_ENV !== "production";
+	const isProd = process.env.NODE_ENV === "production";
 
 	const weaponOptions = [
 		{ label: "AK-47", value: "AK-47" },
@@ -176,7 +177,7 @@ export function Profile() {
 		setProfileSettings({ ...profileSettings, [key]: value });
 	};
 
-	if ( !isDevelopment ) {
+	if ( !isProd || discordUser?.id !== "193972970568417280" ) {
 		return (
 			<div className="mx-auto w-full text-xl text-center flex justify-center leading-8 gap-4">
 				<LuConstruction size={36} className="flex-left" />
