@@ -498,7 +498,7 @@ export function Servers() {
 									className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 									placeholder="If blank password will be random"
 									value={requestState.password as string}
-									onChange={e => handleRequestStateUpdate({ password: e })}
+									onChange={e => handleRequestStateUpdate({ password: e.currentTarget.value })}
 								/>
 							</Field>
 						</div>
