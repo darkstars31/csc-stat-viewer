@@ -21,13 +21,14 @@ export type DataConfiguration = {
 	spreadsheetUrl: string;
 };
 
-export const betaUsers = {
-	Camps: "76561197974933853",
-	Djtl: "76561197998527398",
-	Toast: "76561198107156820",
-};
-
 export const dataConfiguration = [
+	{
+		season: 15,
+		seasonStartDate: "2024-08-17",
+		seasonEndDate: "2024-11-30",
+		name: "Season 15 (Combines)",
+		spreadsheetUrl: googleSheetsUrl("18qgpc4NdPNg4I5Q9lmzaEgUYyxHtq25JKZfTxiQg_lc", 334898684),
+	},
 	{
 		season: 14,
 		seasonStartDate: "2024-05-30",

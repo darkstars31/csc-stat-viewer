@@ -73,32 +73,32 @@ const useDataContextProvider = () => {
 	const { data: cscStatsRecruit = [], isLoading: isLoadingCscStatsRecruit } = useCscStatsGraph(
 		"Recruit",
 		dataConfig?.season,
-		"Regulation",
+		"Combine",
 	);
 	const { data: cscStatsProspect = [], isLoading: isLoadingCscStatsProspect } = useCscStatsGraph(
 		"Prospect",
 		dataConfig?.season,
-		"Regulation",
+		"Combine",
 	);
 	const { data: cscStatsContender = [], isLoading: isLoadingCscStatsContender } = useCscStatsGraph(
 		"Contender",
 		dataConfig?.season,
-		"Regulation",
+		"Combine",
 	);
 	const { data: cscStatsChallenger = [], isLoading: isLoadingCscStatsChallenger } = useCscStatsGraph(
 		"Challenger",
 		dataConfig?.season,
-		"Regulation",
+		"Combine",
 	);
 	const { data: cscStatsElite = [], isLoading: isLoadingCscStatsElite } = useCscStatsGraph(
 		"Elite",
 		dataConfig?.season,
-		"Regulation",
+		"Combine",
 	);
 	const { data: cscStatsPremier = [], isLoading: isLoadingCscStatsPremier } = useCscStatsGraph(
 		"Premier",
 		dataConfig?.season,
-		"Regulation",
+		"Combine",
 	);
 
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
