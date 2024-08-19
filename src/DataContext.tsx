@@ -13,10 +13,11 @@ import {
 import { DiscordUser } from "./models/discord-users";
 import { useCscSeasonAndTiersGraph } from "./dao/cscSeasonAndTiersDao";
 import { ExtendedStats } from "./models/extended-stats";
+import { useAnalytikillExtendedStats } from "./dao/analytikill";
 
 const useDataContextProvider = () => {
 	const [discordUser, setDiscordUser] = React.useState<DiscordUser | null>(null);
-	const [extendStats, setExtendStats] = React.useState<ExtendedStats | null>(null);
+	const { data: extendedPlayerStats = undefined, isLoading: isLoadingExtendedStats } = useAnalytikillExtendedStats();
 	const [selectedDataOption, setSelectedDataOption] = React.useState<SingleValue<{ label: string; value: string }>>({
 		label: dataConfiguration[0].name,
 		value: dataConfiguration[0].name,
@@ -103,16 +104,6 @@ const useDataContextProvider = () => {
 
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
 
-	React.useEffect(() => {
-		const fetchData = async () => {
-			const extendedStatsResult = await fetch(`./extendedStats.json?t=${new Date().getTime()}`)
-				.then(response => response.json())
-				.catch(error => console.error(error));
-			setExtendStats(extendedStatsResult as unknown as ExtendedStats);
-		};
-		fetchData();
-	}, []);
-
 	const cscPlayers = [
 		...cscSignedPlayers,
 		...cscFreeAgentsPlayers,
@@ -183,7 +174,7 @@ const useDataContextProvider = () => {
 				:	determinePlayerRole(statsByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!);
 			const stats = statsByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!;
 
-			const extendedStats = extendStats?.extended.find(
+			const extendedStats = extendedPlayerStats?.find(
 				(stats: { name: string }) => stats.name === cscPlayer?.name,
 			) as ExtendedStats;
 

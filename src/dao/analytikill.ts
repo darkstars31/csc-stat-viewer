@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { MatchHistory, MatchHistoryPlayerStat } from "../models/match-history-types";
+import { ExtendedStats } from "../models/extended-stats";
 
 const getPlayerMatchHistoryData = async (steamId?: string) =>
 	await fetch(`https://tonysanti.com/prx/csc-stat-api/csc/player-match-history?steamId=${steamId}`, {
@@ -21,6 +22,16 @@ const getIndividualMatchHistory = async (matchId?: string) =>
 		return response.json();
 	});
 
+const getExtendedStats = async (matchId?: string) =>
+	await fetch(`https://tonysanti.com/prx/csc-stat-api/analytikill/extendedStats`, {
+		method: "GET",
+		headers: {
+			"content-type": "application/json",
+		},
+	}).then(async response => {
+		return response.json();
+});
+
 export function useAnalytikillPlayerMatchHistory(steamId?: string): UseQueryResult<MatchHistoryPlayerStat[]> {
 	return useQuery(["analytikillPlayerMatchHistory", steamId], () => getPlayerMatchHistoryData(steamId), {
 		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 24 = 24 hour
@@ -33,6 +44,13 @@ export function useAnalytikillIndividualMatchHistory(matchId?: string): UseQuery
 	return useQuery(["analytikillIndividualMatchHistory", matchId], () => getIndividualMatchHistory(matchId), {
 		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 24 = 24 hour
 		enabled: Boolean(matchId),
+		onError: () => {},
+	});
+}
+
+export function useAnalytikillExtendedStats(): UseQueryResult<ExtendedStats> {
+	return useQuery(["analytikillExtendedStats"], () => getExtendedStats(), {
+		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 24 = 24 hour
 		onError: () => {},
 	});
 }
