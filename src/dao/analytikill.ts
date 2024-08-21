@@ -22,7 +22,7 @@ const getIndividualMatchHistory = async (matchId?: string) =>
 		return response.json();
 	});
 
-const getExtendedStats = async (matchId?: string) =>
+const getExtendedStats = async () =>
 	await fetch(`https://tonysanti.com/prx/csc-stat-api/analytikill/extendedStats`, {
 		method: "GET",
 		headers: {
@@ -31,6 +31,17 @@ const getExtendedStats = async (matchId?: string) =>
 	}).then(async response => {
 		return response.json();
 });
+
+const getExtendedMatchStats = async (matchId?: string) =>
+	await fetch(`https://tonysanti.com/prx/csc-stat-api/analytikill/extendedMatchStats?matchId=${matchId}`, {
+		method: "GET",
+		headers: {
+			"content-type": "application/json",
+		},
+	}).then(async response => {
+		return response.json();
+});
+
 
 export function useAnalytikillPlayerMatchHistory(steamId?: string): UseQueryResult<MatchHistoryPlayerStat[]> {
 	return useQuery(["analytikillPlayerMatchHistory", steamId], () => getPlayerMatchHistoryData(steamId), {
@@ -50,7 +61,16 @@ export function useAnalytikillIndividualMatchHistory(matchId?: string): UseQuery
 
 export function useAnalytikillExtendedStats(): UseQueryResult<ExtendedStats> {
 	return useQuery(["analytikillExtendedStats"], () => getExtendedStats(), {
-		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 24 = 24 hour
+		staleTime: 1000 * 60 * 60, // 1 second * 60 * 60 * 24 = 24 hour
 		onError: () => {},
 	});
 }
+
+export function useAnalytikillExtendedMatchStats( matchId: string, shouldFetch = false): UseQueryResult<Record<string,any>> {
+	return useQuery(["analytikillExtendedMatchStats", matchId], () => getExtendedMatchStats( matchId ), {
+		staleTime: 1000 * 60 * 60 * 24 * 7, // 7 days
+		enabled: shouldFetch,
+		onError: () => {},
+	});
+}
+

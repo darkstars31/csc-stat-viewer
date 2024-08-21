@@ -12,6 +12,9 @@ import * as Containers from "../../common/components/containers";
 import { Exandable } from "../../common/components/containers/Expandable";
 import { Scoreboard } from "../team/matches";
 import { calculateClutchPoints } from "../../common/utils/match-utils";
+import { useAnalytikillExtendedMatchStats } from "../../dao/analytikill";
+import { IoSkull } from "react-icons/io5";
+import { cs2icons } from "../../common/images/cs2icons";
 
 type Props = {
 	player: Player;
@@ -125,8 +128,50 @@ export function MatchHistory({ match }: { match: Match }) {
 	);
 }
 
+function MatchExtended({ extendedData } : { extendedData?: Record<string, any> }) {
+	const killsByRound = extendedData?.data.kills.reduce(( acc, kill) => {
+		if (!acc[kill.roundNumber]) acc[kill.roundNumber] = [];
+		acc[kill.roundNumber].push(kill);
+		return acc;
+	}, []);
+	const clutches = extendedData?.data.clutches.filter((clutch: any) => (clutch.opponentCount >= 1 && clutch.hasWon));
+	console.info( clutches)
+	return (
+		<div>
+			<div className="flex flex-row flex-wrap gap-4">
+				{ killsByRound.map((kills: any, index: number) => 
+					<div>
+						<div className="font-bold text-center">Round {index}</div>
+						{ kills.map((kill: any) =>
+							<div className={`flex flex-row text-center border-1 rounded text-xs`}>
+								<div className={`${kill.killerSide === 2 ? "text-red-400" : "text-blue-400"}`}>{kill.killerName}</div>
+								<div className="ml-2 w-10 h-6"><img src={cs2icons[kill.weaponName]} alt={kill.weaponName} /></div>
+								<div className={`${kill.victimSide === 2 ? "text-red-400" : "text-blue-400"}`}>{kill.victimName}</div>
+							</div>
+							) 
+						}
+					</div>
+				)}			
+			</div>
+			<div className="flex flex-row flex-wrap gap-4">
+				<div className="font-bold uppercase basis-full text-center">Clutches</div>
+				{ clutches.map((clutch: any) => 
+					<div className={`flex flex-col text-center w-24 border-2 ${clutch.hasWon ? "border-green-500 bg-green-800" : "border-red-500 bg-red-800"} rounded`}>
+						<div>1v{clutch.opponentCount}</div>
+						<div className="text-xs">{clutch.clutcherName}</div>
+						<div className="flex flex-row gap-1 m-auto align-middle "><IoSkull size={"1.1em"} className="mt-1" /> {clutch.clutcherKillCount}</div>
+						<div className="text-xs font-bold">Round {clutch.roundNumber}</div>
+						<div className={`text-xs font-bold border-t-2 ${clutch.hasWon ? "text-green-500 border-green-500" : "text-red-500 border-red-500"}`}>{clutch.hasWon ? "WON" : "LOST"}</div>
+					</div>) 
+				}
+			</div>
+		</div>
+	);
+}
+
 function MatchRow({ player, match }: { player: Player; match: Match }) {
 	const [isExpanded, setIsExpanded] = React.useState(false);
+	const { data: extendedMatchData, isLoading: isLoadingextendedMatchData } = useAnalytikillExtendedMatchStats(String(match.matchId).replace("combines-",""), isExpanded);
 	const matchType = match.matchType ?? "broke";
 	const p = match.matchStats.find(ms => ms.name === player.name)!;
 	const matchDateShort = new Date(match.createdAt ?? 0).toLocaleDateString("en-US", {
@@ -233,6 +278,7 @@ function MatchRow({ player, match }: { player: Player; match: Match }) {
 				</div>
 			</div>
 			{isExpanded && <MatchHistory match={match} />}
+			{isExpanded && !isLoadingextendedMatchData && <MatchExtended extendedData={extendedMatchData} />}
 		</div>
 	);
 }

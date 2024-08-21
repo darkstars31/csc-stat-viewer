@@ -13,6 +13,7 @@ import { IoMdTimer } from "react-icons/io";
 import { IoCut, IoSkullSharp } from "react-icons/io5";
 import { GiTimeDynamite } from "react-icons/gi";
 import _ from "lodash";
+import { useAnalytikillExtendedMatchStats } from "../../dao/analytikill";
 
 type Props = {
 	match: Match;
@@ -70,6 +71,7 @@ export const Scoreboard = ({ matchId }: { matchId: string }) => {
 	const fullMatchRounds = 24;
 	const roundsPerOvertime = 6;
 	const matches = useFetchMultipleMatchInfoGraph([matchId]);
+	//const { data: extendedMatchData, isLoading: isLoadingExtendedMatchData } = useAnalytikillExtendedMatchStats( matchId );
 	const match = matches.find(m => m.data?.at(0)?.matchId === matchId)?.data?.at(0);
 	const rounds = match?.rounds.slice(0);
 	const firstHalf = rounds?.slice(0, fullMatchRounds / 2);
