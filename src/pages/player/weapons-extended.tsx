@@ -19,11 +19,11 @@ export function PlayerWeaponsExtended({ extendedStats }: { extendedStats: Extend
 
 	return (
 		<div>
-			<div className="flex flex-row">
-				Kills by Weapon Type
+			<div>Kills by Weapon Type</div>
+			<div className="flex flex-row flex-wrap">
 				{weaponKillSubTypes.map(([key, value]: [string, number]) => (
 					<div className="m-2 text-center" key={key}>
-						<div className="m-1 p-2 w-16 h-12">
+						<div className="m-1 p-1 w-16 h-12">
 							<ToolTip type="generic" message={key}>
 								<img src={cs2icons[subTypeImages[key as keyof typeof subTypeImages]]} alt={key} />
 							</ToolTip>
@@ -32,11 +32,11 @@ export function PlayerWeaponsExtended({ extendedStats }: { extendedStats: Extend
 					</div>
 				))}
 			</div>
+			<div>Kills by Weapon</div>
 			<div className="flex flex-row flex-wrap">
-				Kills by Weapon
 				{weaponKills.map(([key, value]: [string, number]) => (
 					<div className="m-2 text-center" key={key}>
-						<div className="m-1 p-2 w-16 h-12 -rotate-45">
+						<div className="m-1 p-1 w-16 h-12 -rotate-45">
 							<ToolTip type="generic" message={key}>
 								<img src={cs2icons[key]} alt={key} />
 							</ToolTip>

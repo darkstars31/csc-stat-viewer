@@ -290,12 +290,18 @@ export function Player() {
 								))}
 							</div>
 						</Exandable>
-						<Exandable title="Weapons">
-							<PlayerWeaponsExtended extendedStats={currentPlayer?.extendedStats} />
-						</Exandable>
-						<Exandable title="HITBOXES">
-							<Hitbox hitboxTags={currentPlayer?.extendedStats.hitboxTags} />
-						</Exandable>
+						<div className="flex flex-row gap-4">
+							<div className="w-1/2">
+								<Exandable title="Weapons">
+									<PlayerWeaponsExtended extendedStats={currentPlayer?.extendedStats} />
+								</Exandable>
+							</div>
+							<div className="w-1/2">
+								<Exandable title="HITBOXES">
+									<Hitbox hitboxTags={currentPlayer?.extendedStats.hitboxTags} />
+								</Exandable>
+							</div>
+						</div>
 					</>
 				)}
 				<br />

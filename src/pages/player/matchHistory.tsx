@@ -13,8 +13,10 @@ import { Exandable } from "../../common/components/containers/Expandable";
 import { Scoreboard } from "../team/matches";
 import { calculateClutchPoints } from "../../common/utils/match-utils";
 import { useAnalytikillExtendedMatchStats } from "../../dao/analytikill";
-import { IoSkull } from "react-icons/io5";
 import { cs2icons, cs2killfeedIcons } from "../../common/images/cs2icons";
+import { ExtendedMatchHistoryClutches } from "./extendedMatchHistoryClutches";
+import { ExtendedMatchHistoryTeamEcon } from "./extendedMatchHistoryTeamEcon";
+import { ExtendedMatchHistoryKillFeed } from "./extendedMatchHistoryKillFeed";
 
 type Props = {
 	player: Player;
@@ -130,19 +132,13 @@ export function MatchHistory({ match }: { match: Match }) {
 
 function MatchExtended({ extendedData } : { extendedData?: Record<string, any> }) {
 	const [selectedPage, setSelectedPage] = React.useState("killfeed");
-	const killsByRound = extendedData?.data.kills.reduce(( acc: any[], kill: Record<string,number>) => {
-		if (!acc[kill.roundNumber]) acc[kill.roundNumber] = [];
-		acc[kill.roundNumber].push(kill);
-		return acc;
-	}, []);
-	const clutches = extendedData?.data.clutches.filter((clutch: any) => (clutch.opponentCount >= 1 && clutch.hasWon));
 	const tierButtonClass =
 	"px-6 pb-2 pt-2.5 text-sm font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-blue-400 focus:bg-blue-400 focus:outline-none focus:ring-0 active:bg-blue-300";
-
 
 	const pages = [
 		{ name: "KillFeed", color: "yellow" },
 		{ name: "Clutches", color: "green" },
+		{ name: "Team Econ", color: "red" },
 	]
 
 	return (
@@ -159,40 +155,9 @@ function MatchExtended({ extendedData } : { extendedData?: Record<string, any> }
 					</button>
 				))}
 			</div>
-			{ selectedPage === "killfeed" && <div className="flex flex-row pb-2 gap-6 overflow-x-scroll">
-				{ killsByRound.map((kills: any, index: number) => 
-					<div>
-						<div className="font-bold text-center border-b border-yellow-400 mb-2">Round {index}</div>
-						{ kills.map((kill: any) =>
-							<div className={`flex flex-row text-center border-1 rounded text-xs justify-around w-60`}>
-								<div className={`truncate max-w-[7em] ${kill.killerSide === 2 ? "text-red-400" : "text-blue-400"}`}>{kill.killerName}</div>
-								<div className="flex flex-row">
-									{ kill.is_killer_blinded && <img className="ml-1 w-4 h-4" src={cs2killfeedIcons["blindKill"]} /> }
-									{ kill.is_killer_airborne && <img className="ml-1 w-4 h-4" src={cs2killfeedIcons["airborne"]} /> }
-									<img className="ml-1 max-w-[5em] h-5" src={cs2icons[kill.weaponName]} alt={kill.weaponName} />
-									{ kill.isNoScope && <img className="ml-1 w-5 h-5" src={cs2killfeedIcons["noScope"]} /> }
-									{ kill.isThroughSmoke && <img className="ml-1 w-5 h-5" src={cs2killfeedIcons["smokeKill"]} /> }
-									{ kill.penetradedObjects > 0 && <img className="ml-1 w-4 h-4" src={cs2killfeedIcons["wallBang"]} /> }
-									{ kill.isHeadshot && <img className="ml-1 w-5 h-5" src={cs2killfeedIcons["headshot"]} /> }
-								</div>
-								<div className={`truncate max-w-[7em] ${kill.victimSide === 2 ? "text-red-400" : "text-blue-400"}`}>{kill.victimName}</div>
-							</div>
-							) 
-						}
-					</div>
-				)}			
-			</div> }
-			{ selectedPage === "clutches" && <div className="flex flex-row flex-wrap gap-4 justify-center">
-				{ clutches.map((clutch: any) => 
-					<div className={`flex flex-col text-center w-24 border-2 ${clutch.hasWon ? "border-green-500 bg-green-800" : "border-red-500 bg-red-800"} rounded`}>
-						<div>1v{clutch.opponentCount}</div>
-						<div className="text-xs">{clutch.clutcherName}</div>
-						<div className="flex flex-row gap-1 m-auto align-middle "><IoSkull size={"1.1em"} className="mt-1" /> {clutch.clutcherKillCount}</div>
-						<div className="text-xs font-bold">Round {clutch.roundNumber}</div>
-						<div className={`text-xs font-bold border-t-2 ${clutch.hasWon ? "text-green-500 border-green-500" : "text-red-500 border-red-500"}`}>{clutch.hasWon ? "WON" : "LOST"} {clutch.opponentCount > clutch.clutcherKillCount && clutch.side === 3 ? "Ninja" : ""}</div>
-					</div>) 
-				}
-			</div>}
+			{ selectedPage === "killfeed" && <ExtendedMatchHistoryKillFeed extendedMatchData={extendedData} /> }
+			{ selectedPage === "clutches" && <ExtendedMatchHistoryClutches extendedMatchData={extendedData} /> }
+			{ selectedPage === "team econ" && <ExtendedMatchHistoryTeamEcon extendedMatchData={extendedData} /> }
 		</div>
 	);
 }
