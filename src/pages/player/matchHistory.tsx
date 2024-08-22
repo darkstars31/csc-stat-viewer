@@ -14,7 +14,7 @@ import { Scoreboard } from "../team/matches";
 import { calculateClutchPoints } from "../../common/utils/match-utils";
 import { useAnalytikillExtendedMatchStats } from "../../dao/analytikill";
 import { IoSkull } from "react-icons/io5";
-import { cs2icons } from "../../common/images/cs2icons";
+import { cs2icons, cs2killfeedIcons } from "../../common/images/cs2icons";
 
 type Props = {
 	player: Player;
@@ -129,42 +129,70 @@ export function MatchHistory({ match }: { match: Match }) {
 }
 
 function MatchExtended({ extendedData } : { extendedData?: Record<string, any> }) {
-	const killsByRound = extendedData?.data.kills.reduce(( acc, kill) => {
+	const [selectedPage, setSelectedPage] = React.useState("killfeed");
+	const killsByRound = extendedData?.data.kills.reduce(( acc: any[], kill: Record<string,number>) => {
 		if (!acc[kill.roundNumber]) acc[kill.roundNumber] = [];
 		acc[kill.roundNumber].push(kill);
 		return acc;
 	}, []);
 	const clutches = extendedData?.data.clutches.filter((clutch: any) => (clutch.opponentCount >= 1 && clutch.hasWon));
-	console.info( clutches)
+	const tierButtonClass =
+	"px-6 pb-2 pt-2.5 text-sm font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-blue-400 focus:bg-blue-400 focus:outline-none focus:ring-0 active:bg-blue-300";
+
+
+	const pages = [
+		{ name: "KillFeed", color: "yellow" },
+		{ name: "Clutches", color: "green" },
+	]
+
 	return (
-		<div>
-			<div className="flex flex-row flex-wrap gap-4">
+		<div className="mb-4">
+			<div className="justify-center flex flex-wrap rounded-md mb-4" role="group">
+				{pages.map(page => (
+					<button
+						key={page.name}
+						type="button"
+						onClick={() => {setSelectedPage(page.name.toLowerCase());}}
+						className={`rounded-md ${page.name.toLowerCase() === selectedPage.toLowerCase() ? "bg-blue-500" : "bg-slate-700"} text-${page.color}-400 ${tierButtonClass} shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-blue-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-blue-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]`}
+					>
+						{page.name}
+					</button>
+				))}
+			</div>
+			{ selectedPage === "killfeed" && <div className="flex flex-row pb-2 gap-6 overflow-x-scroll">
 				{ killsByRound.map((kills: any, index: number) => 
 					<div>
-						<div className="font-bold text-center">Round {index}</div>
+						<div className="font-bold text-center border-b border-yellow-400 mb-2">Round {index}</div>
 						{ kills.map((kill: any) =>
-							<div className={`flex flex-row text-center border-1 rounded text-xs`}>
-								<div className={`${kill.killerSide === 2 ? "text-red-400" : "text-blue-400"}`}>{kill.killerName}</div>
-								<div className="ml-2 w-10 h-6"><img src={cs2icons[kill.weaponName]} alt={kill.weaponName} /></div>
-								<div className={`${kill.victimSide === 2 ? "text-red-400" : "text-blue-400"}`}>{kill.victimName}</div>
+							<div className={`flex flex-row text-center border-1 rounded text-xs justify-around w-60`}>
+								<div className={`truncate max-w-[7em] ${kill.killerSide === 2 ? "text-red-400" : "text-blue-400"}`}>{kill.killerName}</div>
+								<div className="flex flex-row">
+									{ kill.is_killer_blinded && <img className="ml-1 w-4 h-4" src={cs2killfeedIcons["blindKill"]} /> }
+									{ kill.is_killer_airborne && <img className="ml-1 w-4 h-4" src={cs2killfeedIcons["airborne"]} /> }
+									<img className="ml-1 max-w-[5em] h-5" src={cs2icons[kill.weaponName]} alt={kill.weaponName} />
+									{ kill.isNoScope && <img className="ml-1 w-5 h-5" src={cs2killfeedIcons["noScope"]} /> }
+									{ kill.isThroughSmoke && <img className="ml-1 w-5 h-5" src={cs2killfeedIcons["smokeKill"]} /> }
+									{ kill.penetradedObjects > 0 && <img className="ml-1 w-4 h-4" src={cs2killfeedIcons["wallBang"]} /> }
+									{ kill.isHeadshot && <img className="ml-1 w-5 h-5" src={cs2killfeedIcons["headshot"]} /> }
+								</div>
+								<div className={`truncate max-w-[7em] ${kill.victimSide === 2 ? "text-red-400" : "text-blue-400"}`}>{kill.victimName}</div>
 							</div>
 							) 
 						}
 					</div>
 				)}			
-			</div>
-			<div className="flex flex-row flex-wrap gap-4">
-				<div className="font-bold uppercase basis-full text-center">Clutches</div>
+			</div> }
+			{ selectedPage === "clutches" && <div className="flex flex-row flex-wrap gap-4 justify-center">
 				{ clutches.map((clutch: any) => 
 					<div className={`flex flex-col text-center w-24 border-2 ${clutch.hasWon ? "border-green-500 bg-green-800" : "border-red-500 bg-red-800"} rounded`}>
 						<div>1v{clutch.opponentCount}</div>
 						<div className="text-xs">{clutch.clutcherName}</div>
 						<div className="flex flex-row gap-1 m-auto align-middle "><IoSkull size={"1.1em"} className="mt-1" /> {clutch.clutcherKillCount}</div>
 						<div className="text-xs font-bold">Round {clutch.roundNumber}</div>
-						<div className={`text-xs font-bold border-t-2 ${clutch.hasWon ? "text-green-500 border-green-500" : "text-red-500 border-red-500"}`}>{clutch.hasWon ? "WON" : "LOST"}</div>
+						<div className={`text-xs font-bold border-t-2 ${clutch.hasWon ? "text-green-500 border-green-500" : "text-red-500 border-red-500"}`}>{clutch.hasWon ? "WON" : "LOST"} {clutch.opponentCount > clutch.clutcherKillCount && clutch.side === 3 ? "Ninja" : ""}</div>
 					</div>) 
 				}
-			</div>
+			</div>}
 		</div>
 	);
 }
@@ -279,6 +307,7 @@ function MatchRow({ player, match }: { player: Player; match: Match }) {
 			</div>
 			{isExpanded && <MatchHistory match={match} />}
 			{isExpanded && !isLoadingextendedMatchData && <MatchExtended extendedData={extendedMatchData} />}
+			{isExpanded && isLoadingextendedMatchData && <Loading /> }
 		</div>
 	);
 }

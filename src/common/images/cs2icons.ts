@@ -46,6 +46,8 @@ import smokeKill from "../../assets/images/cs2icons/smokeKill.png";
 import wallBang from "../../assets/images/cs2icons/wallBang.png";
 import flashAssist from "../../assets/images/cs2icons/flashassist.png";
 import suicide from "../../assets/images/cs2icons/suicide.png";
+import headshot from "../../assets/images/cs2icons/headshot.png";
+import airborne from "../../assets/images/cs2icons/airborne.png";
 
 type Cs2Icons = Record<string, string>;
 
@@ -114,6 +116,8 @@ export const cs2killfeedIcons: Cs2Icons = {
 	wallBang,
 	flashAssist,
 	suicide,
+	airborne,
+	headshot,
 };
 export const cs2icons: Cs2Icons = {
 	...rifles,
