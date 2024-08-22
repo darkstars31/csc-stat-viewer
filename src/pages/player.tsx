@@ -253,17 +253,8 @@ export function Player() {
 				<br />
 				{currentPlayer?.extendedStats && (
 					<>
-						<Exandable title="Extended Stats (beta)">
-							<div className="flex flex-row flex-wrap">
-								<div>CHICKEN STUFF</div>
-								{Object.entries(currentPlayer.extendedStats.chickens).map(([key, value]) => (
-									<div className="m-2 p-2">
-										<div>{key}</div>
-										<div className="text-center">{value}</div>
-									</div>
-								))}
-							</div>
-							<div className="flex flex-row flex-wrap">
+						<Exandable title="Extended Stats">
+							<div className="flex flex-row flex-wrap justify-center">
 								{Object.entries(currentPlayer.extendedStats.trackedObj).map(([key, value]) => (
 									<div className="m-2 p-2">
 										<div>{key}</div>
@@ -271,33 +262,53 @@ export function Player() {
 									</div>
 								))}
 							</div>
-							<div className="flex flex-row flex-wrap">
-								<div>PISTOL ROUND</div>
-								{Object.entries(currentPlayer.extendedStats.averages).map(([key, value]) => (
-									<div className="m-2 p-2">
-										<div>{key}</div>
-										<div className="text-center">{String(value.toFixed(2))}</div>
-									</div>
-								))}
-							</div>
-							<div className="flex flex-row flex-wrap">
-								<div>FLASH AVERAGES</div>
-								{Object.entries(currentPlayer.extendedStats.durationAverages).map(([key, value]) => (
-									<div className="m-2 p-2">
-										<div>{key}</div>
-										<div className="text-center">{String(value.toFixed(2))}</div>
-									</div>
-								))}
-							</div>
 						</Exandable>
-						<div className="flex flex-row gap-4">
-							<div className="w-1/2">
+						<div className="flex flex-row flex-wrap gap-4">
+							<div className="basis-3/12 grow">
+								<Exandable title="Chickens">
+									<div className="flex flex-row flex-wrap justify-center">
+										{Object.entries(currentPlayer.extendedStats.chickens).map(([key, value]) => (
+											<div className="m-2 p-2">
+												<div>{key}</div>
+												<div className="text-center">{value}</div>
+											</div>
+										))}
+									</div>
+								</Exandable>
+							</div>
+							<div className="basis-3/12 grow">
+								<Exandable title="Pistols">
+									<div className="flex flex-row flex-wrap justify-center">
+										{Object.entries(currentPlayer.extendedStats.averages).map(([key, value]) => (
+											<div className="m-2 p-2">
+												<div>{key}</div>
+												<div className="text-center">{String(value.toFixed(2))}</div>
+											</div>
+										))}
+									</div>
+								</Exandable>
+							</div>
+							<div className="basis-3/12 grow">
+								<Exandable title="Flash Averages">
+									<div className="flex flex-row flex-wrap justify-center">
+										{Object.entries(currentPlayer.extendedStats.durationAverages).map(([key, value]) => (
+											<div className="m-2 p-2">
+												<div>{key}</div>
+												<div className="text-center">{String(value.toFixed(2))}</div>
+											</div>
+										))}
+									</div>
+								</Exandable>
+							</div>
+						</div>
+						<div className="flex flex-row flex-wrap gap-4">
+							<div className="basis-5/12 grow">
 								<Exandable title="Weapons">
 									<PlayerWeaponsExtended extendedStats={currentPlayer?.extendedStats} />
 								</Exandable>
 							</div>
-							<div className="w-1/2">
-								<Exandable title="HITBOXES">
+							<div className="basis-1/3">
+								<Exandable title="Hitboxes">
 									<Hitbox hitboxTags={currentPlayer?.extendedStats.hitboxTags} />
 								</Exandable>
 							</div>

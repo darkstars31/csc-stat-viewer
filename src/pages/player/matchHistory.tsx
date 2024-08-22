@@ -17,6 +17,7 @@ import { cs2icons, cs2killfeedIcons } from "../../common/images/cs2icons";
 import { ExtendedMatchHistoryClutches } from "./extendedMatchHistoryClutches";
 import { ExtendedMatchHistoryTeamEcon } from "./extendedMatchHistoryTeamEcon";
 import { ExtendedMatchHistoryKillFeed } from "./extendedMatchHistoryKillFeed";
+import { ExtendedMatchHistoryTrades } from "./extendedMatchHistoryTrades";
 
 type Props = {
 	player: Player;
@@ -101,7 +102,7 @@ function MatchStatsTeamScoreLine({ teamIndex, match }: { teamIndex: number; matc
 		<>
 			<div className="relative">
 				<div
-					className={`absolute -left-20 top-8 -rotate-90 w-28 mr-16 text-center bg-gradient-to-r ${teamIndex ? "from-orange-500" : "from-indigo-500"} font-bold capitalize`}
+					className={`absolute -left-20 top-8 -rotate-90 w-28 mr-16 text-center bg-gradient-to-r ${teamIndex ? "from-indigo-500" : "from-orange-500"} font-bold capitalize`}
 				>
 					{team.replace("_", " ")}
 				</div>
@@ -137,6 +138,7 @@ function MatchExtended({ extendedData } : { extendedData?: Record<string, any> }
 
 	const pages = [
 		{ name: "KillFeed", color: "yellow" },
+		{ name: "Trades", color: "white" },
 		{ name: "Clutches", color: "green" },
 		{ name: "Team Econ", color: "red" },
 	]
@@ -156,6 +158,7 @@ function MatchExtended({ extendedData } : { extendedData?: Record<string, any> }
 				))}
 			</div>
 			{ selectedPage === "killfeed" && <ExtendedMatchHistoryKillFeed extendedMatchData={extendedData} /> }
+			{ selectedPage === "trades" && <ExtendedMatchHistoryTrades extendedMatchData={extendedData} /> }
 			{ selectedPage === "clutches" && <ExtendedMatchHistoryClutches extendedMatchData={extendedData} /> }
 			{ selectedPage === "team econ" && <ExtendedMatchHistoryTeamEcon extendedMatchData={extendedData} /> }
 		</div>

@@ -10,11 +10,25 @@ export const ExtendedMatchHistoryKillFeed = ( { extendedMatchData }: { extendedM
 		return acc;
 	}, []) ?? [];
 
+    const rounds = extendedMatchData?.data.rounds
+
     return (
        <div className="flex flex-row pb-2 gap-6 overflow-x-scroll">
             { killsByRound.map((kills: any, index: number) => 
                 <div>
-                    <div className="font-bold text-center border-b border-yellow-400 mb-2">Round {index}</div>
+                    <div className="border-b border-yellow-400 mb-2">
+                        <div className="flex flex-row justify-between text-xs">
+                            <div className="flex flex-col">
+                                <div>Home</div>
+                                <div>{rounds[index-1].teamAEconomyType}</div>
+                            </div>
+                            <div className="font-bold text-center text-lg">Round {index}</div>
+                            <div className="flex flex-col">
+                                <div>Away</div>
+                                <div>{rounds[index-1].teamBEconomyType}</div>
+                            </div>
+                        </div>
+                    </div>
                     { kills.map((kill: any) =>
                         <div className={`flex flex-row text-center border-1 rounded text-xs justify-around w-60`}>
                             <div className={`truncate max-w-[7em] ${kill.killerSide === 2 ? "text-red-400" : "text-blue-400"}`}>{kill.killerName}</div>
