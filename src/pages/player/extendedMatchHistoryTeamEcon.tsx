@@ -9,12 +9,17 @@ export const ExtendedMatchHistoryTeamEcon = ({ extendedMatchData }: { extendedMa
     const teamHome = rounds.map( (round: { teamAEquipmentValue: number; }) => round.teamAEquipmentValue)
     const teamAway = rounds.map( (round: { teamBEquipmentValue: number; }) => round.teamBEquipmentValue)
 
-    const teamHomeRoundMark = rounds.map( (round: any) => round.teamASide === round.winnerSide ? ([{xAxis: round.number-1},{ xAxis: round.number}]) : null)
-    const teamAwayRoundMark = rounds.map( (round: any) => round.teamBSide === round.winnerSide ? ([{xAxis: round.number-1},{ xAxis: round.number}]) : null)
+    const markAdjustment = 0.5
+    const teamHomeRoundMark = rounds.map( (round: any) => round.teamASide === round.winnerSide ? 
+        ([{xAxis: round.number-1-markAdjustment},{ xAxis: round.number-markAdjustment}]) 
+        : null)
+    const teamAwayRoundMark = rounds.map( (round: any) => round.teamBSide === round.winnerSide ? 
+        ([{xAxis: round.number-1-markAdjustment},{ xAxis: round.number-markAdjustment}]) 
+        : null)
 
 
     const defaultOptions: EChartsOption = {
-        animationDuration: 2500,
+        animationDuration: 1500,
         title: {
             text: 'Team Equipment Values',
             textStyle: {
@@ -32,7 +37,7 @@ export const ExtendedMatchHistoryTeamEcon = ({ extendedMatchData }: { extendedMa
         },
 		xAxis: {
             type: 'category',
-            data: [...Array(rounds.length).keys()],
+            data: [...Array.from({length: rounds.length}, (_, i) => i + 1)],
           },
         yAxis: {
             type: 'value'

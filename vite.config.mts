@@ -5,7 +5,7 @@ import viteTsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig({
     // depending on your application, base can also be "/"
     root: '',
-    base: '',
+    base: '/',
     plugins: [react(), viteTsconfigPaths()],
     build: {
         outDir: 'build',
