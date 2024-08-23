@@ -139,7 +139,10 @@ const useDataContextProvider = () => {
 		"76561198368540894": "AWP CRUTCH",
 	};
 
-	const players: Player[] = cscPlayers?.reduce((acc, cscPlayer) => {
+	const playersMissingTier = cscPlayers?.filter(cscPlayer => cscPlayer?.tier === undefined);
+	if(playersMissingTier.length > 0) console.info("Players Missing Tier",playersMissingTier);
+
+	const players: Player[] = cscPlayers?.filter(cscPlayer => cscPlayer.tier?.name).reduce((acc, cscPlayer) => {
 		const statsByTier = [
 			{
 				tier: "Recruit",
