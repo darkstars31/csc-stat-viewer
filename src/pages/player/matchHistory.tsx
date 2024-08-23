@@ -167,7 +167,7 @@ function MatchExtended({ extendedData } : { extendedData?: Record<string, any> }
 
 function MatchRow({ player, match }: { player: Player; match: Match }) {
 	const [isExpanded, setIsExpanded] = React.useState(false);
-	const { data: extendedMatchData, isLoading: isLoadingextendedMatchData } = useAnalytikillExtendedMatchStats(String(match.matchId).replace("combines-",""), isExpanded);
+	const { data: extendedMatchData = {}, isLoading: isLoadingextendedMatchData } = useAnalytikillExtendedMatchStats(String(match.matchId).replace("combines-",""), isExpanded);
 	const matchType = match.matchType ?? "broke";
 	const p = match.matchStats.find(ms => ms.name === player.name)!;
 	const matchDateShort = new Date(match.createdAt ?? 0).toLocaleDateString("en-US", {
@@ -274,8 +274,9 @@ function MatchRow({ player, match }: { player: Player; match: Match }) {
 				</div>
 			</div>
 			{isExpanded && <MatchHistory match={match} />}
-			{isExpanded && !isLoadingextendedMatchData && <MatchExtended extendedData={extendedMatchData} />}
+			{isExpanded && Object.keys(extendedMatchData).length > 0 && !isLoadingextendedMatchData && <MatchExtended extendedData={extendedMatchData} />}
 			{isExpanded && isLoadingextendedMatchData && <Loading /> }
+			{isExpanded && !isLoadingextendedMatchData && Object.keys(extendedMatchData).length === 0 && <div className="text-center font-bold text-gray-500">Extended match data is not yet available for this match, check back later.</div> }
 		</div>
 	);
 }
