@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { appConfig } from "../dataConfig";
+import { GitHubBranch } from "../models/github-branch-request-types";
 
 export type RepoResponse = {
 	name: string;
@@ -30,6 +31,13 @@ const getRepoData = async (url: string) =>
 export function useFetchGitHubRepoJson(): UseQueryResult<RepoResponse> {
 	return useQuery(["githubRepo"], () => getRepoData(appConfig.endpoints.githubRepository), {
 		staleTime: 1000 * 60 * 60 * 24 * 365, // 1 year
+		onError: () => {},
+	});
+}
+
+export function useFetchGithubRepoBranchJson(): UseQueryResult<GitHubBranch> {
+	return useQuery(["githubRepoBranch"], () => getRepoData(`${appConfig.endpoints.githubRepository}/branches/gh-pages`), {
+		staleTime: 1000 * 60 * 15, // 15 minutes
 		onError: () => {},
 	});
 }

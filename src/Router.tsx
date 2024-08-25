@@ -28,16 +28,28 @@ import cookie from "js-cookie";
 import { useLocalStorage } from "./common/hooks/localStorage";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useEnableFeature } from "./common/hooks/enableFeature";
+import { useFetchGithubRepoBranchJson } from "./dao/githubRepo";
 
 export function Router() {
 	const [closeNotificationBanner, setCloseNotificationBanner] = useLocalStorage(
 		"closeNotificationBannerRequestAServer",
 		"",
 	);
+	const [ newVersionBanner, setNewVersionBanner] = React.useState<{ isOpen: boolean, commitHash: string | undefined }>({ isOpen: false, commitHash: undefined });
+	const { data: githubBranch, isLoading: isLoadingGithubBranch } = useFetchGithubRepoBranchJson();
 	const { loading, discordUser, setDiscordUser } = useDataContext();
 	const BASE_ROUTE = "";
 	const [location] = useLocation();
 	const enableFeature = useEnableFeature("canRequestServers");
+
+	React.useEffect(() => {
+		if(!isLoadingGithubBranch && newVersionBanner.commitHash === undefined ) {
+			setNewVersionBanner({ ...newVersionBanner, commitHash: githubBranch?.commit?.sha });
+		} 
+		if( newVersionBanner.commitHash !== githubBranch?.commit?.sha && newVersionBanner.commitHash !== undefined) {
+			setNewVersionBanner({ isOpen: true, commitHash: githubBranch?.commit?.sha });
+		}
+	}, [ isLoadingGithubBranch ]);
 
 	// const Player = React.lazy(() => import("./pages/player").then(module => { return { default: module.Player } }) );
 	// const Franchises = React.lazy(() => import("./pages/franchises").then(module => { return { default: module.Franchises } }) );
@@ -91,6 +103,15 @@ export function Router() {
 			{loading.isLoadingCscPlayers && <ProgressBar />}
 			<Wouter base={BASE_ROUTE}>
 				<div>
+					{newVersionBanner.isOpen && (
+						<button
+							className="w-full h-8 bg-teal-600 text-center"
+							onClick={() => setNewVersionBanner({ ...newVersionBanner, isOpen: false })}
+						>
+							A new version of the site is available. Please refresh the page!
+							<AiOutlineCloseCircle className="float-right mr-4" size="1.5em" />
+						</button>
+					)}
 					{!closeNotificationBanner && enableFeature && (
 						<button
 							className="w-full h-8 bg-teal-600 text-center"
