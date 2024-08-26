@@ -42,6 +42,16 @@ const getExtendedMatchStats = async (matchId?: string) =>
 		return response.json();
 });
 
+const getPlayerReputation = async ( discordId?: string) =>
+	await fetch(`https://tonysanti.com/prx/csc-stat-api/analytikill/plusRep?discordId=${discordId}`, {
+		method: "GET",
+		headers: {
+			"content-type": "application/json",
+		},
+	}).then(async response => {
+		return response.json();
+	});
+
 
 export function useAnalytikillPlayerMatchHistory(steamId?: string): UseQueryResult<MatchHistoryPlayerStat[]> {
 	return useQuery(["analytikillPlayerMatchHistory", steamId], () => getPlayerMatchHistoryData(steamId), {
@@ -70,6 +80,14 @@ export function useAnalytikillExtendedMatchStats( matchId: string, shouldFetch =
 	return useQuery(["analytikillExtendedMatchStats", matchId], () => getExtendedMatchStats( matchId ), {
 		staleTime: 1000 * 60 * 60 * 24 * 7, // 7 days
 		enabled: shouldFetch,
+		onError: () => {},
+	});
+}
+
+export function useFetchReputation( discordId?: string): UseQueryResult<{ repped: number, plusRep: Record<string, string>}> {
+	return useQuery(["Reputation", discordId], () => getPlayerReputation( discordId ), {
+		staleTime: 1000 * 60 * 60 * 1, // 1 second * 60 * 60 * 1 = 1 hour
+		enabled: Boolean(discordId),
 		onError: () => {},
 	});
 }

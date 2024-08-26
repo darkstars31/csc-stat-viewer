@@ -27,6 +27,7 @@ import { TiWarningOutline } from "react-icons/ti";
 import { Exandable } from "../common/components/containers/Expandable";
 import { Hitbox } from "./player/hitbox";
 import { PlayerWeaponsExtended } from "./player/weapons-extended";
+import { Reputation } from "./player/reputation";
 
 export function Player() {
 	const divRef = React.useRef<HTMLDivElement>(null);
@@ -89,6 +90,7 @@ export function Player() {
 								{!currentPlayer?.avatarUrl && (
 									<div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border" />
 								)}
+								<Reputation playerDiscordId={currentPlayer.discordId}/>
 							</div>
 							<div className="text-left basis-3/4">
 								<div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
