@@ -216,12 +216,12 @@ function MatchRow({ player, match }: { player: Player; match: Match }) {
 						{matchDateShort}
 					</ToolTip>
 				</div>
-				<div className="basis-1/6">
+				<div className="basis-1/12">
 					<span className="flex gap-2">
 						<div className="text-sm">
-							<img className="w-8 h-8 mx-auto" src={mapImages[match.mapName.toLowerCase()]} alt="" />
+							<img className="w-12 h-12 mx-auto" src={mapImages[match.mapName.toLowerCase()]} alt="" />
 						</div>{" "}
-						{match.mapName.split("de_")[1].charAt(0).toUpperCase() + match.mapName.split("de_")[1].slice(1)}
+						{/* {match.mapName.split("de_")[1].charAt(0).toUpperCase() + match.mapName.split("de_")[1].slice(1)} */}
 					</span>
 				</div>
 				<div className={`basis-1/12 min-w-32 ${p.RF > p.RA ? "text-green-400" : "text-rose-400"}`}>
@@ -301,16 +301,19 @@ export function PlayerMatchHistory({ player }: Props) {
 		);
 	}
 
+	console.info( playerMatchHistory );
+
 	return (
 		<div className="my-4 p-4">
-			<h2 className="text-2xl p-2 text-center">
-				<span className="font-bold">Match History</span> - {playerMatchHistory?.length} matches
+			<h2 className="text-2xl p-2">
+				<div className="font-extrabold uppercase">Match History</div>
+				<div className="text-sm text-gray-500">{playerMatchHistory?.length} matches</div>
 			</h2>
 			<div className="flex flex-row pl-2 gap-4 h-16 items-center border-b border-gray-600">
 				<div className="w-8"></div>
 				<div className="basis-1/12">Type</div>
 				<div className="basis-1/12">Date</div>
-				<div className="basis-1/6">Map</div>
+				<div className="basis-1/12">Map</div>
 				<div className="basis-1/12">Score</div>
 				<div className="basis-1/12">Rating</div>
 				<div className="basis-1/12">K D A</div>
