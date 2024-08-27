@@ -152,10 +152,16 @@ export function _sort<T>(items: T[], property: string, n?: number, order?: "asc"
 	return n ? orderDirection.slice(0, n) : orderDirection;
 }
 
-export function _sortByGameCount<T>(items: T[], property: string, n?: number, order?: "asc" | "desc") {
+export function _sortByGameCount(items: Player[], property: string, n?: number, order?: "asc" | "desc") {
 	const deepCopy = cloneDeep(items);
 	const dividedByGameCount = deepCopy.map(item => {
-		set(item as object, property, +get(item, property) / +get(item, "stats.gameCount"));
+		set(item as object, 
+			property, 
+			+get(item, property) / (item.stats.gameCount + (item.statsOutOfTier ?? [])
+				.map((o: any) => o?.stats?.gameCount ?? 0)
+				.reduce((a : number, b: number) => a + b, 0)
+		)
+	);
 		return item; 
 	});
 	return _sort(dividedByGameCount, property, n, order);
