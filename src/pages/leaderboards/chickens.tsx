@@ -3,11 +3,12 @@ import { Container } from "../../common/components/container";
 import chicken from "../../assets/images/chicken.png";
 import { Player } from "../../models";
 import { StatsLeaderBoard } from "./stats";
-import { _sort } from "../../common/utils/player-utils";
+import { _sort, _sortByGameCount } from "../../common/utils/player-utils";
 import { cs2killfeedIcons } from "../../common/images/cs2icons";
 
-export function Chickens({ players, limit }: { players: Player[]; limit?: number }) {
+export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: { players: Player[]; limit?: number, filterExtendedStatsByGamesPlayed?: boolean }) {
 	const playersWithExtendedStats = players.filter(p => p.extendedStats);
+	const sortingFunction = filterExtendedStatsByGamesPlayed ? _sortByGameCount : _sort;
 
 	const totalChickenKills = playersWithExtendedStats.reduce(
 		(total, player) => total + player.extendedStats.chickens.killed,
@@ -20,98 +21,101 @@ export function Chickens({ players, limit }: { players: Player[]; limit?: number
 		Shot: playersWithExtendedStats.reduce((total, player) => total + player.extendedStats.chickens.shot, 0),
 	};
 
-	const chickenLeaderBoard = _sort(playersWithExtendedStats, "extendedStats.chickens.killed", limit, "desc").map(
+	const chickenLeaderBoard = sortingFunction(playersWithExtendedStats, "extendedStats.chickens.killed", limit, "desc").map(
 		player => ({
 			player: player,
-			value: player.extendedStats.chickens.killed,
+			value: player.extendedStats.chickens.killed.toFixed(2),
 		}),
 	);
-	const ninjaLeaderBoard = _sort(
+	const ninjaLeaderBoard = sortingFunction(
 		playersWithExtendedStats,
 		"extendedStats.trackedObj.ninjaDefuses",
 		limit,
 		"desc",
 	).map(player => ({
 		player: player,
-		value: player.extendedStats.trackedObj.ninjaDefuses,
+		value: player.extendedStats.trackedObj.ninjaDefuses.toFixed(2),
 	}));
-	const noScopesLeaderBoard = _sort(
+	const noScopesLeaderBoard = sortingFunction(
 		playersWithExtendedStats,
 		"extendedStats.trackedObj.noScopesKills",
 		limit,
 		"desc",
 	).map(player => ({
 		player: player,
-		value: player.extendedStats.trackedObj.noScopesKills,
+		value: player.extendedStats.trackedObj.noScopesKills.toFixed(2),
 	}));
-	const wallBangLeaderBoard = _sort(
+	const wallBangLeaderBoard = sortingFunction(
 		playersWithExtendedStats,
 		"extendedStats.trackedObj.wallBangKills",
 		limit,
 		"desc",
 	).map(player => ({
 		player: player,
-		value: player.extendedStats.trackedObj.wallBangKills,
+		value: player.extendedStats.trackedObj.wallBangKills.toFixed(2),
 	}));
-	const smokeKillLeaderBoard = _sort(
+	const smokeKillLeaderBoard = sortingFunction(
 		playersWithExtendedStats,
 		"extendedStats.trackedObj.smokeKills",
 		limit,
 		"desc",
 	).map(player => ({
 		player: player,
-		value: player.extendedStats.trackedObj.smokeKills,
+		value: player.extendedStats.trackedObj.smokeKills.toFixed(2),
 	}));
-	const airborneKills = _sort(playersWithExtendedStats, "extendedStats.trackedObj.airborneKills", limit, "desc").map(
+	console.info( smokeKillLeaderBoard );
+	const airborneKills = sortingFunction(playersWithExtendedStats, "extendedStats.trackedObj.airborneKills", limit, "desc").map(
 		player => ({
 			player: player,
-			value: player.extendedStats.trackedObj.airborneKills,
+			value: player.extendedStats.trackedObj.airborneKills.toFixed(2),
 		}),
 	);
 
-	const bombPlants = _sort(playersWithExtendedStats, "extendedStats.trackedObj.bombsPlanted", limit, "desc").map(
+	const bombPlants = sortingFunction(playersWithExtendedStats, "extendedStats.trackedObj.bombsPlanted", limit, "desc").map(
 		player => ({
 			player: player,
-			value: player.extendedStats.trackedObj.bombsPlanted,
+			value: player.extendedStats.trackedObj.bombsPlanted.toFixed(2),
 		}),
 	);
-	const defuses = _sort(playersWithExtendedStats, "extendedStats.trackedObj.bombsDefused", limit, "desc").map(
+	const defuses = sortingFunction(playersWithExtendedStats, "extendedStats.trackedObj.bombsDefused", limit, "desc").map(
 		player => ({
 			player: player,
-			value: player.extendedStats.trackedObj.bombsDefused,
+			value: player.extendedStats.trackedObj.bombsDefused.toFixed(2),
 		}),
 	);
-	const diedToBomb = _sort(playersWithExtendedStats, "extendedStats.trackedObj.diedToBomb", limit, "desc").map(
+	const diedToBomb = sortingFunction(playersWithExtendedStats, "extendedStats.trackedObj.diedToBomb", limit, "desc").map(
 		player => ({
 			player: player,
-			value: player.extendedStats.trackedObj.diedToBomb,
+			value: player.extendedStats.trackedObj.diedToBomb.toFixed(2),
 		}),
 	);
-	const mvpStars = _sort(playersWithExtendedStats, "extendedStats.trackedObj.mvpCount", limit, "desc").map(
+	const mvpStars = sortingFunction(playersWithExtendedStats, "extendedStats.trackedObj.mvpCount", limit, "desc").map(
 		player => ({
 			player: player,
-			value: player.extendedStats.trackedObj.mvpCount,
+			value: player.extendedStats.trackedObj.mvpCount.toFixed(2),
 		}),
 	);
 
-	const TeamKillLeaderBoard = _sort(
+	const TeamKillLeaderBoard = sortingFunction(
 		playersWithExtendedStats,
 		"extendedStats.trackedObj.teamKills",
 		limit,
 		"desc",
 	).map(player => ({
 		player: player,
-		value: player.extendedStats.trackedObj.teamKills,
+		value: player.extendedStats.trackedObj.teamKills.toFixed(2),
 	}));
-	const selfKillLeaderBoard = _sort(
+	const selfKillLeaderBoard = sortingFunction(
 		playersWithExtendedStats,
 		"extendedStats.trackedObj.selfKills",
 		limit,
 		"desc",
 	).map(player => ({
 		player: player,
-		value: player.extendedStats.trackedObj.selfKills,
+		value: player.extendedStats.trackedObj.selfKills.toFixed(2),
 	}));
+
+	console.info( smokeKillLeaderBoard )
 
 	return (
 		<Container>
@@ -123,7 +127,7 @@ export function Chickens({ players, limit }: { players: Player[]; limit?: number
 								<img className="m-auto h-16 w-16" src={chicken} alt="Chickens" />
 								killed
 							</div>
-							<div className="text-6xl text-center m-4 pt-4">{totalChickenKills}</div>
+							<div className="text-6xl text-center m-4 pt-4">{totalChickenKills.toFixed(2)}</div>
 						</div>
 						<div className="flex flex-row flex-wrap">
 							{Object.entries(chickenDeathTotals).map(([key, value]) => (

@@ -17,6 +17,7 @@ export function LeaderBoards() {
 	const { players = [], loading } = useDataContext();
 	const [selectedPage, setSelectedPage] = React.useState<string>(q ?? "general");
 	const [filterThreeGameMinumum, setFilterThreeGameMinumum] = React.useState<boolean>(true);
+	const [filterExtendedStatsByGamesPlayed, setFilterExtendedStatsByGamesPlayed] = React.useState<boolean>(false);
 	const [filterByFranchise, setFilterByFranchise] = React.useState<MultiValue<{ label: string; value: string }>>([]);
 	const [filterByTier, setFilterByTier] = React.useState<SingleValue<{ label: string; value: string }>>({
 		label: `All`,
@@ -29,7 +30,7 @@ export function LeaderBoards() {
 	const franchiseFilter =
 		filterByFranchise.length === 0 ?
 			player
-		:	player?.filter(p => filterByFranchise.some(f => f.value === p.team?.franchise?.prefix ?? ""));
+		:	player?.filter(p => filterByFranchise.some(f => f.value === p.team?.franchise?.prefix || ""));
 	const playerData =
 		filterByTier?.value.includes("All") ?
 			franchiseFilter
@@ -169,13 +170,25 @@ export function LeaderBoards() {
 				</div>
 				<div className="flex flex-row justify-end">
 					<div className="basis-1/7">
-						<div className="flex flex-row m-1 items-center">
-							<label title="Order By" className="p-1 leading-9">
-								Min 3 Games
-							</label>
-							<div className="">
-								<Toggle checked={filterThreeGameMinumum} onChange={setFilterThreeGameMinumum} />
+						<div className="flex flex-col m-0.5 items-center">
+							<div className="flex flex-row justify-between">
+								<label title="Order By" className="pr-1 leading-9">
+									Min 3 Games
+								</label>
+								<div className="pt-2">
+									<Toggle checked={filterThreeGameMinumum} onChange={setFilterThreeGameMinumum} />
+								</div>
 							</div>
+							{ selectedPage === "extended" &&
+							<div className="flex flex-row justify-between">
+								<label title="Order By" className="pr-1 leading-4">
+									Per Match
+								</label>
+								<div className="">
+									<Toggle checked={filterExtendedStatsByGamesPlayed} onChange={setFilterExtendedStatsByGamesPlayed} />
+								</div>
+							</div>
+							}	
 						</div>
 					</div>
 					<div className="basis-1/7">
@@ -200,7 +213,7 @@ export function LeaderBoards() {
 				<div className="pt-6">
 					<div className="flex flex-row flex-wrap gap-6">
 						{selectedPage === "general" && <GeneralLeaderBoards players={playerData} limit={limit} />}
-						{selectedPage === "extended" && <Chickens players={playerData} limit={limit} />}
+						{selectedPage === "extended" && <Chickens players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
 						{selectedPage === "weapons" && <WeaponLeaderboards players={playerData} limit={limit} />}
 					</div>
 				</div>

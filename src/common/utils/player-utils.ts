@@ -1,7 +1,7 @@
-import { clamp } from "lodash";
+import { clamp, cloneDeep } from "lodash";
 import { CscStats } from "../../models/csc-stats-types";
 import { Player } from "../../models/player";
-import { sortBy } from "lodash";
+import { sortBy, get, set } from "lodash";
 import { calculatePercentage } from "./string-utils";
 
 export enum PlayerTypes {
@@ -151,6 +151,16 @@ export function _sort<T>(items: T[], property: string, n?: number, order?: "asc"
 	const orderDirection = order === "desc" ? sorted.reverse() : sorted;
 	return n ? orderDirection.slice(0, n) : orderDirection;
 }
+
+export function _sortByGameCount<T>(items: T[], property: string, n?: number, order?: "asc" | "desc") {
+	const deepCopy = cloneDeep(items);
+	const dividedByGameCount = deepCopy.map(item => {
+		set(item as object, property, +get(item, property) / +get(item, "stats.gameCount"));
+		return item; 
+	});
+	return _sort(dividedByGameCount, property, n, order);
+}
+
 export const getPlayersInTier = (player: Player, allPlayers: Player[]) =>
 	allPlayers.filter(ap => ap.tier.name === player.tier.name);
 export const getPlayersInTier3GP = (player: Player, allPlayers: Player[]) =>
