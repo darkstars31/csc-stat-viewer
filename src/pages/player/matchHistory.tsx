@@ -18,6 +18,7 @@ import { ExtendedMatchHistoryClutches } from "./extendedMatchHistoryClutches";
 import { ExtendedMatchHistoryTeamEcon } from "./extendedMatchHistoryTeamEcon";
 import { ExtendedMatchHistoryKillFeed } from "./extendedMatchHistoryKillFeed";
 import { ExtendedMatchHistoryTrades } from "./extendedMatchHistoryTrades";
+import { ExtendedMatchHistoryMatchup } from "./extendedMatchHistoryMatchup";
 
 type Props = {
 	player: Player;
@@ -143,10 +144,14 @@ function MatchExtended({ extendedData } : { extendedData?: Record<string, any> }
 		{ name: "Team Econ", color: "red" },
 	]
 
+	if( Object.keys(extendedData?.metadata).length > 0 ){
+		pages.unshift({ name: "Matchup", color: "purple" })
+	}
+
 	return (
 		<div className="mb-4">
 			<div className="justify-center flex flex-wrap rounded-md mb-4" role="group">
-				{pages.map(page => (
+				{pages.filter(page => !!page).map(page => (
 					<button
 						key={page.name}
 						type="button"
@@ -157,6 +162,7 @@ function MatchExtended({ extendedData } : { extendedData?: Record<string, any> }
 					</button>
 				))}
 			</div>
+			{ selectedPage === "matchup" && <ExtendedMatchHistoryMatchup extendedMatchData={extendedData as any} /> }
 			{ selectedPage === "killfeed" && <ExtendedMatchHistoryKillFeed extendedMatchData={extendedData} /> }
 			{ selectedPage === "trades" && <ExtendedMatchHistoryTrades extendedMatchData={extendedData} /> }
 			{ selectedPage === "clutches" && <ExtendedMatchHistoryClutches extendedMatchData={extendedData} /> }
