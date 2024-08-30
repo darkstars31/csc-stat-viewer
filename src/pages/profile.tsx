@@ -44,10 +44,10 @@ export function SocialFields( { onChange, profileSettings }: { onChange: (x: Rec
 				))
 			}
 			</div>
-			<div className="absolute bottom flex flex-row text-xs">
+			<div className="absolute bottom flex flex-row text-xs w-full">
 				<Select
 					isClearable={false}
-					className="basis-1/6 grow"
+					className="basis-3/12 grow"
 					unstyled
 					isSearchable={false}
 					classNames={selectClassNames}
@@ -177,15 +177,6 @@ export function Profile() {
 		setProfileSettings({ ...profileSettings, [key]: value });
 	};
 
-	if ( !isProd || discordUser?.id !== "193972970568417280" ) {
-		return (
-			<div className="mx-auto w-full text-xl text-center flex justify-center leading-8 gap-4">
-				<LuConstruction size={36} className="flex-left" />
-				Under Construction
-			</div>
-		)
-	}
-
 	return (
 		<Container>
 			<div className="mx-auto max-w-lg text-center">
@@ -307,7 +298,7 @@ export function Profile() {
 							/>
 						</div>
 					</Containers.StandardBackgroundPage>
-					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
+					<Containers.StandardBackgroundPage classNames="basis-1/2 grow">
 						<h2 className="text-xl font-bold uppercase text-center mb-2">Socials</h2>
 						<SocialFields profileSettings={profileSettings} onChange={(socials: Record<string,string>) => onChange("socials", socials)} />
 					</Containers.StandardBackgroundPage>
