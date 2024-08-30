@@ -5,6 +5,7 @@ import { Link } from "wouter";
 
 type Props = {
 	title: string;
+	subtitle?: string;
 	header?: boolean;
 	headerImage?: string;
 	rows: {
@@ -13,17 +14,22 @@ type Props = {
 	}[];
 };
 
-export function StatsLeaderBoard({ title, rows, header = true, headerImage }: Props) {
+export function StatsLeaderBoard({ title, subtitle, rows, header = true, headerImage }: Props) {
 	return (
 		<div className="basis-1/4 grow">
 			<Card className="min-h-[285px]">
-				<div className="text-center text-xl uppercase font-extrabold m-4">
-					{title}
-					{headerImage && (
-						<div className="ml-4 w-24 h-24 mx-auto inline">
-							<img className="inline" src={headerImage} alt="Header" />
-						</div>
-					)}
+				<div className="text-center text-xl uppercase font-extrabold m-2">
+					<div className="flex flex-row justify-center">
+						<div className="">
+						{title}	
+						{ subtitle && <div className="text-xs text-center text-gray-500">{subtitle}</div>}
+						</div>			
+						{headerImage && (
+							<div className="w-24 h-16 pl-4 inline">
+								<img className="inline" src={headerImage} alt="icon" />
+							</div>
+						)}
+					</div>
 				</div>
 				<div className="overflow-hidden overflow-x-auto rounded">
 					<table className="table-auto min-w-full text-sm">

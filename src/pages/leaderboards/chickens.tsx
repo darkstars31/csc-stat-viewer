@@ -115,6 +115,8 @@ export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: {
 		value: player.extendedStats.trackedObj.selfKills.toFixed(2),
 	}));
 
+	const subtitle = filterExtendedStatsByGamesPlayed ? `Per Match` : ``;
+
 	console.info( smokeKillLeaderBoard )
 
 	return (
@@ -127,7 +129,7 @@ export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: {
 								<img className="m-auto h-16 w-16" src={chicken} alt="Chickens" />
 								killed
 							</div>
-							<div className="text-6xl text-center m-4 pt-4">{totalChickenKills.toFixed(2)}</div>
+							<div className="text-6xl text-center m-4 pt-4">{totalChickenKills}</div>
 						</div>
 						<div className="flex flex-row flex-wrap">
 							{Object.entries(chickenDeathTotals).map(([key, value]) => (
@@ -142,33 +144,46 @@ export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: {
 				</div>
 			</div>
 			<div className="flex flex-row flex-wrap m-auto gap-4">
-				<StatsLeaderBoard title="Ninja Defuses" rows={ninjaLeaderBoard} />
+				<StatsLeaderBoard
+					title="Ninja Defuses"
+					subtitle={subtitle}
+					rows={ninjaLeaderBoard} 
+				/>
 				<StatsLeaderBoard
 					title="No Scopes"
+					subtitle={subtitle}
 					rows={noScopesLeaderBoard}
 					headerImage={cs2killfeedIcons["noScope"]}
 				/>
 				<StatsLeaderBoard
 					title="Wall Bangs"
+					subtitle={subtitle}
 					rows={wallBangLeaderBoard}
 					headerImage={cs2killfeedIcons["wallBang"]}
 				/>
 				<StatsLeaderBoard
 					title="Smoke Kills"
+					subtitle={subtitle}
 					rows={smokeKillLeaderBoard}
 					headerImage={cs2killfeedIcons["smokeKill"]}
 				/>
-				<StatsLeaderBoard title="Airborne Kills" rows={airborneKills} />
+				<StatsLeaderBoard 
+					title="Airborne Kills" 
+					subtitle={subtitle} 
+					rows={airborneKills}
+					headerImage={cs2killfeedIcons["airborne"]}
+				/>
 
-				<StatsLeaderBoard title="Bombs Planted" rows={bombPlants} />
-				<StatsLeaderBoard title="Bombs Defused" rows={defuses} />
-				<StatsLeaderBoard title="Died To Bomb" rows={diedToBomb} />
+				<StatsLeaderBoard title="Bombs Planted" subtitle={subtitle} rows={bombPlants} />
+				<StatsLeaderBoard title="Bombs Defused" subtitle={subtitle} rows={defuses} />
+				<StatsLeaderBoard title="Died To Bomb" subtitle={subtitle} rows={diedToBomb} />
 
-				<StatsLeaderBoard title="MVPs" rows={mvpStars} />
+				<StatsLeaderBoard title="MVPs" subtitle={subtitle} rows={mvpStars} />
 
-				<StatsLeaderBoard title="Team Kills" rows={TeamKillLeaderBoard} />
+				<StatsLeaderBoard title="Team Kills" subtitle={subtitle} rows={TeamKillLeaderBoard} />
 				<StatsLeaderBoard
 					title="Self Kills"
+					subtitle={subtitle}
 					rows={selfKillLeaderBoard}
 					headerImage={cs2killfeedIcons["suicide"]}
 				/>
