@@ -28,16 +28,22 @@ import { Exandable } from "../common/components/containers/Expandable";
 import { Hitbox } from "./player/hitbox";
 import { PlayerWeaponsExtended } from "./player/weapons-extended";
 import { Reputation } from "./player/reputation";
+import { CgProfile } from "react-icons/cg";
+import { PlayerProfile } from "./player/profile";
+import { Transition } from "@headlessui/react";
 
 export function Player() {
 	const divRef = React.useRef<HTMLDivElement>(null);
-	const { players = [], franchises = [], loading } = useDataContext();
 	const [, params] = useRoute("/players/:id");
+	const { players = [], franchises = [], loading } = useDataContext();
+	const [ showProfile, setShowProfile ] = React.useState(false);
+
 	const nameParam = decodeURIComponent(params?.id ?? "");
 	const nameFromUrl = window.location.href.split("/").pop();
 	if (nameFromUrl?.includes("?")) {
 		console.warn("Player URL contains a query string '?'. This should not be allowed, but unfortunately it is.");
 	}
+
 	const currentPlayer = players.find(p => p.name === nameParam || p.name === nameFromUrl);
 	const currentPlayerStats = currentPlayer?.stats;
 
@@ -77,20 +83,30 @@ export function Player() {
 			<Container>
 				<PlayerNavigator player={currentPlayer} playerIndex={playerRatingIndex} />
 				<Containers.StandardBackgroundPage>
-					<div className="flex flex-wrap flex-row pb-2">
+					<div className="flex flex-wrap flex-row pb-2">		
 						<div className="flex basis-full md:basis-1/3 space-x-4">
 							<div className="object-contain">
 								{currentPlayer?.avatarUrl && (
 									<img
 										className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px]"
 										src={currentPlayer?.avatarUrl}
-										alt="Missing Discord Profile"
+										alt="Discord PFP Missing"
 									/>
 								)}
 								{!currentPlayer?.avatarUrl && (
 									<div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border" />
 								)}
-								<Reputation playerDiscordId={currentPlayer.discordId}/>
+								<div className="flex flex-row justify-evenly">
+									<Reputation playerDiscordId={currentPlayer.discordId}/>
+									<div className={`${showProfile ? "text-blue-400" : "text-gray-400"}`}>
+										<ToolTip type="generic" message={"Show Profile"}>
+											<CgProfile 
+												className="m-2 w-5 h-5"
+												onClick={() => setShowProfile(!showProfile)}
+											/>
+										</ToolTip>										
+									</div>
+								</div>
 							</div>
 							<div className="text-left basis-3/4">
 								<div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
@@ -164,7 +180,19 @@ export function Player() {
 						<div className="basis-1/12">
 							<ExternalPlayerLinks player={currentPlayer} />
 						</div>
-					</div>
+					</div>				
+					<Transition
+						as={"div"}
+						show={showProfile}
+						enter="transition ease-out duration-300"
+						enterFrom="transform opacity-0 scale-95"
+						enterTo="transform opacity-100 scale-100"
+						leave="transition ease-in duration-75"
+						leaveFrom="transform opacity-100 scale-100"
+						leaveTo="transform opacity-0 scale-95"
+					>
+						<PlayerProfile player={currentPlayer} />
+					</Transition>							
 					{currentPlayerStats && (
 						<div className="space-y-2">
 							<Containers.StandardBoxRow>

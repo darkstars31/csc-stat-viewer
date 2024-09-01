@@ -1,6 +1,7 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { MatchHistory, MatchHistoryPlayerStat } from "../models/match-history-types";
 import { ExtendedStats } from "../models/extended-stats";
+import { ProfileJson } from "../models/profile-types";
 
 const getPlayerMatchHistoryData = async (steamId?: string) =>
 	await fetch(`https://tonysanti.com/prx/csc-stat-api/csc/player-match-history?steamId=${steamId}`, {
@@ -91,4 +92,21 @@ export function useFetchReputation( discordId?: string): UseQueryResult<{ repped
 		onError: () => {},
 	});
 }
+
+export function useFetchPlayerProfile( discordId?: string ): UseQueryResult<ProfileJson> {
+	return useQuery(["PlayerProfile", discordId], async () => 
+		await fetch(`https://tonysanti.com/prx/csc-stat-api/profile?discordId=${discordId}`, {
+			method: "GET",
+			headers: {
+				"content-type": "application/json",
+			},
+		}).then(async response => {
+			return response.json();
+		}), 
+	{
+		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 1 = 1 hour
+		onError: () => {},
+	});
+}
+
 
