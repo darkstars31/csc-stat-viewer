@@ -2,7 +2,6 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import * as Containers from "../common/components/containers";
 import { Input } from "../common/components/input";
-import { LuConstruction } from "react-icons/lu";
 import { useDataContext } from "../DataContext";
 import { useFetchPlayerProfile } from "../dao/StatApiDao";
 import cookie from "js-cookie";
@@ -33,8 +32,8 @@ export function SocialFields( { onChange, profileSettings }: { onChange: (x: Rec
 	].filter( option => !socials[option.value] );
 
 	return (
-		<div className="relative content-between h-full">
-			<div className="flex flex-col justify-between text-xs">
+		<div className="relative content-between h-full m-4 pb-6">
+			<div className="flex flex-col justify-between text-sm m-2">
 			{
 				Object.entries(profileSettings?.socials ?? {}).map(([key, value], index) => (
 					<div className="flex flex-row">
@@ -44,10 +43,10 @@ export function SocialFields( { onChange, profileSettings }: { onChange: (x: Rec
 				))
 			}
 			</div>
-			<div className="absolute bottom flex flex-row text-xs w-full">
+			<div className="absolute bottom flex flex-row text-xs w-full mb-4">
 				<Select
 					isClearable={false}
-					className="basis-3/12 grow"
+					className="basis-2/12"
 					unstyled
 					isSearchable={false}
 					classNames={selectClassNames}
@@ -59,15 +58,18 @@ export function SocialFields( { onChange, profileSettings }: { onChange: (x: Rec
 					onChange={option => setAddSocial({  ...addSocial, key: option?.value ?? "" })}
 				/>
 				<Input
-					className="grow"
+					className="grow h-10 mt-1"
 					type="text"
+					label="Just your social id"
 					placeHolder={`Just your social id`}
 					onChange={e => setAddSocial({ ...addSocial, value: e.currentTarget.value.trim()})}
 					value={addSocial.value}
 				/>
 				<div className="">
-					<button onClick={(e) => {e.preventDefault(); onChange({ ...socials, [addSocial.key]: socialOptions.find(option => option.value === addSocial.key)?.url + addSocial.value })}} className="flex flex-row m-4 bg-blue-500 text-white p-2 rounded">
-						<CgAdd />
+					<button onClick={(e) => {e.preventDefault(); onChange({ ...socials, [addSocial.key]: socialOptions.find(option => option.value === addSocial.key)?.url + addSocial.value })}} 
+						className="flex flex-row m-1 p-2 bg-blue-500 text-white rounded"
+						>
+						<CgAdd className="w-5 h-5" />
 					</button>
 				</div>
 			</div>
@@ -76,7 +78,7 @@ export function SocialFields( { onChange, profileSettings }: { onChange: (x: Rec
 }
 
 export function Profile() {
-	const { discordUser, players } = useDataContext();
+	const { discordUser, players, seasonAndTierConfig } = useDataContext();
 	const currentPlayer = players.find(p => p.discordId === discordUser?.id);
 	const { data: profile, isFetching } = useFetchPlayerProfile(discordUser?.id);
 	const [isSaving, setIsSaving] = React.useState(false);
@@ -95,10 +97,9 @@ export function Profile() {
 		favoriteRole: profile?.favoriteRole ?? undefined,
 		favoriteMap: profile?.favoriteMap ?? undefined,
 		socials: profile?.socials ?? {},
+		firstCSCSeason: profile?.firstCSCSeason ?? undefined,
 	});
 	}, [profile, isFetching]);
-
-	const isProd = process.env.NODE_ENV === "production";
 
 	const weaponOptions = [
 		{ label: "AK-47", value: "AK-47" },
@@ -153,6 +154,8 @@ export function Profile() {
 		{ label: "de_overpass", value: "de_overpass" },
 		{ label: "de_inferno", value: "de_inferno" },
 	];
+
+	const firstCSCSeasonOptions = [...Array.from({ length: seasonAndTierConfig?.number ?? 0 }, (_, i) => i + 1).reverse().map(i => ({ value: i, label: i.toString() }))]
 
 	const ageOptions = ["16-20","21-25","23-25","26-29","30-35","36+"].map((age) => ({ label: age, value: age }));
 	const aspectRatioOptions = ["4:3","16:9","16:10","Other???"].map((value) => ({ label: value, value: value }));
@@ -304,8 +307,8 @@ export function Profile() {
 					</Containers.StandardBackgroundPage>
 					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
 						<h2 className="text-xl font-bold uppercase text-center mb-2">About me</h2>
-						<div className="flex flex-row">
-							<div className="basis-1/3 m-2">
+						<div className="flex flex-row flex-wrap">
+							<div className="basis-1/3 grow m-2">
 								<label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
 									Approx. Age
 								</label>
@@ -321,7 +324,7 @@ export function Profile() {
 									onChange={option => onChange("age", option?.value)}
 								/>
 							</div>
-							<div className="basis-1/3 m-2">
+							<div className="basis-1/3 grow m-2">
 								<label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
 									Region
 								</label>
@@ -335,6 +338,22 @@ export function Profile() {
 									value={regionOptions.find(option => option.value === profileSettings?.region)}
 									options={regionOptions}
 									onChange={option => onChange("region", option?.value)}
+								/>
+							</div>
+							<div className="basis-1/3 grow m-2">
+								<label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
+									First Season
+								</label>
+								<Select
+									placeholder="Not Specified"
+									isClearable={true}
+									className="grow text-xs"
+									unstyled
+									isSearchable={false}
+									classNames={selectClassNames}
+									value={firstCSCSeasonOptions.find(option => option.value === profileSettings?.firstCSCSeason)}
+									options={firstCSCSeasonOptions}
+									onChange={option => onChange("firstCSCSeason", option?.value)}
 								/>
 							</div>
 						</div>
@@ -372,7 +391,7 @@ export function Profile() {
 									label="Sens"
 									type="text"
 									placeHolder="Not Specified"
-									onChange={(e) => onChange("dpi", e.currentTarget.value)}
+									onChange={(e) => onChange("inGameSensitivity", e.currentTarget.value)}
 									value={profileSettings?.inGameSensitivity}
 								/>
 							</div>							

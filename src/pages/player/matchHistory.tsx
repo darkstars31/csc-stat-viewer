@@ -144,7 +144,7 @@ function MatchExtended({ extendedData } : { extendedData?: Record<string, any> }
 		{ name: "Team Econ", color: "red" },
 	]
 
-	if( Object.keys(extendedData?.metadata).length > 0 ){
+	if( Object.keys(extendedData?.metadata ?? {}).length > 0 ){
 		pages.unshift({ name: "Matchup", color: "purple" })
 	}
 

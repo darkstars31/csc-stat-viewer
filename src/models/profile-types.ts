@@ -22,4 +22,5 @@ export type ProfileJson = {
 	favoriteMap: string;
 	preferredRoles: string;
 	socials: Record<string, string>;
+	firstCSCSeason: number;
 }
