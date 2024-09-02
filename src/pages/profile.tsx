@@ -14,6 +14,7 @@ import { Toggle } from "../common/components/toggle";
 import { FaTrashAlt } from "react-icons/fa";
 import { CgAdd } from "react-icons/cg";
 import { ProfileJson } from "../models/profile-types";
+import { RadioGroup, Field, Label, Radio, } from "@headlessui/react";
 
 
 export function SocialFields( { onChange, profileSettings }: { onChange: (x: Record<string, string>) => void, profileSettings: Partial<{ socials: Record<string, string>}> | undefined} ) {
@@ -96,8 +97,11 @@ export function Profile() {
 		favoriteWeapon: profile?.favoriteWeapon ?? undefined,
 		favoriteRole: profile?.favoriteRole ?? undefined,
 		favoriteMap: profile?.favoriteMap ?? undefined,
+		favoriteProPlayer: profile?.favoriteProPlayer ?? undefined,
+		favoriteProTeam: profile?.favoriteProTeam ?? undefined,
 		socials: profile?.socials ?? {},
 		firstCSCSeason: profile?.firstCSCSeason ?? undefined,
+		whatExperienceDoYouWant: profile?.whatExperienceDoYouWant ?? undefined,
 	});
 	}, [profile, isFetching]);
 
@@ -132,6 +136,7 @@ export function Profile() {
 
 	const roleOptions = [
 		{ label: "Alphapack Leader", value: "Alphapack Leader" },
+		{ label: "Fake Flash Abuser", value: "Fake Flash Abuser" },
 		{ label: "Entry", value: "Entry" },
 		{ label: "Refragger", value: "Refragger" },
 		{ label: "Support", value: "Support" },
@@ -160,6 +165,8 @@ export function Profile() {
 	const ageOptions = ["16-20","21-25","23-25","26-29","30-35","36+"].map((age) => ({ label: age, value: age }));
 	const aspectRatioOptions = ["4:3","16:9","16:10","Other???"].map((value) => ({ label: value, value: value }));
 	const regionOptions = ["US-East","US-West","US-Central","EU","Other"].map((value) => ({ label: value, value: value }));
+
+	const plans = ['Startup', 'Business', 'Enterprise']
 
 	const onSave = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -247,27 +254,48 @@ export function Profile() {
 								<Toggle onChange={() => onChange("isIGL", !profileSettings?.isIGL)} checked={profileSettings?.isIGL ?? false} />
 							</div>
 						</div>
-						<div className="basis-1/4 py-2">
-								<label className="pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
-									Preferred Role
-								</label>
-								<Select
-									placeholder="Not Specified"
-									isClearable={true}
-									className="grow text-xs"
-									unstyled
-									isSearchable={false}
-									classNames={selectClassNames}
-									value={roleOptions.find(option => option.value === profileSettings?.favoriteRole)}
-									options={roleOptions}
-									onChange={option => onChange("favoriteRole", option?.value)}
-								/>
-							</div>
+						<div className="basis-1/4 py-1">
+							<label className="pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
+								Preferred Role
+							</label>
+							<Select
+								placeholder="Not Specified"
+								isClearable={true}
+								className="grow text-xs"
+								unstyled
+								isSearchable={false}
+								classNames={selectClassNames}
+								value={roleOptions.find(option => option.value === profileSettings?.favoriteRole)}
+								options={roleOptions}
+								onChange={option => onChange("favoriteRole", option?.value)}
+							/>
+						</div>
+						{/* <div className="basis-1/4 py-1">
+							<label className="pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
+								Experience Expectations
+							</label>
+							<RadioGroup value={profileSettings?.whatExperienceDoYouWant} 
+								onChange={ option => onChange("whatExperienceDoYouWant", option)} 
+								aria-label="Server size"
+								>
+								{plans.map((plan) => (
+									<div key={plan} className="flex items-center gap-2">
+										<Radio
+											value={plan}						
+											className="group flex size-5 items-center justify-center rounded-full border bg-white data-[checked]:bg-blue-400"
+										>
+											<span className="invisible size-2 rounded-full bg-white group-data-[checked]:visible" />
+										</Radio>
+										<label>{plan}</label>
+									</div>
+								))}
+							</RadioGroup>
+						</div> */}
 					</Containers.StandardBackgroundPage>
 					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
 						<h2 className="text-xl font-bold uppercase text-center mb-2">Favorites</h2>
-						<div className="py-2">
-							<label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
+						<div className="py-1 flex flex-row">
+							<label className="basis-24 leading-10 pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
 								Weapon
 							</label>
 							<Select
@@ -284,8 +312,8 @@ export function Profile() {
 								onChange={option => onChange("favoriteWeapon", option?.value)}
 							/>
 						</div>
-						<div className="my-2 py-2">
-							<label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
+						<div className="my-1 py-1 flex flex-row">
+							<label className="basis-24 leading-10 pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
 								Map
 							</label>
 							<Select
@@ -298,6 +326,30 @@ export function Profile() {
 								value={mapOptions.find(option => option.value === profileSettings?.favoriteMap)}
 								options={mapOptions}
 								onChange={option => onChange("favoriteMap", option?.value)}
+							/>
+						</div>
+						<div className="my-1 py-1 flex flex-row">
+							<label className="basis-24 leading-10 pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
+								Pro Team
+							</label>
+							<Input
+								className="grow text-xs"
+								type="text"
+								placeHolder="Not Specified"
+								onChange={(e) => onChange("favoriteProTeam", e.currentTarget.value)}
+								value={profileSettings?.favoriteProTeam}
+							/>
+						</div>
+						<div className="my-1 py-1 flex flex-row">
+							<label className="basis-24 leading-10 pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
+								Pro Player
+							</label>
+							<Input
+								className="grow text-xs"		
+								type="text"
+								placeHolder="Not Specified"
+								onChange={(e) => onChange("favoriteProPlayer", e.currentTarget.value)}
+								value={profileSettings?.favoriteProPlayer}
 							/>
 						</div>
 					</Containers.StandardBackgroundPage>

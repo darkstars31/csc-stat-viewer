@@ -31,6 +31,8 @@ import { Reputation } from "./player/reputation";
 import { CgProfile } from "react-icons/cg";
 import { PlayerProfile } from "./player/profile";
 import { Transition } from "@headlessui/react";
+import { useFetchPlayerProfile } from "../dao/analytikill";
+import { ProfileJson } from "../models/profile-types";
 
 export function Player() {
 	const divRef = React.useRef<HTMLDivElement>(null);
@@ -46,7 +48,8 @@ export function Player() {
 
 	const currentPlayer = players.find(p => p.name === nameParam || p.name === nameFromUrl);
 	const currentPlayerStats = currentPlayer?.stats;
-
+	const { data: playerProfile = {} } = useFetchPlayerProfile(currentPlayer?.discordId);
+	
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
@@ -98,14 +101,20 @@ export function Player() {
 								)}
 								<div className="flex flex-row justify-evenly">
 									<Reputation playerDiscordId={currentPlayer.discordId}/>
-									<div className={`${showProfile ? "text-blue-400" : "text-gray-400"}`}>
-										<ToolTip type="generic" message={"Show Profile"}>
-											<CgProfile 
-												className="m-2 w-5 h-5"
-												onClick={() => setShowProfile(!showProfile)}
-											/>
-										</ToolTip>										
-									</div>
+									{ Object.keys(playerProfile).length > 0 ?
+										<div className={`${showProfile ? "text-blue-400" : "text-purple-400"}`}>
+											<ToolTip type="generic" message={"Show Profile"}>
+												<CgProfile 
+													className="m-3 w-4 h-4"
+													onClick={() => setShowProfile(!showProfile)}
+												/>
+											</ToolTip>										
+										</div>
+										:
+										<ToolTip type="generic" message={"Player has not updated their profile."}>
+											<CgProfile className="text-gray-600 m-3 w-4 h-4" />
+										</ToolTip>			
+									}
 								</div>
 							</div>
 							<div className="text-left basis-3/4">
@@ -181,18 +190,20 @@ export function Player() {
 							<ExternalPlayerLinks player={currentPlayer} />
 						</div>
 					</div>				
-					<Transition
-						as={"div"}
-						show={showProfile}
-						enter="transition ease-out duration-300"
-						enterFrom="transform opacity-0 scale-95"
-						enterTo="transform opacity-100 scale-100"
-						leave="transition ease-in duration-75"
-						leaveFrom="transform opacity-100 scale-100"
-						leaveTo="transform opacity-0 scale-95"
-					>
-						<PlayerProfile player={currentPlayer} />
-					</Transition>							
+					{ Object.values(playerProfile ?? {}).length > 0 &&
+						<Transition
+							as={"div"}
+							show={showProfile}
+							enter="transition ease-out duration-300"
+							enterFrom="transform opacity-0 scale-95"
+							enterTo="transform opacity-100 scale-100"
+							leave="transition ease-in duration-75"
+							leaveFrom="transform opacity-100 scale-100"
+							leaveTo="transform opacity-0 scale-95"
+						>
+							<PlayerProfile player={currentPlayer} playerProfile={playerProfile as ProfileJson} />
+						</Transition>
+					}						
 					{currentPlayerStats && (
 						<div className="space-y-2">
 							<Containers.StandardBoxRow>
@@ -282,7 +293,7 @@ export function Player() {
 				)}
 				<br />
 				{currentPlayer?.extendedStats && (
-					<>
+					<div className="">
 						<Exandable title="Extended Stats">
 							<div className="flex flex-row flex-wrap justify-center">
 								{Object.entries(currentPlayer.extendedStats.trackedObj).map(([key, value]) => (
@@ -343,7 +354,7 @@ export function Player() {
 								</Exandable>
 							</div>
 						</div>
-					</>
+					</div>
 				)}
 				<br />
 				<PlayerMatchHistory player={currentPlayer} />

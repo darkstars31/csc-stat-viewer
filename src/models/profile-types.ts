@@ -20,7 +20,10 @@ export type ProfileJson = {
 	favoriteWeapon: string;
 	favoriteRole: string;
 	favoriteMap: string;
+	favoriteProPlayer: string;
+	favoriteProTeam: string;
 	preferredRoles: string;
 	socials: Record<string, string>;
 	firstCSCSeason: number;
+	whatExperienceDoYouWant: string;
 }

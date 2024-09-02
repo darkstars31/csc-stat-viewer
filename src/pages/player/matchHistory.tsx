@@ -307,8 +307,6 @@ export function PlayerMatchHistory({ player }: Props) {
 		);
 	}
 
-	console.info( playerMatchHistory );
-
 	return (
 		<div className="my-4 p-4">
 			<h2 className="text-2xl p-2">

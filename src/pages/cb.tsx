@@ -10,13 +10,10 @@ export function LoginCallBack() {
 	const { discordUser, setDiscordUser } = useDataContext();
 	const [, setLocation] = useLocation();
 
-	console.info(discordUser);
-
 	const queryParams = new URLSearchParams(window.location.search);
 	const code = queryParams.get("code");
 	const returnPath = cookie.get("return_path");
 	if (code) {
-		console.info("returnpath:", returnPath);
 		if (returnPath) {
 			cookie.remove("return_path");
 			setLocation(returnPath);

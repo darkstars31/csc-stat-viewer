@@ -414,7 +414,6 @@ export function Servers() {
 				...property,
 				playerSlots: serverTypeOptions.find(option => option.value === property["serverType"])?.playerSlots[1],
 			};
-			console.info(property);
 		}
 		setRequestState({ ...requestState, ...property });
 	};

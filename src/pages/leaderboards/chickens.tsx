@@ -63,7 +63,6 @@ export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: {
 		player: player,
 		value: player.extendedStats.trackedObj.smokeKills.toFixed(2),
 	}));
-	console.info( smokeKillLeaderBoard );
 	const airborneKills = sortingFunction(playersWithExtendedStats, "extendedStats.trackedObj.airborneKills", limit, "desc").map(
 		player => ({
 			player: player,
@@ -116,8 +115,6 @@ export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: {
 	}));
 
 	const subtitle = filterExtendedStatsByGamesPlayed ? `Per Match` : ``;
-
-	console.info( smokeKillLeaderBoard )
 
 	return (
 		<Container>
