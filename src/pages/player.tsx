@@ -33,6 +33,7 @@ import { PlayerProfile } from "./player/profile";
 import { Transition } from "@headlessui/react";
 import { useFetchPlayerProfile } from "../dao/analytikill";
 import { ProfileJson } from "../models/profile-types";
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 
 export function Player() {
 	const divRef = React.useRef<HTMLDivElement>(null);
@@ -47,7 +48,11 @@ export function Player() {
 	}
 
 	const currentPlayer = players.find(p => p.name === nameParam || p.name === nameFromUrl);
-	const currentPlayerStats = currentPlayer?.stats;
+	const [ viewStatSelection, setViewStatSelection ] = React.useState<string | undefined>(currentPlayer?.tier.name);
+
+	const currentPlayerStats = viewStatSelection === currentPlayer?.tier.name ? currentPlayer?.stats : currentPlayer?.statsOutOfTier?.find(s => s.tier === viewStatSelection)?.stats;
+	const currentPlayerTierOptions = [ currentPlayer?.tier.name, ...(currentPlayer?.statsOutOfTier ?? []).map( s => s.tier)].filter( item => item !== viewStatSelection)
+
 	const { data: playerProfile = {} } = useFetchPlayerProfile(currentPlayer?.discordId);
 	
 	React.useEffect(() => {
@@ -117,7 +122,7 @@ export function Player() {
 									}
 								</div>
 							</div>
-							<div className="text-left basis-3/4">
+							<div id="player-tier" className="text-left basis-3/4">
 								<div className="text-2xl font-extrabold text-white-100 md:text-4xl pb-0">
 									{currentPlayer?.name ?? "n/a"}
 								</div>
@@ -153,18 +158,37 @@ export function Player() {
 								<ul className="text-[0.8rem]">
 									<li>
 										{String(playerRatingIndex + 1).concat(nth(playerRatingIndex + 1))} Overall in{" "}
-										<span
-											className={`text-${tiers.find(t => t.name === currentPlayer.tier.name)?.color}-500`}
-										>
-											<b>
-												<i>
-													{currentPlayer.name.toLowerCase() === "comradsniper" ?
-														"Super "
-													:	""}{" "}
-													{currentPlayer.tier.name}
-												</i>
-											</b>
-										</span>
+											<span className={`text-${tiers.find(t => t.name === viewStatSelection)?.color}-500`}>
+												<b>
+													<i>
+														{currentPlayer.name.toLowerCase() === "comradsniper" ?
+															"Super "
+														:	""}{" "}
+														<Popover className="inline relative">
+															<PopoverButton>
+																{viewStatSelection}{currentPlayer.tier.name === viewStatSelection ? "" : "*"}
+																</PopoverButton>
+																<PopoverPanel 
+																	anchor="bottom" 
+																	className="divide-y divide-white/5 rounded-xl bg-midnight2 text-sm/6 transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0"
+																	>
+																	<div className="p-2">
+																		{
+																			currentPlayerTierOptions.map((tier) => (
+																				<button 
+																					className="block rounded-lg py-1 px-2 transition hover:bg-white/50"
+																					onClick={() => setViewStatSelection(tier)}
+																					>
+																					<p className="font-semibold text-white">{tier}</p>
+																			</button>
+																			))
+																		}																
+																	</div>
+															</PopoverPanel>														
+														</Popover>
+													</i>
+												</b>
+											</span>
 										<br /> <Mmr player={currentPlayer} /> MMR
 										<div>
 											<span className="flex leading-7">
@@ -204,7 +228,8 @@ export function Player() {
 						>
 							<PlayerProfile player={currentPlayer} playerProfile={playerProfile as ProfileJson} />
 						</Transition>
-					}						
+					}
+					{ viewStatSelection !== currentPlayer.tier.name && <div className="text-sm italic font-bold text-gray-600 text-center w-full">*Non-Primary Tier Stats</div>}			
 					{currentPlayerStats && (
 						<div className="space-y-2">
 							<Containers.StandardBoxRow>
@@ -282,19 +307,13 @@ export function Player() {
 							})}
 					</div>
 				)}
-				{!currentPlayerStats && (
+				{ !currentPlayerStats || currentPlayerTierOptions.length > 1 &&
 					<div className="text-center">
 						<strong>
-							<i>This player has no stats in {currentPlayer.tier.name} for the current season.</i>
+							<i>Looking for stats in a different tier? <a className="text-blue-600 underline" href="#player-tier">You can now find that here</a></i>
 						</strong>
-						{currentPlayer.statsOutOfTier !== null && (
-							<div className="text-xs">Stats found in non-primary tier(s).</div>
-						)}
+						<div className="text-xs">Click on the players current tier.</div>		
 					</div>
-				)}
-				<br />
-				{currentPlayer.statsOutOfTier &&
-					currentPlayer.statsOutOfTier.map(outOfTierStats => <StatsOutOfTier stats={outOfTierStats} />)
 				}
 				<br />
 				{currentPlayer?.extendedStats && (
