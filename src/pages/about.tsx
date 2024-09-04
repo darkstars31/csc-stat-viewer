@@ -8,7 +8,7 @@ import { useDataContext } from "../DataContext";
 import { Exandable } from "../common/components/containers/Expandable";
 
 export function About() {
-	const { dataConfig } = useDataContext();
+	const { seasonAndMatchType } = useDataContext();
 	const { data: contributors = [] } = useFetchGitHubContributors();
 
 	return (
@@ -23,7 +23,7 @@ export function About() {
 						</a>
 					</p>
 					<p className="mt-4 text-gray-300">
-						Season {dataConfig?.season} Stats now available! Use the dropdown menu in the header to select
+						Season {seasonAndMatchType.season} Stats now available! Use the dropdown menu in the header to select
 						the data source you're interested in.
 					</p>
 					<p className="mt-4 text-gray-300">

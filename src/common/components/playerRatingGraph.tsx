@@ -6,20 +6,19 @@ import { useDataContext } from "../../DataContext";
 import { useCscStatsProfileTrendGraph } from "../../dao/cscProfileTrendGraph";
 import { Loading } from "./loading";
 import { calculateHltvTwoPointOApproximation } from "../utils/player-utils";
-import { dataConfiguration } from "../../dataConfig";
 
 type Props = {
 	player: Player;
 };
 
 export function PlayerRatingTrendGraph({ player }: Props) {
-	const { dataConfig } = useDataContext();
-	const { data: cscPlayerProfile, isLoading } = useCscStatsProfileTrendGraph(player.steam64Id, dataConfig?.season);
+	const { seasonAndMatchType } = useDataContext();
+	const { data: cscPlayerProfile, isLoading } = useCscStatsProfileTrendGraph(player.steam64Id, seasonAndMatchType.season);
 
 	const sortedCscPlayerProfile = React.useMemo(() => {
 		if (cscPlayerProfile) {
 			// HACK: Check if combines in Season Name so trendgraph continues working during combines
-			if (dataConfiguration[0].name.includes("Combines")) {
+			if (seasonAndMatchType.matchType.includes("Combine")) {
 				return cscPlayerProfile.sort((a, b) => {
 					const matchDayA = parseInt(a.match.matchDay.slice(1), 10);
 					const matchDayB = parseInt(b.match.matchDay.slice(1), 10);

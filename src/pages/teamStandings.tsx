@@ -118,13 +118,13 @@ export function TeamStandings() {
 	const q = qs.get("q");
 	const [, setLocation] = useLocation();
 	const queryParams = new URLSearchParams(useSearch());
-	const { franchises = [], seasonAndTierConfig, dataConfig } = useDataContext();
+	const { franchises = [], seasonAndMatchType } = useDataContext();
 	const [selectedTier, setSelectedTier] = React.useState(q ?? "Contender");
 	const [showExtras, setShowExtras] = React.useState(true);
 
 	const { data: matches = [], isLoading } = useCscSeasonMatches(
 		selectedTier[0].toUpperCase() + selectedTier.slice(1),
-		dataConfig?.season,
+		seasonAndMatchType.season,
 	);
 	const tieBreakers: string[] = [];
 	console.info(matches);
@@ -303,7 +303,7 @@ export function TeamStandings() {
 						<div className="flex">
 							<div className="basis-1/12 collapse md:visible">
 								<div className="text-3xl -rotate-90 font-black translate-y-16">
-									SEASON {seasonAndTierConfig?.number}
+									SEASON {seasonAndMatchType?.season}
 								</div>
 							</div>
 							<div className="basis-full min-h-[300px]">
@@ -332,7 +332,7 @@ export function TeamStandings() {
 									<tbody>
 										{matches.length < 1 ?
 											<tr className="text-center text-xl font-italic">
-												Season {seasonAndTierConfig?.number} hasn't started yet! Check back
+												Season {seasonAndMatchType.season} hasn't started yet! Check back
 												after Match Day 1.
 											</tr>
 										:	sorted.map((team: any, index: number) => (

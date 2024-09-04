@@ -29,6 +29,8 @@ import { useLocalStorage } from "./common/hooks/localStorage";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useEnableFeature } from "./common/hooks/enableFeature";
 import { useFetchGithubRepoBranchJson } from "./dao/githubRepo";
+import { selectClassNames } from "./common/utils/select-utils";
+import Select from "react-select";
 
 export function Router() {
 	const [closeNotificationBanner, setCloseNotificationBanner] = useLocalStorage(
@@ -37,7 +39,7 @@ export function Router() {
 	);
 	const [ newVersionBanner, setNewVersionBanner] = React.useState<{ isOpen: boolean, commitHash: string | undefined }>({ isOpen: false, commitHash: undefined });
 	const { data: githubBranch, isLoading: isLoadingGithubBranch } = useFetchGithubRepoBranchJson();
-	const { loading, discordUser, setDiscordUser } = useDataContext();
+	const { loading, discordUser, setDiscordUser, seasonAndMatchType, loggedinUser, setSeasonAndMatchType } = useDataContext();
 	const BASE_ROUTE = "";
 	const [location] = useLocation();
 	const enableFeature = useEnableFeature("canRequestServers");
@@ -47,9 +49,9 @@ export function Router() {
 			setNewVersionBanner({ ...newVersionBanner, commitHash: githubBranch?.commit?.sha });
 		} 
 		if( newVersionBanner.commitHash !== githubBranch?.commit?.sha && newVersionBanner.commitHash !== undefined) {
-			setNewVersionBanner({ isOpen: true, commitHash: githubBranch?.commit?.sha });
+			setNewVersionBanner(  perv => ({ ...perv, isOpen: true }));
 		}
-	}, [ isLoadingGithubBranch ]);
+	}, [ isLoadingGithubBranch, githubBranch ]);
 
 	// const Player = React.lazy(() => import("./pages/player").then(module => { return { default: module.Player } }) );
 	// const Franchises = React.lazy(() => import("./pages/franchises").then(module => { return { default: module.Franchises } }) );
@@ -96,7 +98,12 @@ export function Router() {
 		fetchUser();
 	}, [discordUser, setDiscordUser]);
 
-	ReactGA.send({ hitType: "pageview", page: location, title: "Page View" });
+	let ga: Record<string, string> = { hitType: "pageview", page: location, title: "Page View" };
+	if( loggedinUser?.discordId && loggedinUser?.name ) {
+		ga = { ...ga, discordId: loggedinUser.discordId, name: loggedinUser.name };
+	}
+
+	ReactGA.send(ga);
 
 	return (
 		<>

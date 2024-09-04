@@ -37,7 +37,7 @@ import { ProfileJson } from "../models/profile-types";
 export function Player() {
 	const divRef = React.useRef<HTMLDivElement>(null);
 	const [, params] = useRoute("/players/:id");
-	const { players = [], franchises = [], loading } = useDataContext();
+	const { players = [], franchises = [], loading, seasonAndMatchType } = useDataContext();
 	const [ showProfile, setShowProfile ] = React.useState(false);
 
 	const nameParam = decodeURIComponent(params?.id ?? "");
@@ -292,6 +292,10 @@ export function Player() {
 					</div>
 				)}
 				<br />
+				{currentPlayer.statsOutOfTier &&
+					currentPlayer.statsOutOfTier.map(outOfTierStats => <StatsOutOfTier stats={outOfTierStats} />)
+				}
+				<br />
 				{currentPlayer?.extendedStats && (
 					<div className="">
 						<Exandable title="Extended Stats">
@@ -357,10 +361,7 @@ export function Player() {
 					</div>
 				)}
 				<br />
-				<PlayerMatchHistory player={currentPlayer} />
-				<br />
-				{currentPlayer.statsOutOfTier &&
-					currentPlayer.statsOutOfTier.map(outOfTierStats => <StatsOutOfTier stats={outOfTierStats} />)}
+				<PlayerMatchHistory player={currentPlayer} season={seasonAndMatchType.season} />
 			</Container>
 		</>
 	);

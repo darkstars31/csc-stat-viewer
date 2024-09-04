@@ -3,6 +3,10 @@ import { PlayerStats } from "../models";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { type DataConfiguration } from "../dataConfig";
 
+/**
+ * Unused, for Historical Purposes when pulling data from Google Sheets
+ */
+
 const getData = async (seasonConfig: DataConfiguration) =>
 	await fetch(`${seasonConfig.spreadsheetUrl}`, {
 		method: "GET",

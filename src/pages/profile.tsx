@@ -79,7 +79,7 @@ export function SocialFields( { onChange, profileSettings }: { onChange: (x: Rec
 }
 
 export function Profile() {
-	const { discordUser, players, seasonAndTierConfig } = useDataContext();
+	const { discordUser, players, seasonAndMatchType } = useDataContext();
 	const currentPlayer = players.find(p => p.discordId === discordUser?.id);
 	const { data: profile, isFetching } = useFetchPlayerProfile(discordUser?.id);
 	const [isSaving, setIsSaving] = React.useState(false);
@@ -160,9 +160,9 @@ export function Profile() {
 		{ label: "de_inferno", value: "de_inferno" },
 	];
 
-	const firstCSCSeasonOptions = [...Array.from({ length: seasonAndTierConfig?.number ?? 0 }, (_, i) => i + 1).reverse().map(i => ({ value: i, label: i.toString() }))]
+	const firstCSCSeasonOptions = [...Array.from({ length: seasonAndMatchType?.season ?? 0 }, (_, i) => i + 1).reverse().map(i => ({ value: i, label: i.toString() }))]
 
-	const ageOptions = ["16-20","21-25","23-25","26-29","30-35","36+"].map((age) => ({ label: age, value: age }));
+	const ageOptions = ["16-20","21-23","24-26","27-29","30-35","36+"].map((age) => ({ label: age, value: age }));
 	const aspectRatioOptions = ["4:3","16:9","16:10","Other???"].map((value) => ({ label: value, value: value }));
 	const regionOptions = ["US-East","US-West","US-Central","EU","Other"].map((value) => ({ label: value, value: value }));
 

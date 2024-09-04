@@ -10,7 +10,7 @@ function classNames(...classes: string[]) {
 }
 
 export function HeaderProfile() {
-	const { discordUser, players } = useDataContext();
+	const { discordUser, players, enableExperimentalHistorialFeature, setEnableExperimentalHistorialFeature } = useDataContext();
 	const currentLoggedInPlayer = players.find(p => p.discordId === discordUser?.id);
 
 	return (
@@ -123,6 +123,21 @@ export function HeaderProfile() {
 								)}
 							</Menu.Item>
 							<hr />
+							<Menu.Item>
+								{({ active }) => (									
+									<button
+										className={classNames(
+											active ? "bg-gray-100" : "",
+											"block px-4 py-2 text-sm text-gray-700 w-full",
+										)}
+										onClick={() => {
+											setEnableExperimentalHistorialFeature(!enableExperimentalHistorialFeature);
+										}}
+									>
+										{enableExperimentalHistorialFeature ? "Disable" : "Enable"} Experimental History
+									</button>								
+								)}
+							</Menu.Item>
 						</>
 					)}
 					<Menu.Item>

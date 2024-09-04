@@ -3,7 +3,6 @@ import { useCscPlayersGraph } from "./dao/cscPlayerGraphQLDao";
 import { dataConfiguration } from "./dataConfig";
 import { Player } from "./models/player";
 import { useFetchFranchisesGraph } from "./dao/franchisesGraphQLDao";
-import { SingleValue } from "react-select";
 import { useCscStatsGraph } from "./dao/cscStatsGraphQLDao";
 import {
 	PlayerTypes,
@@ -14,18 +13,28 @@ import { DiscordUser } from "./models/discord-users";
 import { useCscSeasonAndTiersGraph } from "./dao/cscSeasonAndTiersDao";
 import { ExtendedStats } from "./models/extended-stats";
 import { useAnalytikillExtendedStats } from "./dao/analytikill";
+import { useCscSeasonMatches } from "./dao/cscSeasonMatches";
+import { queryClient } from "./App";
 
 const useDataContextProvider = () => {
 	const [discordUser, setDiscordUser] = React.useState<DiscordUser | null>(null);
+	const { data: seasonAndTierConfig = undefined, isLoading: isLoadingCscSeasonAndTiers } = useCscSeasonAndTiersGraph();
+	const { data: matches = [], isLoading: isLoadingMatches } = useCscSeasonMatches("Premier", seasonAndTierConfig?.number ?? 0);
+    const [ enableExperimentalHistorialFeature, setEnableExperimentalHistorialFeature] = React.useState<boolean>(false);
+	const [ seasonAndMatchType, setSeasonAndMatchType ] = React.useState<{ season: number; matchType: string }>({ season: seasonAndTierConfig?.number ?? 0, matchType: matches.length > 0 ? "Regulation" : "Combine" });
 	const { data: extendedPlayerStats = undefined, isLoading: isLoadingExtendedStats } = useAnalytikillExtendedStats();
-	const [selectedDataOption, setSelectedDataOption] = React.useState<SingleValue<{ label: string; value: string }>>({
-		label: dataConfiguration[0].name,
-		value: dataConfiguration[0].name,
-	});
-	const dataConfig = dataConfiguration.find(item => selectedDataOption?.value === item.name);
+	const dataConfig = dataConfiguration.find(item => dataConfiguration[0].name === item.name);
 
-	const { data: seasonAndTierConfig = undefined, isLoading: isLoadingCscSeasonAndTiers } =
-		useCscSeasonAndTiersGraph();
+	const hasSeasonstarted = matches.length > 0
+
+	React.useEffect(() => {
+		setSeasonAndMatchType({ season: seasonAndTierConfig?.number ?? 0, matchType: hasSeasonstarted ? "Regulation" : "Combine" });
+	}, [isLoadingCscSeasonAndTiers === false, isLoadingMatches === false]);
+
+	React.useEffect(() => {
+		seasonAndTierConfig?.league.leagueTiers.forEach(tier => queryClient.invalidateQueries([`cscstats-graph`, tier.tier.name, seasonAndTierConfig?.number, seasonAndMatchType.matchType]));
+		queryClient.invalidateQueries([`cscplayermatchhistory-graph`]);
+	}, [seasonAndMatchType]);
 
 	const {
 		data: cscSignedPlayers = [],
@@ -69,37 +78,37 @@ const useDataContextProvider = () => {
 		PlayerTypes.EXPIRED,
 		{ skipCache: true },
 	);
-	//const { data: cscSpectatorPlayers = [] } = useCscPlayersGraph( "SPECTATOR" );
+	const { data: cscSpectatorPlayers = [] } = useCscPlayersGraph( "SPECTATOR" );
 
 	const { data: cscStatsRecruit = [], isLoading: isLoadingCscStatsRecruit } = useCscStatsGraph(
 		"Recruit",
-		dataConfig?.season,
-		"Combine",
+		seasonAndMatchType?.season,
+		seasonAndMatchType.matchType,
 	);
 	const { data: cscStatsProspect = [], isLoading: isLoadingCscStatsProspect } = useCscStatsGraph(
 		"Prospect",
-		dataConfig?.season,
-		"Combine",
+		seasonAndMatchType?.season,
+		seasonAndMatchType.matchType,
 	);
 	const { data: cscStatsContender = [], isLoading: isLoadingCscStatsContender } = useCscStatsGraph(
 		"Contender",
-		dataConfig?.season,
-		"Combine",
+		seasonAndMatchType?.season,
+		seasonAndMatchType.matchType,
 	);
 	const { data: cscStatsChallenger = [], isLoading: isLoadingCscStatsChallenger } = useCscStatsGraph(
 		"Challenger",
-		dataConfig?.season,
-		"Combine",
+		seasonAndMatchType?.season,
+		seasonAndMatchType.matchType,
 	);
 	const { data: cscStatsElite = [], isLoading: isLoadingCscStatsElite } = useCscStatsGraph(
 		"Elite",
-		dataConfig?.season,
-		"Combine",
+		seasonAndMatchType?.season,
+		seasonAndMatchType.matchType,
 	);
 	const { data: cscStatsPremier = [], isLoading: isLoadingCscStatsPremier } = useCscStatsGraph(
 		"Premier",
-		dataConfig?.season,
-		"Combine",
+		seasonAndMatchType?.season,
+		seasonAndMatchType.matchType,
 	);
 
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
@@ -118,7 +127,7 @@ const useDataContextProvider = () => {
 		...cscUnrosteredAGMPlayers,
 		...cscSignedPromotedPlayers,
 		...cscExpiredPlayers,
-		//...cscSpectatorPlayers,
+		...cscSpectatorPlayers,
 	];
 
 	const statsByTier = {
@@ -255,11 +264,14 @@ const useDataContextProvider = () => {
 			},
 		},
 		statsByTier,
-		selectedDataOption,
-		setSelectedDataOption,
 		dataConfig,
-		seasonAndTierConfig,
-		featureFlags: {},
+		seasonAndMatchType,
+		currentSeason: seasonAndTierConfig?.number ?? 0,
+		hasSeasonstarted,
+		enableExperimentalHistorialFeature,
+		setEnableExperimentalHistorialFeature,
+		tiers: seasonAndTierConfig?.league.leagueTiers ?? [],
+		setSeasonAndMatchType,
 		errors: [error].filter(Boolean),
 	};
 };

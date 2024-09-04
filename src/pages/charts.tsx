@@ -39,7 +39,7 @@ export function Charts() {
 
 	const q = new URLSearchParams(window.location.search).get("q");
 	const inputRef = React.useRef<HTMLInputElement>(null);
-	const { players, seasonAndTierConfig, isLoading } = useDataContext();
+	const { players, seasonAndMatchType, isLoading } = useDataContext();
 	const playersWithStats = players.filter(p => p.stats);
 	const [currentTab, setCurrentTab] = React.useState<string>(tabs.find(t => t.label === q)?.label ?? tabs[0].label);
 
@@ -128,7 +128,7 @@ export function Charts() {
 	if (playersWithStats.length === 0) {
 		return (
 			<Container>
-				<i>No Players with stats for season {seasonAndTierConfig?.number} yet.. Check back later</i>
+				<i>No Players with stats for season {seasonAndMatchType?.season} yet.. Check back later</i>
 			</Container>
 		);
 	}

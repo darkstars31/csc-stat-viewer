@@ -11,7 +11,7 @@ import { PlayerTypes } from "../common/utils/player-utils";
 
 export function Franchises() {
 	const konami = useKonamiCode();
-	const { franchises = [], players = [], seasonAndTierConfig, loading } = useDataContext();
+	const { franchises = [], players = [], tiers, loading } = useDataContext();
 
 	const tierNumber = {
 		Recruit: 1,
@@ -65,7 +65,7 @@ export function Franchises() {
 					.map(key => (
 						<div className="grow">
 							<div
-								className={`font-bold capitalize text-${seasonAndTierConfig?.league?.leagueTiers?.find(item => item.tier.name.toLowerCase() === key)?.tier.color ?? ""}-400`}
+								className={`font-bold capitalize text-${tiers?.find(item => item.tier.name.toLowerCase() === key)?.tier.color ?? ""}-400`}
 							>
 								{key}
 							</div>
@@ -117,7 +117,7 @@ export function Franchises() {
 													<div className="mx-4 border-b-[1px] border-slate-700 text-center">
 														<strong>{team.name}</strong>{" "}
 														<span
-															className={`text-gray-400 italic text-${seasonAndTierConfig?.league?.leagueTiers?.find(item => item.tier.name === team.tier.name)?.tier.color ?? ""}-400`}
+															className={`text-gray-400 italic text-${tiers?.find(item => item.tier.name === team.tier.name)?.tier.color ?? ""}-400`}
 														>
 															{team.tier.name}{" "}
 															{konami && (

@@ -19,9 +19,11 @@ import { ExtendedMatchHistoryTeamEcon } from "./extendedMatchHistoryTeamEcon";
 import { ExtendedMatchHistoryKillFeed } from "./extendedMatchHistoryKillFeed";
 import { ExtendedMatchHistoryTrades } from "./extendedMatchHistoryTrades";
 import { ExtendedMatchHistoryMatchup } from "./extendedMatchHistoryMatchup";
+import { useDataContext } from "../../DataContext";
 
 type Props = {
 	player: Player;
+	season: number;
 };
 
 function PlayerMatchStatLine({ playerStat }: { playerStat: any }) {
@@ -287,8 +289,8 @@ function MatchRow({ player, match }: { player: Player; match: Match }) {
 	);
 }
 
-export function PlayerMatchHistory({ player }: Props) {
-	const { data: playerMatchHistory, isLoading: isLoadingPlayerMatchHistory } = useCscPlayerMatchHistoryGraph(player);
+export function PlayerMatchHistory({ player, season }: Props) {
+	const { data: playerMatchHistory, isLoading: isLoadingPlayerMatchHistory } = useCscPlayerMatchHistoryGraph(player, season);
 	const [showAll, setShowAll] = React.useState(false);
 
 	const sortedPlayerMatchHistory = playerMatchHistory?.sort(
@@ -353,9 +355,11 @@ export function PlayerMatchHistory({ player }: Props) {
 }
 
 export function TeamMatchHistory({ teamName, matchIds }: { teamName: string; matchIds: string[] }) {
+	const { seasonAndMatchType } = useDataContext();
 	const { data: teamMatchHistory, isLoading: isLoadingPlayerMatchHistory } = useCscTeamMatchHistoryGraph(
 		teamName,
 		matchIds,
+		seasonAndMatchType.season,
 	);
 	const [showAll, setShowAll] = React.useState(false);
 

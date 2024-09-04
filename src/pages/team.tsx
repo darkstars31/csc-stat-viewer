@@ -21,9 +21,8 @@ export function Team() {
 	const {
 		franchises = [],
 		players: cscPlayers = [],
-		dataConfig,
-		seasonAndTierConfig,
-		loggedinUser,
+		seasonAndMatchType,
+		tiers,
 		loading,
 	} = useDataContext();
 	// zeslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -47,7 +46,7 @@ export function Team() {
 
 	const currentFranchise = franchises.find(f => f.name === franchiseName);
 	const currentTeam = currentFranchise?.teams.find(t => t.name === teamName);
-	const currentTier = seasonAndTierConfig?.league.leagueTiers.find(t => t.tier.name === currentTeam?.tier.name);
+	const currentTier = tiers.find(t => t.tier.name === currentTeam?.tier.name);
 	const currentTeamTotalMmr = currentTeam?.players.reduce((sum, next) => sum + next.mmr ?? 0, 0) ?? 0;
 	const currentTeamMMRMinusCapDiff = (currentTier?.tier.mmrCap ?? 0) - currentTeamTotalMmr;
 	const currentTeamTotalMmrPercent = ((currentTeamTotalMmr / (currentTier?.tier.mmrCap ?? 0)) * 100).toFixed(2);
@@ -94,7 +93,7 @@ export function Team() {
 
 	// zeslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph(
-		dataConfig?.season,
+		seasonAndMatchType.season,
 		currentTeam?.id,
 	);
 	const matchIds = React.useMemo(() => matches.map(match => match.id), [matches]);

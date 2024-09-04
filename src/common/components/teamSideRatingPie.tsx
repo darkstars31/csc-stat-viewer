@@ -8,6 +8,14 @@ type Props = {
 };
 
 export function TeamSideRatingPie({ player }: Props) {
+
+	const ctRating = Number(player?.stats?.ctRating)
+	const tRating = Number(player?.stats?.TRating)
+
+	if (!ctRating || !tRating) {
+		return null
+	}
+
 	const defaultOptions: EChartsOption = {
 		color: ["#4169e1", "#ff6347"],
 		title: {
@@ -51,8 +59,8 @@ export function TeamSideRatingPie({ player }: Props) {
 				show: true,
 			},
 			data: [
-				{ name: "CT", value: Number(player?.stats?.ctRating.toFixed(2)) },
-				{ name: "T", value: Number(player?.stats?.TRating.toFixed(2)) },
+				{ name: "CT", value: +ctRating.toFixed(2) },
+				{ name: "T", value: +tRating.toFixed(2) },
 				// { name: "", value: player['CT #'] + player['T #'],
 				//     itemStyle: { color: 'none'},
 				//     label: { show: false }

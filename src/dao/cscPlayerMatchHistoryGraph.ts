@@ -1,5 +1,5 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { appConfig, dataConfiguration } from "../dataConfig";
+import { appConfig } from "../dataConfig";
 import { Player } from "../models/player";
 import { CscPlayerMatchHistoryQuery } from "../models/csc-player-match-history-types";
 
@@ -60,9 +60,10 @@ const fetchGraph = async (filter: Record<string, any>) =>
 
 export function useCscPlayerMatchHistoryGraph(
 	player: Player,
+	season: number
 ): UseQueryResult<CscPlayerMatchHistoryQuery["data"]["findManyMatch"]> {
 	return useQuery(
-		[`cscplayermatchhistory-${player.name}-graph`],
+		[`cscplayermatchhistory-graph`, player.name],
 		() =>
 			fetchGraph({
 				whereFilter: {
@@ -74,7 +75,7 @@ export function useCscPlayerMatchHistoryGraph(
 						},
 					},
 					season: {
-						equals: dataConfiguration[0].season, // Current Season
+						equals: season, // Current Season
 					},
 				},
 			}),
@@ -87,9 +88,10 @@ export function useCscPlayerMatchHistoryGraph(
 export function useCscTeamMatchHistoryGraph(
 	teamname: string,
 	matchIds: string[],
+	season: number,
 ): UseQueryResult<CscPlayerMatchHistoryQuery["data"]["findManyMatch"]> {
 	return useQuery(
-		[`cscteammatchhistory-${teamname}-graph`],
+		[`cscteammatchhistory-graph`,teamname],
 		() =>
 			fetchGraph({
 				whereFilter: {
@@ -97,7 +99,7 @@ export function useCscTeamMatchHistoryGraph(
 						in: matchIds,
 					},
 					season: {
-						equals: dataConfiguration[0].season, // Current Season
+						equals: season,
 					},
 				},
 			}),

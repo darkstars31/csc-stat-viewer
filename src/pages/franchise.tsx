@@ -10,7 +10,7 @@ import { franchiseImages } from "../common/images/franchise";
 export const COLUMNS = 4;
 
 export function Franchise() {
-	const { players, franchises = [], seasonAndTierConfig, loading } = useDataContext();
+	const { players, franchises = [], tiers, loading } = useDataContext();
 	const [, params] = useRoute("/franchises/:franchiseName");
 	const franchiseName = decodeURIComponent(params?.franchiseName ?? "");
 	const currentFranchise = franchises.find(f => f.name === franchiseName);
@@ -83,7 +83,7 @@ export function Franchise() {
 											<h2 className="text-xl w-full">
 												<div className="inline font-extrabold">{team.name}</div>{" "}
 												<span
-													className={`text-gray-400 italic text-${seasonAndTierConfig?.league?.leagueTiers?.find(item => item.tier.name === team.tier.name)?.tier.color ?? ""}-400`}
+													className={`text-gray-400 italic text-${tiers?.find(item => item.tier.name === team.tier.name)?.tier.color ?? ""}-400`}
 												>
 													{team.tier.name}{" "}
 													{false && (

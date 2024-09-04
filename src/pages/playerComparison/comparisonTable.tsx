@@ -10,7 +10,7 @@ import { Link } from "wouter";
 
 export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[] }) {
 	const [showPercentile, setShowPercentile] = React.useState(false);
-	const { players, seasonAndTierConfig } = useDataContext();
+	const { players, tiers } = useDataContext();
 
 	const selectedPlayersWithPercentile = React.useMemo(
 		() =>
@@ -28,7 +28,7 @@ export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[]
 		[selectedPlayers, players],
 	);
 
-	const currentTierMMRCap = seasonAndTierConfig?.league.leagueTiers.find(
+	const currentTierMMRCap = tiers.find(
 		t => t.tier.name === selectedPlayers[0]?.tier.name,
 	);
 	const totalMMR = selectedPlayers.reduce((accumulator, player) => accumulator + (player?.mmr ?? 0), 0);

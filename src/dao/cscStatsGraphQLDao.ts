@@ -87,7 +87,8 @@ const fetchCachedGraph = async (tier: CscTiers, season?: number, matchType?: str
 		});
 
 export function useCscStatsGraph(tier: CscTiers, season?: number, matchType?: string): UseQueryResult<CscStats[]> {
-	return useQuery([`cscstats-${tier}-graph`], () => fetchCachedGraph(tier, season, matchType), {
+	return useQuery([`cscstats-graph`, tier, season, matchType], () => fetchCachedGraph(tier, season, matchType), {
+        enabled: Boolean(season),
 		staleTime: OneHour,
 	});
 }
