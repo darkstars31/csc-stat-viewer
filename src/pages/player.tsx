@@ -186,9 +186,10 @@ export function Player() {
 						<div className="basis-1/2 grow p-4 content-center">
 							<PlayerAwards player={currentPlayer} players={players} />
 						</div>
-						<div className="basis-1/12">
+						<div className="float-right w-4 sm:w-40">
 							<ExternalPlayerLinks player={currentPlayer} />
 						</div>
+						<div className="clear-both" />
 					</div>				
 					{ Object.values(playerProfile ?? {}).length > 0 &&
 						<Transition
