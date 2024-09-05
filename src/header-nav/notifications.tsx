@@ -8,7 +8,7 @@ function classNames(...classes: string[]) {
 }
 
 export function HeaderNotifications() {
-	const { notifications } = useNotificationsContext();
+	const { notifications, removeNotification } = useNotificationsContext();
 
 	return (
 		<Menu as="div" className="relative inline-block">
@@ -56,8 +56,9 @@ export function HeaderNotifications() {
 								>
 									<a
 										className="flex flex-row"
-										href={`https://www.twitch.tv/${notification.href}`}
-										target="_blank"
+										href={notification.href}
+										target={!!notification.shouldNewTab ? "_blank" : undefined}
+										onClick={() => removeNotification(notification)}
 										rel="noreferrer"
 									>
 										<div>
@@ -65,7 +66,7 @@ export function HeaderNotifications() {
 										</div>
 										<div className="basis-3/4 pl-2">
 											<div>{notification.title}</div>
-											<div className="text-xs text-gray-500">{notification.subText}</div>
+											<div className="text-xs text-gray-500">{notification.subText ?? ""}</div>
 										</div>
 									</a>
 								</span>

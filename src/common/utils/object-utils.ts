@@ -4,9 +4,6 @@ export const deepEquals = (a: Record<string, unknown>, b: Record<string, unknown
     const flatA = Object.entries(flatten(a)).filter(p => p[1] !== undefined).sort().flatMap(([key, value]) => ( [key, value] ));
     const flatB = Object.entries(flatten(b)).filter(p => p[1] !== undefined).sort().flatMap(([key, value]) => ( [key, value] ));
 
-    console.info( 'BE', flatA, 'FE', flatB );
-    console.info( flatA.toString() === flatB.toString() )
-
     return flatA.toString() === flatB.toString();
 }
 

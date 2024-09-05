@@ -4,9 +4,10 @@ import { useFetchTwitchStreamData } from "./dao/StatApiDao";
 export type Notification = {
 	id: number | string;
 	title: string;
-	subText: string;
-	imageUrl: string;
-	href: string;
+	subText?: string;
+	imageUrl?: string;
+	href?: string;
+	shouldNewTab?: boolean;
 };
 
 const useNotificationsContextProvider = () => {
@@ -14,6 +15,8 @@ const useNotificationsContextProvider = () => {
 		"csconfederation",
 		"csconfederation_b",
 		"csconfederation_c",
+		"dripcsc",
+		"teamupsetti",
 	]);
 
 	const notifications: Notification[] = [
@@ -21,13 +24,26 @@ const useNotificationsContextProvider = () => {
 		...twitchStreams.flatMap(stream => ({
 			id: stream.id,
 			title: stream.user_name.concat(" is Live"),
-			href: stream.user_name,
+			href: `https://www.twitch.tv/${stream.user_name}`,
 			subText: stream.title,
+			shouldNewTab: true,
 			imageUrl: stream.thumbnail_url.replace("{width}", "160").replace("{height}", "90"),
 		})),
 	];
 
+	const addNotification = (notification: Notification) => {
+		if(!notifications.some(n => n.id === notification.id)){
+			notifications.push(notification);
+		}
+	};
+
+	const removeNotification = (notification: Notification) => {
+		notifications.splice(notifications.indexOf(notification), 1);
+	}
+
 	return {
+		addNotification,
+		removeNotification,
 		notifications,
 	};
 };

@@ -7,6 +7,7 @@ import { AppLoadingError } from "./pages/appLoadingError";
 import { Header } from "./header-nav/header";
 import { SeasonAndMatchTypeSelector } from "./header-nav/seasonAndMatchTypeSelector";
 import ScrollToHashElement from "./common/components/scrollToHashElement";
+import { NotificationsProvider } from "./NotificationsContext";
 
 export const queryClient = new QueryClient();
 const env: string = process.env.NODE_ENV!;
@@ -27,15 +28,17 @@ function App() {
 		<div className="bg-midnight1 text-white scroll-none">
 			<QueryClientProvider client={queryClient}>
 				<DataContextProvider>
-					<AppLoadingError />
-					<ScrollToHashElement />
-					<div className="fixed sticky top-0 z-10">
-						<Header />
-						<SeasonAndMatchTypeSelector />
-					</div>
-					<div>
-						<Router />
-					</div>
+					<NotificationsProvider>
+						<AppLoadingError />
+						<ScrollToHashElement />
+						<div className="fixed sticky top-0 z-10">
+							<Header />
+							<SeasonAndMatchTypeSelector />
+						</div>
+						<div>
+							<Router />
+						</div>
+					</NotificationsProvider>
 				</DataContextProvider>
 			</QueryClientProvider>
 		</div>

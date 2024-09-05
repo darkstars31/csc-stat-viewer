@@ -138,6 +138,7 @@ export function Profile() {
 		{ label: "Alphapack Leader", value: "Alphapack Leader" },
 		{ label: "Fake Flash Abuser", value: "Fake Flash Abuser" },
 		{ label: "Entry", value: "Entry" },
+		{ label: "Burst Fire is Life", value: "Burst Fire is Life" },
 		{ label: "Refragger", value: "Refragger" },
 		{ label: "Support", value: "Support" },
 		{ label: "Lurker", value: "Lurker" },

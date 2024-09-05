@@ -7,7 +7,6 @@ import { LuBarChart } from "react-icons/lu";
 
 import { HeaderNotifications } from "./notifications";
 import { HeaderProfile } from "./profile";
-import { NotificationsProvider } from "../NotificationsContext";
 import { ToolsDropdown } from "./tools-dropdown";
 
 function classNames(...classes: string[]) {
@@ -108,9 +107,7 @@ export function Header() {
 								</div>
 							</div>
 							<div className="inset-y-0 flex sm:static sm:inset-auto sm:ml-6 sm:pr-0 basis-1/2 md:basis-1/4 w-full justify-end gap-6">
-								<NotificationsProvider>
-									<HeaderNotifications />
-								</NotificationsProvider>
+								<HeaderNotifications />
 								<HeaderProfile />
 							</div>
 						</div>

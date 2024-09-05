@@ -21,8 +21,6 @@ export const ExtendedMatchHistoryTrades = ({ extendedMatchData } : { extendedMat
         return acc
     }, {})
 
-    console.info( trades );
-
     return (
         <>
             <div className="text-xs text-gray-500 text-center">*Trade Kills/Deaths over Total, does not currently account for opportunities.</div>

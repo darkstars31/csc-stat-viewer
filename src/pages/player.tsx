@@ -32,11 +32,13 @@ import { Transition } from "@headlessui/react";
 import { useFetchPlayerProfile } from "../dao/analytikill";
 import { ProfileJson } from "../models/profile-types";
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
+import { useNotificationsContext } from "../NotificationsContext";
 
 export function Player() {
 	const divRef = React.useRef<HTMLDivElement>(null);
 	const [, params] = useRoute("/players/:id");
-	const { players = [], franchises = [], loading, seasonAndMatchType, tiers } = useDataContext();
+	const { players = [], franchises = [], loading, seasonAndMatchType, tiers, loggedinUser } = useDataContext();
+	const { addNotification } = useNotificationsContext();
 	const [ showProfile, setShowProfile ] = React.useState(false);
 
 	const nameParam = decodeURIComponent(params?.id ?? "");
@@ -67,6 +69,16 @@ export function Player() {
 
 	if (!currentPlayer) {
 		return <Container>An error occured. Player could not found. Please inform Camps of this error.</Container>;
+	}
+
+	if ( currentPlayer === loggedinUser && Object.keys(playerProfile).length === 0 ) {
+		addNotification({
+			id: "FillOutProfile",
+			title: "It Looks like your profile is empty.",
+			subText: "Head over to profile to fill it out.",
+			shouldNewTab: false,
+			href: "/profile",
+		})
 	}
 
 	const teamAndFranchise =
@@ -156,7 +168,7 @@ export function Player() {
 								<ul className="text-[0.8rem]">
 									<li>
 										{String(playerRatingIndex + 1).concat(nth(playerRatingIndex + 1))} Overall in{" "}
-											<span className={`text-${tiers.find(t => t.name === viewStatSelection)?.color}-500`}>
+											<span className={`text-${tiers.find(t => t.tier.name === viewStatSelection)?.tier.color}-500`}>
 												<b>
 													<i>
 														{currentPlayer.name.toLowerCase() === "comradsniper" ?

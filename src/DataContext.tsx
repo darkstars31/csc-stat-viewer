@@ -127,8 +127,11 @@ const useDataContextProvider = () => {
 		...cscUnrosteredAGMPlayers,
 		...cscSignedPromotedPlayers,
 		...cscExpiredPlayers,
-		...cscSpectatorPlayers,
 	];
+
+	if ( enableExperimentalHistorialFeature ) {
+		cscPlayers.push(...cscSpectatorPlayers)
+	}
 
 	const statsByTier = {
 		Recruit: cscStatsRecruit,
