@@ -20,8 +20,6 @@ import { PlayerAwards } from "./player/playerAwards";
 import { FaceitRank } from "../common/components/faceitRank";
 import { ToolTip } from "../common/utils/tooltip-utils";
 import * as Containers from "../common/components/containers";
-import { StatsOutOfTier } from "./player/statsOutOfTier";
-import { tiers } from "../common/constants/tiers";
 import { PlayerMatchHistory } from "./player/matchHistory";
 import { TiWarningOutline } from "react-icons/ti";
 import { Exandable } from "../common/components/containers/Expandable";
@@ -38,7 +36,7 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 export function Player() {
 	const divRef = React.useRef<HTMLDivElement>(null);
 	const [, params] = useRoute("/players/:id");
-	const { players = [], franchises = [], loading, seasonAndMatchType } = useDataContext();
+	const { players = [], franchises = [], loading, seasonAndMatchType, tiers } = useDataContext();
 	const [ showProfile, setShowProfile ] = React.useState(false);
 
 	const nameParam = decodeURIComponent(params?.id ?? "");

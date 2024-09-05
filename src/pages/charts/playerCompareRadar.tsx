@@ -45,7 +45,10 @@ export function PlayerCompareRadar({
 
 	const selectedPlayerValues = selectedPlayers.map(player => ({
 		name: player.name,
-		value: statOptions.map(stat => getPlayerPercentileStatInTier(player, players, stat as keyof CscStats)),
+		value: statOptions.map(stat => getPlayerPercentileStatInTier(player, Object.values(player.statsOutOfTier ?? {})
+			.some( i => i.tier === player.tier.name) ? 
+			[ ...players, player] 
+			: players, stat as keyof CscStats)),
 		label: {
 			show: true,
 			formatter: function (params: { value: any }) {
@@ -56,7 +59,7 @@ export function PlayerCompareRadar({
 
 	const options: EChartsOption = {
 		legend: {
-			data: [...selectedPlayers.map(player => player.name), `${tier} Average`],
+			data: [...selectedPlayers.map(player => `${player.name}`), `${tier} Average`],
 			textStyle: {
 				color: "#B9B8CE",
 			},

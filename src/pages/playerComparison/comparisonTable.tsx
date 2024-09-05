@@ -44,7 +44,7 @@ export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[]
 				<table className="table-auto w-full font-light">
 					<thead className="text-left underline decoration-yellow-400">
 						<tr>
-							<td>Name</td>
+							<td>Name</td>						
 							<td>Role</td>
 							<td>
 								MMR{" "}
@@ -66,7 +66,7 @@ export function ComparisonTable({ selectedPlayers }: { selectedPlayers: Player[]
 					<tbody>
 						{Array.from(selectedPlayersWithPercentile).map((player, rowIndex) => (
 							<tr
-								key={player.name}
+								key={player.name.concat(player.tier.name)}
 								className={`${rowIndex % 2 === 1 ? "bg-midnight1" : "bg-midnight2"} rounded h-8`}
 							>
 								<td>

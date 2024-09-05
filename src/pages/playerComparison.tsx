@@ -20,26 +20,39 @@ export function PlayerComparison() {
 			const playerNames = playersFromUrl.split(",");
 			setSelectedPlayers(
 				playerNames
-					.map(name => {
+					.flatMap(name => {
 						const player = players.find(p => p.name.toLowerCase() === name.toLowerCase());
-						return player ?
+						
+						if ( player ) {
+							const playerOptions = [
 								{
 									label: `${player.name} (${player.tier.name} ${shortTeamNameTranslator(player)}) ${player.stats ? "" : " - No stats"}`,
 									value: player,
 									isDisabled: !player.stats,
 								}
-							:	false;
+							];
+							// Object.values(player?.statsOutOfTier ?? {}).forEach((item) => {
+							// 	console.info( 'statsOutOfTier', player.name, item.tier)
+							// 	playerOptions.push({
+							// 		label: `${player.name} (${item.tier}* ${shortTeamNameTranslator(player)})}`,
+							// 		value: { ...player, stats: player.statsOutOfTier!.find( s => s.tier === item.tier)!.stats! },
+							// 		isDisabled: false,
+							// 	})
+							// })
+	
+							return playerOptions;
+						}
 					})
 					.filter(Boolean) as MultiValue<{ label: string; value: Player }>,
+					
 			);
 		}
-		// zeslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	React.useEffect(() => {
 		if (selectedPlayers.length > 0) {
 			const url = new URL(window.location.href);
-			url.searchParams.set("players", decodeURIComponent(selectedPlayers.map(p => p.value.name).join(",")));
+			url.searchParams.set("players", decodeURIComponent(selectedPlayers.map(p => `${p.value.name}`).join(",")));
 			window.history.pushState(null, "", url);
 		}
 	}, [selectedPlayers]);
@@ -52,12 +65,27 @@ export function PlayerComparison() {
 		);
 	}
 
-	const playerOptions = players.map(player => ({
+	const playerOptions = players.filter(player => !player.tier.name.includes("Unrated")).map(player => ({
 		label: `${player.name} (${player.tier.name} ${shortTeamNameTranslator(player)}) ${player.stats ? "" : " - No stats"}`,
 		value: player,
 		isDisabled: !player.stats,
 	}));
+	players.filter(player => !player.tier.name.includes("Unrated")).forEach(player => {
+		Object.values(player?.statsOutOfTier ?? {}).forEach((item) => {
+			//if ( player.name.includes('XIE') ) console.info( 'statsOutOfTier', player.name, player.tier.name, item.tier, player.stats, player.statsOutOfTier)
+			playerOptions.push({
+				label: `${player.name} (${item.tier}* ${shortTeamNameTranslator(player)})`,
+				value: { ...player, name: `${player.name}|${item.tier}`, tier: { name: item.tier}, stats: player.statsOutOfTier!.find( s => s.tier === item.tier)!.stats! },
+				isDisabled: false,
+			})
+		})
+
+	})
 	playerOptions.sort((a, _) => (a.isDisabled ? 1 : -1));
+
+	selectedPlayers.forEach(p => {
+		console.info( p )
+	})
 
 	return (
 		<Container>

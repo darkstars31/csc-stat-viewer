@@ -1,30 +1,9 @@
-export const tiers = [
-	{
-		name: "Unrated",
-		color: null,
-	},
-	{
-		name: "Recruit",
-		color: "red",
-	},
-	{
-		name: "Prospect",
-		color: "orange",
-	},
-	{
-		name: "Contender",
-		color: "yellow",
-	},
-	{
-		name: "Challenger",
-		color: "green",
-	},
-	{
-		name: "Elite",
-		color: "blue",
-	},
-	{
-		name: "Premier",
-		color: "purple",
-	},
-];
+export const TIER_CONSTANTS = {
+    Recruit: "Recruit",
+    Prospect: "Prospect",
+    Contender: "Contender",
+    Challenger: "Challenger",
+    Elite: "Elite",
+    Premier: "Premier",   
+
+}
