@@ -115,7 +115,8 @@ export function Router() {
 							className="w-full h-8 bg-teal-600 text-center"
 							onClick={() => setNewVersionBanner({ ...newVersionBanner, isOpen: false })}
 						>
-							A new version of the site is available. Please refresh the page!
+							A new version of AnalytiKill is available. 
+							<a className="px-1 text-blue-600 underline" onClick={() => window.location.reload()}>Click here to update</a> or refresh the page!
 							<AiOutlineCloseCircle className="float-right mr-4" size="1.5em" />
 						</button>
 					)}

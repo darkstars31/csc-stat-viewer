@@ -95,6 +95,7 @@ export function Player() {
 		: currentPlayer.type === PlayerTypes.INACTIVE_RESERVE ? "Inactive Reserve"
 		: "";
 
+
 	return (
 		<>
 			<div ref={divRef} />
@@ -175,21 +176,21 @@ export function Player() {
 															"Super "
 														:	""}{" "}
 														<Popover className="inline relative">
-															<PopoverButton>
+															<PopoverButton className={`transition ease-in-out hover:scale-105 duration-100`}>
 																{viewStatSelection}{currentPlayer.tier.name === viewStatSelection ? "" : "*"}
 																</PopoverButton>
 																<PopoverPanel 
 																	anchor="bottom" 
-																	className="divide-y divide-white/5 rounded-xl bg-midnight2 text-sm/6 transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0"
+																	className="border-gray-800 divide-y divide-white/5 rounded-xl bg-midnight2 text-sm/6 transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0"
 																	>
-																	<div className="p-2">
+																	<div className="p-2 shadow-inner ">
 																		{
 																			currentPlayerTierOptions.map((tier) => (
 																				<button 
 																					className="block rounded-lg py-1 px-2 transition hover:bg-white/50"
 																					onClick={() => setViewStatSelection(tier)}
 																					>
-																					<p className="font-semibold text-white">{tier}</p>
+																					<p className={`font-semibold text-${tiers.find(t => t.tier.name === tier)?.tier.color}-500`}>{tier}</p>
 																			</button>
 																			))
 																		}																
@@ -317,7 +318,7 @@ export function Player() {
 							})}
 					</div>
 				)}
-				{ !currentPlayerStats || currentPlayerTierOptions.length > 1 &&
+				{ !currentPlayerStats || currentPlayerTierOptions.length > 0 &&
 					<div className="text-center">
 						<strong>
 							<i>Looking for stats in a different tier? <a className="text-blue-600 underline" href="#player-tier">You can now find that here</a></i>
