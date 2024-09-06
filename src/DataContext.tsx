@@ -193,16 +193,19 @@ const useDataContextProvider = () => {
 				(stats: { name: string }) => stats.name === cscPlayer?.name,
 			) as ExtendedStats;
 
+			const statsOutOfTier = statsByTier.length > 0 ?
+				statsByTier.filter(statsWithTier => statsWithTier.tier !== cscPlayer.tier.name)
+				:	null;
+
+			if( cscPlayer.name.includes("Jarts")) console.info( statsOutOfTier )
+
 			acc.push({
 				...cscPlayer,
 				hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
 				role,
 				stats,
 				extendedStats,
-				statsOutOfTier:
-					statsByTier.length > 0 ?
-						statsByTier.filter(statsWithTier => statsWithTier.tier !== cscPlayer.tier.name)
-					:	null,
+				statsOutOfTier,
 			});
 		} else {
 			acc.push({ ...(cscPlayer as Player) });

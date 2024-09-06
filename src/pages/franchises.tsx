@@ -1,13 +1,9 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
-import { Link } from "wouter";
 import { useDataContext } from "../DataContext";
-import { franchiseImages } from "../common/images/franchise";
-import { FranchiseTeams } from "./franchises/teams";
-import { franchiseMetadata } from "../common/constants/franchiseMetadata";
-import { BiSolidTrophy } from "react-icons/bi";
 import { FaExternalLinkAlt } from "react-icons/fa";
+import { FranchisesFranchise } from "./franchises/franchise";
 
 export function Franchises() {
 	const { franchises = [], tiers, loading } = useDataContext();
@@ -70,50 +66,7 @@ export function Franchises() {
 			{loading.isLoadingFranchises && <Loading />}
 			<div className="flex flex-col gap-4">
 				{franchises.map(franchise => (
-					<div
-						key={`${franchise.name}`}
-						className="relative hover:cursor-pointer shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10"
-					>				
-						<Link to={`/franchises/${encodeURIComponent(franchise.name)}`}>
-							<div
-								style={{
-									backgroundImage: `url(${franchiseImages[franchise.prefix]})`,
-								}}
-								className={`bg-repeat bg-fixed bg-center`}
-							>
-								<div className="rounded-md border border-gray-800 md:flex-row overflow-hidden backdrop-opacity-10 backdrop-brightness-90 bg-black/[.85] p-2">
-									<div className="flex flex-row">
-										<div>
-											<div className="z-10 h-24 w-24 md:w-48 md:h-48">
-												<img
-													src={franchiseImages[franchise.prefix]}
-													placeholder=""
-													alt=""
-												/>
-												<div className="text-sm text-yellow-300">
-													{ franchiseMetadata.find( f => f.prefix === franchise.prefix )?.trophies.map( t => (
-														<div>{t.season} <BiSolidTrophy className="inline" /> {t.tier}</div>
-													))}
-												</div>
-											</div>
-										</div>
-										<div>
-											<div className="basis-8/12 flex flex-row gap-8 justify-end">
-												<div className="basis-1/3 text-3xl font-bold text-white text-center leading-loose">
-													{franchise.name} (<i>{franchise.prefix}</i>)
-												</div>
-												<div className="basis-1/2">
-													<div>GM - {franchise.gm.name}</div>
-													<div>AGM - {franchise.agms?.map(agm => agm.name).join(", ")}</div>
-												</div>
-											</div>
-											<FranchiseTeams franchise={franchise} />
-										</div>
-									</div>
-								</div>
-							</div>
-						</Link>
-					</div>
+					<FranchisesFranchise franchise={franchise} />
 				))}
 			</div>
 		</Container>

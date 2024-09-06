@@ -1,7 +1,10 @@
 import { TIER_CONSTANTS } from "../constants/tiers";
 
 export const franchiseMetadata = [
-    { prefix: "UPS", trophies: [
+    { prefix: "UPS",
+        discordUrl: "https://discord.gg/VPdMevRF",
+        inceptionSeason: 7,
+        trophies: [
         { season: 14, tier: TIER_CONSTANTS.Elite},
         { season: 14, tier: TIER_CONSTANTS.Challenger},
         { season: 12, tier: TIER_CONSTANTS.Premier},
@@ -12,24 +15,36 @@ export const franchiseMetadata = [
         { season: 8, tier: TIER_CONSTANTS.Premier},
         { season: 7, tier: TIER_CONSTANTS.Challenger},
     ], },
-    { prefix: "WET", trophies: [
+    { prefix: "WET",
+        discordUrl: "https://discord.gg/hWn2DGhf",
+        inceptionSeason: 1,
+        trophies: [
         { season: 14, tier: TIER_CONSTANTS.Prospect},
         { season: 13, tier: TIER_CONSTANTS.Contender},
         { season: 11, tier: TIER_CONSTANTS.Contender},
     ]},
-    { prefix: "H4K", trophies: [
+    { prefix: "H4K",
+        discordUrl: "",
+        inceptionSeason: 1,
+        trophies: [
         { season: 14, tier: TIER_CONSTANTS.Contender},
         { season: 13, tier: TIER_CONSTANTS.Elite},
         { season: 12, tier: TIER_CONSTANTS.Elite},
         { season: 11, tier: TIER_CONSTANTS.Elite},
         { season: 10, tier: TIER_CONSTANTS.Elite},
     ]},
-    { prefix: "OS", trophies: [
+    { prefix: "OS",
+        discordUrl: "",
+        inceptionSeason: 1,
+        trophies: [
         { season: 8, tier: TIER_CONSTANTS.Challenger},
         { season: 7, tier: TIER_CONSTANTS.Prospect},
         { season: 6, tier: "Minor"},
     ]},
-    { prefix: "HG", trophies: [
+    { prefix: "HG",
+        discordUrl: "",
+        inceptionSeason: 1,
+        trophies: [
         { season: 14, tier: TIER_CONSTANTS.Premier},
         { season: 13, tier: TIER_CONSTANTS.Challenger},
         { season: 10, tier: TIER_CONSTANTS.Premier},
@@ -37,26 +52,49 @@ export const franchiseMetadata = [
         { season: 7, tier: TIER_CONSTANTS.Premier},
         { season: 7, tier: TIER_CONSTANTS.Elite},
     ]},
-    { prefix: "SAV", trophies: [
+    { prefix: "SAV",
+        discordUrl: "https://discord.gg/BAbNKr55",
+        inceptionSeason: 1,
+        trophies: [
         { season: 12, tier: TIER_CONSTANTS.Recruit},
         { season: 9, tier: TIER_CONSTANTS.Contender},
     ]},
-    { prefix: "ATL", trophies: [
+    { prefix: "ATL",
+        discordUrl: "",
+        inceptionSeason: 1,
+        trophies: [
         { season: 13, tier: TIER_CONSTANTS.Prospect},
         { season: 10, tier: TIER_CONSTANTS.Challenger},
     ]},
-    { prefix: "AVI", trophies: [
+    { prefix: "AVI",
+        discordUrl: "https://discord.gg/uXHms59b",
+        inceptionSeason: 1,
+        trophies: [
         { season: 8, tier: TIER_CONSTANTS.Elite},
         { season: 1, tier: TIER_CONSTANTS.Prospect}
     ]},
-    { prefix: "NAN", trophies: [
+    { prefix: "NAN",
+        discordUrl: "",
+        inceptionSeason: 1,
+        trophies: [
         { season: 11, tier: TIER_CONSTANTS.Challenger},
         { season: 13, tier: TIER_CONSTANTS.Recruit}
     ]},
-    { prefix: "COW", trophies: [
+    { prefix: "COW",
+        discordUrl: "",
+        inceptionSeason: 1,
+        trophies: [
         { season: 11, tier: TIER_CONSTANTS.Premier},
     ]},
-    { prefix: "ABW", trophies: [
+    { prefix: "ABW",
+        discordUrl: "",
+        inceptionSeason: 1,
+        trophies: [
         { season: 14, tier: TIER_CONSTANTS.Recruit},
+    ]},
+    { prefix: "dB",
+        discordUrl: "https://discord.gg/sp89uQbX",
+        inceptionSeason: 1,
+        trophies: [
     ]},
 ] 
