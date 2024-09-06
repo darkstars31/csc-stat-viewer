@@ -241,7 +241,7 @@ export function Profile() {
                 Loading
             </Containers.StandardBackgroundPage> */}
 			<form onSubmit={onSave}>
-				<div className="flex flex-wrap gap-4">
+				<div className="flex flex-col md:flex-row gap-4">
 					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
 						<h2 className="text-xl font-bold uppercase text-center mb-2">Roles</h2>
 						<div className="py-2">
@@ -257,7 +257,7 @@ export function Profile() {
 						</div>
 						<div className="basis-1/4 py-1">
 							<label className="pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
-								Preferred Role
+								Preferred Playstyle
 							</label>
 							<Select
 								placeholder="Not Specified"
@@ -295,7 +295,7 @@ export function Profile() {
 					</Containers.StandardBackgroundPage>
 					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
 						<h2 className="text-xl font-bold uppercase text-center mb-2">Favorites</h2>
-						<div className="py-1 flex flex-row">
+						<div className="py-1 flex flex-col md:flex-row">
 							<label className="basis-24 leading-10 pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
 								Weapon
 							</label>
@@ -313,7 +313,7 @@ export function Profile() {
 								onChange={option => onChange("favoriteWeapon", option?.value)}
 							/>
 						</div>
-						<div className="my-1 py-1 flex flex-row">
+						<div className="my-1 py-1 flex flex-col md:flex-row">
 							<label className="basis-24 leading-10 pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
 								Map
 							</label>
@@ -329,7 +329,7 @@ export function Profile() {
 								onChange={option => onChange("favoriteMap", option?.value)}
 							/>
 						</div>
-						<div className="my-1 py-1 flex flex-row">
+						<div className="my-1 py-1 flex flex-col md:flex-row">
 							<label className="basis-24 leading-10 pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
 								Pro Team
 							</label>
@@ -341,7 +341,7 @@ export function Profile() {
 								value={profileSettings?.favoriteProTeam}
 							/>
 						</div>
-						<div className="my-1 py-1 flex flex-row">
+						<div className="my-1 py-1 flex flex-col md:flex-row">
 							<label className="basis-24 leading-10 pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
 								Pro Player
 							</label>

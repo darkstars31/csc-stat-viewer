@@ -71,7 +71,7 @@ export const franchiseMetadata = [
         inceptionSeason: 1,
         trophies: [
         { season: 13, tier: TIER_CONSTANTS.Premier},
-        { season: 11, tier: TIER_CONSTANTS.Prospect}
+        { season: 11, tier: TIER_CONSTANTS.Prospect},
         { season: 8, tier: TIER_CONSTANTS.Elite},
     ]},
     { prefix: "NAN",

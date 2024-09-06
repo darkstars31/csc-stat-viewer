@@ -44,10 +44,10 @@ export function FranchisesFranchise ({ franchise }: { franchise: Franchise}) {
                                     />
                                     <div className="text-sm text-yellow-300">
                                         { trophies?.map( t => (
-                                            <div className="flex flex-row gap-2">
-                                                <span className="basis-1/12">{t.season}</span>
+                                            <div className="flex flex-row gap-1">
+                                                <span className="">{t.season}</span>
                                                 <BiSolidTrophy className="inline mt-1" /> 
-                                                <span className="basis-1/12">{t.tier}</span>
+                                                <span className="basis-8/12 truncate">{t.tier}</span>
                                             </div>
                                         ))}
                                     </div>
