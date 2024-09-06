@@ -53,7 +53,7 @@ export function Player() {
 	const currentPlayerStats = viewStatSelection === currentPlayer?.tier.name ? currentPlayer?.stats : currentPlayer?.statsOutOfTier?.find(s => s.tier === viewStatSelection)?.stats;
 	const currentPlayerTierOptions = [ currentPlayer?.tier.name, ...(currentPlayer?.statsOutOfTier ?? []).map( s => s.tier)].filter( item => item !== viewStatSelection)
 
-	const { data: playerProfile = {} } = useFetchPlayerProfile(currentPlayer?.discordId);
+	const { data: playerProfile = {}, isLoading: isLoadingPlayerProfile } = useFetchPlayerProfile(currentPlayer?.discordId);
 	
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
@@ -71,11 +71,11 @@ export function Player() {
 		return <Container>An error occured. Player could not found. Please inform Camps of this error.</Container>;
 	}
 
-	if ( currentPlayer === loggedinUser && Object.keys(playerProfile).length === 0 ) {
+	if ( currentPlayer === loggedinUser && !isLoadingPlayerProfile && Object.keys(playerProfile).length === 0 ) {
 		addNotification({
 			id: "FillOutProfile",
 			title: "It Looks like your profile is empty.",
-			subText: "Head over to profile to fill it out.",
+			subText: "Click here to go to your profile.",
 			shouldNewTab: false,
 			href: "/profile",
 		})

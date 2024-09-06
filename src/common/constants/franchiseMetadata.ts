@@ -70,8 +70,9 @@ export const franchiseMetadata = [
         discordUrl: "https://discord.gg/uXHms59b",
         inceptionSeason: 1,
         trophies: [
+        { season: 13, tier: TIER_CONSTANTS.Premier},
+        { season: 11, tier: TIER_CONSTANTS.Prospect}
         { season: 8, tier: TIER_CONSTANTS.Elite},
-        { season: 1, tier: TIER_CONSTANTS.Prospect}
     ]},
     { prefix: "NAN",
         discordUrl: "",
