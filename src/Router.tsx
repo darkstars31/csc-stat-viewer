@@ -2,12 +2,14 @@ import * as React from "react";
 import { Router as Wouter, Route, Switch, useLocation, Link } from "wouter";
 import { Container } from "./common/components/container";
 import {
+	Admin,
 	About,
 	LoginCallBack,
 	Charts,
 	LeaderBoards,
 	Franchises,
 	Franchise,
+	FranchiseManagement,
 	Players,
 	Player,
 	Profile,
@@ -29,8 +31,6 @@ import { useLocalStorage } from "./common/hooks/localStorage";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useEnableFeature } from "./common/hooks/enableFeature";
 import { useFetchGithubRepoBranchJson } from "./dao/githubRepo";
-import { selectClassNames } from "./common/utils/select-utils";
-import Select from "react-select";
 
 export function Router() {
 	const [closeNotificationBanner, setCloseNotificationBanner] = useLocalStorage(
@@ -82,6 +82,9 @@ export function Router() {
 		{ path: `/profile`, component: () => <Profile /> },
 		{ path: `/standings`, component: () => <TeamStandings /> },
 		{ path: `/servers`, component: () => <Servers /> },
+
+		{ path: `/admin`, component: () => <Admin /> },
+		{ path: `/franchiseManagement`, component: () => <FranchiseManagement /> },
 	];
 
 	React.useEffect(() => {

@@ -14,7 +14,8 @@ import { Toggle } from "../common/components/toggle";
 import { FaTrashAlt } from "react-icons/fa";
 import { CgAdd } from "react-icons/cg";
 import { ProfileJson } from "../models/profile-types";
-import { RadioGroup, Field, Label, Radio, } from "@headlessui/react";
+import * as Form from "../common/components/forms";
+import { Input as I } from "@headlessui/react"
 
 
 export function SocialFields( { onChange, profileSettings }: { onChange: (x: Record<string, string>) => void, profileSettings: Partial<{ socials: Record<string, string>}> | undefined} ) {
@@ -241,36 +242,28 @@ export function Profile() {
                 Loading
             </Containers.StandardBackgroundPage> */}
 			<form onSubmit={onSave}>
-				<div className="flex flex-col md:flex-row gap-4">
-					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
-						<h2 className="text-xl font-bold uppercase text-center mb-2">Roles</h2>
-						<div className="py-2">
-							<label
-								className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer"
-								htmlFor="checkboxChecked"
-							>
-								Are you an IGL?
-							</label>
-							<div className="inline-block text-center pt-4">
-								<Toggle onChange={() => onChange("isIGL", !profileSettings?.isIGL)} checked={profileSettings?.isIGL ?? false} />
-							</div>
-						</div>
-						<div className="basis-1/4 py-1">
-							<label className="pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
-								Preferred Playstyle
-							</label>
-							<Select
-								placeholder="Not Specified"
-								isClearable={true}
-								className="grow text-xs"
-								unstyled
-								isSearchable={false}
-								classNames={selectClassNames}
-								value={roleOptions.find(option => option.value === profileSettings?.favoriteRole)}
-								options={roleOptions}
-								onChange={option => onChange("favoriteRole", option?.value)}
-							/>
-						</div>
+				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					<Containers.StandardBackgroundPage classNames="basis-1/2 grow">
+						<Form.FieldSet title="Playstyle">
+							<Form.Field title="Are you an IGL?">						
+								<div className="inline-block text-center pt-4">
+									<Toggle onChange={() => onChange("isIGL", !profileSettings?.isIGL)} checked={profileSettings?.isIGL ?? false} />
+								</div>		
+							</Form.Field>
+							<Form.Field title="Preferred Playstyle">						
+								<Select
+									placeholder="Not Specified"
+									isClearable={true}
+									className="grow text-xs"
+									unstyled
+									isSearchable={false}
+									classNames={selectClassNames}
+									value={roleOptions.find(option => option.value === profileSettings?.favoriteRole)}
+									options={roleOptions}
+									onChange={option => onChange("favoriteRole", option?.value)}
+								/>
+							</Form.Field>	
+						</Form.FieldSet>
 						{/* <div className="basis-1/4 py-1">
 							<label className="pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
 								Experience Expectations
@@ -294,67 +287,56 @@ export function Profile() {
 						</div> */}
 					</Containers.StandardBackgroundPage>
 					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
-						<h2 className="text-xl font-bold uppercase text-center mb-2">Favorites</h2>
-						<div className="py-1 flex flex-col md:flex-row">
-							<label className="basis-24 leading-10 pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
-								Weapon
-							</label>
-							<Select
-								placeholder="Not Specified"
-								isClearable={true}
-								className="grow text-xs"
-								unstyled
-								isSearchable={false}
-								classNames={selectClassNames}
-								value={weaponOptions.find(
-									option => option.value === profileSettings?.favoriteWeapon,
-								)}
-								options={weaponOptions}
-								onChange={option => onChange("favoriteWeapon", option?.value)}
-							/>
-						</div>
-						<div className="my-1 py-1 flex flex-col md:flex-row">
-							<label className="basis-24 leading-10 pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
-								Map
-							</label>
-							<Select
-								placeholder="Not Specified"
-								isClearable={true}
-								className="grow text-xs"
-								unstyled
-								isSearchable={false}
-								classNames={selectClassNames}
-								value={mapOptions.find(option => option.value === profileSettings?.favoriteMap)}
-								options={mapOptions}
-								onChange={option => onChange("favoriteMap", option?.value)}
-							/>
-						</div>
-						<div className="my-1 py-1 flex flex-col md:flex-row">
-							<label className="basis-24 leading-10 pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
-								Pro Team
-							</label>
-							<Input
-								className="grow text-xs"
-								type="text"
-								placeHolder="Not Specified"
-								onChange={(e) => onChange("favoriteProTeam", e.currentTarget.value)}
-								value={profileSettings?.favoriteProTeam}
-							/>
-						</div>
-						<div className="my-1 py-1 flex flex-col md:flex-row">
-							<label className="basis-24 leading-10 pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
-								Pro Player
-							</label>
-							<Input
-								className="grow text-xs"		
-								type="text"
-								placeHolder="Not Specified"
-								onChange={(e) => onChange("favoriteProPlayer", e.currentTarget.value)}
-								value={profileSettings?.favoriteProPlayer}
-							/>
-						</div>
+						<Form.FieldSet title="Favorites">
+							<Form.Field title="Weapon">						
+								<Select
+									placeholder="Not Specified"
+									isClearable={true}
+									className="grow text-xs"
+									unstyled
+									isSearchable={false}
+									classNames={selectClassNames}
+									value={weaponOptions.find(
+										option => option.value === profileSettings?.favoriteWeapon,
+									)}
+									options={weaponOptions}
+									onChange={option => onChange("favoriteWeapon", option?.value)}
+								/>		
+							</Form.Field>
+							<Form.Field title="Map">						
+								<Select
+									placeholder="Not Specified"
+									isClearable={true}
+									className="grow text-xs"
+									unstyled
+									isSearchable={false}
+									classNames={selectClassNames}
+									value={mapOptions.find(option => option.value === profileSettings?.favoriteMap)}
+									options={mapOptions}
+									onChange={option => onChange("favoriteMap", option?.value)}
+								/>
+							</Form.Field>
+							<Form.Field title="Pro Team">						
+								<Input
+									className="grow text-xs"
+									type="text"
+									placeHolder="Not Specified"
+									onChange={(e) => onChange("favoriteProTeam", e.currentTarget.value)}
+									value={profileSettings?.favoriteProTeam}
+								/>
+							</Form.Field>
+							<Form.Field title="Pro Player">						
+								<Input
+									className="grow text-xs"		
+									type="text"
+									placeHolder="Not Specified"
+									onChange={(e) => onChange("favoriteProPlayer", e.currentTarget.value)}
+									value={profileSettings?.favoriteProPlayer}
+								/>
+							</Form.Field>
+						</Form.FieldSet>
 					</Containers.StandardBackgroundPage>
-					<Containers.StandardBackgroundPage classNames="basis-1/2 grow">
+					<Containers.StandardBackgroundPage classNames="basis-full grow">
 						<h2 className="text-xl font-bold uppercase text-center mb-2">Socials</h2>
 						<SocialFields profileSettings={profileSettings} onChange={(socials: Record<string,string>) => onChange("socials", socials)} />
 					</Containers.StandardBackgroundPage>

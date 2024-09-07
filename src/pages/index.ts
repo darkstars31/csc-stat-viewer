@@ -15,4 +15,7 @@ export * from "./teamStandings";
 export * from "./playground";
 export * from "./servers";
 
+export * from "./admin";
+export * from "./franchiseManagement";
+
 export * from "./articles";
