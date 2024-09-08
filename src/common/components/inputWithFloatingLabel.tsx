@@ -10,7 +10,7 @@ type Props = {
 	onChange: (e: React.FormEvent<HTMLInputElement>) => void;
 };
 
-export function Input({ label, className, type, placeHolder, onChange, value, isDisabled }: Props) {
+export function InputWithFloatingLabel({ label, className, type, placeHolder, onChange, value, isDisabled }: Props) {
 	return (
 		<label
 			htmlFor="textInput"

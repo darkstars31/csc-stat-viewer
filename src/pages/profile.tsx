@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
 import * as Containers from "../common/components/containers";
-import { Input } from "../common/components/input";
+import { InputWithFloatingLabel } from "../common/components/inputWithFloatingLabel";
 import { useDataContext } from "../DataContext";
 import { useFetchPlayerProfile } from "../dao/StatApiDao";
 import cookie from "js-cookie";
@@ -15,7 +15,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import { CgAdd } from "react-icons/cg";
 import { ProfileJson } from "../models/profile-types";
 import * as Form from "../common/components/forms";
-import { Input as I } from "@headlessui/react"
+import { Input, Radio, RadioGroup } from "@headlessui/react"
 
 
 export function SocialFields( { onChange, profileSettings }: { onChange: (x: Record<string, string>) => void, profileSettings: Partial<{ socials: Record<string, string>}> | undefined} ) {
@@ -60,10 +60,9 @@ export function SocialFields( { onChange, profileSettings }: { onChange: (x: Rec
 					onChange={option => setAddSocial({  ...addSocial, key: option?.value ?? "" })}
 				/>
 				<Input
-					className="grow h-10 mt-1"
+					className="grow my-1 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white"		
 					type="text"
-					label="Just your social id"
-					placeHolder={`Just your social id`}
+					placeholder="Just your social id"
 					onChange={e => setAddSocial({ ...addSocial, value: e.currentTarget.value.trim()})}
 					value={addSocial.value}
 				/>
@@ -199,7 +198,7 @@ export function Profile() {
 			<Containers.StandardBackgroundPage>
 				<h1 className="text-xl mb-4">CS:Confederation League Details</h1>
 				<div className="flex flex-wrap gap-4">
-					<Input
+					<InputWithFloatingLabel
 						className="grow text-gray-400"
 						label="Tier"
 						placeHolder="Tier"
@@ -208,7 +207,7 @@ export function Profile() {
 						onChange={() => {}}
 						value={currentPlayer?.tier.name}
 					/>
-					<Input
+					<InputWithFloatingLabel
 						className="grow text-gray-400"
 						label="Franchise"
 						placeHolder="Franchise"
@@ -217,7 +216,7 @@ export function Profile() {
 						onChange={() => {}}
 						value={currentPlayer?.team?.franchise?.name}
 					/>
-					<Input
+					<InputWithFloatingLabel
 						className="grow text-gray-400"
 						label="Team"
 						placeHolder="Team"
@@ -226,7 +225,7 @@ export function Profile() {
 						onChange={() => {}}
 						value={currentPlayer?.team?.name}
 					/>
-					<Input
+					<InputWithFloatingLabel
 						className="grow text-gray-400"
 						label="Player Type"
 						placeHolder="Player Type"
@@ -242,8 +241,8 @@ export function Profile() {
                 Loading
             </Containers.StandardBackgroundPage> */}
 			<form onSubmit={onSave}>
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-					<Containers.StandardBackgroundPage classNames="basis-1/2 grow">
+				<div className="flex flex-col sm:flex-row  flex-wrap gap-4">
+					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
 						<Form.FieldSet title="Playstyle">
 							<Form.Field title="Are you an IGL?">						
 								<div className="inline-block text-center pt-4">
@@ -264,7 +263,7 @@ export function Profile() {
 								/>
 							</Form.Field>	
 						</Form.FieldSet>
-						{/* <div className="basis-1/4 py-1">
+						{ false &&  <div className="basis-1/4 py-1">
 							<label className="pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
 								Experience Expectations
 							</label>
@@ -284,7 +283,7 @@ export function Profile() {
 									</div>
 								))}
 							</RadioGroup>
-						</div> */}
+						</div> }
 					</Containers.StandardBackgroundPage>
 					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
 						<Form.FieldSet title="Favorites">
@@ -318,35 +317,25 @@ export function Profile() {
 							</Form.Field>
 							<Form.Field title="Pro Team">						
 								<Input
-									className="grow text-xs"
+									className="grow mt-3 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white"		
 									type="text"
-									placeHolder="Not Specified"
 									onChange={(e) => onChange("favoriteProTeam", e.currentTarget.value)}
 									value={profileSettings?.favoriteProTeam}
 								/>
 							</Form.Field>
 							<Form.Field title="Pro Player">						
 								<Input
-									className="grow text-xs"		
-									type="text"
-									placeHolder="Not Specified"
+									className="grow mt-3 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white"		
+									type="text"								
 									onChange={(e) => onChange("favoriteProPlayer", e.currentTarget.value)}
 									value={profileSettings?.favoriteProPlayer}
 								/>
 							</Form.Field>
 						</Form.FieldSet>
 					</Containers.StandardBackgroundPage>
-					<Containers.StandardBackgroundPage classNames="basis-full grow">
-						<h2 className="text-xl font-bold uppercase text-center mb-2">Socials</h2>
-						<SocialFields profileSettings={profileSettings} onChange={(socials: Record<string,string>) => onChange("socials", socials)} />
-					</Containers.StandardBackgroundPage>
 					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
-						<h2 className="text-xl font-bold uppercase text-center mb-2">About me</h2>
-						<div className="flex flex-row flex-wrap">
-							<div className="basis-1/3 grow m-2">
-								<label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
-									Approx. Age
-								</label>
+						<Form.FieldSet title="About Me">
+							<Form.Field title="Approx. Age">						
 								<Select
 									placeholder="Not Specified"
 									isClearable={true}
@@ -358,11 +347,8 @@ export function Profile() {
 									options={ageOptions}
 									onChange={option => onChange("age", option?.value)}
 								/>
-							</div>
-							<div className="basis-1/3 grow m-2">
-								<label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
-									Region
-								</label>
+							</Form.Field>
+							<Form.Field title="Region">						
 								<Select
 									placeholder="Not Specified"
 									isClearable={true}
@@ -374,30 +360,29 @@ export function Profile() {
 									options={regionOptions}
 									onChange={option => onChange("region", option?.value)}
 								/>
-							</div>
-							<div className="basis-1/3 grow m-2">
-								<label className="inline-block pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
-									First Season
-								</label>
-								<Select
-									placeholder="Not Specified"
-									isClearable={true}
-									className="grow text-xs"
-									unstyled
-									isSearchable={false}
-									classNames={selectClassNames}
-									value={firstCSCSeasonOptions.find(option => option.value === profileSettings?.firstCSCSeason)}
-									options={firstCSCSeasonOptions}
-									onChange={option => onChange("firstCSCSeason", option?.value)}
-								/>
-							</div>
-						</div>
+							</Form.Field>
+							<Form.Field title="First Season">						
+							<Select
+								placeholder="Not Specified"
+								isClearable={true}
+								className="grow text-xs"
+								unstyled
+								isSearchable={false}
+								classNames={selectClassNames}
+								value={firstCSCSeasonOptions.find(option => option.value === profileSettings?.firstCSCSeason)}
+								options={firstCSCSeasonOptions}
+								onChange={option => onChange("firstCSCSeason", option?.value)}
+							/>
+							</Form.Field>
+						</Form.FieldSet>
 					</Containers.StandardBackgroundPage>
-					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
-						<h2 className="text-xl font-bold uppercase text-center mb-2">In-Game</h2>
-						<div className="flex flex-row">
-							<div className="basis-1/3 m-2">
-								Aspect Ratio
+					<Containers.StandardBackgroundPage classNames="basis-1/2 grow">
+						<h2 className="text-xl font-bold uppercase text-center mb-2">Socials</h2>
+						<SocialFields profileSettings={profileSettings} onChange={(socials: Record<string,string>) => onChange("socials", socials)} />
+					</Containers.StandardBackgroundPage>
+					<Containers.StandardBackgroundPage classNames="basis-1/4">
+						<Form.FieldSet title="In-Game">
+							<Form.Field title="Aspect Ratio">						
 								<Select
 									placeholder="Not Specified"
 									isClearable={true}
@@ -409,28 +394,24 @@ export function Profile() {
 									options={aspectRatioOptions}
 									onChange={option => onChange("aspectRatio", option?.value)}
 								/>
-							</div>
-							<div className="basis-1/3 m-2">
-								<br />
+							</Form.Field>
+							<Form.Field title="DPI">						
 								<Input
-									label="DPI"
 									type="text"
-									placeHolder="Not Specified"
+									className="grow mt-3 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white"		
 									onChange={(e) => onChange("dpi", e.currentTarget.value)}
 									value={profileSettings?.dpi}
 								/>
-							</div>
-							<div className="basis-1/3 m-2">
-								<br />
+							</Form.Field>
+							<Form.Field title="Sens">						
 								<Input
-									label="Sens"
-									type="text"
-									placeHolder="Not Specified"
+									className="grow mt-3 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white"		
+									type="text"								
 									onChange={(e) => onChange("inGameSensitivity", e.currentTarget.value)}
 									value={profileSettings?.inGameSensitivity}
 								/>
-							</div>							
-						</div>
+							</Form.Field>
+						</Form.FieldSet>				
 					</Containers.StandardBackgroundPage>
 				</div>
 				{ !deepEquals(profile ?? {}, profileSettings ?? {}) &&

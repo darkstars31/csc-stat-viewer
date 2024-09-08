@@ -8,7 +8,6 @@ import { PlayerTypeFilter } from "../common/components/filters/playerTypeFilter"
 import { PlayerTiersFilter } from "../common/components/filters/playerTiersFilter";
 import { PlayerRolesFilter } from "../common/components/filters/playerRoleFilter";
 import { Pill } from "../common/components/pill";
-import { Input } from "../common/components/input";
 import { Player } from "../models";
 import Papa from "papaparse";
 import { TbDatabaseExport } from "react-icons/tb";
@@ -130,10 +129,8 @@ export function ExportData() {
 						e.preventDefault();
 					}}
 				>
-					<Input
+					<input
 						className="basis-1/2 grow"
-						label="Filter"
-						placeHolder="Player Name"
 						type="text"
 						onChange={e => setSearchValue(e.currentTarget.value)}
 						value={searchValue}

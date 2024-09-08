@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
-import { Input } from "../common/components/input";
+import { InputWithFloatingLabel } from "../common/components/inputWithFloatingLabel";
 import { Pill } from "../common/components/pill";
 import Select, { MultiValue, SingleValue } from "react-select";
 import { useDataContext } from "../DataContext";
@@ -121,7 +121,7 @@ export function Players() {
 						e.preventDefault();
 					}}
 				>
-					<Input
+					<InputWithFloatingLabel
 						className="basis-1/2 grow"
 						label="Filter"
 						placeHolder="Player Name"

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Container } from "../../common/components/container";
-import { Input } from "../../common/components/input";
+import { InputWithFloatingLabel } from "../../common/components/inputWithFloatingLabel";
 import { Editor } from "react-draft-wysiwyg";
 import { EditorState } from "draft-js";
 import "../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -15,7 +15,7 @@ export const CreatePost = () => {
 			<div>Create</div>
 			<form>
 				<div className="py-4">
-					<Input
+					<InputWithFloatingLabel
 						type="text"
 						placeHolder="Title"
 						label="Title"
