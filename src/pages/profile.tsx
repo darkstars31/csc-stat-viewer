@@ -30,7 +30,7 @@ export function SocialFields( { onChange, profileSettings }: { onChange: (x: Rec
 		{ label: "TikTok", value: "tiktok", url: "https://tiktok.com/@" },
 		{ label: "Instagram", value: "instagram", url: "https://instagram.com/" },
 		{ label: "Personal Discord", value: "discord", url: "https://discord.gg/" },
-		{ label: "Metal", value: "metal.tv", url: "https://medal.tv/u/" },
+		{ label: "Medal.tv", value: "medal.tv", url: "https://medal.tv/u/" },
 	].filter( option => !socials[option.value] );
 
 	return (

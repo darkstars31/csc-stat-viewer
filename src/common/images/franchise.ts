@@ -13,6 +13,7 @@ import GAS from "../../assets/images/franchise/GAS.png";
 import GRN from "../../assets/images/franchise/GRN.png";
 import H4K from "../../assets/images/franchise/H4K.png";
 import HG from "../../assets/images/franchise/HG.png";
+import HR from"../../assets/images/franchise/HR.png"
 //import HEL from "../../assets/images/franchise/HEL.png";
 import LEC from "../../assets/images/franchise/LEC.png";
 import NAN from "../../assets/images/franchise/NAN.png";
@@ -39,6 +40,7 @@ export const franchiseImages: FranchiseImages = {
 	GRN,
 	H4K,
 	HG,
+	HR,
 	LEC,
 	NAN,
 	OS,
