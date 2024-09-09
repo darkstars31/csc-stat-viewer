@@ -33,29 +33,37 @@ export function Reputation( { playerDiscordId }: { playerDiscordId: string | und
         });
     };
 
-    const gradientCSS = "bg-gradient-to-r from-purple-500 to-violet-500 bg-clip-text text-transparent hover:cursor-pointer";
+    const gradientCSS = "bg-clip-text bg-gradient-to-r from-purple-300 to-violet-500 text-transparent hover:cursor-pointer";
+
+    if ( isLoading ) {
+        return null;
+    }
 
     if ( !discordUser ){
         return (
-            <div className={`text-center text-sm m-2 ${gradientCSS} font-semibold`}>
+            <div className={`text-center text-sm m-2 font-semibold`}>
                 <ToolTip type="generic" message={"You must be logged in to +Rep"}>
-                    <FaPlus className="inline -mr-0.5"/>
-                    Rep { reputation?.repped }
+                    <div className={gradientCSS}>
+                        <FaPlus className="text-purple-500 inline -mr-0.5 pb-1.5"/>
+                        Rep { reputation?.repped }
+                    </div>
                 </ToolTip>
             </div>
         )
     }
 
     return (
-        <div className={`text-center text-sm m-2 ${gradientCSS} ${ hasAlreadyRepped ? "hover:text-red-400" : ""} font-semibold`}
+        <div className={`text-center text-sm m-2 font-semibold ${ hasAlreadyRepped ? "hover:text-red-400" : ""}`}
             onClick={() => handleRep(hasAlreadyRepped ? "remove" : "add")}
             onMouseEnter={() => setIsMouseOver(true)}
             onMouseLeave={() => setIsMouseOver(false)}
         >
             <ToolTip type="generic" message={`${hasAlreadyRepped ? "Remove +Rep" : "Give +Rep"}`}>
-               { isMouseOver && hasAlreadyRepped && <FaMinus className="inline -mr-0.5 pb-1" /> }
-               { !(isMouseOver && hasAlreadyRepped) && <FaPlus className={`${ hasAlreadyRepped ? "text-blue-500" : "text-purple-500" } inline -mr-0.5 pb-1`} /> }
-                Rep {isLoading ? <Loading /> : reputation?.repped}
+                <div className={gradientCSS}>
+                    { isMouseOver && hasAlreadyRepped && <FaMinus className="inline -mr-0.5 pb-1.5" /> }
+                    { !(isMouseOver && hasAlreadyRepped) && <FaPlus className={`${ hasAlreadyRepped ? "text-blue-500" : "text-purple-500" } inline -mr-0.5 pb-1.5`} /> }
+                    Rep {reputation?.repped}
+                </div>
             </ToolTip>    
         </div>
     );

@@ -47,7 +47,7 @@ export function Team() {
 	const currentFranchise = franchises.find(f => f.name === franchiseName);
 	const currentTeam = currentFranchise?.teams.find(t => t.name === teamName);
 	const currentTier = tiers.find(t => t.tier.name === currentTeam?.tier.name);
-	const currentTeamTotalMmr = currentTeam?.players.reduce((sum, next) => sum + next.mmr ?? 0, 0) ?? 0;
+	const currentTeamTotalMmr = currentTeam?.players.reduce((sum, next) => sum + (next.mmr ?? 0), 0) ?? 0;
 	const currentTeamMMRMinusCapDiff = (currentTier?.tier.mmrCap ?? 0) - currentTeamTotalMmr;
 	const currentTeamTotalMmrPercent = ((currentTeamTotalMmr / (currentTier?.tier.mmrCap ?? 0)) * 100).toFixed(2);
 	const playersWithStats = currentTeam?.players.map(t => cscPlayers.find(p => p.steam64Id === t.steam64Id));

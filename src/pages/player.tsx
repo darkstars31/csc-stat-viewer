@@ -183,7 +183,7 @@ export function Player() {
 																	anchor="bottom" 
 																	className="border-gray-800 divide-y divide-white/5 rounded-xl bg-midnight2 text-sm/6 transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0"
 																	>
-																	<div className="p-2 shadow-inner ">
+																	<div className="p-2 shadow-inner">
 																		{
 																			currentPlayerTierOptions.map((tier) => (
 																				<button 
@@ -200,7 +200,8 @@ export function Player() {
 													</i>
 												</b>
 											</span>
-										<br /> <Mmr player={currentPlayer} /> MMR
+										<br /> 
+										<Mmr player={currentPlayer} /> MMR
 										<div>
 											<span className="flex leading-7">
 												<FaceitRank player={currentPlayer} />
@@ -208,7 +209,7 @@ export function Player() {
 													type="generic"
 													message="HLTV2.0 Rating formula w/ <1% margin of error."
 												>
-													<span className="ml-2 bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent">
+													<span className="ml-2 bg-gradient-to-r from-amber-300 to-pink-700 bg-clip-text text-transparent">
 														~{currentPlayer.hltvTwoPointO?.toFixed(2)} HLTV
 													</span>
 												</ToolTip>
