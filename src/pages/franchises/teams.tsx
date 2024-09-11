@@ -35,7 +35,7 @@ export function FranchiseTeams({ franchise }: { franchise: Franchise }) {
                             </span>
                         </div>
                         <div className="mx-4 px-2">
-                            {team.players.map(player => {
+                            { team.players.length > 0 ? team.players.map(player => {
                                 const playerWithStats = players.find(
                                     p => p.steam64Id === player.steam64Id,
                                 );
@@ -66,7 +66,10 @@ export function FranchiseTeams({ franchise }: { franchise: Franchise }) {
                                         {/* <div className="text-xs text-gray-500"> <span className="hidden md:contents"><Mmr player={player} />({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span></div> */}
                                     </div>
                                 );
-                            })}
+                            })
+                        :   <div className="my-1 text-center italic text-gray-500">
+                                No rostered players
+                            </div>}
                         </div>
                     </div>
                 ))}

@@ -34,27 +34,18 @@ export function FranchisesFranchise ({ franchise }: { franchise: Franchise}) {
                         }                   
                     </div>
                     <Link to={`/franchises/${encodeURIComponent(franchise.name)}`}>
-                        <div className="flex flex-row hover:cursor-pointer"> 
-                            <div>
+                        <div className="flex flex-col sm:flex-row hover:cursor-pointer"> 
+                            <div className="basis-3/12">
                                 <div className="z-10 h-24 w-24 md:w-48 md:h-48">
                                     <img
                                         src={franchiseImages[franchise.prefix]}
                                         placeholder=""
                                         alt=""
-                                    />
-                                    <div className="text-sm text-yellow-300">
-                                        { trophies?.map( t => (
-                                            <div className="flex flex-row gap-1">
-                                                <span className="">{t.season}</span>
-                                                <BiSolidTrophy className="inline mt-1" /> 
-                                                <span className="basis-8/12 truncate">{t.tier}</span>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    />                              
                                 </div>
                             </div>
                             <div>
-                                <div className="basis-8/12 flex flex-row gap-8 justify-end">
+                                <div className="basis-4/12 grow flex flex-row gap-8 justify-end">
                                     <div className="basis-1/3 text-3xl font-bold text-white text-center leading-loose">
                                         {franchise.name} (<i>{franchise.prefix}</i>)
                                     </div>
@@ -63,9 +54,18 @@ export function FranchisesFranchise ({ franchise }: { franchise: Franchise}) {
                                         <div>AGM - {franchise.agms?.map(agm => agm.name).join(", ")}</div>
                                     </div>
                                 </div>
-                                <FranchiseTeams franchise={franchise} />
+                            </div>
+                            <div className="basis-4/12 text-sm text-yellow-300">
+                                { trophies?.map( t => (
+                                    <div className="flex flex-row gap-1">
+                                        <span className="">{t.season}</span>
+                                        <BiSolidTrophy className="inline mt-1" /> 
+                                        <span className="basis-8/12 truncate">{t.tier}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
+                        <FranchiseTeams franchise={franchise} />
                     </Link>
                 </div>
             </div>

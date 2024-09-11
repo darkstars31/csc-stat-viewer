@@ -41,7 +41,7 @@ export function Franchises() {
 				<h2 className="text-3xl font-bold sm:text-4xl">Franchises & Teams</h2>
 				<p className="mt-4 text-gray-300">Current Teams and players on those teams + roles.</p>
 			</div>
-			<div className="flex flex-row gap-4 m-auto text-xs my-3">
+			<div className="flex flex-row flex-wrap gap-4 m-auto text-xs my-3">
 				<div className="grow text-center">
 					<div className={`font-bold`}>Franchises</div>
 					<div>{franchises.length}</div>
