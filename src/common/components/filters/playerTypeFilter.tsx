@@ -45,6 +45,10 @@ export const PlayerTypeFilter = React.memo(({ onChange, selectedOptions }: Props
 				value: [PlayerTypes.EXPIRED],
 				isDisabled: isExpiredDisabled,
 			},
+			{
+				label: `GM`,
+				value: [PlayerTypes.UNROSTERED_GM, PlayerTypes.UNROSTERED_AGM],
+			}
 		],
 		[isDraftEligibleDisabled, isExpiredDisabled],
 	);

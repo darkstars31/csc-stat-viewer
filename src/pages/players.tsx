@@ -122,7 +122,7 @@ export function Players() {
 					}}
 				>
 					<InputWithFloatingLabel
-						className="basis-1/2 grow"
+						className="basis-9/12 grow"
 						label="Filter"
 						placeHolder="Player Name"
 						type="text"
@@ -131,10 +131,10 @@ export function Players() {
 					/>
 					<button
 						type="submit"
-						className="basis-1/6 ml-4 inline-block rounded border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
+						className="basis-3/12 ml-4 inline-block rounded border border-indigo-600 bg-indigo-600 px-2 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
 						onClick={addFilter}
 					>
-						+Filter
+						Filter
 					</button>
 				</form>
 				<div className="pt-4">
@@ -143,8 +143,8 @@ export function Players() {
 					))}
 				</div>
 			</div>
-			<div className={`flex flex-col mt-40 md:flex-row md:mt-0 h-12 justify-end`}>
-				<div className="basis-1/3">
+			<div className={`grid grid-cols-2 md:grid-cols-5 justify-end`}>
+				<div className="basis-1/6">
 					<PlayerTypeFilter
 						onChange={
 							setViewPlayerTypeOptions as typeof React.useState<
@@ -153,14 +153,14 @@ export function Players() {
 						}
 					/>
 				</div>
-				<div className="basis-1/3">
+				<div className="basis-1/6">
 					<PlayerTiersFilter
 						onChange={
 							setViewTierOptions as typeof React.useState<MultiValue<{ label: string; value: string }>>
 						}
 					/>
 				</div>
-				<div className="basis-1/5">
+				<div className="basis-1/6">
 					<PlayerRolesFilter
 						onChange={
 							setViewPlayerRoleOptions as typeof React.useState<
@@ -169,8 +169,8 @@ export function Players() {
 						}
 					/>
 				</div>
-				<div className="basis-1/5">
-					<div className="flex flex-row text-xs">
+				<div className="basis-1/6">
+					<div className="flex flex-row text-xs m-1">
 						<label title="Sort" className="p-1 leading-9">
 							Sort
 						</label>

@@ -66,9 +66,11 @@ export function SocialFields( { onChange, profileSettings }: { onChange: (x: Rec
 					onChange={e => setAddSocial({ ...addSocial, value: e.currentTarget.value.trim()})}
 					value={addSocial.value}
 				/>
-				<div className="">
-					<button onClick={(e) => {e.preventDefault(); onChange({ ...socials, [addSocial.key]: socialOptions.find(option => option.value === addSocial.key)?.url + addSocial.value })}} 
-						className="flex flex-row m-1 p-2 bg-blue-500 text-white rounded"
+				<div className="pt-0.5">
+					<button 
+						onClick={(e) => {e.preventDefault(); onChange({ ...socials, [addSocial.key]: socialOptions.find(option => option.value === addSocial.key)?.url + addSocial.value })}} 
+						className={`flex flex-row m-1 p-2 ${!addSocial.value ? "bg-slate-600/25 hover:cursor-not-allowed" : "bg-blue-600"} text-white rounded`}
+						disabled={!addSocial.value}
 						>
 						<CgAdd className="w-5 h-5" />
 					</button>
