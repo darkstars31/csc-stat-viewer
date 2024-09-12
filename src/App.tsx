@@ -35,9 +35,7 @@ function App() {
 							<Header />
 							<SeasonAndMatchTypeSelector />
 						</div>
-						<div>
-							<Router />
-						</div>
+						<Router />
 					</NotificationsProvider>
 				</DataContextProvider>
 			</QueryClientProvider>

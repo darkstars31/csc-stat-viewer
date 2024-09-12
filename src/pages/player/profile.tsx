@@ -13,7 +13,7 @@ export const PlayerProfile = ({ player, playerProfile }: { player: Player, playe
                 <div className="basis-1/3 grow text-sm bg-midnight1 rounded-lg p-4">
                     <div className="text-center pb-1 font-extrabold uppercase">Preferred</div>
                     <div className="flex flex-row justify-between">
-                        <span>Role</span>
+                        <span>Playstyle</span>
                         <span>{playerProfile?.favoriteRole}</span>
                     </div>
                     <div className="flex flex-row justify-between">

@@ -101,11 +101,11 @@ export function Router() {
 		fetchUser();
 	}, [discordUser, setDiscordUser]);
 
-	let ga: Record<string, string> = { hitType: "pageview", page: location, title: "Page View" };
+	let ga: Record<string, string> = { hitType: "pageview", page: location, title: document.title };
 	if( loggedinUser?.discordId && loggedinUser?.name ) {
-		ga = { ...ga, discordId: loggedinUser.discordId, name: loggedinUser.name };
+		ga = { ...ga, discordId: loggedinUser.discordId, user_id: loggedinUser.name };
+		ReactGA.gtag('config',`G-EZ2R1EHT34`, { user_id: loggedinUser?.discordId });
 	}
-
 	ReactGA.send(ga);
 
 	return (

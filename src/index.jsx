@@ -5,9 +5,14 @@ import * as Sentry from "@sentry/react";
 import ReactGA from "react-ga4";
 //import reportWebVitals from './reportWebVitals';
 
-ReactGA.initialize("G-EZ2R1EHT34");
-
 const env = process.env.NODE_ENV;
+
+ReactGA.initialize("G-EZ2R1EHT34", {
+	gaOptions: {
+		testMode: env === "development",
+	}
+});
+
 
 Sentry.init({
 	environment: env,

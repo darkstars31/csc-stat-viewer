@@ -11,77 +11,16 @@ import { selectClassNames } from "../common/utils/select-utils";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { deepEquals } from "../common/utils/object-utils";
 import { Toggle } from "../common/components/toggle";
-import { FaTrashAlt } from "react-icons/fa";
-import { CgAdd } from "react-icons/cg";
 import { ProfileJson } from "../models/profile-types";
 import * as Form from "../common/components/forms";
 import { Input, Radio, RadioGroup } from "@headlessui/react"
+import { SocialFields } from "./profile/socialFields";
+import { gaEvent } from "../common/services/google-analytics";
 
 
-export function SocialFields( { onChange, profileSettings }: { onChange: (x: Record<string, string>) => void, profileSettings: Partial<{ socials: Record<string, string>}> | undefined} ) {
-	const [ addSocial, setAddSocial ] = React.useState({ key: "twitter/x", value: "" });
-	const socials = profileSettings?.socials || {};
-
-	const socialOptions = [
-		{ label: "Twitter/X", value: "twitter/x", url: "https://x.com/" },
-		{ label: "Reddit", value: "reddit", url: "https://reddit.com/u/" },
-		{ label: "Twitch", value: "twitch", url: "https://twitch.com/" },
-		{ label: "YouTube", value: "youtube", url: "https://youtube.com/" },
-		{ label: "TikTok", value: "tiktok", url: "https://tiktok.com/@" },
-		{ label: "Instagram", value: "instagram", url: "https://instagram.com/" },
-		{ label: "Personal Discord", value: "discord", url: "https://discord.gg/" },
-		{ label: "Medal.tv", value: "medal.tv", url: "https://medal.tv/u/" },
-	].filter( option => !socials[option.value] );
-
-	return (
-		<div className="relative content-between h-full m-4 pb-6">
-			<div className="flex flex-col justify-between text-sm m-2">
-			{
-				Object.entries(profileSettings?.socials ?? {}).map(([key, value], index) => (
-					<div className="flex flex-row">
-						<div className="grow">{value}</div>
-						<div className="w-6"><FaTrashAlt onClick={() =>{ const s = {...socials}; delete s[key]; onChange(s)}} /></div>
-					</div>
-				))
-			}
-			</div>
-			<div className="absolute bottom flex flex-row text-xs w-full mb-4">
-				<Select
-					isClearable={false}
-					className="basis-2/12"
-					unstyled
-					isSearchable={false}
-					classNames={selectClassNames}
-					defaultValue={socialOptions.at(0)}
-					value={socialOptions.find(
-						option => option.value === addSocial.key,
-					)}
-					options={socialOptions}
-					onChange={option => setAddSocial({  ...addSocial, key: option?.value ?? "" })}
-				/>
-				<Input
-					className="grow my-1 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white"		
-					type="text"
-					placeholder="Just your social id"
-					onChange={e => setAddSocial({ ...addSocial, value: e.currentTarget.value.trim()})}
-					value={addSocial.value}
-				/>
-				<div className="pt-0.5">
-					<button 
-						onClick={(e) => {e.preventDefault(); onChange({ ...socials, [addSocial.key]: socialOptions.find(option => option.value === addSocial.key)?.url + addSocial.value })}} 
-						className={`flex flex-row m-1 p-2 ${!addSocial.value ? "bg-slate-600/25 hover:cursor-not-allowed" : "bg-blue-600"} text-white rounded`}
-						disabled={!addSocial.value}
-						>
-						<CgAdd className="w-5 h-5" />
-					</button>
-				</div>
-			</div>
-		</div>
-	)
-}
 
 export function Profile() {
-	const { discordUser, players, seasonAndMatchType } = useDataContext();
+	const { discordUser, players, seasonAndMatchType, loggedinUser } = useDataContext();
 	const currentPlayer = players.find(p => p.discordId === discordUser?.id);
 	const { data: profile, isFetching } = useFetchPlayerProfile(discordUser?.id);
 	const [isSaving, setIsSaving] = React.useState(false);
@@ -93,6 +32,7 @@ export function Profile() {
 		bio: profile?.bio ?? undefined,
 		region: profile?.region ?? undefined,
 		isIGL: profile?.isIGL ?? false,
+		iglExperience: profile?.iglExperience ?? undefined,
 		aspectRatio: profile?.aspectRatio ?? undefined,
 		dpi: profile?.dpi ?? undefined,
 		inGameSensitivity: profile?.inGameSensitivity ?? undefined,
@@ -137,31 +77,34 @@ export function Profile() {
 	];
 
 	const roleOptions = [
-		{ label: "Alphapack Leader", value: "Alphapack Leader" },
-		{ label: "Fake Flash Abuser", value: "Fake Flash Abuser" },
-		{ label: "Entry", value: "Entry" },
-		{ label: "Burst Fire is Life", value: "Burst Fire is Life" },
-		{ label: "Refragger", value: "Refragger" },
-		{ label: "Support", value: "Support" },
-		{ label: "Lurker", value: "Lurker" },
-		{ label: "Baiter", value: "Baiter" },
-		{ label: "Awp Crutch", value: "Awp Crutch" },
-		{ label: "Bomb Carrier", value: "Bomb Carrier" },
-		{ label: "Site Anchor", value: "Site Anchor" },
-		{ label: "Camper", value: "Camper" },
-		{ label: "Off Angle McDangle", value: "Off Angle McDangle" },
-	];
+		"Alphapack Leader",
+		"Fake Flash Abuser",
+		"Entry",
+		"Burst Fire is Life",
+		"Refragger",
+		"Support", 
+		"Lurker", 
+		"Baiter",
+		"Awp Crutch", 
+		"Bomb Carrier", 
+		"Weagle Enjoyer", 
+		"Site Anchor",
+		"Captain Team Flash",
+		"Camper",
+		"Off Angle McDangle",
+	].map((role) => ({ label: role, value: role }));
 
+	const iglExperienceOptions = ["0", "1", "2", "3+"].map((igl) => ({ label: igl, value: igl }));
 	const mapOptions = [
-		{ label: "de_dust2", value: "de_dust2" },
-		{ label: "de_vertigo", value: "de_vertigo" },
-		{ label: "de_mirage", value: "de_mirage" },
-		{ label: "de_ancient", value: "de_ancient" },
-		{ label: "de_anubis", value: "de_anubis" },
-		{ label: "de_nuke", value: "de_nuke" },
-		{ label: "de_overpass", value: "de_overpass" },
-		{ label: "de_inferno", value: "de_inferno" },
-	];
+		"de_dust2",
+		"de_vertigo", 
+		"de_mirage",
+		"de_ancient", 
+		"de_anubis",
+		"de_nuke",
+		"de_overpass",
+		"de_inferno", 
+	].map((map) => ({ label: map, value: map }));
 
 	const firstCSCSeasonOptions = [...Array.from({ length: seasonAndMatchType?.season ?? 0 }, (_, i) => i + 1).reverse().map(i => ({ value: i, label: i.toString() }))]
 
@@ -183,7 +126,10 @@ export function Profile() {
 			},
 		})
 			.then(() => queryClient.invalidateQueries(["profile", discordUser?.id]))
-			.finally(() => setIsSaving(false));
+			.finally(() => { 
+				setIsSaving(false); 
+				gaEvent("Profile", "Save", loggedinUser ) 
+			});
 	};
 
 	const onChange = (key: string, value: string | number | boolean | Record<string,unknown> | unknown) => {
@@ -250,7 +196,21 @@ export function Profile() {
 								<div className="inline-block text-center pt-4">
 									<Toggle onChange={() => onChange("isIGL", !profileSettings?.isIGL)} checked={profileSettings?.isIGL ?? false} />
 								</div>		
-							</Form.Field>
+							</Form.Field>							
+							<Form.Field title="Season(s) as an IGL">						
+								<Select
+									placeholder="Not Specified"
+									isClearable={true}
+									className="grow text-xs"
+									unstyled
+									isDisabled={!profileSettings?.isIGL}
+									isSearchable={false}
+									classNames={selectClassNames}
+									value={iglExperienceOptions.find(option => option.value === profileSettings?.iglExperience)}
+									options={iglExperienceOptions}
+									onChange={option => onChange("iglExperience", option?.value)}
+								/>
+							</Form.Field>							
 							<Form.Field title="Preferred Playstyle">						
 								<Select
 									placeholder="Not Specified"

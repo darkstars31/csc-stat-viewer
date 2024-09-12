@@ -13,6 +13,7 @@ export type ProfileJson = {
 	age: string;
 	bio: string;
 	isIGL: boolean;
+	iglExperience: string;
 	region: string;
 	aspectRatio: string;
 	dpi: number;
