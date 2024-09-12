@@ -1,5 +1,6 @@
 import ABW from "../../assets/images/franchise/ABW.png";
 import ACA from "../../assets/images/franchise/ACA.png";
+import AG from "../../assets/images/franchise/AG.png";
 //import AP from "../../assets/images/franchise/AP.png";
 import ATL from "../../assets/images/franchise/ATL.png";
 import ATO from "../../assets/images/franchise/ATO.png";
@@ -18,6 +19,7 @@ import HR from"../../assets/images/franchise/HR.png"
 import LEC from "../../assets/images/franchise/LEC.png";
 import NAN from "../../assets/images/franchise/NAN.png";
 import OS from "../../assets/images/franchise/OS.png";
+import PA from "../../assets/images/franchise/PA.png";
 import SAV from "../../assets/images/franchise/SAV.png";
 import UPS from "../../assets/images/franchise/UPS.png";
 import WET from "../../assets/images/franchise/WET.png";
@@ -28,6 +30,7 @@ type FranchiseImages = Record<string, string>;
 export const franchiseImages: FranchiseImages = {
 	ABW,
 	ACA,
+	AG,
 	ATL,
 	ATO,
 	AVI,
@@ -44,6 +47,7 @@ export const franchiseImages: FranchiseImages = {
 	LEC,
 	NAN,
 	OS,
+	PA,
 	SAV,
 	UPS,
 	WET,
