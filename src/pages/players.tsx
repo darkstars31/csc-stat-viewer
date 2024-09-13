@@ -169,7 +169,7 @@ export function Players() {
 						}
 					/>
 				</div>
-				<div className="basis-1/6">
+				<div className="basis-1/8">
 					<div className="flex flex-row text-xs m-1">
 						<label title="Sort" className="p-1 leading-9">
 							Sort
