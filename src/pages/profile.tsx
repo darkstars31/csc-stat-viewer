@@ -16,6 +16,7 @@ import * as Form from "../common/components/forms";
 import { Input, Radio, RadioGroup } from "@headlessui/react"
 import { SocialFields } from "./profile/socialFields";
 import { gaEvent } from "../common/services/google-analytics";
+import { analytikillHttpClient } from "../dao/httpClients";
 
 
 
@@ -117,14 +118,9 @@ export function Profile() {
 	const onSave = (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsSaving(true);
-		fetch("https://tonysanti.com/prx/csc-stat-api/profile", {
-			method: "PATCH",
-			body: JSON.stringify(profileSettings),
-			headers: {
-				Authorization: "Bearer " + cookie.get("jwt"),
-				"Content-Type": "application/json",
-			},
-		})
+		analytikillHttpClient.patch(`/profile`, 
+				profileSettings	
+			)
 			.then(() => queryClient.invalidateQueries(["profile", discordUser?.id]))
 			.finally(() => { 
 				setIsSaving(false); 

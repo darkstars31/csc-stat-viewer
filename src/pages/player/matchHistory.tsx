@@ -216,23 +216,22 @@ function MatchRow({ player, match }: { player: Player; match: Match }) {
 				<div className="basis-1/12">
 					{" "}
 					<ToolTip type="generic" message={`Match Id: ${match.matchId}`}>
-						{matchType} <div className="text-xs text-gray-600">{match?.tier}</div>
+						{matchType}
 					</ToolTip>
-				</div>
-				<div className="basis-1/12 text-xs">
 					<ToolTip type="generic" message={matchDateFull}>
-						{matchDateShort}
+						<div className="text-xs text-gray-300">{matchDateShort}</div>
 					</ToolTip>
+					<div className="text-xs text-gray-400">{match?.tier}</div>
 				</div>
 				<div className="basis-1/12">
 					<span className="flex gap-2">
 						<div className="text-sm">
-							<img className="w-12 h-12 mx-auto" src={mapImages[match.mapName.toLowerCase()]} alt="" />
+							<img className="w-14 h-14 mx-auto" src={mapImages[match.mapName.toLowerCase()]} alt="" />
 						</div>{" "}
 						{/* {match.mapName.split("de_")[1].charAt(0).toUpperCase() + match.mapName.split("de_")[1].slice(1)} */}
 					</span>
 				</div>
-				<div className={`basis-1/12 min-w-32 ${p.RF > p.RA ? "text-green-400" : "text-rose-400"}`}>
+				<div className={`basis-1/12 font-extrabold ${p.RF > p.RA ? "text-green-400" : "text-rose-400"}`}>
 					<span className="flex flex-nowrap">
 						{p.RF} : {p.RA}
 					</span>
@@ -257,7 +256,7 @@ function MatchRow({ player, match }: { player: Player; match: Match }) {
 					{Math.round((p.hs / p.kills) * 100) || 0}
 				</div>
 				<div className="basis-2/12">
-					<div className="flex flex-row justify-between">
+					<div className="flex flex-row justify-evenly">
 						<div>{p.FAss}</div>
 						<div>{p?.utilDmg}</div>
 						<div>
@@ -316,9 +315,8 @@ export function PlayerMatchHistory({ player, season }: Props) {
 				<div className="text-sm text-gray-500">{playerMatchHistory?.length} matches</div>
 			</h2>
 			<div className="flex flex-row pl-2 gap-4 h-16 items-center border-b border-gray-600">
-				<div className="w-8"></div>
+				<div className="w-10"/>
 				<div className="basis-1/12">Type</div>
-				<div className="basis-1/12">Date</div>
 				<div className="basis-1/12">Map</div>
 				<div className="basis-1/12">Score</div>
 				<div className="basis-1/12">Rating</div>
@@ -332,9 +330,9 @@ export function PlayerMatchHistory({ player, season }: Props) {
 				</div>
 				<div className="basis-1/12">HS%</div>
 				<div className="basis-2/12 text-xs">
-					<div className="flex flex-row justify-between">
-						<div>F Asst</div>
-						<div>Util Dmg</div>
+					<div className="flex flex-row justify-evenly">
+						<div className="w-6 h-6"><img src={cs2killfeedIcons["flashAssist"]} /></div>
+						<div className="w-6 h-6"><img src={cs2icons["HE Grenade"]} /></div>
 						<div>Clutch Pts</div>
 					</div>
 				</div>

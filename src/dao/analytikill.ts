@@ -1,74 +1,19 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { MatchHistory, MatchHistoryPlayerStat } from "../models/match-history-types";
+import { analytikillHttpClient } from "./httpClients";
 import { ExtendedStats } from "../models/extended-stats";
 import { ProfileJson } from "../models/profile-types";
 
-const getPlayerMatchHistoryData = async (steamId?: string) =>
-	await fetch(`https://tonysanti.com/prx/csc-stat-api/csc/player-match-history?steamId=${steamId}`, {
-		method: "GET",
-		headers: {
-			"content-type": "application/json",
-		},
-	}).then(async response => {
-		return response.json();
-	});
-
-const getIndividualMatchHistory = async (matchId?: string) =>
-	await fetch(`https://tonysanti.com/prx/csc-stat-api/csc/match-history?matchId=${matchId}`, {
-		method: "GET",
-		headers: {
-			"content-type": "application/json",
-		},
-	}).then(async response => {
-		return response.json();
-	});
-
 const getExtendedStats = async () =>
-	await fetch(`https://tonysanti.com/prx/csc-stat-api/analytikill/extendedStats`, {
-		method: "GET",
-		headers: {
-			"content-type": "application/json",
-		},
-	}).then(async response => {
-		return response.json();
-});
+	await analytikillHttpClient.get(`/analytikill/extendedStats`)
+		.then( response => response.data);
 
 const getExtendedMatchStats = async (matchId?: string) =>
-	await fetch(`https://tonysanti.com/prx/csc-stat-api/analytikill/extendedMatchStats?matchId=${matchId}`, {
-		method: "GET",
-		headers: {
-			"content-type": "application/json",
-		},
-	}).then(async response => {
-		return response.json();
-});
+	await analytikillHttpClient.get(`/analytikill/extendedMatchStats?matchId=${matchId}`)
+		.then( response => response.data);
 
 const getPlayerReputation = async ( discordId?: string) =>
-	await fetch(`https://tonysanti.com/prx/csc-stat-api/analytikill/plusRep?discordId=${discordId}`, {
-		method: "GET",
-		headers: {
-			"content-type": "application/json",
-		},
-	}).then(async response => {
-		return response.json();
-	});
-
-
-export function useAnalytikillPlayerMatchHistory(steamId?: string): UseQueryResult<MatchHistoryPlayerStat[]> {
-	return useQuery(["analytikillPlayerMatchHistory", steamId], () => getPlayerMatchHistoryData(steamId), {
-		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 24 = 24 hour
-		enabled: Boolean(steamId),
-		onError: () => {},
-	});
-}
-
-export function useAnalytikillIndividualMatchHistory(matchId?: string): UseQueryResult<MatchHistory> {
-	return useQuery(["analytikillIndividualMatchHistory", matchId], () => getIndividualMatchHistory(matchId), {
-		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 24 = 24 hour
-		enabled: Boolean(matchId),
-		onError: () => {},
-	});
-}
+	await analytikillHttpClient.get(`/analytikill/plusRep?discordId=${discordId}`)
+		.then( response =>  response.data);
 
 export function useAnalytikillExtendedStats(): UseQueryResult<ExtendedStats> {
 	return useQuery(["analytikillExtendedStats"], () => getExtendedStats(), {
@@ -95,14 +40,8 @@ export function useFetchReputation( discordId?: string): UseQueryResult<{ repped
 
 export function useFetchPlayerProfile( discordId?: string ): UseQueryResult<ProfileJson> {
 	return useQuery(["PlayerProfile", discordId], async () => 
-		await fetch(`https://tonysanti.com/prx/csc-stat-api/profile?discordId=${discordId}`, {
-			method: "GET",
-			headers: {
-				"content-type": "application/json",
-			},
-		}).then(async response => {
-			return response.json();
-		}), 
+		await analytikillHttpClient.get(`/profile?discordId=${discordId}`)
+			.then( response => response.data ), 
 	{
 		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 1 = 1 hour
 		onError: () => {},

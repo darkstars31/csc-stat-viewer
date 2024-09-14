@@ -225,7 +225,7 @@ export const getTotalPlayerAverages = (Players: Player[], options?: Record<strin
 		const statsKey = key as keyof CscStats;
 
 		// TODO: FIX
-		standardDeviation[key] = calculateStandardDeviation([] ?? players, statsKey);
+		standardDeviation[key] = calculateStandardDeviation([], statsKey);
 		average[key] = calculateAverage(
 			playersWithStats.map(p => p.stats),
 			statsKey,

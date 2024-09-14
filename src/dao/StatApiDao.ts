@@ -1,38 +1,25 @@
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { TwitchStream } from "../models/twitch-types";
-import { Profile, ProfileJson } from "../models/profile-types";
+import { ProfileJson } from "../models/profile-types";
+import { analytikillHttpClient } from "./httpClients";
 
-export const fetchTwitchStreamData = (usernames: string[]) =>
-	fetch("https://tonysanti.com/prx/csc-stat-api/twitch/getTwitchUser", {
-		method: "POST",
-		body: JSON.stringify({
-			twitchUsernames: usernames,
-		}),
-		headers: {
-			"Content-Type": "application/json",
-		},
-	}).then(async res => {
-		const json = await res.json();
-		return json.data;
-	});
+export const fetchTwitchStreamData = async (usernames: string[]) =>
+	await analytikillHttpClient.post(`/twitch/getTwitchUser`, 
+	{
+		twitchUsernames: usernames,
+	})
+	.then( response => response.data.data);
 
 export const fetchUserProfile = (discordId?: string) =>
-	fetch(`https://tonysanti.com/prx/csc-stat-api/profile?discordId=${discordId}`, {
-		method: "GET",
-		headers: {
-			"Content-Type": "application/json",
-		},
-	})
-		.then(async res => {
-			return await res.json();
-		})
+	analytikillHttpClient.get(`/profile?discordId=${discordId}`)
+		.then( response => response.data)
 		.catch(err => {
 			console.log(err);
 			return err;
 		});
 
 export function useFetchTwitchStreamData(usernames: string[]): UseQueryResult<TwitchStream[]> {
-	return useQuery(["twitch", usernames], () => fetchTwitchStreamData(usernames), {
+	return useQuery(["twitch", usernames], async () => await fetchTwitchStreamData(usernames), {
 		staleTime: 1000 * 60 * 5,
 	});
 }

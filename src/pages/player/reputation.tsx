@@ -3,14 +3,8 @@ import { FaPlus, FaMinus } from "react-icons/fa";
 import { ToolTip } from "../../common/utils/tooltip-utils";
 import { useDataContext } from "../../DataContext";
 import { useFetchReputation } from "../../dao/analytikill";
-import cookie from "js-cookie";
 import { queryClient } from "../../App";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
-
-const Loading = () => (
-<div className="float-right animate-spin h-[1em] w-[1em] mt-1 ml-1">
-    <AiOutlineLoading3Quarters className="text-purple-500" />    
-</div>)
+import { analytikillHttpClient } from "../../dao/httpClients";
 
 
 export function Reputation( { playerDiscordId }: { playerDiscordId: string | undefined } ) {
@@ -21,22 +15,18 @@ export function Reputation( { playerDiscordId }: { playerDiscordId: string | und
     const hasAlreadyRepped = Object.keys(reputation?.plusRep ?? {}).includes(discordUser?.id ?? "");
 
     const handleRep = async ( action:  "add" | "remove") => {
-        await fetch(`https://tonysanti.com/prx/csc-stat-api/analytikill/plusRep`, {
-            method: "POST",
-            headers: {
-                Authorization: "Bearer " + cookie.get("jwt"),
-                "content-type": "application/json",
-            },
-            body: JSON.stringify({ action, discordId: playerDiscordId }),
-        }).then( () => {
-            queryClient.invalidateQueries(["Reputation", playerDiscordId]);
-        });
+        await analytikillHttpClient.post(`/analytikill/plusRep`,
+            {
+                action, 
+                discordId: playerDiscordId 
+            })
+            .then( () => queryClient.invalidateQueries(["Reputation", playerDiscordId]));
     };
 
     const gradientCSS = "bg-clip-text bg-gradient-to-r from-purple-300 to-violet-500 text-transparent hover:cursor-pointer";
 
     if ( isLoading ) {
-        return null;
+        return <div className="w-16" />;
     }
 
     if ( !discordUser ){
