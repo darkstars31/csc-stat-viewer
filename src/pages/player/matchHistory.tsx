@@ -173,6 +173,19 @@ function MatchExtended({ extendedData } : { extendedData?: Record<string, any> }
 	);
 }
 
+const columnCSS = {
+	"expandIndicator": "w-6",
+	"type": "basis-1/12",
+	"map": "basis-14",
+	"score": "basis-14",
+	"rating": "basis-14",
+	"kda": "basis-1/12",
+	"dmg": "basis-1/12",
+	"fk/fd": "basis-1/12",
+	"hs": "basis-1/12",
+	"extras": "basis-1/12",
+}
+
 function MatchRow({ player, match }: { player: Player; match: Match }) {
 	const [isExpanded, setIsExpanded] = React.useState(false);
 	const { data: extendedMatchData = {}, isLoading: isLoadingextendedMatchData } = useAnalytikillExtendedMatchStats(String(match.matchId).replace("combines-",""), isExpanded);
@@ -205,16 +218,15 @@ function MatchRow({ player, match }: { player: Player; match: Match }) {
 	return (
 		<div>
 			<div
-				className="flex flex-nowrap gap-4 my-1 py-2 hover:cursor-pointer hover:bg-midnight2 rounded pl-2 text-sm"
+				className="flex flex-nowrap gap-4 my-1 py-2 hover:cursor-pointer hover:bg-midnight2 rounded text-sm"
 				onClick={() => setIsExpanded(!isExpanded)}
 			>
-				<div className="w-8">
+				<div className={columnCSS.expandIndicator}>
 					{isExpanded ?
 						<MdKeyboardArrowDown size="1.5em" className="leading-8 pl-1" />
 					:	<MdKeyboardArrowRight size="1.5em" className="leading-8 pl-1" />}
 				</div>
-				<div className="basis-1/12">
-					{" "}
+				<div className={columnCSS.type}>
 					<ToolTip type="generic" message={`Match Id: ${match.matchId}`}>
 						{matchType}
 					</ToolTip>
@@ -223,60 +235,77 @@ function MatchRow({ player, match }: { player: Player; match: Match }) {
 					</ToolTip>
 					<div className="text-xs text-gray-400">{match?.tier}</div>
 				</div>
-				<div className="basis-1/12">
-					<span className="flex gap-2">
-						<div className="text-sm">
-							<img className="w-14 h-14 mx-auto" src={mapImages[match.mapName.toLowerCase()]} alt="" />
-						</div>{" "}
-						{/* {match.mapName.split("de_")[1].charAt(0).toUpperCase() + match.mapName.split("de_")[1].slice(1)} */}
-					</span>
+				<div className={columnCSS.map}>				
+					<img className="w-14 h-14 mx-auto" src={mapImages[match.mapName.toLowerCase()]} alt="" />
 				</div>
-				<div className={`basis-1/12 font-extrabold ${p.RF > p.RA ? "text-green-400" : "text-rose-400"}`}>
-					<span className="flex flex-nowrap">
+				<div className={columnCSS.score}>
+					<span className={`flex flex-nowrap ${p.RF > p.RA ? "text-green-400" : "text-rose-400"}`}>
 						{p.RF} : {p.RA}
 					</span>
 				</div>
-				<div className="basis-1/12">{p.rating.toFixed(2)}</div>
-				<div className="basis-1/12">
-					{p.kills} / {p.deaths} / {p.assists}
+				<div className={columnCSS.rating}>
+					{p.rating.toFixed(2)}
 				</div>
-				<div className="basis-1/12">{p.damage}</div>
-				<div className={`basis-1/12 ${p.adr > 100 ? "text-yellow-400" : ""}`}>
-					{p.adr.toFixed(1)}{" "}
-					{p.adr > 100 ?
-						<GoStarFill className="text-yellow-400 inline" />
-					:	""}
+				<div className={columnCSS.kda}>
+					<div className="flex flex-nowrap">
+						<span className="border-r-2 border-gray-400/40 px-1">{p.kills}</span>
+						<span className="border-r-2 border-gray-400/40 px-1">{p.deaths}</span>
+						<span className="px-1">{p.assists}</span>
+					</div>
 				</div>
-				<div className="basis-1/12">
-					{p.ok} : {p.ol}
+				<div className={columnCSS.dmg}>
+					<div className="flex flex-nowrap">
+						<span className={`border-r-2 border-gray-400/40 px-1 inline ${p.adr > 100 ? "text-yellow-400" : ""}`}>
+							{p.adr.toFixed(1)}
+							{p.adr > 100 &&
+								<GoStarFill className="text-yellow-400 inline" />
+							}
+						</span>
+						<span className="px-1">{p.damage}</span>
+					</div>
+				</div>
+				<div className={columnCSS["fk/fd"]}>
+					<div className="flex flex-nowrap gap-1">
+						<span>{p.ok}</span>
+						<span>:</span>
+						<span>{p.ol}</span>
+					</div>
 				</div>
 				<div
-					className={`basis-1/12 ${getCssColorGradientBasedOnPercentage(Math.round((p.hs / p.kills) * 100) || 0)}`}
+					className={`${columnCSS.hs} ${getCssColorGradientBasedOnPercentage(Math.round((p.hs / p.kills) * 100) || 0)}`}
 				>
 					{Math.round((p.hs / p.kills) * 100) || 0}
 				</div>
-				<div className="basis-2/12">
+				<div className={columnCSS.extras}>
+				<div>
+					<ToolTip
+						type="generic"
+						message={
+							<div className="bg-gray-700 p-2 rounded">
+								<div className="flex flex-col">
+									<div>1v1: {p.cl_1}</div>
+									<div>1v2: {p.cl_2}</div>
+									<div>1v3: {p.cl_3}</div>
+									<div>1v4: {p.cl_4}</div>
+									<div>Aces: {p.cl_5}</div>
+								</div>
+							</div>
+						}
+					>
+						{calculateClutchPoints(p)}
+					</ToolTip>
+				</div>
+				</div>
+				<div className={columnCSS.extras}>
 					<div className="flex flex-row justify-evenly">
-						<div>{p.FAss}</div>
-						<div>{p?.utilDmg}</div>
 						<div>
-							<ToolTip
-								type="generic"
-								message={
-									<div className="bg-gray-700 p-2 rounded">
-										<div className="flex flex-col">
-											<div>1v1: {p.cl_1}</div>
-											<div>1v2: {p.cl_2}</div>
-											<div>1v3: {p.cl_3}</div>
-											<div>1v4: {p.cl_4}</div>
-											<div>Aces: {p.cl_5}</div>
-										</div>
-									</div>
-								}
-							>
-								{calculateClutchPoints(p)}
-							</ToolTip>
+							{p.FAss} 
+							<img className="px-1 w-6 h-6 inline" src={cs2killfeedIcons["flashAssist"]} />
 						</div>
+						<div>
+							{p?.utilDmg} 
+							<img className="px-1 w-6 h-6 inline" src={cs2icons["HE Grenade"]} />
+						</div>						
 					</div>
 				</div>
 			</div>
@@ -314,28 +343,22 @@ export function PlayerMatchHistory({ player, season }: Props) {
 				<div className="font-extrabold uppercase">Match History</div>
 				<div className="text-sm text-gray-500">{playerMatchHistory?.length} matches</div>
 			</h2>
-			<div className="flex flex-row pl-2 gap-4 h-16 items-center border-b border-gray-600">
-				<div className="w-10"/>
-				<div className="basis-1/12">Type</div>
-				<div className="basis-1/12">Map</div>
-				<div className="basis-1/12">Score</div>
-				<div className="basis-1/12">Rating</div>
-				<div className="basis-1/12">K D A</div>
-				<div className="basis-1/12">Dmg</div>
-				<div className="basis-1/12">ADR</div>
-				<div className="basis-1/12">
+			<div className="flex flex-row gap-4 h-16 items-center border-b border-gray-600">
+				<div className={columnCSS.expandIndicator}/>
+				<div className={columnCSS.type}>Type</div>
+				<div className={columnCSS.map}>Map</div>
+				<div className={columnCSS.score}>Score</div>
+				<div className={columnCSS.rating}>Rating</div>
+				<div className={columnCSS.kda}>K D A</div>
+				<div className={columnCSS.dmg}>ADR / Dmg</div>
+				<div className={columnCSS["fk/fd"]}>
 					<ToolTip type="generic" message="First Kill / First Death">
 						FK/FD
 					</ToolTip>
 				</div>
-				<div className="basis-1/12">HS%</div>
-				<div className="basis-2/12 text-xs">
-					<div className="flex flex-row justify-evenly">
-						<div className="w-6 h-6"><img src={cs2killfeedIcons["flashAssist"]} /></div>
-						<div className="w-6 h-6"><img src={cs2icons["HE Grenade"]} /></div>
-						<div>Clutch Pts</div>
-					</div>
-				</div>
+				<div className={columnCSS.hs}>HS%</div>
+				<div className={columnCSS.extras}>Clutch</div>
+				<div className={columnCSS.extras}></div>
 			</div>
 			{(showAll ? sortedPlayerMatchHistory : sortedPlayerMatchHistory?.slice(0, 5))?.map(match => (
 				<MatchRow key={match.matchId} player={player} match={match} />

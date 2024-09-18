@@ -1,14 +1,33 @@
 import * as React from "react";
 import { Container } from "../../common/components/container";
 import { InputWithFloatingLabel } from "../../common/components/inputWithFloatingLabel";
-import { Editor } from "react-draft-wysiwyg";
-import { EditorState } from "draft-js";
-import "../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import '@mdxeditor/editor/style.css'
+
+import {
+	toolbarPlugin,
+	headingsPlugin,
+	listsPlugin,
+	quotePlugin,
+	thematicBreakPlugin,
+	markdownShortcutPlugin,
+	MDXEditor,
+	type MDXEditorMethods,
+	type MDXEditorProps,
+	KitchenSinkToolbar,
+	linkPlugin,
+	linkDialogPlugin,
+	imagePlugin,
+	tablePlugin,
+	frontmatterPlugin,
+	codeBlockPlugin,
+	codeMirrorPlugin,
+  } from '@mdxeditor/editor'
 
 export const CreatePost = () => {
 	const [title, setTitle] = React.useState<string>("");
+	const editorRef = React.useRef<MDXEditorMethods>(null);
 	//const [ tags, setTags ] = React.useState("");
-	const [content, setContent] = React.useState<EditorState | undefined>(EditorState.createEmpty());
+	const [content, setContent] = React.useState<string>("");
 
 	return (
 		<Container>
@@ -25,12 +44,30 @@ export const CreatePost = () => {
 				</div>
 				<div></div>
 				<div>
-					<Editor
-						editorState={content}
-						toolbarClassName="toolbarClassName"
-						wrapperClassName="wrapperClassName"
-						editorClassName="editorClassName"
-						onEditorStateChange={setContent}
+					<MDXEditor
+						className="dark-theme dark-editor p-2 border border-gray-600"
+						plugins={[
+							toolbarPlugin({toolbarContents: () => {
+								 return (
+									<KitchenSinkToolbar />
+					  			)}
+							}),
+							listsPlugin(),
+							quotePlugin(),
+							headingsPlugin(),
+							linkPlugin(),
+							linkDialogPlugin(),
+							imagePlugin(),
+							tablePlugin(),
+							thematicBreakPlugin(),
+							frontmatterPlugin(),
+							codeBlockPlugin({ defaultCodeBlockLanguage: 'txt' }),							
+							codeMirrorPlugin({ codeBlockLanguages: { js: 'JavaScript', css: 'CSS', txt: 'text', tsx: 'TypeScript' } }),							
+							markdownShortcutPlugin()
+						]}
+						onChange={setContent}
+						ref={editorRef} 
+						markdown={content}
 					/>
 				</div>
 				<div className="py-4 flex flex justify-end">

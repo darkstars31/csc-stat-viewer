@@ -43,7 +43,11 @@ export const ExtendedMatchHistoryMatchup = ({ extendedMatchData } : { extendedMa
                         <div className="bg-orange-600 text-xs font-medium text-center p-0.5 leading-none h-6 rounded" 
                             style={{width: `${calculatePercentage(teamACSCAverage, summedCSCRating)}%`}} />
                         <div className="-mt-6 float-right bg-blue-600 text-xs font-medium text-center p-0.5 leading-none h-6 rounded" 
-                                style={{width: `${calculatePercentage(teamBCSCAverage, summedCSCRating)}%`}} />
+                                style={{width: `${calculatePercentage(teamBCSCAverage, summedCSCRating)}%`}}>
+                            <div className="float-right w-full text-xs pt-1 pl-4">                              
+                                <span className="float-right pr-4">{calculatePercentage(teamBCSCAverage, summedCSCRating,0)}%</span>
+                            </div>
+                        </div>
                     </div>
                     { teamAFaceitEloAverage > 0 && 
                         <div className="w-full bg-gray-200 rounded dark:bg-gray-700 m-1 h-6">
@@ -54,7 +58,9 @@ export const ExtendedMatchHistoryMatchup = ({ extendedMatchData } : { extendedMa
                             <div className="bg-orange-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none h-6 rounded" 
                                 style={{width: `${calculatePercentage(teamAFaceitEloAverage, summedFaceitElo)}%`}} />
                             <div className="-mt-6 float-right bg-blue-600 text-xs font-medium text-center p-0.5 leading-none h-6 rounded" 
-                                style={{width: `${calculatePercentage(teamBFaceitEloAverage, summedFaceitElo)}%`}} />
+                                style={{width: `${calculatePercentage(teamBFaceitEloAverage, summedFaceitElo)}%`}}>
+                                    <span className="float-right pr-4">{calculatePercentage(teamBFaceitEloAverage, summedFaceitElo,0)}%</span>
+                            </div>
                         </div> 
                     }
                 </div>

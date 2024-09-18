@@ -65,7 +65,6 @@ export function Router() {
 
 	const routes = [
 		{ path: `/`, component: () => <Players /> },
-		{ path: `/articles`, component: () => <ArticleRoutes base={"articles"} /> },
 		{ path: `/about`, component: () => <About /> },
 		{ path: `/cb`, component: () => <LoginCallBack /> },
 		{ path: `/charts`, component: () => <Charts /> },

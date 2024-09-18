@@ -118,9 +118,10 @@ export function TeamStandings() {
 	const q = qs.get("q");
 	const [, setLocation] = useLocation();
 	const queryParams = new URLSearchParams(useSearch());
-	const { franchises = [], seasonAndMatchType } = useDataContext();
+	const { franchises = [], seasonAndMatchType, loggedinUser } = useDataContext();
 	const [selectedTier, setSelectedTier] = React.useState(q ?? "Contender");
 	const [showExtras, setShowExtras] = React.useState(true);
+	const [showJson, setShowJson] = React.useState(true);
 
 	const { data: matches = [], isLoading } = useCscSeasonMatches(
 		selectedTier[0].toUpperCase() + selectedTier.slice(1),
@@ -379,7 +380,11 @@ export function TeamStandings() {
 						by <a href="/players/spidey">Spidey</a> <br />
 					</div>
 				)}
-				{!selectedTier && <div className="text-center text-xl m-4">Select a tier to get started.</div>}
+				{ ["279835443757973504","88080726708191232"].some( id => id === loggedinUser?.discordId) &&
+					<Exandable title="JSON Data">
+					<code>{JSON.stringify(sorted.map(( data ) => ({ ...data, franchise: undefined, franchiseName: data.franchise?.name, franchisePrefix: data.franchise?.prefix, teamName: data.franchise?.teams.find( team => team.tier.name === selectedTier)?.name })), null, 2)}</code>
+				</Exandable>
+				}
 			</div>
 		</Container>
 	);
