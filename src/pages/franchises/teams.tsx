@@ -29,7 +29,6 @@ export function FranchiseTeams({ franchise, selectedTier }: { franchise: Franchi
                         tierNumber[a.tier.name as keyof typeof tierNumber],
                 )
                 .map(team => (
-                    console.log("Selected Tier: " + selectedTier),
                     <div key={`${team.tier.name}` }>
                         <div className="basis-1/4 mx-4 border-b-[1px] border-slate-700 text-center">
                             <strong>{team.name}</strong>{" "}
