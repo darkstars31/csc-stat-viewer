@@ -7,7 +7,7 @@ import { Link } from "wouter"
 import { BiSolidTrophy } from "react-icons/bi"
 import { FranchiseTeams } from "./teams"
 
-export function FranchisesFranchise ({ franchise }: { franchise: Franchise}) {
+export function FranchisesFranchise ({ franchise, selectedTier }: { franchise: Franchise, selectedTier: string | null }) {
 
     const trophies = franchiseMetadata.find( f => f.prefix === franchise.prefix )?.trophies;
     const discord = franchiseMetadata.find( i => i.prefix === franchise.prefix)?.discordUrl
@@ -65,7 +65,7 @@ export function FranchisesFranchise ({ franchise }: { franchise: Franchise}) {
                                 ))}
                             </div>
                         </div>
-                        <FranchiseTeams franchise={franchise} />
+                        <FranchiseTeams franchise={franchise} selectedTier={selectedTier}/>
                     </Link>
                 </div>
             </div>
