@@ -9,6 +9,8 @@ import { HeaderNotifications } from "./notifications";
 import { HeaderProfile } from "./profile";
 import { ToolsDropdown } from "./tools-dropdown";
 
+const env: string = process.env.NODE_ENV!;
+
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");
 }
@@ -72,6 +74,16 @@ export function Header() {
 		},
 		{ name: "About", href: "/about", current: location.includes("about") },
 	];
+
+	const isProduction = env === "production";
+
+	if( !isProduction ) {
+		navigation.push({
+			name: "Articles",
+			href: "/articles",
+			current: location.includes("articles"),
+		})	
+	}
 
 	// const disableSeasonStatsSelector = location.includes("franchises");
 

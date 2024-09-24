@@ -1,4 +1,4 @@
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { analytikillHttpClient } from "./httpClients";
 import { ExtendedStats } from "../models/extended-stats";
 import { ProfileJson } from "../models/profile-types";
@@ -45,6 +45,34 @@ export function useFetchPlayerProfile( discordId?: string ): UseQueryResult<Prof
 	{
 		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 1 = 1 hour
 		onError: () => {},
+	});
+}
+
+export function useFetchArticles() {
+	return useQuery(["Posts"], async () => 
+		await analytikillHttpClient.get(`/analytikill/articles`)
+			.then( response => response.data ), 
+	{
+		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 1 = 1 hour
+		onError: () => {},
+	});
+}
+
+export function useFetchArticle( id: string ) {
+	return useQuery(["Post", id], async () => 
+		await analytikillHttpClient.get(`/analytikill/articles/${id}`)
+			.then( response => response.data ), 
+	{
+		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 1 = 1 hour
+		onError: () => {},
+	});
+}
+
+export function useMutateArticle( payload: any ) {
+	return useMutation({ mutationFn: async () => 
+		await analytikillHttpClient.post(`/analytikill/articles`,
+			payload
+		)
 	});
 }
 
