@@ -7,6 +7,7 @@ import { FranchisesFranchise } from "./franchises/franchise";
 
 export function Franchises() {
 	const { franchises = [], tiers, loading } = useDataContext();
+	const [selectedTier, setSelectedTier] = React.useState<string | null>(null);
 
 	const teamCounts = {
 		recruit: franchises.reduce(
@@ -49,7 +50,7 @@ export function Franchises() {
 				{Object.keys(teamCounts)
 					.reverse()
 					.map(key => (
-						<div className="grow">
+						<div className="grow cursor-pointer" onClick={() => setSelectedTier(key)}>
 							<div
 								className={`font-bold capitalize text-${tiers?.find(item => item.tier.name.toLowerCase() === key)?.tier.color ?? ""}-400`}
 							>
@@ -66,7 +67,7 @@ export function Franchises() {
 			{loading.isLoadingFranchises && <Loading />}
 			<div className="flex flex-col gap-4">
 				{franchises.map(franchise => (
-					<FranchisesFranchise franchise={franchise} />
+					<FranchisesFranchise franchise={franchise} selectedTier={selectedTier}/>
 				))}
 			</div>
 		</Container>
