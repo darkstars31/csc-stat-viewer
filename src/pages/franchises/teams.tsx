@@ -76,14 +76,6 @@ export function FranchiseTeams({ franchise, selectedTier }: { franchise: Franchi
                                     const isInactiveReserve =
                                         playerWithStats?.type === PlayerTypes.INACTIVE_RESERVE;
 
-                                    // if (!isInactiveReserve) {
-                                    //     if (!playerWithStats?.stats?.rating || playerWithStats?.stats?.rating === 0) {
-                                    //         membersWithRating--;
-                                    //     } else {
-                                    //         cumulativeRating += playerWithStats?.stats?.rating;
-                                    //     }
-                                    // }
-
                                     return (
                                         <div
                                             key={`${team.tier.name}-${player.name}`}
