@@ -28,55 +28,72 @@ export function FranchiseTeams({ franchise, selectedTier }: { franchise: Franchi
                         tierNumber[b.tier.name as keyof typeof tierNumber] -
                         tierNumber[a.tier.name as keyof typeof tierNumber],
                 )
-                .map(team => (
-                    <div key={`${team.tier.name}` }>
-                        <div className="basis-1/4 mx-4 border-b-[1px] border-slate-700 text-center">
-                            <strong>{team.name}</strong>{" "}
-                            <span
-                                className={`text-gray-400 italic text-${tiers?.find(item => item.tier.name === team.tier.name)?.tier.color ?? ""}-400`}
-                            >
-                                {team.tier.name}{" "}
-                            </span>
-                        </div>
-                        <div className="mx-4 px-2">
-                            { team.players.length > 0 ? team.players.map(player => {
-                                const playerWithStats = players.find(
-                                    p => p.steam64Id === player.steam64Id,
-                                );
-                                const isInactiveReserve =
-                                    playerWithStats?.type === PlayerTypes.INACTIVE_RESERVE;
+                .map(team => {
+                    // Initialize cumulativeRating for each team
+                    let cumulativeRating = 0;
+                    let membersWithRating = 5;
 
-                                return (
-                                    <div
-                                        key={`${team.tier.name}-${player.name}`}
-                                        className={`${isInactiveReserve ? "text-slate-500" : ""} m-1 grid grid-cols-3 gap-2`}
-                                    >
-                                        <div>
-                                            {player.name}{" "}
-                                            {isInactiveReserve ?
-                                                <span>(IR)</span>
-                                            :	""}{" "}
-                                            {team?.captain?.steam64Id === player.steam64Id ?
-                                                <GiPirateHat
-                                                    size="1.5em"
-                                                    className="inline"
-                                                />
-                                            :	""}
+                    return (
+                        <div key={`${team.tier.name}`}>
+                            <div className="basis-1/4 mx-4 border-b-[1px] border-slate-700 text-center">
+                                <strong>{team.name}</strong>{" "}
+                                <span
+                                    className={`text-gray-400 italic text-${tiers?.find(item => item.tier.name === team.tier.name)?.tier.color ?? ""}-400`}
+                                >
+                                    {team.tier.name}{" "}
+                                </span>
+                            </div>
+                            <div className="mx-4 px-2">
+                                {team.players.length > 0 ? team.players.map(player => {
+                                    const playerWithStats = players.find(
+                                        p => p.steam64Id === player.steam64Id,
+                                    );
+                                    const isInactiveReserve =
+                                        playerWithStats?.type === PlayerTypes.INACTIVE_RESERVE;
+
+                                    if (!isInactiveReserve) {
+                                        if (!playerWithStats?.stats?.rating || playerWithStats?.stats?.rating === 0) {
+                                            membersWithRating--;
+                                        } else {
+                                            cumulativeRating += playerWithStats?.stats?.rating;
+                                        }
+                                    }
+
+                                    return (
+                                        <div
+                                            key={`${team.tier.name}-${player.name}`}
+                                            className={`${isInactiveReserve ? "text-slate-500" : ""} m-1 grid grid-cols-3 gap-2`}
+                                        >
+                                            <div>
+                                                {player.name}{" "}
+                                                {isInactiveReserve ?
+                                                    <span>(IR)</span>
+                                                    : ""}{" "}
+                                                {team?.captain?.steam64Id === player.steam64Id ?
+                                                    <GiPirateHat
+                                                        size="1.5em"
+                                                        className="inline"
+                                                    />
+                                                    : ""}
+                                            </div>
+                                            <div className="text-center">
+                                                {playerWithStats?.stats?.rating.toFixed(2)}
+                                            </div>
+                                            <div>{playerWithStats?.role}</div>
                                         </div>
-                                        <div className="text-center">
-                                            {playerWithStats?.stats?.rating.toFixed(2)}
-                                        </div>
-                                        <div>{playerWithStats?.role}</div>
-                                        {/* <div className="text-xs text-gray-500"> <span className="hidden md:contents"><Mmr player={player} />({((player.mmr/team.tier.mmrCap)*100).toFixed(1)}%)</span></div> */}
+                                    );
+                                }) : (
+                                    <div className="my-1 text-center italic text-gray-500">
+                                        No rostered players
                                     </div>
-                                );
-                            })
-                        :   <div className="my-1 text-center italic text-gray-500">
-                                No rostered players
-                            </div>}
+                                )}
+                            </div>
+                            <div className="text-center">
+                                <p>Avg. Rating: {(cumulativeRating / membersWithRating).toFixed(2)}</p>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
         </div>
     );
 }
