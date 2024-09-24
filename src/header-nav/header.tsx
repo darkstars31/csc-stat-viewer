@@ -8,6 +8,7 @@ import { LuBarChart } from "react-icons/lu";
 import { HeaderNotifications } from "./notifications";
 import { HeaderProfile } from "./profile";
 import { ToolsDropdown } from "./tools-dropdown";
+import { env } from "process";
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");
@@ -72,6 +73,14 @@ export function Header() {
 		},
 		{ name: "About", href: "/about", current: location.includes("about") },
 	];
+
+	if( env.NODE_ENV !== "production" ) {
+		navigation.push({
+			name: "Articles",
+			href: "/articles",
+			current: location.includes("articles"),
+		})	
+	}
 
 	// const disableSeasonStatsSelector = location.includes("franchises");
 

@@ -48,7 +48,7 @@ export function PlayerNavigator({ player, playerIndex }: Props) {
 						<Link key={`closeby-${player.name}`} to={`/players/${player.name}`}>
 							<div
 								style={{ userSelect: "none", lineHeight: "95%" }}
-								className="my-[5px] mr-4 flex h-[32px] cursor-pointer items-center rounded-[4px] bg-[#eceff1] px-[12px] py-0 text-[11px] font-normal normal-case leading-loose text-[#4f4f4f] shadow-none hover:!shadow-none active:bg-[#cacfd1] dark:bg-midnight2 dark:text-neutral-200"
+								className="my-[5px] mr-4 flex h-[32px] cursor-pointer items-center rounded-[4px] px-[12px] py-0 text-[11px] font-normal normal-case leading-loose shadow-none hover:!shadow-none active:bg-[#cacfd1] bg-midnight2 text-neutral-200"
 							>
 								<img
 									className="my-0 -ml-[12px] mr-[8px] h-[inherit] w-[inherit] rounded-[4px]"
