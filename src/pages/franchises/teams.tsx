@@ -13,12 +13,16 @@ const tierNumber = {
     Premier: 6,
 };
 
-export function FranchiseTeams({ franchise }: { franchise: Franchise }) {
+export function FranchiseTeams({ franchise, selectedTier }: { franchise: Franchise, selectedTier: string | null }) {
     const { players, tiers } = useDataContext();
+
+    const filteredTeams = selectedTier
+        ? franchise.teams.filter(team => team.tier.name.toLowerCase() === selectedTier.toLowerCase())
+        : franchise.teams;
 
     return (
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 p-1 text-sm text-gray-300">
-            {franchise.teams
+            {filteredTeams
                 .sort(
                     (a, b) =>
                         tierNumber[b.tier.name as keyof typeof tierNumber] -
