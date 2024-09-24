@@ -3,6 +3,7 @@ import { Franchise } from "../../models/franchise-types";
 import { useDataContext } from "../../DataContext";
 import { PlayerTypes } from "../../common/utils/player-utils";
 import { GiPirateHat } from "react-icons/gi";
+import {BiStats} from "react-icons/bi";
 
 const tierNumber = {
     Recruit: 1,
@@ -31,7 +32,26 @@ export function FranchiseTeams({ franchise, selectedTier }: { franchise: Franchi
                 .map(team => {
                     // Initialize cumulativeRating for each team
                     let cumulativeRating = 0;
-                    let membersWithRating = 5;
+                    let membersWithRating = 0;
+
+                    // First, iterate through players to calculate cumulativeRating and membersWithRating
+                    team.players.forEach(player => {
+                        const playerWithStats = players.find(
+                            p => p.steam64Id === player.steam64Id,
+                        );
+                        const isInactiveReserve =
+                            playerWithStats?.type === PlayerTypes.INACTIVE_RESERVE;
+
+                        if (!isInactiveReserve) {
+                            if (playerWithStats?.stats?.rating) {
+                                cumulativeRating += playerWithStats.stats.rating;
+                                membersWithRating++;
+                            }
+                        }
+                    });
+
+                    // Calculate average rating
+                    const averageRating = membersWithRating > 0 ? (cumulativeRating / membersWithRating).toFixed(2) : "N/A";
 
                     return (
                         <div key={`${team.tier.name}`}>
@@ -42,6 +62,11 @@ export function FranchiseTeams({ franchise, selectedTier }: { franchise: Franchi
                                 >
                                     {team.tier.name}{" "}
                                 </span>
+
+                                {/*average rating*/}
+                                <div className="flex float-right">
+                                    <BiStats size="1.5em" className="mr-1 text-orange-500" />{" " + averageRating}
+                                </div>
                             </div>
                             <div className="mx-4 px-2">
                                 {team.players.length > 0 ? team.players.map(player => {
@@ -51,13 +76,13 @@ export function FranchiseTeams({ franchise, selectedTier }: { franchise: Franchi
                                     const isInactiveReserve =
                                         playerWithStats?.type === PlayerTypes.INACTIVE_RESERVE;
 
-                                    if (!isInactiveReserve) {
-                                        if (!playerWithStats?.stats?.rating || playerWithStats?.stats?.rating === 0) {
-                                            membersWithRating--;
-                                        } else {
-                                            cumulativeRating += playerWithStats?.stats?.rating;
-                                        }
-                                    }
+                                    // if (!isInactiveReserve) {
+                                    //     if (!playerWithStats?.stats?.rating || playerWithStats?.stats?.rating === 0) {
+                                    //         membersWithRating--;
+                                    //     } else {
+                                    //         cumulativeRating += playerWithStats?.stats?.rating;
+                                    //     }
+                                    // }
 
                                     return (
                                         <div
@@ -87,9 +112,6 @@ export function FranchiseTeams({ franchise, selectedTier }: { franchise: Franchi
                                         No rostered players
                                     </div>
                                 )}
-                            </div>
-                            <div className="text-center">
-                                <p>Avg. Rating: {(cumulativeRating / membersWithRating).toFixed(2)}</p>
                             </div>
                         </div>
                     );
