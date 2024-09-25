@@ -25,6 +25,7 @@ type server = {
 	port: number;
 	type: string;
 	password: string;
+	isPrivate: boolean;
 	datetime: string;
 };
 
@@ -68,8 +69,8 @@ export function CopyToClipboard({ text }: { text: string }) {
 		:	<FaCheck className="text-green-500 mt-1 inlinecursor-pointer animate-bounce" />;
 }
 
-export function OwnedServers({ server, onChange }: { server: any; onChange: (x: boolean) => void }) {
-	const { loggedinUser } = useDataContext();
+export function ServerRow({ server, onChange }: { server: any; onChange: (x: boolean) => void }) {
+	const { discordUser } = useDataContext();
 	const [serverDeets, setServerDeets] = React.useState<serverDeets | null>(null);
 	const [isShuttingDown, setIsShuttingDown] = React.useState<boolean>(false);
 
@@ -116,7 +117,7 @@ export function OwnedServers({ server, onChange }: { server: any; onChange: (x: 
 	const connectCode = `connect servers.analytikill.com:${server.port}${server.password ? `;password ${server.password}` : ""}`;
 	//const timeSinceServerStart = dayjs(+server.datetime).fromNow()
 	const timeTilServerShutdown = dayjs().to(+server.datetime, true);
-	const isOwner = loggedinUser?.name === server.owner;
+	const isOwner = discordUser?.id === server.owner;
 
 	const skeletonClassNames = "animate-pulse bg-gray-900 rounded inset-0 m-1 p-1";
 
@@ -132,17 +133,18 @@ export function OwnedServers({ server, onChange }: { server: any; onChange: (x: 
 				{serverDeets?.maxPlayers}
 			</td>
 			<td className="flex flex-row justify-between m-1 p-1 rounded bg-gray-800 inset-0 gap-2">
-				{(isOwner || !server.password) && (
+				{(isOwner || !server.password || (server.password !== "REDACTED" && server.isPrivate)) ? 
 					<>
 						<pre>{connectCode}</pre>
 						<CopyToClipboard text={connectCode} />
 					</>
-				)}
-				{!isOwner && server.password && <pre>Private</pre>}
+					:
+					<pre>Private</pre>
+				}
 			</td>
 			<td>
 				<div className="flex flex-col gap-2 justify-center">
-					{loggedinUser?.name === server.owner && (
+					{isOwner && (
 						<button
 							onClick={() => shutdown()}
 							disabled={isShuttingDown}
@@ -246,7 +248,7 @@ export const FieldIncremental = ({
 };
 
 export function Servers() {
-	const { loggedinUser, isLoading, players } = useDataContext();
+	const { discordUser, isLoading, players } = useDataContext();
 	const [requestState, setRequestState] = React.useState<{
 		[key: string]: string | number | boolean | null;
 	}>({
@@ -279,7 +281,7 @@ export function Servers() {
 		(async () => {
 			if (shouldRefresh === true && !isLoading) {
 				setTimeout(async () => {
-					const response = await fetch(`${appConfig.endpoints.analytikill}/servers/owned`, {
+					const response = await fetch(`${appConfig.endpoints.analytikill}/servers/servers`, {
 						method: "GET",
 						headers: {
 							"Content-Type": "application/json",
@@ -340,7 +342,7 @@ export function Servers() {
 		setIsSubmitting(false);
 	};
 
-	if (!loggedinUser) {
+	if (!discordUser) {
 		return (
 			<Container>
 				<h2 className="text-3xl font-bold sm:text-4xl">Servers</h2>
@@ -626,7 +628,7 @@ export function Servers() {
 					<tbody>
 						{servers &&
 							servers?.map(server => (
-								<OwnedServers key={server.screenid} server={server} onChange={setShouldRefresh} />
+								<ServerRow key={server.screenid} server={server} onChange={setShouldRefresh} />
 							))}
 					</tbody>
 				</table>
