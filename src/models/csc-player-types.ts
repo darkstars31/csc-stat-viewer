@@ -9,6 +9,7 @@ export type Data = {
 };
 
 export type CscPlayer = {
+	id: string;
 	name: string;
 	avatarUrl: string;
 	steam64Id: string;

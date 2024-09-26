@@ -10,7 +10,7 @@ type Props = {
 	players: Player[];
 };
 
-export function PlayerList({ orderBy, displayStyle, players }: Props) {
+export function PlayerListMemoized({ orderBy, displayStyle, players }: Props) {
 	let sortedPlayerData = players.sort((a, b) => {
 		const itemA = _get(a, orderBy.value, 0);
 		const itemB = _get(b, orderBy.value, 0);
@@ -31,3 +31,5 @@ export function PlayerList({ orderBy, displayStyle, players }: Props) {
 		return <PlayerTable players={orderedPlayerData} />;
 	}
 }
+
+export const PlayerList = React.memo(PlayerListMemoized);

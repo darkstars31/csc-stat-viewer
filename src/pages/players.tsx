@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
-import { InputWithFloatingLabel } from "../common/components/inputWithFloatingLabel";
 import { Pill } from "../common/components/pill";
 import Select, { MultiValue, SingleValue } from "react-select";
 import { useDataContext } from "../DataContext";
@@ -15,11 +14,13 @@ import { PlayerList } from "./players/player-list";
 import { Player } from "../models";
 import Papa from "papaparse";
 import { selectClassNames } from "../common/utils/select-utils";
+import { Input } from "../common/components/forms/input";
 
 const sortOptionsList = [
 	{ label: "Name", value: "name" },
 	{ label: "Rating", value: "stats.rating" },
 	{ label: "MMR", value: "mmr" },
+	//{ label: "CSC ID", value: "id" },
 ];
 
 const exportAsCsv = (players: Player[]) => {
@@ -116,28 +117,27 @@ export function Players() {
 				<h2 className="text-3xl font-bold sm:text-4xl">Players</h2>
 				<p className="mt-4 text-gray-300">Find players, view stats, see how you stack up against your peers.</p>
 				<form
-					className="flex flex-box h-12 mx-auto"
+					className="relative flex flex-row h-12 my-2 py-2"
 					onSubmit={e => {
 						e.preventDefault();
 					}}
-				>
-					<InputWithFloatingLabel
-						className="basis-9/12 grow"
-						label="Filter"
-						placeHolder="Player Name"
+				>					
+					<Input
+						className="basis-full grow rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white"
 						type="text"
+						placeholder="Search Players"
 						onChange={e => setSearchValue(e.currentTarget.value)}
 						value={searchValue}
 					/>
 					<button
 						type="submit"
-						className="basis-3/12 ml-4 inline-block rounded border border-indigo-600 bg-indigo-600 px-2 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
+						className="absolute basis-3/12 right-0 top-0 inline-block rounded-lg border border-indigo-600 bg-indigo-600 mt-[0.2rem] p-[0.4rem] text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
 						onClick={addFilter}
 					>
 						Filter
-					</button>
+					</button>	
 				</form>
-				<div className="pt-4">
+				<div className="my-2 py-2">
 					{filters.map(filter => (
 						<Pill key={filter} label={filter} onClick={() => removeFilter(filter)} />
 					))}

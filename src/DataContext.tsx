@@ -19,7 +19,7 @@ import { queryClient } from "./App";
 const useDataContextProvider = () => {
 	const [discordUser, setDiscordUser] = React.useState<DiscordUser | null>(null);
 	const { data: seasonAndTierConfig = undefined, isLoading: isLoadingCscSeasonAndTiers } = useCscSeasonAndTiersGraph();
-	const { data: matches = [], isLoading: isLoadingMatches } = useCscSeasonMatches("Premier", seasonAndTierConfig?.number ?? 0);
+	const { data: matches = [], isLoading: isLoadingMatches } = useCscSeasonMatches("Elite", seasonAndTierConfig?.number ?? 0);
     const [ enableExperimentalHistorialFeature, setEnableExperimentalHistorialFeature] = React.useState<boolean>(false);
 	const [ seasonAndMatchType, setSeasonAndMatchType ] = React.useState<{ season: number; matchType: string }>({ season: seasonAndTierConfig?.number ?? 0, matchType: matches.length > 0 ? "Regulation" : "Combine" });
 	const { data: extendedPlayerStats = undefined, isLoading: isLoadingExtendedStats } = useAnalytikillExtendedStats();
@@ -260,6 +260,7 @@ const useDataContextProvider = () => {
 			isLoadingCscPlayers: isLoadingCscPlayers,
 			isLoadingCscSeasonAndTiers: isLoadingCscSeasonAndTiers,
 			isLoadingFranchises,
+			isLoadingExtendedStats,
 			stats: {
 				isLoadingCscStatsRecruit,
 				isLoadingCscStatsProspect,

@@ -172,12 +172,12 @@ export function Player() {
 											<span className={`text-${tiers.find(t => t.tier.name === viewStatSelection)?.tier.color}-500`}>
 												<b>
 													<i>
-														{currentPlayer.name.toLowerCase() === "comradsniper" ?
+														{currentPlayer?.name.toLowerCase() === "comradsniper" ?
 															"Super "
 														:	""}{" "}
 														<Popover className="inline relative">
 															<PopoverButton className={`transition ease-in-out hover:scale-105 duration-100`}>
-																{viewStatSelection}{currentPlayer.tier.name === viewStatSelection ? "" : "*"}
+																{viewStatSelection}{currentPlayer?.tier.name === viewStatSelection ? "" : "*"}
 																</PopoverButton>
 																<PopoverPanel 
 																	anchor="bottom" 
@@ -201,7 +201,11 @@ export function Player() {
 												</b>
 											</span>
 										<br /> 
-										<Mmr player={currentPlayer} /> MMR
+										{ currentPlayer &&
+										  <>
+										  	<Mmr player={currentPlayer} /> MMR 
+										  </>										
+										}
 										<div>
 											<span className="flex leading-7">
 												<FaceitRank player={currentPlayer} />
@@ -210,7 +214,7 @@ export function Player() {
 													message="HLTV2.0 Rating formula w/ <1% margin of error."
 												>
 													<span className="ml-2 bg-gradient-to-r from-amber-300 to-pink-700 bg-clip-text text-transparent">
-														~{currentPlayer.hltvTwoPointO?.toFixed(2)} HLTV
+														~{currentPlayer?.hltvTwoPointO?.toFixed(2)} HLTV
 													</span>
 												</ToolTip>
 											</span>
