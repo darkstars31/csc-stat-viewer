@@ -9,7 +9,7 @@ export function SeasonAndMatchTypeSelector() {
 
     if (!enableExperimentalHistorialFeature) return null;
 
-    const { currentSeason, hasSeasonstarted, seasonAndMatchType, setSeasonAndMatchType } = useDataContext();
+    const { currentSeason, hasSeasonStarted, seasonAndMatchType, setSeasonAndMatchType } = useDataContext();
 	const seasonOptions = [ ...Array.from({ length: currentSeason - 10 }, (_, i) => ({ label: `Season ${ i + 11 }`, value: i + 11 })).reverse() ];
     const matchTypeOptions = [ { label: "Regulation", value: "Regulation" }, { label: "Combines", value: "Combine" } ];
 
@@ -93,7 +93,7 @@ export function SeasonAndMatchTypeSelector() {
                     valueContainer: () => "",
                 }}
                 options={matchTypeOptions}
-                defaultValue={matchTypeOptions.find(( option ) => option.value === (hasSeasonstarted ? "Regulation" : "Combine") )}
+                defaultValue={matchTypeOptions.find(( option ) => option.value === (hasSeasonStarted ? "Regulation" : "Combine") )}
                 onChange={ e => handleSelectMatchType(e?.value) }
             />
         </div>
