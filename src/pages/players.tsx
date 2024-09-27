@@ -131,7 +131,7 @@ export function Players() {
 					/>
 					<button
 						type="submit"
-						className="absolute basis-3/12 right-0 top-0 inline-block rounded-lg border border-indigo-600 bg-indigo-600 mt-[0.2rem] p-[0.4rem] text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
+						className="absolute basis-3/12 right-0 top-0 inline-block rounded-lg border border-indigo-600 bg-indigo-600 mt-[0.2rem] p-[0.4rem] text-sm font-medium text-white hover:text-indigo-600 focus:outline-none focus:ring active:text-indigo-500"
 						onClick={addFilter}
 					>
 						Filter

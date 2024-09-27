@@ -25,11 +25,13 @@ const useDataContextProvider = () => {
 	const { data: extendedPlayerStats = undefined, isLoading: isLoadingExtendedStats } = useAnalytikillExtendedStats();
 	const dataConfig = dataConfiguration.find(item => dataConfiguration[0].name === item.name);
 
-	const hasSeasonstarted = matches.length > 0
+	const hasSeasonStarted = matches.length > 0
 
 	React.useEffect(() => {
-		setSeasonAndMatchType({ season: seasonAndTierConfig?.number ?? 0, matchType: hasSeasonstarted ? "Regulation" : "Combine" });
+		setSeasonAndMatchType({ season: seasonAndTierConfig?.number ?? 0, matchType: hasSeasonStarted ? "Regulation" : "Combine" });
 	}, [isLoadingCscSeasonAndTiers === false, isLoadingMatches === false]);
+
+	if ( seasonAndMatchType ) console.info("seasonAndMatchType", seasonAndMatchType);
 
 	React.useEffect(() => {
 		seasonAndTierConfig?.league.leagueTiers.forEach(tier => queryClient.invalidateQueries([`cscstats-graph`, tier.tier.name, seasonAndTierConfig?.number, seasonAndMatchType.matchType]));
@@ -274,7 +276,7 @@ const useDataContextProvider = () => {
 		dataConfig,
 		seasonAndMatchType,
 		currentSeason: seasonAndTierConfig?.number ?? 0,
-		hasSeasonstarted,
+		hasSeasonStarted,
 		enableExperimentalHistorialFeature,
 		setEnableExperimentalHistorialFeature,
 		tiers: seasonAndTierConfig?.league.leagueTiers ?? [],
