@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { EditorProvider, FloatingMenu, BubbleMenu, useCurrentEditor } from '@tiptap/react'
+import { EditorProvider, FloatingMenu, BubbleMenu, useCurrentEditor, Editor } from '@tiptap/react'
 import { Color } from "@tiptap/extension-color";
 import ListItem from "@tiptap/extension-list-item";
 import TextStyle from "@tiptap/extension-text-style";
@@ -157,9 +157,9 @@ const MenuBar = () => {
         )
   };
 
-const Tiptap = ( { content }: { content: string}) => {
+const Tiptap = ( { content, onUpdate }: { content: string, onUpdate:({ editor }: { editor?: Editor}) => void }) => {
   return (
-    <EditorProvider  extensions={extensions} content={content} slotBefore={<MenuBar />} >
+    <EditorProvider extensions={extensions} content={content} onUpdate={onUpdate} slotBefore={<MenuBar />} >
       {/* <FloatingMenu editor={null}>This is the floating menu</FloatingMenu>
       <BubbleMenu editor={null}>This is the bubble menu</BubbleMenu> */}
     </EditorProvider>

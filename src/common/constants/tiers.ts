@@ -5,5 +5,4 @@ export const TIER_CONSTANTS = {
     Challenger: "Challenger",
     Elite: "Elite",
     Premier: "Premier",   
-
 }

@@ -24,10 +24,10 @@ export const ArticleRoutes = (props: Props) => {
 	];
 
 	return (
-		<Router base={nestedBase} key={nestedBase}>
+		<Route key={nestedBase}>
 			{routes.map(route => (
-				<Route key={`route${route.path}`} {...route} />
+				<Route key={`${nestedBase}/route${route.path}`} path={`${nestedBase}/${route.path}`} component={route.component} />
 			))}
-		</Router>
+		</Route>
 	);
 };

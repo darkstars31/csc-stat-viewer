@@ -13,4 +13,5 @@ export type DiscordUser = {
 	premium_type: number;
 	public_flags: number;
 	username: string;
+	scopes: string[];
 };

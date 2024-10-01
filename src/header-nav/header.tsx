@@ -54,8 +54,8 @@ export function Header() {
 		},
 		{
 			name: "Standings",
-			href: "/Standings",
-			current: location.endsWith("/Standings"),
+			href: "/standings",
+			current: location.endsWith("standings"),
 		},
 		{
 			name: "Players",

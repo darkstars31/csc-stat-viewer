@@ -1,10 +1,10 @@
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useQueries, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { CscStats, CscStatsQuery } from "../models/csc-stats-types";
 import { appConfig } from "../dataConfig";
 
 const cachedUrl = `/csc/cached-tier-season-stats`;
 
-type CscTiers = "Recruit" | "Prospect" | "Contender" | "Challenger" | "Elite" | "Premier";
+export type CscTiers = "Recruit" | "Prospect" | "Contender" | "Challenger" | "Elite" | "Premier";
 
 const OneHour = 1000 * 60 * 60;
 
@@ -91,4 +91,16 @@ export function useCscStatsGraph(tier: CscTiers, season?: number, matchType?: st
         enabled: Boolean(season),
 		staleTime: OneHour,
 	});
+}
+
+export function useMultipleCscStatsGraph(tiers: string[], season?: number, matchType?: string): UseQueryResult<void | CscStats[], unknown>[] {
+	const queries = tiers.map(tier => ({
+		queryKey: ["cscstats-graph", tier, season, matchType],
+		queryFn: () => fetchCachedGraph(tier as CscTiers, season, matchType)
+            .catch( () => { 
+                console.warn("Error Fetching Cached Graph for all tiers.");
+                return []; 
+                }),
+	}));
+	return useQueries({ queries });
 }

@@ -2,6 +2,7 @@ import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { analytikillHttpClient } from "./httpClients";
 import { ExtendedStats } from "../models/extended-stats";
 import { ProfileJson } from "../models/profile-types";
+import { Post } from "../pages/articles/posts";
 
 const getExtendedStats = async () =>
 	await analytikillHttpClient.get(`/analytikill/extendedStats`)
@@ -48,7 +49,7 @@ export function useFetchPlayerProfile( discordId?: string ): UseQueryResult<Prof
 	});
 }
 
-export function useFetchArticles() {
+export function useFetchArticles(): UseQueryResult<Post[]> {
 	return useQuery(["Posts"], async () => 
 		await analytikillHttpClient.get(`/analytikill/articles`)
 			.then( response => response.data ), 
@@ -58,7 +59,7 @@ export function useFetchArticles() {
 	});
 }
 
-export function useFetchArticle( id: string ) {
+export function useFetchArticle( id: string ): UseQueryResult<Post[]> {
 	return useQuery(["Post", id], async () => 
 		await analytikillHttpClient.get(`/analytikill/articles/${id}`)
 			.then( response => response.data ), 

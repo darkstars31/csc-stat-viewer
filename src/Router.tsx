@@ -31,6 +31,10 @@ import { useLocalStorage } from "./common/hooks/localStorage";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useEnableFeature } from "./common/hooks/enableFeature";
 import { useFetchGithubRepoBranchJson } from "./dao/githubRepo";
+import { Posts } from "./pages/articles/posts";
+import { Post } from "./pages/articles/post";
+import { CreatePost } from "./pages/articles/create";
+import { Submitted } from "./pages/articles/submitted";
 
 export function Router() {
 	const [closeNotificationBanner, setCloseNotificationBanner] = useLocalStorage(
@@ -39,7 +43,7 @@ export function Router() {
 	);
 	const [ newVersionBanner, setNewVersionBanner] = React.useState<{ isOpen: boolean, commitHash: string | undefined }>({ isOpen: false, commitHash: undefined });
 	const { data: githubBranch, isLoading: isLoadingGithubBranch } = useFetchGithubRepoBranchJson();
-	const { loading, discordUser, setDiscordUser, seasonAndMatchType, loggedinUser, setSeasonAndMatchType } = useDataContext();
+	const { loading, discordUser, setDiscordUser, loggedinUser } = useDataContext();
 	const BASE_ROUTE = "";
 	const [location] = useLocation();
 	const enableFeature = useEnableFeature("canRequestServers");
@@ -63,6 +67,13 @@ export function Router() {
 	// const Charts = React.lazy(() => import("./pages/charts").then(module => { return { default: module.Charts } }) );
 	// const About = React.lazy(() => import("./pages/about").then(module => { return { default: module.About } }) );
 
+	const articleRoutes = [
+		{ path: `/articles`, component: () => <Posts /> },
+		{ path: `/articles/create`, component: () => <CreatePost /> },
+		{ path: `/articles/submitted`, component: () => <Submitted /> },
+		{ path: `/articles/:id`, component: () => <Post /> },
+	]
+
 	const routes = [
 		{ path: `/`, component: () => <Players /> },
 		{ path: `/about`, component: () => <About /> },
@@ -74,7 +85,6 @@ export function Router() {
 		{ path: `/franchises/:franchise/:team`, component: () => <Team /> },
 		{ path: `/players`, component: () => <Players /> },
 		{ path: `/players/:id`, component: () => <Player /> },
-		{ path: `/players/:tier/:id`, component: () => <Player /> }, // TODO: Remove route when no longer needed
 		{ path: `/player-compare`, component: () => <PlayerComparison /> },
 		{ path: `/leaderboards`, component: () => <LeaderBoards /> },
 		{ path: `/playground`, component: () => <Playground /> },
@@ -84,7 +94,7 @@ export function Router() {
 
 		{ path: `/admin`, component: () => <Admin /> },
 		{ path: `/franchiseManagement`, component: () => <FranchiseManagement /> },
-	];
+	].concat(articleRoutes);
 
 	React.useEffect(() => {
 		const fetchUser = async () => {
@@ -134,22 +144,18 @@ export function Router() {
 							<AiOutlineCloseCircle className="float-right mr-4" size="1.5em" />
 						</button>
 					)}
-					<ErrorBoundary>
-						<ArticleRoutes base={`/articles`} />						
-							<Switch>					
-								{routes.map(route => {									
-										return <Route key={`route${route.path}`} {...route} />
-									})
-								}							
-								<Route
-									key="404, Page not found."
-									component={() => (
-										<Container>
-											<h1>404</h1>
-										</Container>
-									)}
-								/>				
-							</Switch>
+					<ErrorBoundary>					
+						<Switch>
+							{routes.map(route => <Route key={`route${route.path}`} {...route} />)}
+							<Route
+								key="404, Page not found."
+								component={() => (
+									<Container>
+										<h1>404</h1>
+									</Container>
+								)}
+							/>
+						</Switch>
 					</ErrorBoundary>
 				</div>
 			</Wouter>

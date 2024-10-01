@@ -1,9 +1,10 @@
-import { Menu, Transition } from "@headlessui/react";
+import { Menu, MenuItem, MenuItems, Transition } from "@headlessui/react";
 import * as React from "react";
 import { discordLogin, discordSignOut } from "../dao/oAuth";
 import { RxDiscordLogo } from "react-icons/rx";
 import { useDataContext } from "../DataContext";
 import { Link } from "wouter";
+import { isUserInScope } from "../common/utils/user-utils";
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");
@@ -12,6 +13,8 @@ function classNames(...classes: string[]) {
 export function HeaderProfile() {
 	const { discordUser, players, enableExperimentalHistorialFeature, setEnableExperimentalHistorialFeature } = useDataContext();
 	const currentLoggedInPlayer = players.find(p => p.discordId === discordUser?.id);
+
+	console.info( discordUser)
 
 	return (
 		<Menu as="div" className="relative inline-block text-left">
@@ -46,8 +49,8 @@ export function HeaderProfile() {
 				leaveFrom="transform opacity-100 scale-100"
 				leaveTo="transform opacity-0 scale-95"
 			>
-				<Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">	
-					<Menu.Item>
+				<MenuItems className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">	
+					<MenuItem>
 						{({ active }) => (
 							<Link to={`/profile`}>
 								<button
@@ -60,10 +63,10 @@ export function HeaderProfile() {
 								</button>
 							</Link>
 						)}
-					</Menu.Item>
+					</MenuItem>
 					{currentLoggedInPlayer && (
 						<>
-							<Menu.Item>
+							<MenuItem>
 								{({ active }) => (
 									<Link to={`/players/${currentLoggedInPlayer?.name}`}>
 										<button
@@ -76,8 +79,8 @@ export function HeaderProfile() {
 										</button>
 									</Link>
 								)}
-							</Menu.Item>
-							<Menu.Item>
+							</MenuItem>
+							<MenuItem>
 								{({ active }) => (
 									<Link
 										to={`/franchises/${currentLoggedInPlayer?.team?.franchise.name}/${currentLoggedInPlayer?.team?.name}`}
@@ -92,8 +95,8 @@ export function HeaderProfile() {
 										</button>
 									</Link>
 								)}
-							</Menu.Item>
-							<Menu.Item>
+							</MenuItem>
+							<MenuItem>
 								{({ active }) => (
 									<Link to={`/franchises/${currentLoggedInPlayer?.team?.franchise.name}`}>
 										<button
@@ -106,11 +109,11 @@ export function HeaderProfile() {
 										</button>
 									</Link>
 								)}
-							</Menu.Item>
+							</MenuItem>
 						</>
 					)}
 					<hr />
-						<Menu.Item>
+						<MenuItem>
 							{({ active }) => (
 								<Link to={`/servers`}>
 									<button
@@ -123,9 +126,9 @@ export function HeaderProfile() {
 									</button>
 								</Link>
 							)}
-						</Menu.Item>
+						</MenuItem>
 					<hr />
-					<Menu.Item>
+					<MenuItem>
 						{({ active }) => (									
 							<button
 								className={classNames(
@@ -139,8 +142,22 @@ export function HeaderProfile() {
 								{enableExperimentalHistorialFeature ? "Disable" : "Enable"} Experimental History
 							</button>								
 						)}
-					</Menu.Item>
-					<Menu.Item>
+					</MenuItem>
+					{ isUserInScope("admin") && 
+						<MenuItem>
+							{({ active }) => (
+								<Link to={`/admin`}	>
+									<button className={classNames(
+										active ? "bg-gray-100" : "",
+										"block px-4 py-2 text-sm text-gray-700 w-full",
+									)}>
+										Admin
+									</button>
+								</Link>								
+							)}
+						</MenuItem> 
+					}
+					<MenuItem>
 						{({ active }) => (
 							<button
 								className={classNames(
@@ -155,8 +172,8 @@ export function HeaderProfile() {
 								Sign out
 							</button>
 						)}
-					</Menu.Item>
-				</Menu.Items>
+					</MenuItem>
+				</MenuItems>
 			</Transition>
 		</Menu>
 	);

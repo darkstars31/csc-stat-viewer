@@ -3,7 +3,7 @@ import { useCscPlayersGraph } from "./dao/cscPlayerGraphQLDao";
 import { dataConfiguration } from "./dataConfig";
 import { Player } from "./models/player";
 import { useFetchFranchisesGraph } from "./dao/franchisesGraphQLDao";
-import { useCscStatsGraph } from "./dao/cscStatsGraphQLDao";
+import { useCscStatsGraph, useMultipleCscStatsGraph } from "./dao/cscStatsGraphQLDao";
 import {
 	PlayerTypes,
 	calculateHltvTwoPointOApproximationFromStats,
@@ -19,6 +19,7 @@ import { queryClient } from "./App";
 const useDataContextProvider = () => {
 	const [discordUser, setDiscordUser] = React.useState<DiscordUser | null>(null);
 	const { data: seasonAndTierConfig = undefined, isLoading: isLoadingCscSeasonAndTiers } = useCscSeasonAndTiersGraph();
+	const [ players, setPlayers ] = React.useState<Player[]>([]);
 	const { data: matches = [], isLoading: isLoadingMatches } = useCscSeasonMatches("Elite", seasonAndTierConfig?.number ?? 0);
     const [ enableExperimentalHistorialFeature, setEnableExperimentalHistorialFeature] = React.useState<boolean>(false);
 	const [ seasonAndMatchType, setSeasonAndMatchType ] = React.useState<{ season: number; matchType: string }>({ season: seasonAndTierConfig?.number ?? 0, matchType: matches.length > 0 ? "Regulation" : "Combine" });
@@ -82,35 +83,10 @@ const useDataContextProvider = () => {
 	);
 	const { data: cscSpectatorPlayers = [] } = useCscPlayersGraph( "SPECTATOR" );
 
-	const { data: cscStatsRecruit = [], isLoading: isLoadingCscStatsRecruit } = useCscStatsGraph(
-		"Recruit",
+	const data = useMultipleCscStatsGraph(
+		[ "Recruit","Prospect","Contender","Challenger","Elite","Premier"],
 		seasonAndMatchType?.season,
-		seasonAndMatchType.matchType,
-	);
-	const { data: cscStatsProspect = [], isLoading: isLoadingCscStatsProspect } = useCscStatsGraph(
-		"Prospect",
-		seasonAndMatchType?.season,
-		seasonAndMatchType.matchType,
-	);
-	const { data: cscStatsContender = [], isLoading: isLoadingCscStatsContender } = useCscStatsGraph(
-		"Contender",
-		seasonAndMatchType?.season,
-		seasonAndMatchType.matchType,
-	);
-	const { data: cscStatsChallenger = [], isLoading: isLoadingCscStatsChallenger } = useCscStatsGraph(
-		"Challenger",
-		seasonAndMatchType?.season,
-		seasonAndMatchType.matchType,
-	);
-	const { data: cscStatsElite = [], isLoading: isLoadingCscStatsElite } = useCscStatsGraph(
-		"Elite",
-		seasonAndMatchType?.season,
-		seasonAndMatchType.matchType,
-	);
-	const { data: cscStatsPremier = [], isLoading: isLoadingCscStatsPremier } = useCscStatsGraph(
-		"Premier",
-		seasonAndMatchType?.season,
-		seasonAndMatchType.matchType,
+		seasonAndMatchType.matchType 
 	);
 
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
@@ -136,84 +112,98 @@ const useDataContextProvider = () => {
 	}
 
 	const statsByTier = {
-		Recruit: cscStatsRecruit,
-		Prospect: cscStatsProspect,
-		Contender: cscStatsContender,
-		Challenger: cscStatsChallenger,
-		Elite: cscStatsElite,
-		Premier: cscStatsPremier,
+		Recruit: data[0].data,
+		Prospect: data[1].data,
+		Contender: data[2].data,
+		Challenger: data[3].data,
+		Elite: data[4].data,
+		Premier: data[5].data,
 	};
 
 	//const players: Player[] = cscPlayers.map( cscPlayer => ({ ...cscPlayer, stats: stats.find( stats => (stats.name === cscPlayer?.name)) }));
 	//console.info( cscPlayers.reduce( (a, player) => { a[player.steam64Id] = ""; return a }, {} as any ));
 
-	const specialRoles = {
-		"76561198855758438": "BAITER",
-		"76561199389109923": "ECO FRAGGER",
-		"76561198368540894": "AWP CRUTCH",
-	};
-
 	const playersMissingTier = cscPlayers?.filter(cscPlayer => cscPlayer?.tier === undefined);
 	if(playersMissingTier.length > 0) console.info("Players Missing Tier",playersMissingTier);
 
-	const players: Player[] = cscPlayers?.filter(cscPlayer => cscPlayer.tier?.name).reduce((acc, cscPlayer) => {
-		const statsByTier = [
-			{
-				tier: "Recruit",
-				stats: cscStatsRecruit.find(stats => stats.name === cscPlayer?.name),
-			},
-			{
-				tier: "Prospect",
-				stats: cscStatsProspect.find(stats => stats.name === cscPlayer?.name),
-			},
-			{
-				tier: "Contender",
-				stats: cscStatsContender.find(stats => stats.name === cscPlayer?.name),
-			},
-			{
-				tier: "Challenger",
-				stats: cscStatsChallenger.find(stats => stats.name === cscPlayer?.name),
-			},
-			{
-				tier: "Elite",
-				stats: cscStatsElite.find(stats => stats.name === cscPlayer?.name),
-			},
-			{
-				tier: "Premier",
-				stats: cscStatsPremier.find(stats => stats.name === cscPlayer?.name),
-			},
-		].filter(statsWithTier => statsWithTier?.stats);
+	React.useEffect(() => {
 
-		if (statsByTier.length > 0) {
-			var role =
-				specialRoles[cscPlayer.steam64Id as keyof typeof specialRoles] ?
-					specialRoles[cscPlayer.steam64Id as keyof typeof specialRoles]
-				:	determinePlayerRole(statsByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!);
-			const stats = statsByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!;
+		const specialRoles = {
+			"76561198855758438": "BAITER",
+			"76561199389109923": "ECO FRAGGER",
+			"76561198368540894": "AWP CRUTCH",
+		};	
 
-			const extendedStats = extendedPlayerStats?.find(
-				(stats: { name: string }) => stats.name === cscPlayer?.name,
-			) as ExtendedStats;
-
-			const statsOutOfTier = statsByTier.length > 0 ?
-				statsByTier.filter(statsWithTier => statsWithTier.tier !== cscPlayer.tier.name)
-				:	null;
-
-			if( cscPlayer.name.includes("Jarts")) console.info( statsOutOfTier )
-
-			acc.push({
-				...cscPlayer,
-				hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
-				role,
-				stats,
-				extendedStats,
-				statsOutOfTier,
-			});
-		} else {
-			acc.push({ ...(cscPlayer as Player) });
-		}
-		return acc;
-	}, [] as Player[]);
+		const players: Player[] = cscPlayers?.filter(cscPlayer => cscPlayer.tier?.name).reduce((acc, cscPlayer) => {
+			const statsForPlayerByTier = [
+				{
+					tier: "Recruit",
+					stats: statsByTier.Recruit?.find(stats => stats.name === cscPlayer?.name),
+				},
+				{
+					tier: "Prospect",
+					stats: statsByTier.Prospect?.find(stats => stats.name === cscPlayer?.name),
+				},
+				{
+					tier: "Contender",
+					stats: statsByTier.Contender?.find(stats => stats.name === cscPlayer?.name),
+				},
+				{
+					tier: "Challenger",
+					stats: statsByTier.Challenger?.find(stats => stats.name === cscPlayer?.name),
+				},
+				{
+					tier: "Elite",
+					stats: statsByTier.Elite?.find(stats => stats.name === cscPlayer?.name),
+				},
+				{
+					tier: "Premier",
+					stats: statsByTier.Premier?.find(stats => stats.name === cscPlayer?.name),
+				},
+			].filter(statsWithTier => statsWithTier?.stats);
+	
+			if (statsForPlayerByTier.length > 0) {
+				var role =
+					specialRoles[cscPlayer.steam64Id as keyof typeof specialRoles] ?
+						specialRoles[cscPlayer.steam64Id as keyof typeof specialRoles]
+					:	determinePlayerRole(statsForPlayerByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!);
+				const stats = statsForPlayerByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!;
+	
+				const extendedStats = extendedPlayerStats?.find(
+					(stats: { name: string }) => stats.name === cscPlayer?.name,
+				) as ExtendedStats;
+	
+				const statsOutOfTier = statsForPlayerByTier.length > 0 ?
+				statsForPlayerByTier.filter(statsWithTier => statsWithTier.tier !== cscPlayer.tier.name)
+					:	null;
+	
+				if( cscPlayer.name.includes("Jarts")) console.info( statsOutOfTier )
+	
+				acc.push({
+					...cscPlayer,
+					hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
+					role,
+					stats,
+					extendedStats,
+					statsOutOfTier,
+				});
+			} else {
+				acc.push({ ...(cscPlayer as Player) });
+			}
+			return acc;
+		}, [] as Player[]);
+		setPlayers(players);
+	}, [
+		[
+			data[0].isLoading,
+			data[1].isLoading,
+			data[2].isLoading,
+			data[3].isLoading,
+			data[4].isLoading,
+			data[5].isLoading
+		].every(Boolean),
+	]);
+	
 
 	const isLoadingCscPlayers = [
 		isLoadingSignedCscPlayers,
@@ -264,12 +254,12 @@ const useDataContextProvider = () => {
 			isLoadingFranchises,
 			isLoadingExtendedStats,
 			stats: {
-				isLoadingCscStatsRecruit,
-				isLoadingCscStatsProspect,
-				isLoadingCscStatsContender,
-				isLoadingCscStatsChallenger,
-				isLoadingCscStatsElite,
-				isLoadingCscStatsPremier,
+				isLoadingCscStatsRecruit: data[0].isLoading,
+				isLoadingCscStatsProspect: data[1].isLoading,
+				isLoadingCscStatsContender: data[2].isLoading,
+				isLoadingCscStatsChallenger: data[3].isLoading,
+				isLoadingCscStatsElite: data[4].isLoading,
+				isLoadingCscStatsPremier: data[5].isLoading,
 			},
 		},
 		statsByTier,

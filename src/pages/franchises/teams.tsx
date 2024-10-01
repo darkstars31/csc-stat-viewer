@@ -3,7 +3,8 @@ import { Franchise } from "../../models/franchise-types";
 import { useDataContext } from "../../DataContext";
 import { PlayerTypes } from "../../common/utils/player-utils";
 import { GiPirateHat } from "react-icons/gi";
-import {BiStats} from "react-icons/bi";
+import { BiStats } from "react-icons/bi";
+import { Link } from "wouter";
 
 const tierNumber = {
     Recruit: 1,
@@ -54,7 +55,7 @@ export function FranchiseTeams({ franchise, selectedTier }: { franchise: Franchi
                     const averageRating = membersWithRating > 0 ? (cumulativeRating / membersWithRating).toFixed(2) : "N/A";
 
                     return (
-                        <div key={`${team.tier.name}`}>
+                        <Link to={`/franchises/${franchise.name}/${team.name}`} className="transition hover:bg-slate-600/25 hover:scale-[105%] rounded" key={`${team.tier.name}`}>
                             <div className="basis-1/4 mx-4 border-b-[1px] border-slate-700 text-center">
                                 <strong>{team.name}</strong>{" "}
                                 <span
@@ -79,7 +80,7 @@ export function FranchiseTeams({ franchise, selectedTier }: { franchise: Franchi
                                     return (
                                         <div
                                             key={`${team.tier.name}-${player.name}`}
-                                            className={`${isInactiveReserve ? "text-slate-500" : ""} m-1 grid grid-cols-3 gap-2`}
+                                            className={`${isInactiveReserve ? "text-slate-500" : ""}  m-1 grid grid-cols-3 gap-2`}
                                         >
                                             <div>
                                                 {player.name}{" "}
@@ -105,7 +106,7 @@ export function FranchiseTeams({ franchise, selectedTier }: { franchise: Franchi
                                     </div>
                                 )}
                             </div>
-                        </div>
+                        </Link>
                     );
                 })}
         </div>

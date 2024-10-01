@@ -6,9 +6,11 @@ import { RxDiscordLogo } from "react-icons/rx"
 import { Link } from "wouter"
 import { BiSolidTrophy } from "react-icons/bi"
 import { FranchiseTeams } from "./teams"
+import { FranchiseManagementNamePlate } from "./franchiseManagementNamePlate"
+import { useDataContext } from "../../DataContext"
 
 export function FranchisesFranchise ({ franchise, selectedTier }: { franchise: Franchise, selectedTier: string | null }) {
-
+    const { players } = useDataContext();
     const trophies = franchiseMetadata.find( f => f.prefix === franchise.prefix )?.trophies;
     const discord = franchiseMetadata.find( i => i.prefix === franchise.prefix)?.discordUrl
 
@@ -34,7 +36,7 @@ export function FranchisesFranchise ({ franchise, selectedTier }: { franchise: F
                         }                   
                     </div>
                     <Link to={`/franchises/${encodeURIComponent(franchise.name)}`}>
-                        <div className="flex flex-col sm:flex-row hover:cursor-pointer"> 
+                        <div className="flex flex-col sm:flex-row hover:cursor-pointer gap-4"> 
                             <div className="basis-3/12">
                                 <div className="z-10 h-24 w-24 md:w-48 md:h-48">
                                     <img
@@ -45,17 +47,22 @@ export function FranchisesFranchise ({ franchise, selectedTier }: { franchise: F
                                 </div>
                             </div>
                             <div>
-                                <div className="basis-4/12 grow flex flex-row gap-8 justify-end">
-                                    <div className="basis-1/3 text-3xl font-bold text-white text-center leading-loose">
+                                <div className="basis-6/12 grow flex flex-col gap-8 justify-end">
+                                    <div className="basis-2/3 text-3xl font-bold text-white text-center leading-loose">
                                         {franchise.name} (<i>{franchise.prefix}</i>)
                                     </div>
-                                    <div className="basis-1/2">
-                                        <div>GM - {franchise.gm.name}</div>
-                                        <div>AGM - {franchise.agms?.map(agm => agm.name).join(", ")}</div>
+                                    <div className="basis-1/2">                                  
+                                        <FranchiseManagementNamePlate player={players.find( p => p.name === franchise.gm.name)!} title="General Manager" />                                       
+                                        <div className="flex flex-row">
+                                            {(franchise?.agms ?? []).map( agm => 
+                                                    <FranchiseManagementNamePlate player={players.find(p => p.name === agm?.name)!} title="Asst. GM"/>
+                                                )
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="basis-4/12 text-sm text-yellow-300">
+                            <div className="basis-3/12 text-sm text-yellow-300">
                                 { trophies?.map( t => (
                                     <div className="flex flex-row gap-1">
                                         <span className="">{t.season}</span>
@@ -65,8 +72,8 @@ export function FranchisesFranchise ({ franchise, selectedTier }: { franchise: F
                                 ))}
                             </div>
                         </div>
-                        <FranchiseTeams franchise={franchise} selectedTier={selectedTier}/>
                     </Link>
+                    <FranchiseTeams franchise={franchise} selectedTier={selectedTier}/>
                 </div>
             </div>
         </div>

@@ -66,7 +66,7 @@ export function Franchises() {
 			</div>
 			{loading.isLoadingFranchises && <Loading />}
 			<div className="flex flex-col gap-4">
-				{franchises.map(franchise => (
+				{franchises.filter( f => f.teams.find( t => selectedTier ? t.tier.name.toLowerCase() === selectedTier : true)).map(franchise => (
 					<FranchisesFranchise franchise={franchise} selectedTier={selectedTier}/>
 				))}
 			</div>
