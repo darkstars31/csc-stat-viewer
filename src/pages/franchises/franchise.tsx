@@ -11,8 +11,10 @@ import { useDataContext } from "../../DataContext"
 
 export function FranchisesFranchise ({ franchise, selectedTier }: { franchise: Franchise, selectedTier: string | null }) {
     const { players } = useDataContext();
-    const trophies = franchiseMetadata.find( f => f.prefix === franchise.prefix )?.trophies;
-    const discord = franchiseMetadata.find( i => i.prefix === franchise.prefix)?.discordUrl
+    const franchiseData = franchiseMetadata.find( f => f.prefix === franchise.prefix );
+    const trophies = franchiseData?.trophies;
+    const discord = franchiseData?.discordUrl;
+    const established = franchiseData?.inceptionSeason;
 
     return (
         <div
@@ -47,10 +49,17 @@ export function FranchisesFranchise ({ franchise, selectedTier }: { franchise: F
                                 </div>
                             </div>
                             <div>
-                                <div className="basis-6/12 grow flex flex-col gap-8 justify-end">
-                                    <div className="basis-2/3 text-3xl font-bold text-white text-center leading-loose">
-                                        {franchise.name} (<i>{franchise.prefix}</i>)
-                                    </div>
+                                <div className="basis-6/12 grow flex flex-col m-2 justify-end">
+                                    <div className="basis-2/3 font-bold text-white text-center leading-loose">
+                                        <div>
+                                            <div style={{"mixBlendMode": "difference"}} className="text-5xl">{franchise.name}</div>
+                                            <div className="flex flex-row gap-6 justify-center text-l text-gray-400">
+                                                <div>{franchise.prefix}</div>
+                                                <div className="border h-3/6 border-gray-400" />
+                                                <div className="italic">Est. Season {established}</div>
+                                            </div>
+                                        </div>
+                                    </div>                                   
                                     <div className="basis-1/2">                                  
                                         <FranchiseManagementNamePlate player={players.find( p => p.name === franchise.gm.name)!} title="General Manager" />                                       
                                         <div className="flex flex-row">

@@ -17,7 +17,7 @@ export const franchiseMetadata = [
     ], },
     { prefix: "WET",
         discordUrl: "https://discord.gg/hWn2DGhf",
-        inceptionSeason: 1,
+        inceptionSeason: 11,
         trophies: [
         { season: 14, tier: TIER_CONSTANTS.Prospect},
         { season: 13, tier: TIER_CONSTANTS.Contender},
@@ -25,7 +25,7 @@ export const franchiseMetadata = [
     ]},
     { prefix: "H4K",
         discordUrl: "",
-        inceptionSeason: 1,
+        inceptionSeason: 8,
         trophies: [
         { season: 14, tier: TIER_CONSTANTS.Contender},
         { season: 13, tier: TIER_CONSTANTS.Elite},
@@ -35,7 +35,7 @@ export const franchiseMetadata = [
     ]},
     { prefix: "OS",
         discordUrl: "",
-        inceptionSeason: 1,
+        inceptionSeason: 2,
         trophies: [
         { season: 8, tier: TIER_CONSTANTS.Challenger},
         { season: 7, tier: TIER_CONSTANTS.Prospect},
@@ -43,7 +43,7 @@ export const franchiseMetadata = [
     ]},
     { prefix: "HG",
         discordUrl: "",
-        inceptionSeason: 1,
+        inceptionSeason: 6,
         trophies: [
         { season: 14, tier: TIER_CONSTANTS.Premier},
         { season: 13, tier: TIER_CONSTANTS.Challenger},
@@ -54,21 +54,21 @@ export const franchiseMetadata = [
     ]},
     { prefix: "SAV",
         discordUrl: "https://discord.gg/BAbNKr55",
-        inceptionSeason: 1,
+        inceptionSeason: 5,
         trophies: [
         { season: 12, tier: TIER_CONSTANTS.Recruit},
         { season: 9, tier: TIER_CONSTANTS.Contender},
     ]},
     { prefix: "ATL",
         discordUrl: "",
-        inceptionSeason: 1,
+        inceptionSeason: 10,
         trophies: [
         { season: 13, tier: TIER_CONSTANTS.Prospect},
         { season: 10, tier: TIER_CONSTANTS.Challenger},
     ]},
     { prefix: "AVI",
         discordUrl: "https://discord.gg/uXHms59b",
-        inceptionSeason: 1,
+        inceptionSeason: 7,
         trophies: [
         { season: 13, tier: TIER_CONSTANTS.Premier},
         { season: 11, tier: TIER_CONSTANTS.Prospect},
@@ -76,26 +76,96 @@ export const franchiseMetadata = [
     ]},
     { prefix: "NAN",
         discordUrl: "",
-        inceptionSeason: 1,
+        inceptionSeason: 5,
         trophies: [
         { season: 11, tier: TIER_CONSTANTS.Challenger},
         { season: 13, tier: TIER_CONSTANTS.Recruit}
     ]},
     { prefix: "COW",
         discordUrl: "",
-        inceptionSeason: 1,
+        inceptionSeason: 10,
         trophies: [
         { season: 11, tier: TIER_CONSTANTS.Premier},
     ]},
     { prefix: "ABW",
         discordUrl: "",
-        inceptionSeason: 1,
+        inceptionSeason: 13,
         trophies: [
         { season: 14, tier: TIER_CONSTANTS.Recruit},
     ]},
     { prefix: "dB",
         discordUrl: "https://discord.gg/sp89uQbX",
-        inceptionSeason: 1,
+        inceptionSeason: 13,
         trophies: [
     ]},
+    {
+        prefix: "FRG",
+        discordUrl: "https://discord.gg/qfGUbbFgAh",
+        inceptionSeason: 11,
+        trophies: [
+        ]
+    },
+    {
+        prefix: "BS",
+        discordUrl: undefined,
+        inceptionSeason: 8,
+        trophies: [
+        ]
+    },
+    {
+        prefix: "GAS",
+        discordUrl: undefined,
+        inceptionSeason: 9,
+        trophies: [
+        ]
+    },
+    {
+        prefix: "ACA",
+        discordUrl: undefined,
+        inceptionSeason: 11,
+        trophies: [
+        ]
+    },
+    {
+        prefix: "AG",
+        discordUrl: undefined,
+        inceptionSeason: 15,
+        trophies: [
+        ]
+    },
+    {
+        prefix: "PA",
+        discordUrl: undefined,
+        inceptionSeason: 15,
+        trophies: [
+        ]
+    },
+    {
+        prefix: "LEC",
+        discordUrl: undefined,
+        inceptionSeason: 13,
+        trophies: [
+        ]
+    },
+    {
+        prefix: "GRN",
+        discordUrl: undefined,
+        inceptionSeason: 15,
+        trophies: [
+        ]
+    },
+    {
+        prefix: "HR",
+        discordUrl: undefined,
+        inceptionSeason: 15,
+        trophies: [
+        ]
+    },
+    {
+        prefix: "DRG",
+        discordUrl: undefined,
+        inceptionSeason: 13,
+        trophies: [
+        ]
+    }
 ] 

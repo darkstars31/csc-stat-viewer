@@ -39,20 +39,6 @@ const useDataContextProvider = () => {
 		queryClient.invalidateQueries([`cscplayermatchhistory-graph`]);
 	}, [seasonAndMatchType]);
 
-	const { data, isLoading: isLoadingCachedStats} = useCscStatsCache( 
-		seasonAndMatchType?.season,
-		seasonAndMatchType.matchType 
-	)
-
-	const statsByTier = {
-		Recruit: data?.data.Recruit,
-		Prospect: data?.data.Prospect,
-		Contender: data?.data.Contender,
-		Challenger: data?.data.Challenger,
-		Elite: data?.data.Elite,
-		Premier: data?.data.Premier,
-	};
-
 	const {
 		data: cscSignedPlayers = [],
 		isLoading: isLoadingSignedCscPlayers,
@@ -95,13 +81,27 @@ const useDataContextProvider = () => {
 		PlayerTypes.EXPIRED,
 		{ skipCache: true },
 	);
-	const { data: cscSpectatorPlayers = [] } = useCscPlayersGraph( "SPECTATOR" );
+	const { data: cscSpectatorPlayers = [] } = useCscPlayersGraph( "SPECTATOR", { enabled: enableExperimentalHistorialFeature } );
 
 	// const data = useMultipleCscStatsGraph(
 	// 	[ "Recruit","Prospect","Contender","Challenger","Elite","Premier"],
 	// 	seasonAndMatchType?.season,
 	// 	seasonAndMatchType.matchType 
 	// );
+
+	const { data, isLoading: isLoadingCachedStats} = useCscStatsCache( 
+		seasonAndMatchType?.season,
+		seasonAndMatchType.matchType 
+	)
+
+	const statsByTier = {
+		Recruit: data?.data.Recruit,
+		Prospect: data?.data.Prospect,
+		Contender: data?.data.Contender,
+		Challenger: data?.data.Challenger,
+		Elite: data?.data.Elite,
+		Premier: data?.data.Premier,
+	};
 
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
 
@@ -135,6 +135,7 @@ const useDataContextProvider = () => {
 	React.useEffect(() => {
 
 		const specialRoles = {
+			"76561197998527398": "THE GOAT",
 			"76561198855758438": "BAITER",
 			"76561199389109923": "ECO FRAGGER",
 			"76561198368540894": "AWP CRUTCH",
@@ -199,7 +200,7 @@ const useDataContextProvider = () => {
 			return acc;
 		}, [] as Player[]);
 		setPlayers(players);
-	}, [isLoadingCachedStats]);
+	}, [isLoadingCachedStats, enableExperimentalHistorialFeature]);
 	
 
 	const isLoadingCscPlayers = [

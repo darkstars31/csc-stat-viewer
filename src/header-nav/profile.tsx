@@ -5,6 +5,7 @@ import { RxDiscordLogo } from "react-icons/rx";
 import { useDataContext } from "../DataContext";
 import { Link } from "wouter";
 import { isUserInScope } from "../common/utils/user-utils";
+import { FaToggleOff, FaToggleOn } from "react-icons/fa";
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");
@@ -137,7 +138,7 @@ export function HeaderProfile() {
 									setEnableExperimentalHistorialFeature(!enableExperimentalHistorialFeature);
 								}}
 							>
-								{enableExperimentalHistorialFeature ? "Disable" : "Enable"} Experimental History
+								{enableExperimentalHistorialFeature ? <FaToggleOn size={16} className="inline" /> : <FaToggleOff size={16} className="inline" />} Historical Menu
 							</button>								
 						)}
 					</MenuItem>

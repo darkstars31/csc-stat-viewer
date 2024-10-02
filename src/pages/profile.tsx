@@ -4,7 +4,6 @@ import * as Containers from "../common/components/containers";
 import { InputWithFloatingLabel } from "../common/components/inputWithFloatingLabel";
 import { useDataContext } from "../DataContext";
 import { useFetchPlayerProfile } from "../dao/StatApiDao";
-import cookie from "js-cookie";
 import { queryClient } from "../App";
 import Select from "react-select";
 import { selectClassNames } from "../common/utils/select-utils";
@@ -17,6 +16,7 @@ import { Input, Radio, RadioGroup } from "@headlessui/react"
 import { SocialFields } from "./profile/socialFields";
 import { gaEvent } from "../common/services/google-analytics";
 import { analytikillHttpClient } from "../dao/httpClients";
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
 
 
 
@@ -44,7 +44,6 @@ export function Profile() {
 		favoriteProTeam: profile?.favoriteProTeam ?? undefined,
 		socials: profile?.socials ?? {},
 		firstCSCSeason: profile?.firstCSCSeason ?? undefined,
-		whatExperienceDoYouWant: profile?.whatExperienceDoYouWant ?? undefined,
 	});
 	}, [profile, isFetching]);
 
@@ -112,8 +111,6 @@ export function Profile() {
 	const ageOptions = ["16-20","21-23","24-26","27-29","30-35","36+"].map((age) => ({ label: age, value: age }));
 	const aspectRatioOptions = ["4:3","16:9","16:10","Other???"].map((value) => ({ label: value, value: value }));
 	const regionOptions = ["US-East","US-West","US-Central","EU","Other"].map((value) => ({ label: value, value: value }));
-
-	const plans = ['Startup', 'Business', 'Enterprise']
 
 	const onSave = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -221,27 +218,6 @@ export function Profile() {
 								/>
 							</Form.Field>	
 						</Form.FieldSet>
-						{ false &&  <div className="basis-1/4 py-1">
-							<label className="pl-[0.15rem] px-2 hover:cursor-pointer" htmlFor="">
-								Experience Expectations
-							</label>
-							<RadioGroup value={profileSettings?.whatExperienceDoYouWant} 
-								onChange={ option => onChange("whatExperienceDoYouWant", option)} 
-								aria-label="Server size"
-								>
-								{plans.map((plan) => (
-									<div key={plan} className="flex items-center gap-2">
-										<Radio
-											value={plan}						
-											className="group flex size-5 items-center justify-center rounded-full border bg-white data-[checked]:bg-blue-400"
-										>
-											<span className="invisible size-2 rounded-full bg-white group-data-[checked]:visible" />
-										</Radio>
-										<label>{plan}</label>
-									</div>
-								))}
-							</RadioGroup>
-						</div> }
 					</Containers.StandardBackgroundPage>
 					<Containers.StandardBackgroundPage classNames="basis-1/4 grow">
 						<Form.FieldSet title="Favorites">

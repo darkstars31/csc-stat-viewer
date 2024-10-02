@@ -70,6 +70,7 @@ export function useCscPlayersGraph(
 		[`cscplayers-${playerType}-graph`],
 		() => (options?.skipCache ? fetchGraph(playerType) : fetchCachedGraph(playerType)),
 		{
+			enabled: options?.enabled as boolean ?? true,
 			staleTime: OneHour,
 		},
 	);
