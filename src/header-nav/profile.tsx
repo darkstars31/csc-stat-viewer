@@ -14,8 +14,6 @@ export function HeaderProfile() {
 	const { discordUser, players, enableExperimentalHistorialFeature, setEnableExperimentalHistorialFeature } = useDataContext();
 	const currentLoggedInPlayer = players.find(p => p.discordId === discordUser?.id);
 
-	console.info( discordUser)
-
 	return (
 		<Menu as="div" className="relative inline-block text-left">
 			{!discordUser && (

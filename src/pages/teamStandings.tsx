@@ -128,7 +128,6 @@ export function TeamStandings() {
 		seasonAndMatchType.season,
 	);
 	const tieBreakers: string[] = [];
-	console.info(matches);
 
 	const teamsWithScores = matches.reduce(
 		(acc, match) => {

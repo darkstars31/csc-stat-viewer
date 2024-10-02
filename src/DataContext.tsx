@@ -3,7 +3,7 @@ import { useCscPlayersGraph } from "./dao/cscPlayerGraphQLDao";
 import { dataConfiguration } from "./dataConfig";
 import { Player } from "./models/player";
 import { useFetchFranchisesGraph } from "./dao/franchisesGraphQLDao";
-import { useCscStatsGraph, useMultipleCscStatsGraph } from "./dao/cscStatsGraphQLDao";
+import { useCscStatsCache } from "./dao/cscStatsGraphQLDao";
 import {
 	PlayerTypes,
 	calculateHltvTwoPointOApproximationFromStats,
@@ -38,6 +38,20 @@ const useDataContextProvider = () => {
 		seasonAndTierConfig?.league.leagueTiers.forEach(tier => queryClient.invalidateQueries([`cscstats-graph`, tier.tier.name, seasonAndTierConfig?.number, seasonAndMatchType.matchType]));
 		queryClient.invalidateQueries([`cscplayermatchhistory-graph`]);
 	}, [seasonAndMatchType]);
+
+	const { data, isLoading: isLoadingCachedStats} = useCscStatsCache( 
+		seasonAndMatchType?.season,
+		seasonAndMatchType.matchType 
+	)
+
+	const statsByTier = {
+		Recruit: data?.data.Recruit,
+		Prospect: data?.data.Prospect,
+		Contender: data?.data.Contender,
+		Challenger: data?.data.Challenger,
+		Elite: data?.data.Elite,
+		Premier: data?.data.Premier,
+	};
 
 	const {
 		data: cscSignedPlayers = [],
@@ -83,11 +97,11 @@ const useDataContextProvider = () => {
 	);
 	const { data: cscSpectatorPlayers = [] } = useCscPlayersGraph( "SPECTATOR" );
 
-	const data = useMultipleCscStatsGraph(
-		[ "Recruit","Prospect","Contender","Challenger","Elite","Premier"],
-		seasonAndMatchType?.season,
-		seasonAndMatchType.matchType 
-	);
+	// const data = useMultipleCscStatsGraph(
+	// 	[ "Recruit","Prospect","Contender","Challenger","Elite","Premier"],
+	// 	seasonAndMatchType?.season,
+	// 	seasonAndMatchType.matchType 
+	// );
 
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
 
@@ -111,14 +125,6 @@ const useDataContextProvider = () => {
 		cscPlayers.push(...cscSpectatorPlayers)
 	}
 
-	const statsByTier = {
-		Recruit: data[0].data,
-		Prospect: data[1].data,
-		Contender: data[2].data,
-		Challenger: data[3].data,
-		Elite: data[4].data,
-		Premier: data[5].data,
-	};
 
 	//const players: Player[] = cscPlayers.map( cscPlayer => ({ ...cscPlayer, stats: stats.find( stats => (stats.name === cscPlayer?.name)) }));
 	//console.info( cscPlayers.reduce( (a, player) => { a[player.steam64Id] = ""; return a }, {} as any ));
@@ -193,16 +199,7 @@ const useDataContextProvider = () => {
 			return acc;
 		}, [] as Player[]);
 		setPlayers(players);
-	}, [
-		[
-			data[0].isLoading,
-			data[1].isLoading,
-			data[2].isLoading,
-			data[3].isLoading,
-			data[4].isLoading,
-			data[5].isLoading
-		].every(Boolean),
-	]);
+	}, [isLoadingCachedStats]);
 	
 
 	const isLoadingCscPlayers = [
@@ -253,14 +250,7 @@ const useDataContextProvider = () => {
 			isLoadingCscSeasonAndTiers: isLoadingCscSeasonAndTiers,
 			isLoadingFranchises,
 			isLoadingExtendedStats,
-			stats: {
-				isLoadingCscStatsRecruit: data[0].isLoading,
-				isLoadingCscStatsProspect: data[1].isLoading,
-				isLoadingCscStatsContender: data[2].isLoading,
-				isLoadingCscStatsChallenger: data[3].isLoading,
-				isLoadingCscStatsElite: data[4].isLoading,
-				isLoadingCscStatsPremier: data[5].isLoading,
-			},
+			isLoadingCachedStats
 		},
 		statsByTier,
 		dataConfig,

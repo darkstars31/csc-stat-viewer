@@ -1,7 +1,5 @@
 import * as React from "react";
 import { Container } from "../../common/components/container";
-
-import '@mdxeditor/editor/style.css'
 import * as Form from "../../common/components/forms";
 
 import Tiptap from "../../common/components/tiptap";

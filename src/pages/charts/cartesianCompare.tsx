@@ -177,7 +177,6 @@ export function CartesianCompare({ playerData = [] }: Props) {
 			trigger: "item",
 			label: {
 				formatter: function (param: { data: any[] }) {
-					console.info(param);
 					return `${param.data[3]} ${param.data[2]}`;
 				},
 			},

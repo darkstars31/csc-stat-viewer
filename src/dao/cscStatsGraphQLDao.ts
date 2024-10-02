@@ -1,6 +1,7 @@
 import { useQueries, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { CscStats, CscStatsQuery } from "../models/csc-stats-types";
 import { appConfig } from "../dataConfig";
+import { analytikillHttpClient } from "./httpClients";
 
 const cachedUrl = `/csc/cached-tier-season-stats`;
 
@@ -88,6 +89,28 @@ const fetchCachedGraph = async (tier: CscTiers, season?: number, matchType?: str
 
 export function useCscStatsGraph(tier: CscTiers, season?: number, matchType?: string): UseQueryResult<CscStats[]> {
 	return useQuery([`cscstats-graph`, tier, season, matchType], () => fetchCachedGraph(tier, season, matchType), {
+        enabled: Boolean(season),
+		staleTime: OneHour,
+	});
+}
+
+type StatsCache = { 
+    lastUpdate: string, 
+    data: {
+        Recruit: CscStats[],
+        Prospect: CscStats[],
+        Contender: CscStats[],
+        Challenger: CscStats[],
+        Elite: CscStats[],
+        Premier: CscStats[],
+    }
+}
+
+export function useCscStatsCache(season?: number, matchType?: string): UseQueryResult<StatsCache> {
+	return useQuery([`cscstats-cache`, season, matchType], 
+        async () => await analytikillHttpClient.get(`/csc/cached-stats?season=${season}&matchType=${matchType}`)
+        .then( response => response.data ),
+    {
         enabled: Boolean(season),
 		staleTime: OneHour,
 	});
