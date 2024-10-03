@@ -16,6 +16,8 @@ import { Toggle } from "../common/components/toggle";
 import { shortTeamNameTranslator } from "../common/utils/player-utils";
 import { Player } from "../models";
 import { CgAdd, CgRemove } from "react-icons/cg";
+import { CiWarning } from "react-icons/ci";
+import { analytikillHttpClient } from "../dao/httpClients";
 
 dayjs.extend(relativeTime);
 
@@ -54,6 +56,11 @@ type ServerDeets = {
 	gameId: string;
 };
 
+type Notice = {
+	type: string,
+	message: string,
+}
+
 export function CopyToClipboard({ text }: { text: string }) {
 	const [hasCopied, setHasCopied] = React.useState<boolean>(false);
 	React.useEffect(() => {
@@ -76,7 +83,7 @@ export function CopyToClipboard({ text }: { text: string }) {
 
 export function ServerRow({ server, onChange }: { server: any; onChange: (x: boolean) => void }) {
 	const { discordUser } = useDataContext();
-	const [serverDeets, setServerDeets] = React.useState<serverDeets | null>(null);
+	const [serverDeets, setServerDeets] = React.useState<ServerDeets | null>(null);
 	const [isShuttingDown, setIsShuttingDown] = React.useState<boolean>(false);
 
 	const isDeetsNull = serverDeets === null;
@@ -120,7 +127,6 @@ export function ServerRow({ server, onChange }: { server: any; onChange: (x: boo
 	};
 
 	const connectCode = `connect servers.analytikill.com:${server.port}${server.password ? `;password ${server.password}` : ""}`;
-	//const timeSinceServerStart = dayjs(+server.datetime).fromNow()
 	const timeTilServerShutdown = dayjs().to(+server.datetime, true);
 	const isOwner = discordUser?.id === server.owner;
 
@@ -269,6 +275,7 @@ export function Servers() {
 	const [, setResult] = React.useState<any>();
 	const [shouldRefresh, setShouldRefresh] = React.useState<boolean>(true);
 	const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
+	const [notice, setNotice] = React.useState<Notice | undefined>();
 	const [servers, setServers] = React.useState<Server[]>([]);
 	const [error, setError] = React.useState<string>("");
 
@@ -286,23 +293,14 @@ export function Servers() {
 		(async () => {
 			if (shouldRefresh === true && !isLoading) {
 				setTimeout(async () => {
-					const response = await fetch(`${appConfig.endpoints.analytikill}/servers/servers`, {
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${cookie.get("jwt")}`,
-						},
-					});
-					if (response.ok) {
-						const data = await response.json();
-						setServers(data.servers);
-					}
+					const response = await analytikillHttpClient.get(`/servers`).then( response => response.data);	
+					setNotice(response.notice);
+					setServers(response.servers);	
 					setShouldRefresh(false);
 				}, 1500);
+
 				setInterval(
-					() => {
-						setShouldRefresh(true);
-					},
+					() => setShouldRefresh(true),
 					1000 * 60 * 3,
 				);
 			}
@@ -312,13 +310,8 @@ export function Servers() {
 	const onSubmit = async (e: { preventDefault: () => void }) => {
 		e.preventDefault();
 		setIsSubmitting(true);
-		const response = await fetch(`${appConfig.endpoints.analytikill}/servers/request`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${cookie.get("jwt")}`,
-			},
-			body: JSON.stringify({
+		const response = await analytikillHttpClient.post(`/servers/request`, 
+			{
 				map: requestState.map,
 				playerSlots: requestState.playerSlots,
 				serverDuration: requestState.serverDuration,
@@ -330,20 +323,16 @@ export function Servers() {
 					maps: [requestState.selectedMap],
 					...matchConVars,
 				},
-			}),
-		});
-		if (response.ok) {
-			const data = await response.json();
-			setShouldRefresh(true);
-			setResult(data);
-		}
-		if (!response.ok) {
-			const data = await response.json();
-			setError(data.result);
+		}).then( response => response.data)
+		.catch( err => {
+			setError(err);
 			setTimeout(() => {
 				setError("");
 			}, 5000);
-		}
+		})
+
+		setShouldRefresh(true);
+		setResult(response);
 		setIsSubmitting(false);
 	};
 
@@ -436,6 +425,14 @@ export function Servers() {
 		<Container>
 			<h2 className="text-3xl font-bold sm:text-4xl text-center m-2 p-2">Servers On-Demand</h2>
 			<h2 className="font-bold text-center m-1 text-gray-500">(Beta)</h2>
+			{ notice?.type && 
+			<div className="rounded bg-yellow-500 text-black m-2 p-2 flex flex-row gap-4">
+				<CiWarning className="basis-1/12 h-12 w-12 inline" />
+				<div className="basis-11/12">
+					{notice?.message}
+				</div>
+			</div>
+			}
 			<div className="flex flex-row flex-wrap w-full gap-4">
 				<Card className="grow">
 					<div className="text-xl font-bold text-center uppercase">Server Settings</div>

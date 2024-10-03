@@ -7,6 +7,8 @@ import dayjs from "dayjs"
 import { useDataContext } from "../DataContext";
 import { analytikillHttpClient } from "../dao/httpClients";
 import { queryClient } from "../App";
+import { Input } from "../common/components/forms/input";
+import { Button } from "../common/components/button";
 
 type approvalState = "APPROVED" | "PENDING" | "REJECTED";
 
@@ -14,6 +16,16 @@ export function Admin(){
 
     const { players } = useDataContext();
     const { data: posts = [], isLoading: isLoadingPosts } = useFetchArticles();
+    const [ customServerNotice, setCustomServerNotice ] = React.useState<string>();
+
+    const updateServerNotice = ( type: string, message: string) => {
+        analytikillHttpClient.post(`/servers/notice`, {
+            notice: { 
+                type,
+                message: customServerNotice ? customServerNotice : message
+            }
+        })
+    }
 
     const updatePost = (id: number, action: approvalState) => {
         analytikillHttpClient.patch(`/analytikill/article/${id}`,
@@ -55,6 +67,23 @@ export function Admin(){
                             </div>
                         ))}
                     </div>
+                </div>
+                <div className="basis-1/3 space-y-3">
+                    <div className="text-center">Server Notices</div>
+                    <Button className="w-full rounded bg-green-600 hover:bg-green-500 m-1 p-2" 
+                        onClick={ () => updateServerNotice("", "")}>
+                            Servers are Healthy
+                        </Button>
+                    <hr className="bg-gray-500 text-gray-500 rounded-lg" />
+                    <Button className="w-full rounded bg-red-600 hover:bg-red-500 m-1 p-2" 
+                        onClick={ () => updateServerNotice("alert", "Servers may be unstable or non-functional.")}>
+                            Something is Wrong with the Servers
+                        </Button>
+                    <Input
+                        className={`w-full grow rounded-lg border-none bg-white/5 text-white`}
+                        placeholder="Custom Notice Message..."
+                        onChange={ e => setCustomServerNotice( e.currentTarget.value)}
+                    />
                 </div>
             </div>
         </Container>
