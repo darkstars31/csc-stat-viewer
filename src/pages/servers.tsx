@@ -19,7 +19,12 @@ import { CgAdd, CgRemove } from "react-icons/cg";
 
 dayjs.extend(relativeTime);
 
-type server = {
+type ServerResponse = {
+	notice: string,
+	servers: Server[]
+}
+
+type Server = {
 	screenid: number;
 	owner: string;
 	port: number;
@@ -29,7 +34,7 @@ type server = {
 	datetime: string;
 };
 
-type serverDeets = {
+type ServerDeets = {
 	protocol: number;
 	name: string;
 	map: string;
@@ -264,7 +269,7 @@ export function Servers() {
 	const [, setResult] = React.useState<any>();
 	const [shouldRefresh, setShouldRefresh] = React.useState<boolean>(true);
 	const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
-	const [servers, setServers] = React.useState<server[]>([]);
+	const [servers, setServers] = React.useState<Server[]>([]);
 	const [error, setError] = React.useState<string>("");
 
 	const [matchPlayers, setMatchPlayers] = React.useState<Player[]>([]);
@@ -290,7 +295,7 @@ export function Servers() {
 					});
 					if (response.ok) {
 						const data = await response.json();
-						setServers(data);
+						setServers(data.servers);
 					}
 					setShouldRefresh(false);
 				}, 1500);
