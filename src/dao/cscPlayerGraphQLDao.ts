@@ -2,6 +2,7 @@ import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { CscPlayer, CscPlayersQuery } from "../models";
 import { PlayerTypes } from "../common/utils/player-utils";
 import { appConfig } from "../dataConfig";
+import { analytikillHttpClient } from "./httpClients";
 
 const OneHour = 1000 * 60 * 60;
 
@@ -69,6 +70,20 @@ export function useCscPlayersGraph(
 	return useQuery(
 		[`cscplayers-${playerType}-graph`],
 		() => (options?.skipCache ? fetchGraph(playerType) : fetchCachedGraph(playerType)),
+		{
+			enabled: options?.enabled as boolean ?? true,
+			staleTime: OneHour,
+		},
+	);
+}
+
+export function useCscPlayersCache(
+	season?: number,
+	options?: Record<string, unknown>,
+): UseQueryResult<CscPlayer[]> {
+	return useQuery(
+		[`cscplayers-cache`, season],
+		() => analytikillHttpClient.get(`/csc/cached-players?season=${season}`).then(response => response.data.data.players),
 		{
 			enabled: options?.enabled as boolean ?? true,
 			staleTime: OneHour,

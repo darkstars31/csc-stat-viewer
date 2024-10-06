@@ -20,7 +20,7 @@ const sortOptionsList = [
 	{ label: "Name", value: "name" },
 	{ label: "Rating", value: "stats.rating" },
 	{ label: "MMR", value: "mmr" },
-	//{ label: "CSC ID", value: "id" },
+	{ label: "CSC ID", value: "id" },
 ];
 
 const exportAsCsv = (players: Player[]) => {

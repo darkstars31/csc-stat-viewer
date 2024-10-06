@@ -43,7 +43,7 @@ export function Router() {
 	);
 	const [ newVersionBanner, setNewVersionBanner] = React.useState<{ isOpen: boolean, commitHash: string | undefined }>({ isOpen: false, commitHash: undefined });
 	const { data: githubBranch, isLoading: isLoadingGithubBranch } = useFetchGithubRepoBranchJson();
-	const { loading, discordUser, setDiscordUser, loggedinUser } = useDataContext();
+	const { isLoading, loading, discordUser, setDiscordUser, loggedinUser } = useDataContext();
 	const BASE_ROUTE = "";
 	const [location] = useLocation();
 	const enableFeature = useEnableFeature("canRequestServers");
@@ -119,7 +119,7 @@ export function Router() {
 
 	return (
 		<>
-			{loading.isLoadingCscPlayers && <ProgressBar />}
+			{isLoading && <ProgressBar />}
 			<Wouter base={BASE_ROUTE}>
 				<div>
 					{newVersionBanner.isOpen && (

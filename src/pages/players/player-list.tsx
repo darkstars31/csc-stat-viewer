@@ -17,7 +17,7 @@ export function PlayerListMemoized({ orderBy, displayStyle, players }: Props) {
 		return itemA < itemB ? 1 : -1;
 	});
 
-	const orderedPlayerData = orderBy?.label.includes("Name") ? sortedPlayerData.reverse() : sortedPlayerData;
+	const orderedPlayerData = orderBy?.label.includes("Name") || orderBy?.label.includes("CSC") ? sortedPlayerData.reverse() : sortedPlayerData;
 
 	if (displayStyle === "cards") {
 		const playerCards = [];

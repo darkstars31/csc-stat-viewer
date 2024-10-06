@@ -106,12 +106,12 @@ type StatsCache = {
     }
 }
 
-export function useCscStatsCache(season?: number, matchType?: string): UseQueryResult<StatsCache> {
+export function useCscStatsCache(season?: number, matchType?: string, options?: Record<string, unknown>): UseQueryResult<StatsCache> {
 	return useQuery([`cscstats-cache`, season, matchType], 
         async () => await analytikillHttpClient.get(`/csc/cached-stats?season=${season}&matchType=${matchType}`)
         .then( response => response.data ),
     {
-        enabled: Boolean(season),
+        enabled: options?.enabled as boolean ?? true,
 		staleTime: OneHour,
 	});
 }

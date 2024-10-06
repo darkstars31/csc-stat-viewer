@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCscPlayersGraph } from "./dao/cscPlayerGraphQLDao";
+import { useCscPlayersCache, useCscPlayersGraph } from "./dao/cscPlayerGraphQLDao";
 import { dataConfiguration } from "./dataConfig";
 import { Player } from "./models/player";
 import { useFetchFranchisesGraph } from "./dao/franchisesGraphQLDao";
@@ -39,59 +39,12 @@ const useDataContextProvider = () => {
 		queryClient.invalidateQueries([`cscplayermatchhistory-graph`]);
 	}, [seasonAndMatchType]);
 
-	const {
-		data: cscSignedPlayers = [],
-		isLoading: isLoadingSignedCscPlayers,
-		error,
-	} = useCscPlayersGraph(PlayerTypes.SIGNED);
-	const { data: cscSignedSubbedPlayers = [], isLoading: isLoadingSignedSubbedCscPlayers } = useCscPlayersGraph(
-		PlayerTypes.SIGNED_SUBBED,
-	);
-	const { data: cscTempSignedPlayers = [], isLoading: isLoadingTempSignedCscPlayers } = useCscPlayersGraph(
-		PlayerTypes.TEMPSIGNED,
-	);
-	const { data: cscPermaTempSignedPlayers = [], isLoading: isLoadingPermaTempSignedCscPlayers } = useCscPlayersGraph(
-		PlayerTypes.PERMFA_TEMP_SIGNED,
-	);
-	const { data: cscInactiveReservePlayers = [], isLoading: isLoadingInactiveReserveCscPlayers } = useCscPlayersGraph(
-		PlayerTypes.INACTIVE_RESERVE,
-	);
-	const { data: cscFreeAgentsPlayers = [], isLoading: isLoadingFreeAgentsCscPlayers } = useCscPlayersGraph(
-		PlayerTypes.FREE_AGENT,
-	);
-	const { data: cscDraftElegiblePlayers = [], isLoading: isLoadingDraftElegibleCscPlayers } = useCscPlayersGraph(
-		PlayerTypes.DRAFT_ELIGIBLE,
-	);
-	const { data: cscPermaFreeAgentPlayers = [], isLoading: isLoadingPermaFreeAgentPlayers } = useCscPlayersGraph(
-		PlayerTypes.PERMANENT_FREE_AGENT,
-	);
-	const { data: cscUnrosteredGMPlayers = [], isLoading: isLoadingUnrosteredGMPlayers } = useCscPlayersGraph(
-		PlayerTypes.UNROSTERED_GM,
-	);
-	const { data: cscUnrosteredAGMPlayers = [], isLoading: isLoadingUnrosteredAGMPlayers } = useCscPlayersGraph(
-		PlayerTypes.UNROSTERED_AGM,
-	);
-	const { data: cscSignedPromotedPlayers = [], isLoading: isLoadingSignPromoted } = useCscPlayersGraph(
-		PlayerTypes.SIGNED_PROMOTED,
-	);
-	const { data: cscInactivePlayers = [], isLoading: isLoadingInactivePlayers } = useCscPlayersGraph(
-		PlayerTypes.INACTIVE,
-	);
-	const { data: cscExpiredPlayers = [], isLoading: isLoadingExpiredPlayers } = useCscPlayersGraph(
-		PlayerTypes.EXPIRED,
-		{ skipCache: true },
-	);
-	const { data: cscSpectatorPlayers = [] } = useCscPlayersGraph( "SPECTATOR", { enabled: enableExperimentalHistorialFeature } );
-
-	// const data = useMultipleCscStatsGraph(
-	// 	[ "Recruit","Prospect","Contender","Challenger","Elite","Premier"],
-	// 	seasonAndMatchType?.season,
-	// 	seasonAndMatchType.matchType 
-	// );
+	const { data: cscPlayers = [], isLoading: isLoadingCscPlayersCache, error } = useCscPlayersCache(seasonAndTierConfig?.number, { enabled: !isLoadingMatches && !isLoadingCscSeasonAndTiers });
 
 	const { data, isLoading: isLoadingCachedStats} = useCscStatsCache( 
 		seasonAndMatchType?.season,
-		seasonAndMatchType.matchType 
+		seasonAndMatchType.matchType,
+		{ enabled: !isLoadingMatches && !isLoadingCscSeasonAndTiers }
 	)
 
 	const statsByTier = {
@@ -105,29 +58,6 @@ const useDataContextProvider = () => {
 
 	const { data: cscFranchises = [], isLoading: isLoadingFranchises } = useFetchFranchisesGraph();
 
-	const cscPlayers = [
-		...cscSignedPlayers,
-		...cscFreeAgentsPlayers,
-		...cscDraftElegiblePlayers,
-		...cscPermaFreeAgentPlayers,
-		...cscInactiveReservePlayers,
-		...cscSignedSubbedPlayers,
-		...cscTempSignedPlayers,
-		...cscPermaTempSignedPlayers,
-		...cscUnrosteredGMPlayers,
-		...cscInactivePlayers,
-		...cscUnrosteredAGMPlayers,
-		...cscSignedPromotedPlayers,
-		...cscExpiredPlayers,
-	];
-
-	if ( enableExperimentalHistorialFeature ) {
-		cscPlayers.push(...cscSpectatorPlayers)
-	}
-
-
-	//const players: Player[] = cscPlayers.map( cscPlayer => ({ ...cscPlayer, stats: stats.find( stats => (stats.name === cscPlayer?.name)) }));
-	//console.info( cscPlayers.reduce( (a, player) => { a[player.steam64Id] = ""; return a }, {} as any ));
 
 	const playersMissingTier = cscPlayers?.filter(cscPlayer => cscPlayer?.tier === undefined);
 	if(playersMissingTier.length > 0) console.info("Players Missing Tier",playersMissingTier);
@@ -141,7 +71,10 @@ const useDataContextProvider = () => {
 			"76561198368540894": "AWP CRUTCH",
 		};	
 
-		const players: Player[] = cscPlayers?.filter(cscPlayer => cscPlayer.tier?.name).reduce((acc, cscPlayer) => {
+		const players: Player[] = cscPlayers
+		?.filter(cscPlayer => cscPlayer.tier?.name)
+		.filter(cscPlayer => !enableExperimentalHistorialFeature ? cscPlayer?.type !== PlayerTypes.SPECTATOR : true)
+		.reduce((acc, cscPlayer) => {
 			const statsForPlayerByTier = [
 				{
 					tier: "Recruit",
@@ -200,25 +133,8 @@ const useDataContextProvider = () => {
 			return acc;
 		}, [] as Player[]);
 		setPlayers(players);
-	}, [isLoadingCachedStats, enableExperimentalHistorialFeature]);
+	}, [isLoadingCachedStats, isLoadingCscPlayersCache, enableExperimentalHistorialFeature]);
 	
-
-	const isLoadingCscPlayers = [
-		isLoadingSignedCscPlayers,
-		isLoadingFreeAgentsCscPlayers,
-		isLoadingDraftElegibleCscPlayers,
-		isLoadingPermaFreeAgentPlayers,
-		isLoadingInactiveReserveCscPlayers,
-		isLoadingSignedSubbedCscPlayers,
-		isLoadingTempSignedCscPlayers,
-		isLoadingPermaTempSignedCscPlayers,
-		isLoadingUnrosteredGMPlayers,
-		isLoadingInactivePlayers,
-		isLoadingUnrosteredAGMPlayers,
-		isLoadingSignPromoted,
-		isLoadingExpiredPlayers,
-		isLoadingCscSeasonAndTiers,
-	].some(Boolean);
 
 	// const tierNumber = {
 	// 	Recruit: 1,
@@ -245,9 +161,9 @@ const useDataContextProvider = () => {
 		loggedinUser: players.find(p => p.discordId === discordUser?.id),
 		players: players,
 		franchises: cscFranchises,
-		isLoading: isLoadingCscPlayers,
+		isLoading: isLoadingCscPlayersCache || isLoadingCachedStats || isLoadingCscSeasonAndTiers || isLoadingMatches,
 		loading: {
-			isLoadingCscPlayers: isLoadingCscPlayers,
+			isLoadingCscPlayers: isLoadingCscPlayersCache,
 			isLoadingCscSeasonAndTiers: isLoadingCscSeasonAndTiers,
 			isLoadingFranchises,
 			isLoadingExtendedStats,
