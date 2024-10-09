@@ -83,7 +83,7 @@ export function useCscPlayersCache(
 ): UseQueryResult<CscPlayer[]> {
 	return useQuery(
 		[`cscplayers-cache`, season],
-		() => analytikillHttpClient.get(`/csc/cached-players?season=${season}`).then(response => response.data.data.players.data),
+		() => analytikillHttpClient.get(`/csc/cached-players?season=${season}`).then(response => response.data.data),
 		{
 			enabled: options?.enabled as boolean ?? true,
 			staleTime: OneHour,
