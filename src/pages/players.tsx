@@ -10,11 +10,14 @@ import { PlayerTypes } from "../common/utils/player-utils";
 import { PlayerTypeFilter } from "../common/components/filters/playerTypeFilter";
 import { PlayerRolesFilter } from "../common/components/filters/playerRoleFilter";
 import { PlayerTiersFilter } from "../common/components/filters/playerTiersFilter";
-import { PlayerList } from "./players/player-list";
 import { Player } from "../models";
 import Papa from "papaparse";
 import { selectClassNames } from "../common/utils/select-utils";
 import { Input } from "../common/components/forms/input";
+import { Loading } from "../common/components/loading";
+
+const PlayerList = React.lazy(() =>import('./players/player-list').then(module => ({default: module.PlayerList})));
+
 
 const sortOptionsList = [
 	{ label: "Name", value: "name" },
@@ -216,7 +219,9 @@ export function Players() {
 				</div>
 			</div>
 			<div className="pb-8">
-				<PlayerList orderBy={orderBy} displayStyle={displayStyle} players={filteredBySearchPlayers} />
+				<React.Suspense fallback={<Loading />}>
+					<PlayerList orderBy={orderBy} displayStyle={displayStyle} players={filteredBySearchPlayers} />
+				</React.Suspense>
 			</div>
 		</Container>
 	);

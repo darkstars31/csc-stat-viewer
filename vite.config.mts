@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
 import { compression } from 'vite-plugin-compression2'
+import tailwindcss from 'tailwindcss'
 //import { analyzer } from 'vite-bundle-analyzer'
 
 export default defineConfig({
@@ -11,11 +12,24 @@ export default defineConfig({
     plugins: [
         react(), 
         viteTsconfigPaths(),
-        compression(),
+        compression({
+            algorithm: 'gzip', exclude: [/\.(br)$ /, /\.(gz)$/]
+        }),
+        compression({
+            algorithm: 'brotliCompress', exclude: [/\.(br)$ /, /\.(gz)$/],
+        }),
         //analyzer(),
     ],
+    css: {
+        postcss: {
+            plugins: [tailwindcss],
+        },
+    },
     build: {
         outDir: 'build',
+        rollupOptions: {
+            
+        }
     },
     define: {
         global: 'globalThis',

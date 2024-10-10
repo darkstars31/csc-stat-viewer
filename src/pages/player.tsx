@@ -11,16 +11,12 @@ import { PlayerNavigator } from "./player/player-navigator";
 import { PlayerRatings } from "./player/playerRatings";
 import { nth } from "../common/utils/string-utils";
 import { getTeammates } from "../common/utils/franchise-utils";
-import { TeamSideRatingPie } from "../common/components/teamSideRatingPie";
-import { PlayerRatingTrendGraph } from "../common/components/playerRatingGraph";
-import { KillsAssistsDeathsPie } from "../common/components/killAssetDeathPie";
 import { Mmr } from "../common/components/mmr";
 import { ExternalPlayerLinks } from "../common/components/externalPlayerLinks";
 import { PlayerAwards } from "./player/playerAwards";
 import { FaceitRank } from "../common/components/faceitRank";
 import { ToolTip } from "../common/utils/tooltip-utils";
 import * as Containers from "../common/components/containers";
-import { PlayerMatchHistory } from "./player/matchHistory";
 import { TiWarningOutline } from "react-icons/ti";
 import { Exandable } from "../common/components/containers/Expandable";
 import { Hitbox } from "./player/hitbox";
@@ -33,6 +29,12 @@ import { useFetchPlayerProfile } from "../dao/analytikill";
 import { ProfileJson } from "../models/profile-types";
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useNotificationsContext } from "../NotificationsContext";
+
+const PlayerMatchHistory = React.lazy(() =>import('./player/matchHistory').then(module => ({default: module.PlayerMatchHistory})));
+const TeamSideRatingPie = React.lazy(() =>import('../common/components/teamSideRatingPie').then(module => ({default: module.TeamSideRatingPie})));
+const PlayerRatingTrendGraph = React.lazy(() =>import('../common/components/playerRatingGraph').then(module => ({default: module.PlayerRatingTrendGraph})));
+const KillsAssistsDeathsPie = React.lazy(() =>import('../common/components/killAssetDeathPie').then(module => ({default: module.KillsAssistsDeathsPie})));
+
 
 export function Player() {
 	const divRef = React.useRef<HTMLDivElement>(null);
@@ -248,23 +250,25 @@ export function Player() {
 					{ viewStatSelection !== currentPlayer.tier.name && <div className="text-sm italic font-bold text-gray-600 text-center w-full">*Non-Primary Tier Stats</div>}			
 					{currentPlayerStats && (
 						<div className="space-y-2">
-							<Containers.StandardBoxRow>
-								<Containers.StandardContentBox>
-									<PlayerRatings player={currentPlayer} stats={currentPlayerStats} />
-								</Containers.StandardContentBox>
-								<Containers.StandardContentBox>
-									<PlayerRatingTrendGraph player={currentPlayer} />
-								</Containers.StandardContentBox>
-							</Containers.StandardBoxRow>
-							<Containers.StandardBoxRow>
-								<Containers.StandardContentBox>
-									<RoleRadar stats={currentPlayerStats!} />
-								</Containers.StandardContentBox>
-								<Containers.StandardContentBox>
-									<TeamSideRatingPie player={currentPlayer} />
-									<KillsAssistsDeathsPie stats={currentPlayerStats} />
-								</Containers.StandardContentBox>
-							</Containers.StandardBoxRow>
+							<React.Suspense fallback={<Loading />}>
+								<Containers.StandardBoxRow>
+									<Containers.StandardContentBox>
+										<PlayerRatings player={currentPlayer} stats={currentPlayerStats} />
+									</Containers.StandardContentBox>
+									<Containers.StandardContentBox>
+										<PlayerRatingTrendGraph player={currentPlayer} />
+									</Containers.StandardContentBox>
+								</Containers.StandardBoxRow>							
+								<Containers.StandardBoxRow>
+									<Containers.StandardContentBox>
+										<RoleRadar stats={currentPlayerStats!} />
+									</Containers.StandardContentBox>
+									<Containers.StandardContentBox>									
+										<TeamSideRatingPie player={currentPlayer} />
+										<KillsAssistsDeathsPie stats={currentPlayerStats} />	
+									</Containers.StandardContentBox>
+								</Containers.StandardBoxRow>
+							</React.Suspense>
 						</div>
 					)}
 				</Containers.StandardBackgroundPage>
@@ -397,7 +401,9 @@ export function Player() {
 					</div>
 				)}
 				<br />
-				<PlayerMatchHistory player={currentPlayer} season={seasonAndMatchType.season} />
+				<React.Suspense fallback={<Loading />}>
+					<PlayerMatchHistory player={currentPlayer} season={seasonAndMatchType.season} />
+				</React.Suspense>
 			</Container>
 		</>
 	);

@@ -8,6 +8,7 @@ function buildTableRow(player: Player, columnName: string, property: keyof CscSt
 }
 
 export function GeneralLeaderBoards({ players, limit }: { players: Player[]; limit: number }) {
+	
 	const gamesPlayed = _sort(players, "stats.gameCount", limit, "desc").map(p =>
 		buildTableRow(p, "Games Played", "gameCount"),
 	);

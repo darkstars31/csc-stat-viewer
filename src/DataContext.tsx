@@ -117,8 +117,6 @@ const useDataContextProvider = () => {
 				statsForPlayerByTier.filter(statsWithTier => statsWithTier.tier !== cscPlayer.tier.name)
 					:	null;
 	
-				if( cscPlayer.name.includes("Jarts")) console.info( statsOutOfTier )
-	
 				acc.push({
 					...cscPlayer,
 					hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,

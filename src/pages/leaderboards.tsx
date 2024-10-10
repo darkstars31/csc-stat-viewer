@@ -3,12 +3,14 @@ import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
 import { useDataContext } from "../DataContext";
 import Select, { MultiValue, SingleValue } from "react-select";
-import { WeaponLeaderboards } from "./leaderboards/weapons";
 import { useLocation } from "wouter";
-import { Chickens } from "./leaderboards/chickens";
-import { GeneralLeaderBoards } from "./leaderboards/general";
 import { selectClassNames } from "../common/utils/select-utils";
 import { Toggle } from "../common/components/toggle";
+
+// Lazy load the leaderboard components
+const GeneralLeaderBoards = React.lazy(() =>import('./leaderboards/general').then(module => ({default: module.GeneralLeaderBoards})));
+const Chickens = React.lazy(() =>import('./leaderboards/chickens').then(module => ({default: module.Chickens})));
+const WeaponLeaderboards = React.lazy(() =>import('./leaderboards/weapons').then(module => ({default: module.WeaponLeaderboards})));
 
 export function LeaderBoards() {
 	const qs = new URLSearchParams(window.location.search);
@@ -149,7 +151,7 @@ export function LeaderBoards() {
 									MultiValue<{ label: string; value: string }>
 								>
 							}
-						/>
+							/>
 					</div>
 				</div>
 				<div className="basis-1/5">
@@ -209,16 +211,18 @@ export function LeaderBoards() {
 					</div>
 				</div>
 			</div>
-			{playerData.length > 0 && (
-				<div className="pt-6">
-					<div className="flex flex-row flex-wrap gap-6">
-						{selectedPage === "general" && <GeneralLeaderBoards players={playerData} limit={limit} />}
-						{selectedPage === "extended" && <Chickens players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
-						{selectedPage === "weapons" && <WeaponLeaderboards players={playerData} limit={limit} />}
+			<React.Suspense fallback={<Loading />}>
+				{playerData.length > 0 && (
+					<div className="pt-6">
+						<div className="flex flex-row flex-wrap gap-6">
+							{selectedPage === "general" && <GeneralLeaderBoards players={playerData} limit={limit} />}
+							{selectedPage === "extended" && <Chickens players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
+							{selectedPage === "weapons" && <WeaponLeaderboards players={playerData} limit={limit} />}
+						</div>
 					</div>
-				</div>
-			)}
-			{!playerData.length && <div>No Players in this Tier for this stats sheet.</div>}
+				)}
+				{!playerData.length && <div>No Players in this Tier for this stats sheet.</div>}
+			</React.Suspense>
 		</Container>
 	);
 }

@@ -3,7 +3,8 @@ import { Container } from "../common/components/container";
 import { Loading } from "../common/components/loading";
 import { useDataContext } from "../DataContext";
 import { FaExternalLinkAlt } from "react-icons/fa";
-import { FranchisesFranchise } from "./franchises/franchise";
+
+const FranchisesFranchise = React.lazy(() =>import('./franchises/franchise').then(module => ({default: module.FranchisesFranchise})));
 
 export function Franchises() {
 	const { franchises = [], tiers, loading } = useDataContext();
@@ -66,9 +67,11 @@ export function Franchises() {
 			</div>
 			{loading.isLoadingFranchises && <Loading />}
 			<div className="flex flex-col gap-4">
-				{franchises.filter( f => f.teams.find( t => selectedTier ? t.tier.name.toLowerCase() === selectedTier : true)).map(franchise => (
-					<FranchisesFranchise franchise={franchise} selectedTier={selectedTier}/>
-				))}
+				<React.Suspense fallback={<Loading />}>
+					{franchises.filter( f => f.teams.find( t => selectedTier ? t.tier.name.toLowerCase() === selectedTier : true)).map(franchise => (
+							<FranchisesFranchise franchise={franchise} selectedTier={selectedTier}/>
+					))}
+				</React.Suspense>
 			</div>
 		</Container>
 	);

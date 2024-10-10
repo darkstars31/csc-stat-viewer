@@ -5,9 +5,12 @@ import { shortTeamNameTranslator } from "../common/utils/player-utils";
 import { Loading } from "../common/components/loading";
 import Select, { MultiValue } from "react-select";
 import { selectClassNames } from "../common/utils/select-utils";
-import { PlayerCompareRadar } from "./charts/playerCompareRadar";
 import { Player } from "../models/player";
-import { ComparisonTable } from "./playerComparison/comparisonTable";
+
+const PlayerCompareRadar = React.lazy(() =>import('./charts/playerCompareRadar').then(module => ({default: module.PlayerCompareRadar})));
+const ComparisonTable = React.lazy(() =>import('./playerComparison/comparisonTable').then(module => ({default: module.ComparisonTable})));
+
+
 
 export function PlayerComparison() {
 	const qs = new URLSearchParams(window.location.search);
@@ -121,21 +124,23 @@ export function PlayerComparison() {
 					</div>
 				</div>
 			</div>
-			<div className="flex">
-				<PlayerCompareRadar
-					selectedPlayers={Array.from(selectedPlayers.values()).map(p => p.value)}
-					tier={Array.from(selectedPlayers.values()).map(p => p.value)[0]?.tier.name ?? "Contender"}
-					statOptions={["rating", "pit", "kast", "adr", "kr", "hs"]}
-					startAngle={90}
-				/>
-				<PlayerCompareRadar
-					selectedPlayers={Array.from(selectedPlayers.values()).map(p => p.value)}
-					tier={Array.from(selectedPlayers.values()).map(p => p.value)[0]?.tier.name ?? "Contender"}
-					statOptions={["utilDmg", "ef", "fAssists", "suppXR", "util"]}
-					startAngle={180}
-				/>
-			</div>
-			<ComparisonTable selectedPlayers={Array.from(selectedPlayers.values()).map(p => p.value)} />
+			<React.Suspense fallback={<Loading />}>
+				<div className="flex">
+					<PlayerCompareRadar
+						selectedPlayers={Array.from(selectedPlayers.values()).map(p => p.value)}
+						tier={Array.from(selectedPlayers.values()).map(p => p.value)[0]?.tier.name ?? "Contender"}
+						statOptions={["rating", "pit", "kast", "adr", "kr", "hs"]}
+						startAngle={90}
+					/>
+					<PlayerCompareRadar
+						selectedPlayers={Array.from(selectedPlayers.values()).map(p => p.value)}
+						tier={Array.from(selectedPlayers.values()).map(p => p.value)[0]?.tier.name ?? "Contender"}
+						statOptions={["utilDmg", "ef", "fAssists", "suppXR", "util"]}
+						startAngle={180}
+					/>
+				</div>
+				<ComparisonTable selectedPlayers={Array.from(selectedPlayers.values()).map(p => p.value)} />
+			</React.Suspense>
 		</Container>
 	);
 }

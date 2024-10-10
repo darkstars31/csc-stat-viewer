@@ -2,21 +2,22 @@ import * as React from "react";
 import { useDataContext } from "../DataContext";
 import { Container } from "../common/components/container";
 import { Pill } from "../common/components/pill";
-import { CartesianCompare } from "./charts/cartesianCompare";
-import { CorrelationByTier } from "./charts/correlationByTier";
 import { StatBarByTiers } from "./charts/statBarByTiers";
 import { Loading } from "../common/components/loading";
-import { RolePieChart } from "./charts/rolePie";
-import { RoleByTierBarChart } from "./charts/rolesByTier";
 import Select, { MultiValue, SingleValue } from "react-select";
 import { PlayerTypes } from "../common/utils/player-utils";
 import { PlayerTypeFilter } from "../common/components/filters/playerTypeFilter";
 import { PlayerTiersFilter } from "../common/components/filters/playerTiersFilter";
 import { PlayerRolesFilter } from "../common/components/filters/playerRoleFilter";
 import * as Containers from "../common/components/containers";
-import { DistributionCurves } from "./charts/distributionCurve";
 import { Overlay } from "../common/components/overlay";
 import { selectClassNames } from "../common/utils/select-utils";
+
+const CartesianCompare = React.lazy(() =>import('./charts/cartesianCompare').then(module => ({default: module.CartesianCompare})));
+const CorrelationByTier = React.lazy(() =>import('./charts/correlationByTier').then(module => ({default: module.CorrelationByTier})));
+const RolePieChart = React.lazy(() =>import('./charts/rolePie').then(module => ({default: module.RolePieChart})));
+const RoleByTierBarChart = React.lazy(() =>import('./charts/rolesByTier').then(module => ({default: module.RoleByTierBarChart})));
+const DistributionCurves = React.lazy(() =>import('./charts/distributionCurve').then(module => ({default: module.DistributionCurves})));
 
 const updateURL = (key: string, value: string) => {
 	const url = new URL(window.location.href);
@@ -204,135 +205,137 @@ export function Charts() {
 					))}
 				</div>
 			</div>
-			<Containers.StandardBackgroundPage>
-				<Containers.StandardContentThinBox>
-					<div className="basis-1/3">
-						<PlayerTypeFilter
-							onChange={
-								setViewPlayerTypeOptions as typeof React.useState<
-									MultiValue<{ label: string; value: PlayerTypes[] }>
-								>
-							}
-							selectedOptions={viewPlayerTypeOptions}
-						/>
-					</div>
-					<div className="basis-1/3">
-						<PlayerTiersFilter
-							onChange={
-								setViewTierOptions as typeof React.useState<
-									MultiValue<{ label: string; value: string }>
-								>
-							}
-						/>
-					</div>
-					<div className="basis-1/3">
-						<PlayerRolesFilter
-							onChange={
-								setViewPlayerRoleOptions as typeof React.useState<
-									MultiValue<{ label: string; value: string }>
-								>
-							}
-						/>
-					</div>
-				</Containers.StandardContentThinBox>
+			<React.Suspense fallback={<Loading />}>
+				<Containers.StandardBackgroundPage>
+					<Containers.StandardContentThinBox>
+						<div className="basis-1/3">
+							<PlayerTypeFilter
+								onChange={
+									setViewPlayerTypeOptions as typeof React.useState<
+										MultiValue<{ label: string; value: PlayerTypes[] }>
+									>
+								}
+								selectedOptions={viewPlayerTypeOptions}
+							/>
+						</div>
+						<div className="basis-1/3">
+							<PlayerTiersFilter
+								onChange={
+									setViewTierOptions as typeof React.useState<
+										MultiValue<{ label: string; value: string }>
+									>
+								}
+							/>
+						</div>
+						<div className="basis-1/3">
+							<PlayerRolesFilter
+								onChange={
+									setViewPlayerRoleOptions as typeof React.useState<
+										MultiValue<{ label: string; value: string }>
+									>
+								}
+							/>
+						</div>
+					</Containers.StandardContentThinBox>
 
-				<div>
-					{currentTab === tabs[0].label && (
-						<div
-							className="relative transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-							id="tabs-home"
-							role="tabpanel"
-							aria-labelledby="tabs-home-tab"
-							data-te-tab-active
-						>
-							<Overlay
-								condition={(filteredBySearchPlayers[0].mmr || 0) < 1}
-								message={
-									<>
-										<div>This chart is not very useful without MMR. </div>
-										<div>Please check back closer to the draft when MMR is released publicly.</div>
-									</>
-								}
-							/>
-							<CartesianCompare playerData={filteredBySearchPlayers} />
-						</div>
-					)}
-					{currentTab === tabs[1].label && (
-						<div
-							className="relative transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-							id="tabs-home"
-							role="tabpanel"
-							aria-labelledby="tabs-home-tab"
-							data-te-tab-active
-						>
-							<Overlay
-								condition={(filteredBySearchPlayers[0].mmr || 0) < 1}
-								message={
-									<>
-										<div>This chart is not very useful without MMR. </div>
-										<div>Please check back closer to the draft when MMR is released publicly.</div>
-									</>
-								}
-							/>
-							<DistributionCurves playerData={filteredBySearchPlayers} />
-						</div>
-					)}
-					{currentTab === tabs[2].label && (
-						<div
-							className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-							id="tabs-profile"
-							role="tabpanel"
-							aria-labelledby="tabs-profile-tab"
-						>
-							<StatBarByTiers
-								statProperty={statPropertySelected!.value}
-								playerData={filteredBySearchPlayers}
-							/>
-							<Containers.ChartButtonBoundingBox>
-								<Select
-									className="flex-grow-0 w-1/2"
-									unstyled
-									defaultValue={statPropertyOptions[0]}
-									isSearchable={false}
-									classNames={selectClassNames}
-									options={statPropertyOptions}
-									onChange={setStatPropertySelected}
+					<div>
+						{currentTab === tabs[0].label && (
+							<div
+								className="relative transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+								id="tabs-home"
+								role="tabpanel"
+								aria-labelledby="tabs-home-tab"
+								data-te-tab-active
+							>
+								<Overlay
+									condition={(filteredBySearchPlayers[0].mmr || 0) < 1}
+									message={
+										<>
+											<div>This chart is not very useful without MMR. </div>
+											<div>Please check back closer to the draft when MMR is released publicly.</div>
+										</>
+									}
 								/>
-							</Containers.ChartButtonBoundingBox>
-						</div>
-					)}
-					{currentTab === tabs[3].label && (
-						<div
-							className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-							id="tabs-messages"
-							role="tabpanel"
-							aria-labelledby="tabs-profile-tab"
-						>
-							<RolePieChart playerData={filteredBySearchPlayers} />
-						</div>
-					)}
-					{currentTab === tabs[4].label && (
-						<div
-							className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-							id="tabs-contact"
-							role="tabpanel"
-							aria-labelledby="tabs-contact-tab"
-						>
-							<RoleByTierBarChart playerData={filteredBySearchPlayers} />
-						</div>
-					)}
-					{currentTab === tabs[5].label && (
-						<div
-							className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
-							id="tabs-correlation"
-							role="tabpanel"
-							aria-labelledby="tabs-correlation-tab"
-						>
-							<CorrelationByTier playerData={filteredBySearchPlayers} />
-						</div>
-					)}
-				</div>
-			</Containers.StandardBackgroundPage>
+								<CartesianCompare playerData={filteredBySearchPlayers} />
+							</div>
+						)}
+						{currentTab === tabs[1].label && (
+							<div
+								className="relative transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+								id="tabs-home"
+								role="tabpanel"
+								aria-labelledby="tabs-home-tab"
+								data-te-tab-active
+							>
+								<Overlay
+									condition={(filteredBySearchPlayers[0].mmr || 0) < 1}
+									message={
+										<>
+											<div>This chart is not very useful without MMR. </div>
+											<div>Please check back closer to the draft when MMR is released publicly.</div>
+										</>
+									}
+								/>
+								<DistributionCurves playerData={filteredBySearchPlayers} />
+							</div>
+						)}
+						{currentTab === tabs[2].label && (
+							<div
+								className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+								id="tabs-profile"
+								role="tabpanel"
+								aria-labelledby="tabs-profile-tab"
+							>
+								<StatBarByTiers
+									statProperty={statPropertySelected!.value}
+									playerData={filteredBySearchPlayers}
+								/>
+								<Containers.ChartButtonBoundingBox>
+									<Select
+										className="flex-grow-0 w-1/2"
+										unstyled
+										defaultValue={statPropertyOptions[0]}
+										isSearchable={false}
+										classNames={selectClassNames}
+										options={statPropertyOptions}
+										onChange={setStatPropertySelected}
+									/>
+								</Containers.ChartButtonBoundingBox>
+							</div>
+						)}
+						{currentTab === tabs[3].label && (
+							<div
+								className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+								id="tabs-messages"
+								role="tabpanel"
+								aria-labelledby="tabs-profile-tab"
+							>
+								<RolePieChart playerData={filteredBySearchPlayers} />
+							</div>
+						)}
+						{currentTab === tabs[4].label && (
+							<div
+								className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+								id="tabs-contact"
+								role="tabpanel"
+								aria-labelledby="tabs-contact-tab"
+							>
+								<RoleByTierBarChart playerData={filteredBySearchPlayers} />
+							</div>
+						)}
+						{currentTab === tabs[5].label && (
+							<div
+								className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+								id="tabs-correlation"
+								role="tabpanel"
+								aria-labelledby="tabs-correlation-tab"
+							>
+								<CorrelationByTier playerData={filteredBySearchPlayers} />
+							</div>
+						)}
+					</div>
+				</Containers.StandardBackgroundPage>
+			</React.Suspense>
 		</Container>
 	);
 }
