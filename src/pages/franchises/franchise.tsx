@@ -43,7 +43,6 @@ export function FranchisesFranchise ({ franchise, selectedTier }: { franchise: F
                                 <div className="z-10 h-24 w-24 md:w-48 md:h-48">
                                     <img
                                         src={franchiseImages[franchise.prefix]}
-                                        placeholder=""
                                         alt=""
                                     />                              
                                 </div>

@@ -1,12 +1,19 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
+import { compression } from 'vite-plugin-compression2'
+//import { analyzer } from 'vite-bundle-analyzer'
 
 export default defineConfig({
     // depending on your application, base can also be "/"
     root: '',
     base: '/',
-    plugins: [react(), viteTsconfigPaths()],
+    plugins: [
+        react(), 
+        viteTsconfigPaths(),
+        compression(),
+        //analyzer(),
+    ],
     build: {
         outDir: 'build',
     },

@@ -37,7 +37,6 @@ export function Franchise() {
 						<img
 							className="absolute h-full w-full"
 							src={franchiseImages[currentFranchise?.prefix ?? ""]}
-							placeholder=""
 							alt=""
 						/>
 					</div>

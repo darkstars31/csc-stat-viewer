@@ -17,8 +17,8 @@ export function MemoizedPlayerCard({ player }: Props) {
 			<div className="fade-in block bg-midnight2 rounded-xl border border-gray-800 shadow-xl transition hover:border-pink-500/10 hover:shadow-pink-500/10">
 				<div className="justify-between">
 					<div className="flex flex-row w-full">
-						<div className="mr-4 h-[64px] w-[64px] rounded-tl-xl">
-							<img className="rounded-tl-xl rounded-br-xl" loading="lazy" src={player.avatarUrl} alt="" />
+						<div className="mr-4 rounded-tl-xl">
+							<img className="rounded-tl-xl rounded-br-xl" width={64} height={64} loading="lazy" src={player.avatarUrl} alt="" />
 						</div>
 						<div className="pt-2 text-center grow">
 							<h2 className="text-l md:text-xl font-bold text-white grow">
