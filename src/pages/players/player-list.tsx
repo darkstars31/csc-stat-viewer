@@ -3,6 +3,7 @@ import { PlayerCard } from "./player-cards";
 import { Player } from "../../models";
 import { PlayerTable } from "./player-table";
 import _get from "lodash/get";
+import { VirtuosoGrid } from 'react-virtuoso'
 
 type Props = {
 	orderBy: { label: string; value: string };
@@ -20,13 +21,14 @@ export function PlayerListMemoized({ orderBy, displayStyle, players }: Props) {
 	const orderedPlayerData = orderBy?.label.includes("Name") || orderBy?.label.includes("CSC") ? sortedPlayerData.reverse() : sortedPlayerData;
 
 	if (displayStyle === "cards") {
-		const playerCards = [];
-		for (const player of orderedPlayerData) {
-			!player?.name && console.info("no name", player);
-			playerCards.push(<PlayerCard key={`${player.name}`} player={player} />);
-		}
-
-		return <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">{playerCards}</div>;
+		return (
+				<VirtuosoGrid
+					useWindowScroll
+					overscan={100}
+					listClassName="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4"		
+					totalCount={orderedPlayerData.length}
+					itemContent={index => <PlayerCard player={orderedPlayerData[index]} />}
+				/>);
 	} else {
 		return <PlayerTable players={orderedPlayerData} />;
 	}

@@ -135,6 +135,7 @@ export function Team() {
 						<div className="text-center p-4 text-xl">
 							{currentFranchise?.name} - <i>{currentFranchise?.prefix}</i>
 						</div>
+						<CompareLink players={playersWithStats} />
 						<div className="flex flex-wrap justify-between">
 							{Object.entries(currentTeamStatAggregation ?? []).map(([key, value]) => (
 								<div className="flex-initial m-2 p-2 text-center">
@@ -171,17 +172,14 @@ export function Team() {
 						</div>
 						<div className="p-4 rounded">
 							<hr className="h-px my-4 border-0" />
-							<div>
-								<CompareLink players={playersWithStats} />
-								<div className="flex flex-row justify-center gap-2 flex-wrap pt-4">
-									{currentTeam?.players?.map(player => (
-										<TeamPlayerCards
-											key={player.name}
-											franchisePlayer={player}
-											team={currentTeam}
-										/>
-									))}
-								</div>
+							<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 justify-center gap-2 pt-4">
+								{currentTeam?.players?.map(player => (
+									<TeamPlayerCards
+										key={player.name}
+										franchisePlayer={player}
+										team={currentTeam}
+									/>
+								))}
 							</div>
 							{isLoadingMatches && <Loading />}
 							{playoffMatches.length > 0 && (
