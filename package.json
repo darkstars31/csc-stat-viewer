@@ -39,8 +39,8 @@
 	},
 	"scripts": {
 		"start": "vite",
-		"build": "NODE_ENV=production tsc && vite build && cp ./build/index.html ./build/404.html && node post-build.mjs",
-		"buildWindows": "set NODE_ENV=production && tsc && vite build && node post-build.mjs",
+		"build": "NODE_ENV=production tsc && vite build && cp ./build/index.html ./build/404.html",
+		"buildWindows": "set NODE_ENV=production && tsc && vite build",
 		"preview": "vite preview",
 		"lint": "eslint .",
 		"format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
