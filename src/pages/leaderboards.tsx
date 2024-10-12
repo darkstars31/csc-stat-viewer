@@ -8,9 +8,9 @@ import { selectClassNames } from "../common/utils/select-utils";
 import { Toggle } from "../common/components/toggle";
 
 // Lazy load the leaderboard components
-const GeneralLeaderBoards = React.lazy(() =>import('./leaderboards/general').then(module => ({default: module.GeneralLeaderBoards})));
-const Chickens = React.lazy(() =>import('./leaderboards/chickens').then(module => ({default: module.Chickens})));
-const WeaponLeaderboards = React.lazy(() =>import('./leaderboards/weapons').then(module => ({default: module.WeaponLeaderboards})));
+const GeneralLeaderBoards = React.lazy(() => import('./leaderboards/general').then(module => ({default: module.GeneralLeaderBoards})));
+const Chickens = React.lazy(() => import('./leaderboards/chickens').then(module => ({default: module.Chickens})));
+const WeaponLeaderboards = React.lazy(() => import('./leaderboards/weapons').then(module => ({default: module.WeaponLeaderboards})));
 
 export function LeaderBoards() {
 	const qs = new URLSearchParams(window.location.search);
