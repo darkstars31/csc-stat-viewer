@@ -27,7 +27,26 @@ export default defineConfig({
         cssCodeSplit: true,
         outDir: 'build',
         rollupOptions: {
-            
+            output: {
+                manualChunks: (id) => {
+
+                    if (id.includes('react')) {
+                        return `vendor-react`
+                    }
+                    if (id.includes('echarts')) {
+                        return `vendor-echarts`
+                    }
+                    if (id.includes('lodash')) {
+                        return `vendor-lodash`
+                    }
+                    if (id.includes('prosemirror')) {
+                        return `vendor-prosemirror`
+                    }
+                    if (id.includes('@sentry')) {
+                        return `vendor-@sentry`
+                    }                          
+                },
+            }
         }
     },
     define: {
