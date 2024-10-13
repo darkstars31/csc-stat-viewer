@@ -14,10 +14,7 @@ export default defineConfig({
         viteTsconfigPaths(),
         compression({
             algorithm: 'gzip', exclude: [/\.(br)$ /, /\.(gz)$/]
-        }),
-        compression({
-            algorithm: 'brotliCompress', exclude: [/\.(br)$ /, /\.(gz)$/],
-        }),
+        })
         //analyzer(),
     ],
     css: {

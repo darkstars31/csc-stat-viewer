@@ -16,7 +16,24 @@ rl.on('line', (line) => {
 
   // If this is the line to modify, write the new content instead
   if (line.includes(`script type="module" crossorigin src`)) {
-    writeStream.write(line.replace(`js"></script>`, `js.gz"></script>\n`));
+    const scriptSrc = line.split('src="')[1].split('"')[0];
+    console.info(scriptSrc.concat(`.gz"`));
+
+    writeStream.write(`
+      <script>
+        fetch("${scriptSrc.concat(`.gz"`)}, {headers: {'Accept-Encoding': 'gzip'}})
+          .then(response => {          
+              const script = document.createElement('script');
+              script.src = "${scriptSrc}";
+              document.body.appendChild(script);       
+          })
+          .catch(() => {
+            fetch("${scriptSrc}")
+            console.log('Error fetching the file.');
+          })
+          </script>
+      `);
+
   } else if (line.includes(`link rel="stylesheet" crossorigin href`)) {
     writeStream.write(line.replace(`css">`, `css.gz">\n`));
   } else {

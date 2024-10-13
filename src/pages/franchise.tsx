@@ -9,6 +9,15 @@ import { FranchiseManagementNamePlate } from "./franchises/franchiseManagementNa
 
 export const COLUMNS = 4;
 
+const tierCssColors = {
+	Recruit: "text-red-400",
+	Prospect: "text-orange-400",
+	Contender: "text-yellow-400",
+	Challenger: "text-green-400",
+	Elite: "text-blue-400",
+	Premier: "text-purple-400",
+}
+
 export function Franchise() {
 	const { players, franchises = [], tiers, loading } = useDataContext();
 	const [, params] = useRoute("/franchises/:franchiseName");
@@ -59,7 +68,7 @@ export function Franchise() {
 											<h2 className="text-xl w-full">
 												<div className="inline font-extrabold">{team.name}</div>{" "}
 												<span
-													className={`text-gray-400 italic text-${tiers?.find(item => item.tier.name === team.tier.name)?.tier.color ?? ""}-400`}
+													className={`italic ${tierCssColors[team.tier.name as keyof typeof tierCssColors]}`}
 												>
 													{team.tier.name}{" "}
 													{false && (

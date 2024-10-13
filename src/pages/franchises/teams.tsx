@@ -15,6 +15,15 @@ const tierNumber = {
     Premier: 6,
 };
 
+const tierCssColors = {
+    Recruit: "text-red-400",
+    Prospect: "text-orange-400",
+    Contender: "text-yellow-400",
+    Challenger: "text-green-400",
+    Elite: "text-blue-400",
+    Premier: "text-purple-400",
+};
+
 export function FranchiseTeams({ franchise, selectedTier }: { franchise: Franchise, selectedTier: string | null }) {
     const { players, tiers } = useDataContext();
 
@@ -59,7 +68,7 @@ export function FranchiseTeams({ franchise, selectedTier }: { franchise: Franchi
                             <div className="basis-1/4 mx-4 border-b-[1px] border-slate-700 text-center">
                                 <strong>{team.name}</strong>{" "}
                                 <span
-                                    className={`text-gray-400 italic text-${tiers?.find(item => item.tier.name === team.tier.name)?.tier.color ?? ""}-400`}
+                                    className={`text-gray-400 italic ${tierCssColors[tiers?.find(item => item.tier.name === team.tier.name)?.tier.name as keyof typeof tierCssColors]}`}
                                 >
                                     {team.tier.name}{" "}
                                 </span>

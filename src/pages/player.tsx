@@ -97,6 +97,14 @@ export function Player() {
 		: currentPlayer.type === PlayerTypes.INACTIVE_RESERVE ? "Inactive Reserve"
 		: "";
 
+	const tierCssColors = {
+		Recruit: "text-red-400",
+		Prospect: "text-orange-400",
+		Contender: "text-yellow-400",
+		Challenger: "text-green-400",
+		Elite: "text-blue-400",
+		Premier: "text-purple-400",
+	}
 
 	return (
 		<>
@@ -170,8 +178,8 @@ export function Player() {
 								</div>
 								<ul className="text-[0.8rem]">
 									<li>
-										{String(playerRatingIndex + 1).concat(nth(playerRatingIndex + 1))} Overall in{" "}
-											<span className={`text-${tiers.find(t => t.tier.name === viewStatSelection)?.tier.color}-500`}>
+										{String(playerRatingIndex + 1).concat(nth(playerRatingIndex + 1))} Overall in{" "}								
+											<span className={`${tierCssColors[tiers.find(t => t.tier.name === viewStatSelection)?.tier.name as keyof typeof tierCssColors]}`}>
 												<b>
 													<i>
 														{currentPlayer?.name.toLowerCase() === "comradsniper" ?
@@ -192,7 +200,7 @@ export function Player() {
 																					className="block rounded-lg py-1 px-2 transition hover:bg-white/50"
 																					onClick={() => setViewStatSelection(tier)}
 																					>
-																					<p className={`font-semibold text-${tiers.find(t => t.tier.name === tier)?.tier.color}-500`}>{tier}</p>
+																					<p className={`font-semibold ${tierCssColors[tiers.find(t => t.tier.name === viewStatSelection)?.tier.name as keyof typeof tierCssColors]}`}>{tier}</p>
 																			</button>
 																			))
 																		}																
