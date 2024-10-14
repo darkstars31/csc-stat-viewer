@@ -117,16 +117,14 @@ export function Team() {
 			<div className="backdrop-opacity-10 backdrop-brightness-90 bg-black/[.85] overflow-auto">
 				<Container>
 					<div className="m-2 p-2 bg-opacity-60 bg-black rounded-lg">
-						<div className="my-4">
-							<i>
-								<Link className="hover:text-blue-400" to={`/franchises`}>
+						<div className="my-4">						
+								<Link className="italic hover:text-blue-400" to={`/franchises`}>
 									Franchises
 								</Link>{" "}
 								{"> "}
-								<Link className="hover:text-blue-400" to={`/franchises/${currentFranchise?.name}`}>
+								<Link className="italic hover:text-blue-400" to={`/franchises/${currentFranchise?.name}`}>
 									{currentFranchise?.name}
 								</Link>
-							</i>{" "}
 							{"> "}
 							{currentTeam?.tier.name}
 						</div>
@@ -139,8 +137,8 @@ export function Team() {
 						<div className="flex flex-wrap justify-between">
 							{Object.entries(currentTeamStatAggregation ?? []).map(([key, value]) => (
 								<div className="flex-initial m-2 p-2 text-center">
-									<div>
-										<b>{(value as number).toFixed(2)}</b>
+									<div className="font-bold">
+										{(value as number).toFixed(2)}
 									</div>
 									<div className="text-sm">{teamAwardMappings[key]}</div>
 								</div>
@@ -156,15 +154,13 @@ export function Team() {
 										:	""
 									}
 								>
-									<div>
-										<b>
-											{currentTeamTotalMmr} / {currentTier?.tier.mmrCap}{" "}
-											<span
-												className={`text-sm ${currentTeamMMRMinusCapDiff < 0 ? "text-red-400" : "hidden"}`}
-											>
-												({currentTeamMMRMinusCapDiff})
-											</span>
-										</b>
+									<div className="font-bold">
+										{currentTeamTotalMmr} / {currentTier?.tier.mmrCap}{" "}
+										<span
+											className={`text-sm ${currentTeamMMRMinusCapDiff < 0 ? "text-red-400" : "hidden"}`}
+										>
+											({currentTeamMMRMinusCapDiff})
+										</span>							
 									</div>
 									<div className="text-sm">{currentTeamTotalMmrPercent}% MMR Cap</div>
 								</ToolTip>
@@ -184,8 +180,8 @@ export function Team() {
 							{isLoadingMatches && <Loading />}
 							{playoffMatches.length > 0 && (
 								<div className="pt-8 relative">
-									<div className="-rotate-90 absolute bottom-[5em] text-2xl pb-16 bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent">
-										<b>PLAY-OFFS</b>
+									<div className="font-bold -rotate-90 absolute bottom-[5em] text-2xl pb-16 bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent">
+										PLAY-OFFS
 									</div>
 									<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ml-16">
 										{playoffMatches.map(match => (

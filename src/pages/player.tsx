@@ -179,9 +179,7 @@ export function Player() {
 								<ul className="text-[0.8rem]">
 									<li>
 										{String(playerRatingIndex + 1).concat(nth(playerRatingIndex + 1))} Overall in{" "}								
-											<span className={`${tierCssColors[tiers.find(t => t.tier.name === viewStatSelection)?.tier.name as keyof typeof tierCssColors]}`}>
-												<b>
-													<i>
+											<span className={`${tierCssColors[tiers.find(t => t.tier.name === viewStatSelection)?.tier.name as keyof typeof tierCssColors]} font-bold italic`}>
 														{currentPlayer?.name.toLowerCase() === "comradsniper" ?
 															"Super "
 														:	""}{" "}
@@ -207,14 +205,10 @@ export function Player() {
 																	</div>
 															</PopoverPanel>														
 														</Popover>
-													</i>
-												</b>
 											</span>
 										<br /> 
-										{ currentPlayer &&
-										  <>
-										  	<Mmr player={currentPlayer} /> MMR 
-										  </>										
+										{ currentPlayer &&									  
+											<><Mmr player={currentPlayer} /> MMR</>
 										}
 										<div>
 											<span className="flex leading-7">
@@ -236,10 +230,10 @@ export function Player() {
 						<div className="basis-1/2 grow p-4 content-center">
 							<PlayerAwards player={currentPlayer} players={players} />
 						</div>
-						<div className="float-right w-4 sm:w-40">
+						<div className="float-right w-4 sm:w-40 after:clear-both">
 							<ExternalPlayerLinks player={currentPlayer} />
 						</div>
-						<div className="clear-both" />
+						{/* <div className="clear-both" /> */}
 					</div>				
 					{ Object.values(playerProfile ?? {}).length > 0 &&
 						<Transition
@@ -336,76 +330,60 @@ export function Player() {
 					</div>
 				)}
 				{ !currentPlayerStats || currentPlayerTierOptions.length > 0 &&
-					<div className="text-center">
-						<strong>
-							<i>Looking for stats in a different tier? <a className="text-blue-600 underline" href="#player-tier">You can now find that here</a></i>
-						</strong>
+					<div className="text-center font-bold italic">
+						Looking for stats in a different tier? <a className="text-blue-600 underline" href="#player-tier">You can now find that here</a>
 						<div className="text-xs">Click on the players current tier.</div>		
 					</div>
 				}
 				<br />
 				{currentPlayer?.extendedStats && (
-					<div className="">
+					<div>
 						<Exandable title="Extended Stats">
-							<div className="flex flex-row flex-wrap justify-center">
-								{Object.entries(currentPlayer.extendedStats.trackedObj).map(([key, value]) => (
-									<div className="m-2 p-2">
-										<div>{key}</div>
-										<div className="text-center">{value}</div>
-									</div>
-								))}
+							<div className="grid grid-cols-1 sm:grid-cols-2 gap-8">						
+								<div className="flex flex-row flex-wrap justify-center">
+									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">Stats</div>
+									{Object.entries(currentPlayer.extendedStats.trackedObj).map(([key, value]) => (
+										<div className="m-2 p-2">
+											<div>{key}</div>
+											<div className="text-center">{value}</div>
+										</div>
+									))}
+								</div>
+								<div className="flex flex-row flex-wrap justify-center">
+									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">Chickens</div>
+									{Object.entries(currentPlayer.extendedStats.chickens).map(([key, value]) => (
+										<div className="m-2 p-2">
+											<div>{key}</div>
+											<div className="text-center">{value}</div>
+										</div>
+									))}
+								</div>	
+								<div className="flex flex-row flex-wrap justify-center">
+									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">Pistols</div>
+									{Object.entries(currentPlayer.extendedStats.averages).map(([key, value]) => (
+										<div className="m-2 p-2">
+											<div>{key}</div>
+											<div className="text-center">{String(value.toFixed(2))}</div>
+										</div>
+									))}
+								</div>
+								<div className="flex flex-row flex-wrap justify-center">
+									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">Flashes</div>
+									{Object.entries(currentPlayer.extendedStats.durationAverages).map(([key, value]) => (
+										<div className="m-2 p-2">
+											<div>{key}</div>
+											<div className="text-center">{String(value.toFixed(2))}</div>
+										</div>
+									))}
+								</div>								
 							</div>
+						</Exandable>																					
+						<Exandable title="Weapons">
+							<PlayerWeaponsExtended extendedStats={currentPlayer?.extendedStats} />
+						</Exandable>	
+						<Exandable title="Hitboxes">
+							<Hitbox hitboxTags={currentPlayer?.extendedStats.hitboxTags} />
 						</Exandable>
-						<div className="flex flex-row flex-wrap gap-4">
-							<div className="basis-3/12 grow">
-								<Exandable title="Chickens">
-									<div className="flex flex-row flex-wrap justify-center">
-										{Object.entries(currentPlayer.extendedStats.chickens).map(([key, value]) => (
-											<div className="m-2 p-2">
-												<div>{key}</div>
-												<div className="text-center">{value}</div>
-											</div>
-										))}
-									</div>
-								</Exandable>
-							</div>
-							<div className="basis-3/12 grow">
-								<Exandable title="Pistols">
-									<div className="flex flex-row flex-wrap justify-center">
-										{Object.entries(currentPlayer.extendedStats.averages).map(([key, value]) => (
-											<div className="m-2 p-2">
-												<div>{key}</div>
-												<div className="text-center">{String(value.toFixed(2))}</div>
-											</div>
-										))}
-									</div>
-								</Exandable>
-							</div>
-							<div className="basis-3/12 grow">
-								<Exandable title="Flash Averages">
-									<div className="flex flex-row flex-wrap justify-center">
-										{Object.entries(currentPlayer.extendedStats.durationAverages).map(([key, value]) => (
-											<div className="m-2 p-2">
-												<div>{key}</div>
-												<div className="text-center">{String(value.toFixed(2))}</div>
-											</div>
-										))}
-									</div>
-								</Exandable>
-							</div>
-						</div>
-						<div className="flex flex-row flex-wrap gap-4">
-							<div className="basis-5/12 grow">
-								<Exandable title="Weapons">
-									<PlayerWeaponsExtended extendedStats={currentPlayer?.extendedStats} />
-								</Exandable>
-							</div>
-							<div className="basis-1/3">
-								<Exandable title="Hitboxes">
-									<Hitbox hitboxTags={currentPlayer?.extendedStats.hitboxTags} />
-								</Exandable>
-							</div>
-						</div>
 					</div>
 				)}
 				<br />

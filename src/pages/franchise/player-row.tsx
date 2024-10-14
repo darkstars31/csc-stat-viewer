@@ -27,8 +27,8 @@ export function PlayerRow({ franchisePlayer, team }: { franchisePlayer: Franchis
 					<span className="float-left">
 						<img className="w-8 h-8 mr-2 rounded-full" src={player?.avatarUrl} alt="" />
 					</span>
-					<span className="mr-2 text-lg">
-						<b>{franchisePlayer.name}</b>
+					<span className="mr-2 text-lg font-bold">
+						{franchisePlayer.name}
 					</span>
 					<span>
 						{team?.captain?.steam64Id === franchisePlayer.steam64Id ?

@@ -25,14 +25,14 @@ const faceitPopover = (
 	const faceitRankHighest = faceitRankImages[faceitSearchPlayer?.highestRank ?? (0 as keyof typeof faceitRankImages)];
 	return (
 		<div className="z-40 w-48 bg-zinc-500 m-1 p-1 rounded-lg text-xs flex flex-col shadow">
-			<div>
-				<strong>FACEIT Rank - {faceitSearchPlayer?.elo} ELO</strong>
+			<div className="font-bold">
+				FACEIT Rank - {faceitSearchPlayer?.elo} ELO
 			</div>
 			{faceitSearchPlayer?.rank !== faceitSearchPlayer?.highestRank && (
-				<div>
+				<>
 					Highest Rank Achieved{" "}
 					<img className="w-7 h-7" src={faceitRankHighest as unknown as string} alt="" />
-				</div>
+				</>
 			)}
 		</div>
 	);

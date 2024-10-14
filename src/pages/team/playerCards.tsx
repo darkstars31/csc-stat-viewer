@@ -75,8 +75,8 @@ export const TeamPlayerCards = ({ franchisePlayer, team }: Props) => {
 						</div>
 					)}
 				</div>
-				<div className="mr-2 mt-8 text-lg text-center">
-					<b>{franchisePlayer.name}</b>
+				<div className="mr-2 mt-8 text-lg font-bold text-center">
+					{franchisePlayer.name}
 				</div>
 			</Link>
 			<div className="text-sm h-4">{player?.role}</div>

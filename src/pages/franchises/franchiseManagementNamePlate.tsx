@@ -19,8 +19,8 @@ export function FranchiseManagementNamePlate ({ player, title }: { player?: Play
                     src={player?.avatarUrl}
                     alt=""
                 />
-                <span className="mr-2 text-lg">
-                    <b>{player?.name}</b>
+                <span className="mr-2 text-lg font-bold">
+                    {player?.name}
                 </span>
             </Link>
             <div className="text-gray-400 text-xs font-bold uppercase overline">{title}</div>

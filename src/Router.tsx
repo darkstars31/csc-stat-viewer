@@ -121,43 +121,41 @@ export function Router() {
 		<>
 			{isLoading && <ProgressBar />}
 			<Wouter base={BASE_ROUTE}>
-				<div>
-					{newVersionBanner.isOpen && (
-						<button
-							className="w-full h-8 bg-teal-600 text-center"
-							onClick={() => setNewVersionBanner({ ...newVersionBanner, isOpen: false })}
-						>
-							A new version of AnalytiKill is available. 
-							<a className="px-1 text-blue-600 underline" onClick={() => window.location.reload()}>Click here to update</a> or refresh the page!
-							<AiOutlineCloseCircle className="float-right mr-4" size="1.5em" />
-						</button>
-					)}
-					{!closeNotificationBanner && enableFeature && (
-						<button
-							className="w-full h-8 bg-teal-600 text-center"
-							onClick={() => setCloseNotificationBanner("true")}
-						>
-							Need a retake server to warm-up on match days? Request a server (beta){" "}
-							<Link className="hover:underline text-white font-bold hover:text-sky-400" to="/servers">
-								here.
-							</Link>
-							<AiOutlineCloseCircle className="float-right mr-4" size="1.5em" />
-						</button>
-					)}
-					<ErrorBoundary>					
-						<Switch>
-							{routes.map(route => <Route key={`route${route.path}`} {...route} />)}
-							<Route
-								key="404, Page not found."
-								component={() => (
-									<Container>
-										<h1>404</h1>
-									</Container>
-								)}
-							/>
-						</Switch>
-					</ErrorBoundary>
-				</div>
+				{newVersionBanner.isOpen && (
+					<button
+						className="w-full h-8 bg-teal-600 text-center"
+						onClick={() => setNewVersionBanner({ ...newVersionBanner, isOpen: false })}
+					>
+						A new version of AnalytiKill is available. 
+						<a className="px-1 text-blue-600 underline" onClick={() => window.location.reload()}>Click here to update</a> or refresh the page!
+						<AiOutlineCloseCircle className="float-right mr-4" size="1.5em" />
+					</button>
+				)}
+				{!closeNotificationBanner && enableFeature && (
+					<button
+						className="w-full h-8 bg-teal-600 text-center"
+						onClick={() => setCloseNotificationBanner("true")}
+					>
+						Need a retake server to warm-up on match days? Request a server (beta){" "}
+						<Link className="hover:underline text-white font-bold hover:text-sky-400" to="/servers">
+							here.
+						</Link>
+						<AiOutlineCloseCircle className="float-right mr-4" size="1.5em" />
+					</button>
+				)}
+				<ErrorBoundary>					
+					<Switch>
+						{routes.map(route => <Route key={`route${route.path}`} {...route} />)}
+						<Route
+							key="404, Page not found."
+							component={() => (
+								<Container>
+									<h1>404</h1>
+								</Container>
+							)}
+						/>
+					</Switch>
+				</ErrorBoundary>			
 			</Wouter>
 		</>
 	);

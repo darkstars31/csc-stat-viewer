@@ -16,8 +16,8 @@ export function GridStat({
 	return (
 		<div className={`grid grid-cols-2 ${rowIndex % 2 === 1 ? "bg-midnight1 rounded" : ""}`}>
 			<div className={`text-left pl-2`}>{name}</div>
-			<div className={`text-right pr-2`}>
-				<strong>{value}</strong>
+			<div className={`text-right pr-2 font-bold`}>
+				{value}
 			</div>
 		</div>
 	);

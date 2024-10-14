@@ -26,7 +26,7 @@ export function Tooltip({ title, content, children }: Props) {
 			)}
 			{content && (
 				<div className="px-3 py-2">
-					<div>{content}</div>
+					{content}
 				</div>
 			)}
 			{children}

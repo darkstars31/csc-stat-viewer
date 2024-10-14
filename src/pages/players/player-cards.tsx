@@ -24,8 +24,8 @@ export function MemoizedPlayerCard({ player }: Props) {
 							<h2 className="text-l md:text-xl font-bold text-white grow">
 								<span className="truncate ...">{player.name}</span>
 							</h2>
-							<div className="text-xs text-slate-400 pt-1">
-								<strong>{player.role}</strong>
+							<div className="text-xs text-slate-400 pt-1 font-bold">
+								{player.role}
 							</div>
 						</div>
 					</div>
@@ -34,10 +34,10 @@ export function MemoizedPlayerCard({ player }: Props) {
 							<div className="text-center">
 								<div className="text-xs h-8">
 									{player.tier.name}{" "}
-									<i>
+									<div className="italic">
 										{" "}
 										- {player.team?.franchise.prefix ?? ""} {teamNameTranslated}
-									</i>
+									</div>
 								</div>
 							</div>
 							<div className="flex justify-center gap-4 py-1">

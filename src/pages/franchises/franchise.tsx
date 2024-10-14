@@ -44,6 +44,7 @@ export function FranchisesFranchise ({ franchise, selectedTier }: { franchise: F
                                     <img
                                         src={franchiseImages[franchise.prefix]}
                                         alt=""
+                                        loading="lazy"
                                     />                              
                                 </div>
                             </div>

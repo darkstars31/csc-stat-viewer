@@ -56,25 +56,38 @@ function PlayerMatchStatLine({ playerStat }: { playerStat: any }) {
 			</td>
 			<td>{playerStat.FAss}</td>
 			<td>{playerStat.utilDmg}</td>
-			<div className="basis-1/12">
-				<div>
-					<ToolTip
-						type="generic"
-						message={
-							<div className="bg-gray-700 p-2 rounded">
-								<div className="flex flex-col">
-									<div>1v1: {playerStat.cl_1}</div>
-									<div>1v2: {playerStat.cl_2}</div>
-									<div>1v3: {playerStat.cl_3}</div>
-									<div>1v4: {playerStat.cl_4}</div>
-									<div>Aces: {playerStat.cl_5}</div>
+			<div className="basis-1/12">			
+				<ToolTip
+					type="generic"
+					message={
+						<div className="bg-gray-700 p-2 rounded">
+							<div className="flex flex-row">
+								<div>
+									<div>1v1</div>
+									{playerStat.cl_1}
+								</div>
+								<div>
+									<div>1v2</div>
+									{playerStat.cl_2}
+								</div>
+								<div>
+									<div>1v3</div>
+									{playerStat.cl_3}
+								</div>
+								<div>
+									<div>1v4</div>
+									{playerStat.cl_4}
+								</div>
+								<div>
+									<div>Ace</div>
+									{playerStat.cl_5}
 								</div>
 							</div>
-						}
-					>
-						{calculateClutchPoints(playerStat)}
-					</ToolTip>
-				</div>
+						</div>
+					}
+				>
+					{calculateClutchPoints(playerStat)}
+				</ToolTip>
 			</div>
 		</tr>
 	);

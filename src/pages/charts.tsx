@@ -129,7 +129,7 @@ export function Charts() {
 	if (playersWithStats.length === 0) {
 		return (
 			<Container>
-				<i>No Players with stats for season {seasonAndMatchType?.season} yet.. Check back later</i>
+				<div className="italic">No Players with stats for season {seasonAndMatchType?.season} yet.. Check back later</div>
 			</Container>
 		);
 	}

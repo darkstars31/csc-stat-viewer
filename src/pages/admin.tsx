@@ -49,10 +49,8 @@ export function Admin(){
         <Container>
             <div className="flex flex-row">
                 <div className="basis-1/3">
-                    <div>
-                        Articles Under Review
-                    </div>
-                    <div>
+                    Articles Under Review
+                    <>
                         { posts?.filter( p => p.approvalState === "Pending").map((post) => (
                             <div style={{ backgroundImage: `url(${post?.bannerURL})`}} className=" flex flex-row justify-between h-16 m-2 p-1 border border-gray-500 rounded">
                                 <Link to={`/articles/${post.id}`}>
@@ -66,7 +64,7 @@ export function Admin(){
                                 </div>
                             </div>
                         ))}
-                    </div>
+                    </>
                 </div>
                 <div className="basis-1/3 space-y-3">
                     <div className="text-center">Server Notices</div>

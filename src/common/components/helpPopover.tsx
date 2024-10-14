@@ -2,7 +2,7 @@ import * as React from "react";
 
 export function HelpPopover({ children }: { children: React.ReactNode | React.ReactNode[] }) {
 	return (
-		<div>
+		<>
 			<p className="flex items-center text-sm font-light text-gray-500 dark:text-gray-400">
 				This is just some informational text{" "}
 				<button data-popover-target="popover-description" data-popover-placement="bottom-end" type="button">
@@ -31,6 +31,6 @@ export function HelpPopover({ children }: { children: React.ReactNode | React.Re
 				<div className="p-3 space-y-2">{children}</div>
 				<div data-popper-arrow></div>
 			</div>
-		</div>
+		</>
 	);
 }

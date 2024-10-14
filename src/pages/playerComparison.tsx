@@ -125,7 +125,7 @@ export function PlayerComparison() {
 				</div>
 			</div>
 			<React.Suspense fallback={<Loading />}>
-				<div className="flex">
+				<div className="grid grid-cols-1 sm:grid-cols-2">
 					<PlayerCompareRadar
 						selectedPlayers={Array.from(selectedPlayers.values()).map(p => p.value)}
 						tier={Array.from(selectedPlayers.values()).map(p => p.value)[0]?.tier.name ?? "Contender"}

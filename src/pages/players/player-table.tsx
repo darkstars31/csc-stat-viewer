@@ -34,6 +34,7 @@ function PlayerRows({ index, player }: { index: number; player: Player }) {
 								className="h-6 w-6 mr-2"
 								src={franchiseImages[player.team?.franchise.prefix]}
 								alt={player.team?.franchise.prefix}
+								loading="lazy"
 							/>
 							{player.team?.franchise.name ?? ""}
 							{player.type === PlayerTypes.EXPIRED ?
