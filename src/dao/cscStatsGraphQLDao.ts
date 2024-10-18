@@ -116,6 +116,16 @@ export function useCscStatsCache(season?: number, matchType?: string, options?: 
 	});
 }
 
+export function useCscCombinedCache(season?: number, matchType?: string, options?: Record<string, unknown>): UseQueryResult<StatsCache> {
+	return useQuery([`cscstats-cache`, season, matchType], 
+        async () => await analytikillHttpClient.get(`/csc/combined`)
+        .then( response => response.data.data ),
+    {
+        enabled: options?.enabled as boolean ?? true,
+		staleTime: OneHour,
+	});
+}
+
 export function useMultipleCscStatsGraph(tiers: string[], season?: number, matchType?: string): UseQueryResult<void | CscStats[], unknown>[] {
 	const queries = tiers.map(tier => ({
 		queryKey: ["cscstats-graph", tier, season, matchType],

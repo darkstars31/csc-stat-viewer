@@ -83,7 +83,7 @@ export function PlayerTable({ players }: Props) {
 	const [, setLocation] = useLocation();
 	const MemoizedPlayerRows = React.memo(PlayerRows);
 	return (
-		<div className="w-full flex flex-col overflow-x-auto sm:-mx-6 lg:-mx-8 min-w-full py-2 sm:px-6 lg:px-8 overflow-hidden">					
+		<div className="w-full pb-16 flex flex-col overflow-x-auto sm:-mx-6 lg:-mx-8 min-w-full py-2 sm:px-6 lg:px-8 overflow-hidden">					
 				<TableVirtuoso 				
 					useWindowScroll
 					overscan={100}
