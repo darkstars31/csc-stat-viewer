@@ -27,15 +27,15 @@ export const ExtendedMatchHistoryMatchup = ({ extendedMatchData } : { extendedMa
 
     return (
         <>
-            <div className="text-xs text-gray-500 text-center">*CSC Rating and Faceit Elo collected at match end.</div>
+            <div className="text-xs text-gray-500 text-center">*Faceit Elo collected at match end.</div>
             <div className="flex flex-row flex-wrap gap-4 justify-evenly">
                 <div className="basis-1/6 text-center">
                     <div>Team Away</div>
-                    <div>{(teamACSCAverage/extendedMatchData?.metadata.matchup.teamACSCRatingsAtMatch.length).toFixed(2)} Rating</div>
+                    {/* <div>{(teamACSCAverage/extendedMatchData?.metadata.matchup.teamACSCRatingsAtMatch.length).toFixed(2)} Rating</div> */}
                     { teamAFaceitEloAverage > 0 && <div>{(teamAFaceitEloAverage/extendedMatchData?.metadata.matchup.teamAFaceitElo.length).toFixed()} ELO</div> }
                 </div>
                 <div className="basis-1/2">
-                    <div className="w-full bg-gray-200 rounded dark:bg-gray-700 m-1 h-6">
+                    {/* <div className="w-full bg-gray-200 rounded dark:bg-gray-700 m-1 h-6">
                         <div className="float-left w-full text-xs pt-1 pl-4">
                             {calculatePercentage(teamACSCAverage, summedCSCRating,0)}% 
                             <span className="float-right pr-4">{calculatePercentage(teamBCSCAverage, summedCSCRating,0)}%</span>
@@ -48,7 +48,7 @@ export const ExtendedMatchHistoryMatchup = ({ extendedMatchData } : { extendedMa
                                 <span className="float-right pr-4">{calculatePercentage(teamBCSCAverage, summedCSCRating,0)}%</span>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                     { teamAFaceitEloAverage > 0 && 
                         <div className="w-full bg-gray-200 rounded dark:bg-gray-700 m-1 h-6">
                             <div className="float-left w-full text-xs pt-1 pl-4">
@@ -66,7 +66,7 @@ export const ExtendedMatchHistoryMatchup = ({ extendedMatchData } : { extendedMa
                 </div>
                 <div className="basis-1/6 text-center">
                     <div>Team Home</div>
-                    <div>Rating {(teamBCSCAverage/extendedMatchData?.metadata.matchup.teamBCSCRatingsAtMatch.length).toFixed(2)}</div>
+                    {/* <div>Rating {(teamBCSCAverage/extendedMatchData?.metadata.matchup.teamBCSCRatingsAtMatch.length).toFixed(2)}</div> */}
                     { teamAFaceitEloAverage > 0 && <div> ELO {(teamBFaceitEloAverage/extendedMatchData?.metadata.matchup.teamBFaceitElo.length).toFixed()}</div> }
                 </div>
             </div>

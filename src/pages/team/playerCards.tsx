@@ -10,7 +10,7 @@ import { FaceitRank } from "../../common/components/faceitRank";
 import { BiStats } from "react-icons/bi";
 import { ExternalPlayerLinks } from "../../common/components/externalPlayerLinks";
 import { Mmr } from "../../common/components/mmr";
-import { discordPlaceholderImage } from "../../common/images/placeholder";
+//import { discordPlaceholderImage } from "../../common/images/placeholder";
 import { ToolTip } from "../../common/utils/tooltip-utils";
 
 type Props = {
@@ -66,7 +66,8 @@ export const TeamPlayerCards = ({ franchisePlayer, team }: Props) => {
 				<div className="relative">
 					<img
 						className="absolute w-24 h-24 ml-4 rounded-full -mt-24"
-						src={player?.avatarUrl ?? discordPlaceholderImage}
+						loading="lazy"
+						src={player?.avatarUrl}
 						alt=""
 					/>
 					{specialStatuses && (

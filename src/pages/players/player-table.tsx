@@ -20,8 +20,8 @@ function PlayerRows({ index, player }: { index: number; player: Player }) {
 			<>
 				<td className="whitespace-nowrap px-4 py-4 font-medium">{index + 1}</td>
 				<td className="whitespace-nowrap px-6 py-4">
-					<div className="mr-4 h-[32px] w-[32px] rounded float-left">
-						<img className="rounded" src={player.avatarUrl} alt="" />
+					<div className="mr-4 rounded float-left">
+						<img width={32} height={32} className="rounded" src={player.avatarUrl} loading="lazy" alt="" />
 					</div>
 					<span className="leading-8">{player.name}</span>
 				</td>

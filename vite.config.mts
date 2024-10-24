@@ -31,19 +31,19 @@ export default defineConfig({
                 manualChunks: (id) => {
 
                     if (id.includes('react')) {
-                        return `vendor-react`
+                        return `v-react`
                     }
                     if (id.includes('echarts')) {
-                        return `vendor-echarts`
+                        return `v-echarts`
                     }
                     if (id.includes('lodash')) {
-                        return `vendor-lodash`
+                        return `v-lodash`
                     }
                     if (id.includes('prosemirror')) {
-                        return `vendor-prosemirror`
+                        return `v-prosemirror`
                     }
                     if (id.includes('@sentry')) {
-                        return `vendor-@sentry`
+                        return `v-@sentry`
                     }                          
                 },
             }
