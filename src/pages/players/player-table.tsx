@@ -83,7 +83,7 @@ export function PlayerTable({ players }: Props) {
 	const [, setLocation] = useLocation();
 	const MemoizedPlayerRows = React.memo(PlayerRows);
 	return (
-		<div className="w-full flex flex-col overflow-x-auto sm:-mx-6 lg:-mx-8 min-w-full py-2 sm:px-6 lg:px-8 overflow-hidden">					
+		<div className="w-full pb-16 flex flex-col overflow-x-auto sm:-mx-6 lg:-mx-8 min-w-full py-2 sm:px-6 lg:px-8 overflow-hidden">					
 				<TableVirtuoso 				
 					useWindowScroll
 					overscan={100}
@@ -91,8 +91,8 @@ export function PlayerTable({ players }: Props) {
 					components={{
 						Table: (props) => <table className="table-auto w-full font-light text-sx md:text-sm" {...props} />,
 						TableHead: (props) => <thead className="border-b font-medium dark:border-neutral-500" {...props} />,
-						TableRow: (props) => 
-								<tr className="w-full cursor-pointer border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600" onClick={() => setLocation(`/players/${encodeURIComponent(props.item.name)}`)}  {...props} />,
+						TableRow: (props) => {
+								return <tr className="w-full cursor-pointer border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600" onClick={() => setLocation(`/players/${encodeURIComponent(props.item.name)}`)}  {...props} /> },
 					}}
 					fixedHeaderContent={() => (				
 						<tr className="text-left">

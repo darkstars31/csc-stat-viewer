@@ -217,12 +217,10 @@ export function Players() {
 						<MdOutlineViewHeadline />
 					</button>
 				</div>
-			</div>
-			<div className="pb-8">
-				<React.Suspense fallback={<Loading />}>
-					<PlayerList orderBy={orderBy} displayStyle={displayStyle} players={filteredBySearchPlayers} />
-				</React.Suspense>
-			</div>
+			</div>		
+			<React.Suspense fallback={<Loading />}>
+				<PlayerList orderBy={orderBy} displayStyle={displayStyle} players={filteredBySearchPlayers} />
+			</React.Suspense>
 		</Container>
 	);
 }

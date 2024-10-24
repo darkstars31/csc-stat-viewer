@@ -1,6 +1,6 @@
 export const selectClassNames = {
 	placeholder: () => "text-gray-400 bg-inherit",
-	container: () => "m-1 rounded bg-inherit",
+	container: () => "m-1 rounded bg-inherit z-10",
 	control: () => "p-2 rounded-l bg-slate-700",
 	option: (state: { isDisabled: boolean }) => `${state.isDisabled ? "text-gray-500" : ""} p-2 hover:bg-slate-900`,
 	input: () => "text-slate-200",
