@@ -14,10 +14,19 @@ type Props = {
 	}[];
 };
 
+const tiers = [
+	{ name: "Recruit", color: "text-red-400"},
+	{ name: "Prospect", color: "text-orange-400"},
+	{ name: "Contender", color: "text-yellow-400",},
+	{ name: "Challenger", color: "text-green-400",},
+	{ name: "Elite", color: "text-blue-400",},
+	{ name: "Premier", color: "text-purple-400",},
+];
+
 export function StatsLeaderBoard({ title, subtitle, rows, header = true, headerImage }: Props) {
 	return (
 		<div className="basis-1/4 grow">
-			<Card className="min-h-[285px]">
+			<Card className="min-h-[304px]">
 				<div className="text-center text-xl uppercase font-extrabold m-2">
 					<div className="flex flex-row justify-center">
 						<div className="">
@@ -61,7 +70,7 @@ export function StatsLeaderBoard({ title, subtitle, rows, header = true, headerI
 												</Link>
 											</div>
 										</td>
-										<td>{row.player.tier.name}</td>
+										<td className={`${tiers.find(t => t.name === row.player.tier.name)?.color}`}>{row.player.tier.name}</td>
 										<td className="font-black">{row.value}</td>
 									</tr>
 								:	<tr
@@ -74,7 +83,7 @@ export function StatsLeaderBoard({ title, subtitle, rows, header = true, headerI
 												{row.player.name}
 											</Link>
 										</td>
-										<td className={`whitespace-nowrap py-1 font-medium`}>{row.player.tier.name}</td>
+										<td className={`whitespace-nowrap py-1 font-medium ${tiers.find(t => t.name === row.player.tier.name)?.color}`}>{row.player.tier.name}</td>
 										<td className={`whitespace-nowrap py-1 font-medium`}>{row.value}</td>
 									</tr>,
 							)}

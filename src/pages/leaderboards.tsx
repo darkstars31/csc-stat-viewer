@@ -98,9 +98,9 @@ export function LeaderBoards() {
 	];
 
 	const pages = [
-		{ name: "General", color: "yellow" },
-		{ name: "Extended", color: "cyan" },
-		{ name: "Weapons", color: "green" },
+		{ name: "General", color: "text-yellow-400" },
+		{ name: "Extended", color: "text-cyan-400" },
+		{ name: "Weapons", color: "text-green-400" },
 	];
 
 	if (loading.isLoadingCscPlayers) {
@@ -127,7 +127,7 @@ export function LeaderBoards() {
 							setLocation(window.location.pathname + "?q=" + page.name.toLowerCase());
 							setSelectedPage(page.name.toLowerCase());
 						}}
-						className={`rounded-md ${page.name.toLowerCase() === selectedPage.toLowerCase() ? "bg-blue-500" : "bg-slate-700"} text-${page.color}-400 ${tierButtonClass} shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-blue-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-blue-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]`}
+						className={`rounded-md ${page.name.toLowerCase() === selectedPage.toLowerCase() ? "bg-blue-500" : "bg-slate-700"} ${page.color} ${tierButtonClass} shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-blue-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-blue-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]`}
 					>
 						{page.name}
 					</button>

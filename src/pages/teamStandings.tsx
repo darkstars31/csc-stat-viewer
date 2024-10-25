@@ -247,12 +247,12 @@ export function TeamStandings() {
 		"rounded-md flex-grow px-6 pb-2 pt-2.5 text-sm font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-blue-600 focus:bg-blue-700 focus:outline-none focus:ring-0 active:bg-blue-700";
 
 	const tiers = [
-		{ name: "Recruit", color: "red", playoffLine: 12 },
-		{ name: "Prospect", color: "orange", playoffLine: 16 },
-		{ name: "Contender", color: "yellow", playoffLine: 16 },
-		{ name: "Challenger", color: "green", playoffLine: 12 },
-		{ name: "Elite", color: "blue", playoffLine: 10 },
-		{ name: "Premier", color: "purple", playoffLine: 12 },
+		{ name: "Recruit", color: "text-red-300", playoffLine: 12 },
+		{ name: "Prospect", color: "text-orange-300", playoffLine: 16 },
+		{ name: "Contender", color: "text-yellow-300", playoffLine: 16 },
+		{ name: "Challenger", color: "text-green-300", playoffLine: 12 },
+		{ name: "Elite", color: "text-blue-300", playoffLine: 10 },
+		{ name: "Premier", color: "text-purple-300", playoffLine: 12 },
 	];
 
 	const matchDaysPlayed = matches.length > 0 ? sorted[0].wins + sorted[0].losses : 0;
@@ -274,7 +274,7 @@ export function TeamStandings() {
 								setLocation(window.location.pathname + "?" + queryParams.toString());
 								setSelectedTier(tier.name);
 							}}
-							className={`${selectedTier === tier.name ? "bg-blue-500" : "bg-slate-700"} text-${tier.color}-300 ${tierButtonClass}`}
+							className={`${selectedTier === tier.name ? "bg-blue-500" : "bg-slate-700"} ${tier.color} ${tierButtonClass}`}
 						>
 							{tier.name}
 						</button>
