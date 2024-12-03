@@ -29,6 +29,8 @@ import { useFetchPlayerProfile } from "../dao/analytikill";
 import { ProfileJson } from "../models/profile-types";
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useNotificationsContext } from "../NotificationsContext";
+import {PlayerPercentilesOne} from "./player/playerPercentilesOne";
+import {PlayerPercentilesTwo} from "./player/playerPercentilesTwo";
 
 const PlayerMatchHistory = React.lazy(() =>import('./player/matchHistory').then(module => ({default: module.PlayerMatchHistory})));
 const TeamSideRatingPie = React.lazy(() =>import('../common/components/teamSideRatingPie').then(module => ({default: module.TeamSideRatingPie})));
@@ -106,13 +108,17 @@ export function Player() {
 		Premier: "text-purple-400",
 	}
 
+	const skillProgress = {
+		'--progress': '70%'
+	} as React.CSSProperties;
+
 	return (
 		<>
 			<div ref={divRef} />
 			<Container>
 				<PlayerNavigator player={currentPlayer} playerIndex={playerRatingIndex} />
 				<Containers.StandardBackgroundPage>
-					<div className="flex flex-wrap flex-row pb-2">		
+					<div className="flex flex-wrap flex-row pb-2">
 						<div className="flex basis-full md:basis-1/3 space-x-4">
 							<div className="object-contain">
 								{currentPlayer?.avatarUrl && (
@@ -126,20 +132,19 @@ export function Player() {
 									<div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border" />
 								)}
 								<div className="flex flex-row justify-evenly">
-									<Reputation playerDiscordId={currentPlayer.discordId}/>
-									{ Object.keys(playerProfile).length > 0 ?
+									<Reputation playerDiscordId={currentPlayer.discordId} />
+									{Object.keys(playerProfile).length > 0 ?
 										<div className={`${showProfile ? "text-blue-400" : "text-purple-400"}`}>
 											<ToolTip type="generic" message={"Show Profile"}>
-												<CgProfile 
+												<CgProfile
 													className="m-3 w-4 h-4"
 													onClick={() => setShowProfile(!showProfile)}
 												/>
-											</ToolTip>										
+											</ToolTip>
 										</div>
-										:
-										<ToolTip type="generic" message={"Player has not updated their profile."}>
+									:	<ToolTip type="generic" message={"Player has not updated their profile."}>
 											<CgProfile className="text-gray-600 m-3 w-4 h-4" />
-										</ToolTip>			
+										</ToolTip>
 									}
 								</div>
 							</div>
@@ -178,38 +183,45 @@ export function Player() {
 								</div>
 								<ul className="text-[0.8rem]">
 									<li>
-										{String(playerRatingIndex + 1).concat(nth(playerRatingIndex + 1))} Overall in{" "}								
-											<span className={`${tierCssColors[tiers.find(t => t.tier.name === viewStatSelection)?.tier.name as keyof typeof tierCssColors]} font-bold italic`}>
-														{currentPlayer?.name.toLowerCase() === "comradsniper" ?
-															"Super "
-														:	""}{" "}
-														<Popover className="inline relative">
-															<PopoverButton className={`transition ease-in-out hover:scale-105 duration-100`}>
-																{viewStatSelection}{currentPlayer?.tier.name === viewStatSelection ? "" : "*"}
-																</PopoverButton>
-																<PopoverPanel 
-																	anchor="bottom" 
-																	className="border-gray-800 divide-y divide-white/5 rounded-xl bg-midnight2 text-sm/6 transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0"
-																	>
-																	<div className="p-2 shadow-inner">
-																		{
-																			currentPlayerTierOptions.map((tier) => (
-																				<button 
-																					className="block rounded-lg py-1 px-2 transition hover:bg-white/50"
-																					onClick={() => setViewStatSelection(tier)}
-																					>
-																					<p className={`font-semibold ${tierCssColors[tiers.find(t => t.tier.name === viewStatSelection)?.tier.name as keyof typeof tierCssColors]}`}>{tier}</p>
-																			</button>
-																			))
-																		}																
-																	</div>
-															</PopoverPanel>														
-														</Popover>
-											</span>
-										<br /> 
-										{ currentPlayer &&									  
-											<><Mmr player={currentPlayer} /> MMR</>
-										}
+										{String(playerRatingIndex + 1).concat(nth(playerRatingIndex + 1))} Overall in{" "}
+										<span
+											className={`${tierCssColors[tiers.find(t => t.tier.name === viewStatSelection)?.tier.name as keyof typeof tierCssColors]} font-bold italic`}
+										>
+											{currentPlayer?.name.toLowerCase() === "comradsniper" ? "Super " : ""}{" "}
+											<Popover className="inline relative">
+												<PopoverButton
+													className={`transition ease-in-out hover:scale-105 duration-100`}
+												>
+													{viewStatSelection}
+													{currentPlayer?.tier.name === viewStatSelection ? "" : "*"}
+												</PopoverButton>
+												<PopoverPanel
+													anchor="bottom"
+													className="border-gray-800 divide-y divide-white/5 rounded-xl bg-midnight2 text-sm/6 transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0"
+												>
+													<div className="p-2 shadow-inner">
+														{currentPlayerTierOptions.map(tier => (
+															<button
+																className="block rounded-lg py-1 px-2 transition hover:bg-white/50"
+																onClick={() => setViewStatSelection(tier)}
+															>
+																<p
+																	className={`font-semibold ${tierCssColors[tiers.find(t => t.tier.name === viewStatSelection)?.tier.name as keyof typeof tierCssColors]}`}
+																>
+																	{tier}
+																</p>
+															</button>
+														))}
+													</div>
+												</PopoverPanel>
+											</Popover>
+										</span>
+										<br />
+										{currentPlayer && (
+											<>
+												<Mmr player={currentPlayer} /> MMR
+											</>
+										)}
 										<div>
 											<span className="flex leading-7">
 												<FaceitRank player={currentPlayer} />
@@ -234,8 +246,8 @@ export function Player() {
 							<ExternalPlayerLinks player={currentPlayer} />
 						</div>
 						{/* <div className="clear-both" /> */}
-					</div>				
-					{ Object.values(playerProfile ?? {}).length > 0 &&
+					</div>
+					{Object.values(playerProfile ?? {}).length > 0 && (
 						<Transition
 							as={"div"}
 							show={showProfile}
@@ -248,8 +260,12 @@ export function Player() {
 						>
 							<PlayerProfile player={currentPlayer} playerProfile={playerProfile as ProfileJson} />
 						</Transition>
-					}
-					{ viewStatSelection !== currentPlayer.tier.name && <div className="text-sm italic font-bold text-gray-600 text-center w-full">*Non-Primary Tier Stats</div>}			
+					)}
+					{viewStatSelection !== currentPlayer.tier.name && (
+						<div className="text-sm italic font-bold text-gray-600 text-center w-full">
+							*Non-Primary Tier Stats
+						</div>
+					)}
 					{currentPlayerStats && (
 						<div className="space-y-2">
 							<React.Suspense fallback={<Loading />}>
@@ -260,14 +276,22 @@ export function Player() {
 									<Containers.StandardContentBox>
 										<PlayerRatingTrendGraph player={currentPlayer} />
 									</Containers.StandardContentBox>
-								</Containers.StandardBoxRow>							
+								</Containers.StandardBoxRow>
+								<Containers.StandardBoxRow>
+									<Containers.StandardContentBox>
+										<PlayerPercentilesOne player={currentPlayer} stats={currentPlayerStats} />
+									</Containers.StandardContentBox>
+									<Containers.StandardContentBox>
+										<PlayerPercentilesTwo player={currentPlayer} stats={currentPlayerStats} />
+									</Containers.StandardContentBox>
+								</Containers.StandardBoxRow>
 								<Containers.StandardBoxRow>
 									<Containers.StandardContentBox>
 										<RoleRadar stats={currentPlayerStats!} />
 									</Containers.StandardContentBox>
-									<Containers.StandardContentBox>									
+									<Containers.StandardContentBox>
 										<TeamSideRatingPie player={currentPlayer} />
-										<KillsAssistsDeathsPie stats={currentPlayerStats} />	
+										<KillsAssistsDeathsPie stats={currentPlayerStats} />
 									</Containers.StandardContentBox>
 								</Containers.StandardBoxRow>
 							</React.Suspense>
@@ -329,19 +353,25 @@ export function Player() {
 							})}
 					</div>
 				)}
-				{ !currentPlayerStats || currentPlayerTierOptions.length > 0 &&
-					<div className="text-center font-bold italic">
-						Looking for stats in a different tier? <a className="text-blue-600 underline" href="#player-tier">You can now find that here</a>
-						<div className="text-xs">Click on the players current tier.</div>		
-					</div>
-				}
+				{!currentPlayerStats ||
+					(currentPlayerTierOptions.length > 0 && (
+						<div className="text-center font-bold italic">
+							Looking for stats in a different tier?{" "}
+							<a className="text-blue-600 underline" href="#player-tier">
+								You can now find that here
+							</a>
+							<div className="text-xs">Click on the players current tier.</div>
+						</div>
+					))}
 				<br />
 				{currentPlayer?.extendedStats && (
 					<div>
 						<Exandable title="Extended Stats">
-							<div className="grid grid-cols-1 sm:grid-cols-2 gap-8">						
+							<div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
 								<div className="flex flex-row flex-wrap justify-center">
-									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">Stats</div>
+									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">
+										Stats
+									</div>
 									{Object.entries(currentPlayer.extendedStats.trackedObj).map(([key, value]) => (
 										<div className="m-2 p-2">
 											<div>{key}</div>
@@ -350,16 +380,20 @@ export function Player() {
 									))}
 								</div>
 								<div className="flex flex-row flex-wrap justify-center">
-									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">Chickens</div>
+									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">
+										Chickens
+									</div>
 									{Object.entries(currentPlayer.extendedStats.chickens).map(([key, value]) => (
 										<div className="m-2 p-2">
 											<div>{key}</div>
 											<div className="text-center">{value}</div>
 										</div>
 									))}
-								</div>	
+								</div>
 								<div className="flex flex-row flex-wrap justify-center">
-									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">Pistols</div>
+									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">
+										Pistols
+									</div>
 									{Object.entries(currentPlayer.extendedStats.averages).map(([key, value]) => (
 										<div className="m-2 p-2">
 											<div>{key}</div>
@@ -368,19 +402,23 @@ export function Player() {
 									))}
 								</div>
 								<div className="flex flex-row flex-wrap justify-center">
-									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">Flashes</div>
-									{Object.entries(currentPlayer.extendedStats.durationAverages).map(([key, value]) => (
-										<div className="m-2 p-2">
-											<div>{key}</div>
-											<div className="text-center">{String(value.toFixed(2))}</div>
-										</div>
-									))}
-								</div>								
+									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">
+										Flashes
+									</div>
+									{Object.entries(currentPlayer.extendedStats.durationAverages).map(
+										([key, value]) => (
+											<div className="m-2 p-2">
+												<div>{key}</div>
+												<div className="text-center">{String(value.toFixed(2))}</div>
+											</div>
+										),
+									)}
+								</div>
 							</div>
-						</Exandable>																					
+						</Exandable>
 						<Exandable title="Weapons">
 							<PlayerWeaponsExtended extendedStats={currentPlayer?.extendedStats} />
-						</Exandable>	
+						</Exandable>
 						<Exandable title="Hitboxes">
 							<Hitbox hitboxTags={currentPlayer?.extendedStats.hitboxTags} />
 						</Exandable>
