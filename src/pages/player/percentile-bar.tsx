@@ -8,7 +8,7 @@ interface PercentileBarProps {
 	stat2: number;
 	range?: number;
 	average?: number;
-	color: "red" | "yellow" | "yellow-green" |"green";
+	color: "red" | "yellow" | "green" | "default";
 	type: "default" | "concy";
 	tooltipMessage?: string;
 }
@@ -31,10 +31,19 @@ export function PercentileBar({
 	let width = type === "default" ? `${(stat1 / stat2) * 100}%` : `${stat1}%`;
 	width = parseFloat(width) > 100 ? "100%" : width;
 
+	let defaultColor = "h-1 bg-gradient-to-l from-green-500 to-green-900 via-green-600 rounded-lg";
+
+	if (stat1 <= 40) {
+		defaultColor = "h-1 bg-gradient-to-l from-red-500 to-red-900 via-red-600 rounded-lg";
+	} else if (stat1 < 75) {
+		defaultColor = "h-1 bg-gradient-to-l from-yellow-500 to-yellow-900 via-yellow-600 rounded-lg";
+	}
+
 	const gradientClasses: GradientClasses = {
 		red: "h-1 bg-gradient-to-l from-red-500 to-red-900 via-red-600 rounded-lg",
 		yellow: "h-1 bg-gradient-to-l from-yellow-500 to-yellow-900 via-yellow-600 rounded-lg",
 		green: "h-1 bg-gradient-to-l from-green-500 to-green-900 via-green-600 rounded-lg",
+		default: defaultColor
 	};
 
 	const gradientClass = gradientClasses[color] || "";
@@ -47,20 +56,13 @@ export function PercentileBar({
 					<ToolTip message={tooltipMessage} type="explain" />
 				</span>
 			)}
-			{!range && <div className="float-right text-sm inline-block">{stat1.toFixed(2)}</div>}
+			{!range && <div className="float-right text-sm inline-block">{Math.floor(stat1)}/100</div>}
 			{message && <ToolTip message={message} stat1={stat1} stat2={stat2} range={range} type="icon" />}
 			<div className="h-1 bg-midnight2 rounded-lg">
 				<div className={`${gradientClass} rounded-lg`} style={{ width }} />
 			</div>
 			{average && type !== "concy" && (
-				<ToolTip message={`Tier Average: ${average}`} pos={`${(average / stat2) * 100}%`} type="rating" />
-			)}
-			{type === "concy" && (
-				<ToolTip
-					message={`Tier Average: ${average?.toFixed(0)}`}
-					pos={String(average).concat("%")}
-					type="rating"
-				/>
+				<ToolTip message={`Tier Average: ${Math.floor(average)}`} pos={`${(average / stat2) * 100}%`} type="rating" />
 			)}
 		</div>
 	);

@@ -1,10 +1,14 @@
 import * as React from "react";
 import { useDataContext } from "../../DataContext";
-import { getTotalPlayerAverages } from "../../common/utils/player-utils";
-import { RatingBar } from "./rating-bar";
 import { Player } from "../../models/player";
 import { CscStats } from "../../models";
 import {PercentileBar} from "./percentile-bar";
+import {
+    calculateEntryingPercentile,
+    calculateFirepowerPercentile,
+    calculateOpeningPercentile,
+    calculateSnipingPercentile
+} from "./percentiles";
 
 type Props = {
     player: Player;
@@ -12,59 +16,65 @@ type Props = {
 };
 export function PlayerPercentilesOne({ player, stats }: Props) {
     const { players = [] } = useDataContext();
-    //const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
-    const tierPlayerAverages = getTotalPlayerAverages(players, {
-        tier: player?.tier.name,
-    })
-    const concyWidth = ((1 - stats.consistency / stats.rating) * 100).toFixed(0);
-    const tierAvgConcy = String(
-        ((1 - tierPlayerAverages.average["consistency"] / tierPlayerAverages.average["rating"]) * 100).toFixed(0),
-    );
 
-    const killsPerRound = stats.kr.toFixed(2);
-    const adr = stats.adr.toFixed(2);
-    const multiKillPerRound = stats.multiR.toFixed(2);
+    let { playerFirepowerPercentile, averageFirepowerPercentile } = calculateFirepowerPercentile(player, stats, players);
+    let { playerEntryingPercentile, averageEntryingPercentile } = calculateEntryingPercentile(player, stats, players);
+    let { playerOpeningPercentile, averageOpeningPercentile } = calculateOpeningPercentile(player, stats, players);
+    let { playerSnipingPercentile, averageSnipingPercentile } = calculateSnipingPercentile(player, stats, players);
 
-    // const gamesPlayedCaption = String("Data from last " + stats.gameCount).concat(
-    //     stats.gameCount > 1 ? " matches" : " match",
-    // );
+    if (playerFirepowerPercentile > 100.0) {
+        playerFirepowerPercentile = 100.0;
+    }
+
+    if (playerEntryingPercentile > 100.0) {
+        playerEntryingPercentile = 100.0;
+    }
+
+    if (playerOpeningPercentile > 100.0) {
+        playerOpeningPercentile = 100.0;
+    }
+
+    if (playerSnipingPercentile > 100.0) {
+        playerSnipingPercentile = 100.0;
+    }
+
     return (
         /* Games Played*/
         <>
             <div className="px-[5%] space-y-4 w-full">
                 <PercentileBar
                     label="Firepower"
-                    stat1={70}
+                    stat1={playerFirepowerPercentile}
                     stat2={100}
-                    average={65}
-                    color="yellow"
+                    average={averageFirepowerPercentile}
+                    color="default"
                     type="default"
                 />
 
                 <PercentileBar
                     label="Entrying"
-                    stat1={48}
+                    stat1={playerEntryingPercentile}
                     stat2={100}
-                    average={55}
-                    color="red"
+                    average={averageEntryingPercentile}
+                    color="default"
                     type="default"
                 />
 
                 <PercentileBar
                     label="Opening"
-                    stat1={37}
+                    stat1={playerOpeningPercentile}
                     stat2={100}
-                    average={30}
-                    color="red"
+                    average={averageOpeningPercentile}
+                    color="default"
                     type="default"
                 />
 
                 <PercentileBar
                     label="Sniping"
-                    stat1={87}
+                    stat1={playerSnipingPercentile}
                     stat2={100}
-                    average={22}
-                    color="green"
+                    average={averageSnipingPercentile}
+                    color="default"
                     type="default"
                 />
             </div>
