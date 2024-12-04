@@ -1,9 +1,33 @@
 // Normalize a stat
-import {CscStats, Player} from "../../models";
-import {getTotalPlayerAverages} from "../../common/utils/player-utils";
+import { CscStats, Player } from "../../models";
+import { getTotalPlayerAverages } from "../../common/utils/player-utils";
 
 function normalize(stat: number, low: number, high: number) {
-    return (stat - low) / (high - low);
+	return (stat - low) / (high - low);
+}
+
+function calculatePercentileForStat(current: number, low: number, high: number) {
+    if (high == low) {
+        return 100;
+    }
+
+    const percentile = ((current - low) / (high - low)) * 100;
+
+    return percentile > 100 ? 100 : percentile;
+}
+
+function calculateTotalPercentile(percentiles: number[], playerPercentile: number) {
+    const sortedPercentiles = percentiles.slice().sort((a, b) => a - b);
+
+    let countBelow = 0;
+    for (let percentile of sortedPercentiles) {
+        if (percentile > playerPercentile) continue
+        countBelow++;
+    }
+
+    const percentile = (countBelow / sortedPercentiles.length) * 100;
+
+    return percentile > 100 ? 100 : percentile;
 }
 
 // Calculate the combined percentile
@@ -12,14 +36,12 @@ export function calculateFirepowerPercentile(player: Player, stats: CscStats, pl
         tier: player?.tier.name,
     })
 
+    players = players.filter(p => p.tier.name == player.tier.name).filter(p => p.name != player.name);
+
     // Firepower
     const killsPerRound = stats.kr;
     const adr = stats.adr;
     const multiKillPerRound = stats.multiR;
-
-    const averageKillsPerRound = tierPlayerAverages.average["kr"];
-    const averageAdr = tierPlayerAverages.average["adr"];
-    const averageMultiKillPerRound = tierPlayerAverages.average["multiR"];
 
     const lowKillsPerRound = tierPlayerAverages.lowest["kr"];
     const lowAdr = tierPlayerAverages.lowest["adr"];
@@ -29,33 +51,33 @@ export function calculateFirepowerPercentile(player: Player, stats: CscStats, pl
     const highAdr = tierPlayerAverages.highest["adr"];
     const highMultiKillPerRound = tierPlayerAverages.highest["multiR"];
 
-    // Normalize player's stats
-    const normalizedKillsPerRound = normalize(killsPerRound, lowKillsPerRound, highKillsPerRound);
-    const normalizedAdr = normalize(adr, lowAdr, highAdr);
-    const normalizedMultiKillPerRound = normalize(multiKillPerRound, lowMultiKillPerRound, highMultiKillPerRound);
+    const killsPerRoundPercentile = calculatePercentileForStat(killsPerRound, lowKillsPerRound, highKillsPerRound);
+    const adrPercentile = calculatePercentileForStat(adr, lowAdr, highAdr);
+    const multiKillPerRoundPercentile = calculatePercentileForStat(multiKillPerRound, lowMultiKillPerRound, highMultiKillPerRound);
 
-    // Normalize average stats
-    const normalizedAverageKillsPerRound = normalize(averageKillsPerRound, lowKillsPerRound, highKillsPerRound);
-    const normalizedAverageAdr = normalize(averageAdr, lowAdr, highAdr);
-    const normalizedAverageMultiKillPerRound = normalize(averageMultiKillPerRound, lowMultiKillPerRound, highMultiKillPerRound);
+    const totalPercentile = killsPerRoundPercentile + adrPercentile + multiKillPerRoundPercentile;
+    const allPercentiles = [];
+    allPercentiles.push(totalPercentile);
 
-    // Combined scores
-    const playerCombinedScore = (
-        normalizedKillsPerRound + normalizedAdr + normalizedMultiKillPerRound
-    ) / 3;
+    // get all other players total percentile
+    for (let i in players) {
+        const otherPlayer: Player = players[i];
+        const otherStats = otherPlayer.stats;
+        if (otherStats == null) continue;
 
-    const averageCombinedScore = (
-        normalizedAverageKillsPerRound + normalizedAverageAdr + normalizedAverageMultiKillPerRound
-    ) / 3;
+        const otherKillsPerRound = otherStats.kr;
+        const otherAdr = otherStats.adr;
+        const otherMultiKillPerRound = otherStats.multiR;
 
-    // Convert to percentile (0 to 100 scale)
-    const playerFirepowerPercentile = playerCombinedScore * 100;
-    const averageFirepowerPercentile = averageCombinedScore * 100;
+        const otherKillsPerRoundPercentile = calculatePercentileForStat(otherKillsPerRound, lowKillsPerRound, highKillsPerRound);
+        const otherAdrPercentile = calculatePercentileForStat(otherAdr, lowAdr, highAdr);
+        const otherMultiKillPerRoundPercentile = calculatePercentileForStat(otherMultiKillPerRound, lowMultiKillPerRound, highMultiKillPerRound);
 
-    return {
-        playerFirepowerPercentile,
-        averageFirepowerPercentile
-    };
+        const otherTotalPercentile = otherKillsPerRoundPercentile + otherAdrPercentile + otherMultiKillPerRoundPercentile;
+        allPercentiles.push(otherTotalPercentile);
+    }
+
+    return calculateTotalPercentile(allPercentiles, totalPercentile);
 }
 
 export function calculateEntryingPercentile(player: Player, stats: CscStats, players: Player[]) {

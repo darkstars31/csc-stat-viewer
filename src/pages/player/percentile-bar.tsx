@@ -61,9 +61,6 @@ export function PercentileBar({
 			<div className="h-1 bg-midnight2 rounded-lg">
 				<div className={`${gradientClass} rounded-lg`} style={{ width }} />
 			</div>
-			{average && type !== "concy" && (
-				<ToolTip message={`Tier Average: ${Math.floor(average)}`} pos={`${(average / stat2) * 100}%`} type="rating" />
-			)}
 		</div>
 	);
 }
