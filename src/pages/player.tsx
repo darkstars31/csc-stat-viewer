@@ -108,10 +108,6 @@ export function Player() {
 		Premier: "text-purple-400",
 	}
 
-	const skillProgress = {
-		'--progress': '70%'
-	} as React.CSSProperties;
-
 	return (
 		<>
 			<div ref={divRef} />
