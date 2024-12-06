@@ -74,10 +74,8 @@ export function calculateFirepowerPercentile(player: Player, stats: CscStats, pl
     const multiKillPerRoundPercentile = calculatePercentileForStat(multiKillPerRound, lowMultiKillPerRound, highMultiKillPerRound);
 
     const totalPercentile = killsPerRoundPercentile + adrPercentile + multiKillPerRoundPercentile;
-    const percentileMap = new Map();
     const allPercentiles = [];
     allPercentiles.push(totalPercentile);
-    percentileMap.set(player.name, totalPercentile);
 
     // get all other players total percentile
     for (let i in players) {
@@ -95,14 +93,8 @@ export function calculateFirepowerPercentile(player: Player, stats: CscStats, pl
 
         const otherTotalPercentile = otherKillsPerRoundPercentile + otherAdrPercentile + otherMultiKillPerRoundPercentile;
         allPercentiles.push(otherTotalPercentile);
-        percentileMap.set(otherPlayer.name, otherTotalPercentile);
     }
 
-    // Sort the percentile map
-    const sortedByValues = new Map(
-        [...percentileMap.entries()].sort((a, b) => a[1] - b[1])
-    );
-    console.log("Percentile Map:", sortedByValues);
     return calculateTotalPercentile(allPercentiles, totalPercentile);
 }
 
