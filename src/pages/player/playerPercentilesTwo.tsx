@@ -12,9 +12,9 @@ type Props = {
 export function PlayerPercentilesTwo({ player, stats }: Props) {
     const { players = [] } = useDataContext();
 
-    let { playerTradePercentile, averageTradePercentile } = calculateTradePercentile(player, stats, players);
-    let { playerClutchPercentile, averageClutchPercentile } = calculateClutchPercentile(player, stats, players);
-    let { playerUtilityPercentile, averageUtilityPercentile } = calculateUtilityPercentile(player, stats, players);
+    let playerTradePercentile = calculateTradePercentile(player, stats, players);
+    let playerClutchPercentile = calculateClutchPercentile(player, stats, players);
+    let playerUtilityPercentile = calculateUtilityPercentile(player, stats, players);
 
     if (playerTradePercentile > 100) {
         playerTradePercentile = 100;
@@ -36,7 +36,6 @@ export function PlayerPercentilesTwo({ player, stats }: Props) {
                     label="Trading"
                     stat1={playerTradePercentile}
                     stat2={100.0}
-                    average={averageTradePercentile}
                     color={"default"}
                     type="default"
                 />
@@ -45,7 +44,6 @@ export function PlayerPercentilesTwo({ player, stats }: Props) {
                     label="Clutching"
                     stat1={playerClutchPercentile}
                     stat2={100.0}
-                    average={averageClutchPercentile}
                     color={"default"}
                     type="default"
                 />
@@ -54,7 +52,6 @@ export function PlayerPercentilesTwo({ player, stats }: Props) {
                     label="Utility"
                     stat1={playerUtilityPercentile}
                     stat2={100}
-                    average={averageUtilityPercentile}
                     color={"default"}
                     type="default"
                 />

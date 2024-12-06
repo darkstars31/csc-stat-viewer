@@ -2,32 +2,50 @@
 import { CscStats, Player } from "../../models";
 import { getTotalPlayerAverages } from "../../common/utils/player-utils";
 
-function normalize(stat: number, low: number, high: number) {
-	return (stat - low) / (high - low);
-}
-
 function calculatePercentileForStat(current: number, low: number, high: number) {
-    if (high == low) {
+    if (high <= low) {
+        return 100;
+    }
+
+    if (current < low) {
+        return 0;
+    }
+
+    if (current > high) {
         return 100;
     }
 
     const percentile = ((current - low) / (high - low)) * 100;
 
-    return percentile > 100 ? 100 : percentile;
+    return parseFloat(percentile.toFixed(2));
 }
 
 function calculateTotalPercentile(percentiles: number[], playerPercentile: number) {
-    const sortedPercentiles = percentiles.slice().sort((a, b) => a - b);
-
-    let countBelow = 0;
-    for (let percentile of sortedPercentiles) {
-        if (percentile > playerPercentile) continue
-        countBelow++;
+    // No need to do the math if they have no score
+    if (playerPercentile < 1) {
+        return 0;
     }
 
-    const percentile = (countBelow / sortedPercentiles.length) * 100;
+    const sortedPercentiles = percentiles.slice().sort((a, b) => a - b);
 
-    return percentile > 100 ? 100 : percentile;
+    // Find the rank of the person's score in the sorted array
+    const rank = sortedPercentiles.filter(score => score <= playerPercentile).length;
+
+    // Calculate percentile rank
+    const percentile = (rank / sortedPercentiles.length) * 100;
+
+    return percentile < 1 ? 0 : parseFloat(percentile.toFixed(2)); // Return rounded to 2 decimal places
+
+    // Technically in real statistical analysis you can only ever be at the 99th percentile, not 100th
+    // but thats confusing for people so the above code will show 100th percentile if you are the best
+    // Calculate percentile rank
+    // const lowerScoresCount = sortedPercentiles.filter(score => score < playerPercentile).length;
+    // const totalScores = sortedPercentiles.length;
+    // const percentile = (lowerScoresCount / totalScores) * 100;
+    //
+    // console.log("New Percentile:", percentile);
+    //
+    // return parseFloat(percentile.toFixed(2)); // Return rounded to 2 decimal places
 }
 
 // Calculate the combined percentile
@@ -56,8 +74,10 @@ export function calculateFirepowerPercentile(player: Player, stats: CscStats, pl
     const multiKillPerRoundPercentile = calculatePercentileForStat(multiKillPerRound, lowMultiKillPerRound, highMultiKillPerRound);
 
     const totalPercentile = killsPerRoundPercentile + adrPercentile + multiKillPerRoundPercentile;
+    const percentileMap = new Map();
     const allPercentiles = [];
     allPercentiles.push(totalPercentile);
+    percentileMap.set(player.name, totalPercentile);
 
     // get all other players total percentile
     for (let i in players) {
@@ -75,8 +95,14 @@ export function calculateFirepowerPercentile(player: Player, stats: CscStats, pl
 
         const otherTotalPercentile = otherKillsPerRoundPercentile + otherAdrPercentile + otherMultiKillPerRoundPercentile;
         allPercentiles.push(otherTotalPercentile);
+        percentileMap.set(otherPlayer.name, otherTotalPercentile);
     }
 
+    // Sort the percentile map
+    const sortedByValues = new Map(
+        [...percentileMap.entries()].sort((a, b) => a[1] - b[1])
+    );
+    console.log("Percentile Map:", sortedByValues);
     return calculateTotalPercentile(allPercentiles, totalPercentile);
 }
 
@@ -85,18 +111,14 @@ export function calculateEntryingPercentile(player: Player, stats: CscStats, pla
         tier: player?.tier.name,
     })
 
+    players = players.filter(p => p.tier.name == player.tier.name).filter(p => p.name != player.name);
+
     // Entrying
     const openingDuelsPerRound = stats.odaR
     const openingDuelSuccess = stats.odr
     const deathsTradedOut = stats.tRatio
     const assistsPerRound = stats.assists / stats.rounds
     const supportDamagePerRound = stats.suppXR;
-
-    const averageOpeningDuelsPerRound = tierPlayerAverages.average["odaR"];
-    const averageOpeningDuelSuccess = tierPlayerAverages.average["odr"];
-    const averageDeathsTradedOut = tierPlayerAverages.average["tRatio"];
-    const averageAssistsPerRound = tierPlayerAverages.average["assists"] / tierPlayerAverages.average["rounds"];
-    const averageSupportDamagePerRound = tierPlayerAverages.average["suppXR"];
 
     const lowOpeningDuelsPerRound = tierPlayerAverages.lowest["odaR"];
     const lowOpeningDuelSuccess = tierPlayerAverages.lowest["odr"];
@@ -110,37 +132,39 @@ export function calculateEntryingPercentile(player: Player, stats: CscStats, pla
     const highAssistsPerRound = tierPlayerAverages.highest["assists"] / tierPlayerAverages.highest["rounds"];
     const highSupportDamagePerRound = tierPlayerAverages.highest["suppXR"];
 
-    // Normalize player's stats
-    const normalizedOpeningDuelsPerRound = normalize(openingDuelsPerRound, lowOpeningDuelsPerRound, highOpeningDuelsPerRound);
-    const normalizedOpeningDuelSuccess = normalize(openingDuelSuccess, lowOpeningDuelSuccess, highOpeningDuelSuccess);
-    const normalizedDeathsTradedOut = normalize(deathsTradedOut, lowDeathsTradedOut, highDeathsTradedOut);
-    const normalizedAssistsPerRound = normalize(assistsPerRound, lowAssistsPerRound, highAssistsPerRound);
-    const normalizedSupportDamagePerRound = normalize(supportDamagePerRound, lowSupportDamagePerRound, highSupportDamagePerRound);
+    const openingDuelsPerRoundPercentile = calculatePercentileForStat(openingDuelsPerRound, lowOpeningDuelsPerRound, highOpeningDuelsPerRound);
+    const openingDuelSuccessPerRoundPercentile = calculatePercentileForStat(openingDuelSuccess, lowOpeningDuelSuccess, highOpeningDuelSuccess);
+    const deathsTradedOutPercentile = calculatePercentileForStat(deathsTradedOut, lowDeathsTradedOut, highDeathsTradedOut);
+    const assistsPerRoundPercentile = calculatePercentileForStat(assistsPerRound, lowAssistsPerRound, highAssistsPerRound);
+    const supportDamagePerRoundPercentile = calculatePercentileForStat(supportDamagePerRound, lowSupportDamagePerRound, highSupportDamagePerRound);
 
-    // Normalize average stats
-    const normalizedAverageOpeningDuelsPerRound = normalize(averageOpeningDuelsPerRound, lowOpeningDuelsPerRound, highOpeningDuelsPerRound);
-    const normalizedAverageOpeningDuelSuccess = normalize(averageOpeningDuelSuccess, lowOpeningDuelSuccess, highOpeningDuelSuccess);
-    const normalizedAverageDeathsTradedOut = normalize(averageDeathsTradedOut, lowDeathsTradedOut, highDeathsTradedOut);
-    const normalizedAverageAssistsPerRound = normalize(averageAssistsPerRound, lowAssistsPerRound, highAssistsPerRound);
-    const normalizedAverageSupportDamagePerRound = normalize(averageSupportDamagePerRound, lowSupportDamagePerRound, highSupportDamagePerRound);
+    const totalPercentile = openingDuelsPerRoundPercentile + openingDuelSuccessPerRoundPercentile + deathsTradedOutPercentile + assistsPerRoundPercentile + supportDamagePerRoundPercentile;
+    const allPercentiles = [];
+    allPercentiles.push(totalPercentile);
 
-    // Combined scores
-    const playerCombinedScore = (
-        normalizedOpeningDuelsPerRound + normalizedOpeningDuelSuccess + normalizedDeathsTradedOut + normalizedAssistsPerRound + normalizedSupportDamagePerRound
-    ) / 5;
+    // get all other players total percentile
+    for (let i in players) {
+        const otherPlayer: Player = players[i];
+        const otherStats = otherPlayer.stats;
+        if (otherStats == null) continue;
 
-    const averageCombinedScore = (
-        normalizedAverageOpeningDuelsPerRound + normalizedAverageOpeningDuelSuccess + normalizedAverageDeathsTradedOut + normalizedAverageAssistsPerRound + normalizedAverageSupportDamagePerRound
-    ) / 5;
+        const otherOpeningDuelsPerRound = otherStats.odaR
+        const otherOpeningDuelSuccess = otherStats.odr
+        const otherDeathsTradedOut = otherStats.tRatio
+        const otherAssistsPerRound = otherStats.assists / otherStats.rounds
+        const otherSupportDamagePerRound = otherStats.suppXR;
 
-    // Convert to percentile (0 to 100 scale)
-    const playerEntryingPercentile = playerCombinedScore * 100;
-    const averageEntryingPercentile = averageCombinedScore * 100;
+        const otherOpeningDuelsPerRoundPercentile = calculatePercentileForStat(otherOpeningDuelsPerRound, lowOpeningDuelsPerRound, highOpeningDuelsPerRound);
+        const otherOpeningDuelSuccessPerRoundPercentile = calculatePercentileForStat(otherOpeningDuelSuccess, lowOpeningDuelSuccess, highOpeningDuelSuccess);
+        const otherDeathsTradedOutPercentile = calculatePercentileForStat(otherDeathsTradedOut, lowDeathsTradedOut, highDeathsTradedOut);
+        const otherAssistsPerRoundPercentile = calculatePercentileForStat(otherAssistsPerRound, lowAssistsPerRound, highAssistsPerRound);
+        const otherSupportDamagePerRoundPercentile = calculatePercentileForStat(otherSupportDamagePerRound, lowSupportDamagePerRound, highSupportDamagePerRound);
 
-    return {
-        playerEntryingPercentile,
-        averageEntryingPercentile
-    };
+        const otherTotalPercentile = otherOpeningDuelsPerRoundPercentile + otherOpeningDuelSuccessPerRoundPercentile + otherDeathsTradedOutPercentile + otherAssistsPerRoundPercentile + otherSupportDamagePerRoundPercentile;
+        allPercentiles.push(otherTotalPercentile);
+    }
+
+    return calculateTotalPercentile(allPercentiles, totalPercentile);
 }
 
 export function calculateOpeningPercentile(player: Player, stats: CscStats, players: Player[]) {
@@ -148,11 +172,10 @@ export function calculateOpeningPercentile(player: Player, stats: CscStats, play
         tier: player?.tier.name,
     })
 
+    players = players.filter(p => p.tier.name == player.tier.name).filter(p => p.name != player.name);
+
     const openingDuelsPerRound = stats.odaR
     const openingDuelSuccess = stats.odr
-
-    const averageOpeningDuelsPerRound = tierPlayerAverages.average["odaR"];
-    const averageOpeningDuelSuccess = tierPlayerAverages.average["odr"];
 
     const lowOpeningDuelsPerRound = tierPlayerAverages.lowest["odaR"];
     const lowOpeningDuelSuccess = tierPlayerAverages.lowest["odr"];
@@ -160,31 +183,30 @@ export function calculateOpeningPercentile(player: Player, stats: CscStats, play
     const highOpeningDuelsPerRound = tierPlayerAverages.highest["odaR"];
     const highOpeningDuelSuccess = tierPlayerAverages.highest["odr"];
 
-    // Normalize player's stats
-    const normalizedOpeningDuelsPerRound = normalize(openingDuelsPerRound, lowOpeningDuelsPerRound, highOpeningDuelsPerRound);
-    const normalizedOpeningDuelSuccess = normalize(openingDuelSuccess, lowOpeningDuelSuccess, highOpeningDuelSuccess);
+    const openingDuelsPerRoundPercentile = calculatePercentileForStat(openingDuelsPerRound, lowOpeningDuelsPerRound, highOpeningDuelsPerRound);
+    const openingDuelSuccessPercentile = calculatePercentileForStat(openingDuelSuccess, lowOpeningDuelSuccess, highOpeningDuelSuccess);
 
-    // Normalize average stats
-    const normalizedAverageOpeningDuelsPerRound = normalize(averageOpeningDuelsPerRound, lowOpeningDuelsPerRound, highOpeningDuelsPerRound);
-    const normalizedAverageOpeningDuelSuccess = normalize(averageOpeningDuelSuccess, lowOpeningDuelSuccess, highOpeningDuelSuccess);
+    const totalPercentile = openingDuelsPerRoundPercentile + openingDuelSuccessPercentile;
+    const allPercentiles = [];
+    allPercentiles.push(totalPercentile);
 
-    // Combined scores
-    const playerCombinedScore = (
-        normalizedOpeningDuelsPerRound + normalizedOpeningDuelSuccess
-    ) / 2;
+    // get all other players total percentile
+    for (let i in players) {
+        const otherPlayer: Player = players[i];
+        const otherStats = otherPlayer.stats;
+        if (otherStats == null) continue;
 
-    const averageCombinedScore = (
-        normalizedAverageOpeningDuelsPerRound + normalizedAverageOpeningDuelSuccess
-    ) / 2;
+        const otherOpeningDuelsPerRound = otherStats.odaR
+        const otherOpeningDuelSuccess = otherStats.odr
 
-    // Convert to percentile (0 to 100 scale)
-    const playerOpeningPercentile = playerCombinedScore * 100;
-    const averageOpeningPercentile = averageCombinedScore * 100;
+        const otherOpeningDuelsPerRoundPercentile = calculatePercentileForStat(otherOpeningDuelsPerRound, lowOpeningDuelsPerRound, highOpeningDuelsPerRound);
+        const otherOpeningDuelSuccessPercentile = calculatePercentileForStat(otherOpeningDuelSuccess, lowOpeningDuelSuccess, highOpeningDuelSuccess);
 
-    return {
-        playerOpeningPercentile,
-        averageOpeningPercentile
-    };
+        const otherTotalPercentile = otherOpeningDuelsPerRoundPercentile + otherOpeningDuelSuccessPercentile;
+        allPercentiles.push(otherTotalPercentile);
+    }
+
+    return calculateTotalPercentile(allPercentiles, totalPercentile);
 }
 
 export function calculateSnipingPercentile(player: Player, stats: CscStats, players: Player[]) {
@@ -192,25 +214,30 @@ export function calculateSnipingPercentile(player: Player, stats: CscStats, play
         tier: player?.tier.name,
     })
 
+    players = players.filter(p => p.tier.name == player.tier.name).filter(p => p.name != player.name);
+
     const awpKillsPerRound = stats.awpR;
-    const averageAwpKillsPerRound = tierPlayerAverages.average["awpR"];
     const lowAwpKillsPerRound = tierPlayerAverages.lowest["awpR"];
     const highAwpKillsPerRound = tierPlayerAverages.highest["awpR"];
 
-    // Normalize player's stats
-    const normalizedAwpKillsPerRound = normalize(awpKillsPerRound, lowAwpKillsPerRound, highAwpKillsPerRound);
+    const awpKillsPerRoundPercentile = calculatePercentileForStat(awpKillsPerRound, lowAwpKillsPerRound, highAwpKillsPerRound);
 
-    // Normalize average stats
-    const normalizedAverageAwpKillsPerRound = normalize(averageAwpKillsPerRound, lowAwpKillsPerRound, highAwpKillsPerRound);
+    const allPercentiles = [];
+    allPercentiles.push(awpKillsPerRoundPercentile);
 
-    // Convert to percentile (0 to 100 scale)
-    const playerSnipingPercentile = normalizedAwpKillsPerRound * 100;
-    const averageSnipingPercentile = normalizedAverageAwpKillsPerRound * 100;
+    // get all other players total percentile
+    for (let i in players) {
+        const otherPlayer: Player = players[i];
+        const otherStats = otherPlayer.stats;
+        if (otherStats == null) continue;
 
-    return {
-        playerSnipingPercentile,
-        averageSnipingPercentile
-    };
+        const otherAwpKillsPerRound = otherStats.awpR
+
+        const otherAwpKillsPerRoundPercentile = calculatePercentileForStat(otherAwpKillsPerRound, lowAwpKillsPerRound, highAwpKillsPerRound);
+        allPercentiles.push(otherAwpKillsPerRoundPercentile);
+    }
+
+    return calculateTotalPercentile(allPercentiles, awpKillsPerRoundPercentile);
 }
 
 export function calculateTradePercentile(player: Player, stats: CscStats, players: Player[]) {
@@ -218,25 +245,30 @@ export function calculateTradePercentile(player: Player, stats: CscStats, player
         tier: player?.tier.name,
     })
 
+    players = players.filter(p => p.tier.name == player.tier.name).filter(p => p.name != player.name);
+
     const trades = stats.tradesR;
-    const avgTrades = tierPlayerAverages.average["tradesR"];
     const lowTrades = tierPlayerAverages.lowest["tradesR"];
     const highTrades = tierPlayerAverages.highest["tradesR"];
 
-    // Normalize player's stats
-    const normalizedTrades = normalize(trades, lowTrades, highTrades);
+    const tradePercentile = calculatePercentileForStat(trades, lowTrades, highTrades);
 
-    // Normalize average stats
-    const normalizedAverageTrades = normalize(avgTrades, lowTrades, highTrades);
+    const allPercentiles = [];
+    allPercentiles.push(tradePercentile);
 
-    // Convert to percentile (0 to 100 scale)
-    const playerTradePercentile = normalizedTrades * 100;
-    const averageTradePercentile = normalizedAverageTrades * 100;
+    // get all other players total percentile
+    for (let i in players) {
+        const otherPlayer: Player = players[i];
+        const otherStats = otherPlayer.stats;
+        if (otherStats == null) continue;
 
-    return {
-        playerTradePercentile,
-        averageTradePercentile
-    };
+        const otherTrades = otherStats.tradesR
+
+        const otherTradePercentile = calculatePercentileForStat(otherTrades, lowTrades, highTrades);
+        allPercentiles.push(otherTradePercentile);
+    }
+
+    return calculateTotalPercentile(allPercentiles, tradePercentile);
 }
 
 export function calculateClutchPercentile(player: Player, stats: CscStats, players: Player[]) {
@@ -244,25 +276,30 @@ export function calculateClutchPercentile(player: Player, stats: CscStats, playe
         tier: player?.tier.name,
     })
 
+    players = players.filter(p => p.tier.name == player.tier.name).filter(p => p.name != player.name);
+
     const clutch = stats.clutchR;
-    const avgClutch = tierPlayerAverages.average["clutchR"];
     const lowClutch = tierPlayerAverages.lowest["clutchR"];
     const highClutch = tierPlayerAverages.highest["clutchR"];
 
-    // Normalize player's stats
-    const normalizedClutch = normalize(clutch, lowClutch, highClutch);
+    const clutchPercentile = calculatePercentileForStat(clutch, lowClutch, highClutch);
 
-    // Normalize average stats
-    const normalizedAverageClutch = normalize(avgClutch, lowClutch, highClutch);
+    const allPercentiles = [];
+    allPercentiles.push(clutchPercentile);
 
-    // Convert to percentile (0 to 100 scale)
-    const playerClutchPercentile = normalizedClutch * 100;
-    const averageClutchPercentile = normalizedAverageClutch * 100;
+    // get all other players total percentile
+    for (let i in players) {
+        const otherPlayer: Player = players[i];
+        const otherStats = otherPlayer.stats;
+        if (otherStats == null) continue;
 
-    return {
-        playerClutchPercentile,
-        averageClutchPercentile,
-    };
+        const otherClutch = otherStats.clutchR
+
+        const otherClutchPercentile = calculatePercentileForStat(otherClutch, lowClutch, highClutch);
+        allPercentiles.push(otherClutchPercentile);
+    }
+
+    return calculateTotalPercentile(allPercentiles, clutchPercentile);
 }
 
 export function calculateUtilityPercentile(player: Player, stats: CscStats, players: Player[]) {
@@ -270,15 +307,12 @@ export function calculateUtilityPercentile(player: Player, stats: CscStats, play
         tier: player?.tier.name,
     })
 
+    players = players.filter(p => p.tier.name == player.tier.name).filter(p => p.name != player.name);
+
     const utilDamage = stats.utilDmg;
     const util = stats.util;
     const flashes = stats.ef;
     const flashAssists = stats.fAssists;
-
-    const averageUtilDamage = tierPlayerAverages.average["utilDmg"];
-    const averageUtil = tierPlayerAverages.average["util"];
-    const averageFlashes = tierPlayerAverages.average["ef"];
-    const averageFlashAssists = tierPlayerAverages.average["fAssists"];
 
     const lowUtilDamage = tierPlayerAverages.lowest["utilDmg"];
     const lowUtil = tierPlayerAverages.lowest["util"];
@@ -290,30 +324,34 @@ export function calculateUtilityPercentile(player: Player, stats: CscStats, play
     const highFlashes = tierPlayerAverages.highest["ef"];
     const highFlashAssists = tierPlayerAverages.highest["fAssists"];
 
-    const normalizedUtilDamage = normalize(utilDamage, lowUtilDamage, highUtilDamage);
-    const normalizedUtil = normalize(util, lowUtil, highUtil);
-    const normalizedFlashes = normalize(flashes, lowFlashes, highFlashes);
-    const normalizedFlashAssists = normalize(flashAssists, lowFlashAssists, highFlashAssists);
+    const utilDamagePercentile = calculatePercentileForStat(utilDamage, lowUtilDamage, highUtilDamage);
+    const utilPercentile = calculatePercentileForStat(util, lowUtil, highUtil);
+    const flashesPercentile = calculatePercentileForStat(flashes, lowFlashes, highFlashes);
+    const flashAssistsPercentile = calculatePercentileForStat(flashAssists, lowFlashAssists, highFlashAssists);
 
-    const normalizedAverageUtilDamage = normalize(averageUtilDamage, lowUtilDamage, highUtilDamage);
-    const normalizedAverageUtil = normalize(averageUtil, lowUtil, highUtil);
-    const normalizedAverageFlashes = normalize(averageFlashes, lowFlashes, highFlashes);
-    const normalizedAverageFlashAssists = normalize(averageFlashAssists, lowFlashAssists, highFlashAssists);
+    const totalPercentile = utilDamagePercentile + utilPercentile + flashesPercentile + flashAssistsPercentile;
+    const allPercentiles = [];
+    allPercentiles.push(totalPercentile);
 
-    // Combined scores
-    const playerCombinedScore = (
-        normalizedUtilDamage + normalizedUtil + normalizedFlashes + normalizedFlashAssists
-    ) / 4;
+    // get all other players total percentile
+    for (let i in players) {
+        const otherPlayer: Player = players[i];
+        const otherStats = otherPlayer.stats;
+        if (otherStats == null) continue;
 
-    const averageCombinedScore = (
-        normalizedAverageUtilDamage + normalizedAverageUtil + normalizedAverageFlashes + normalizedAverageFlashAssists
-    ) / 4;
+        const otherUtilDamage = otherStats.utilDmg;
+        const otherUtil = otherStats.util;
+        const otherFlashes = otherStats.ef;
+        const otherFlashAssists = otherStats.fAssists;
 
-    const playerUtilityPercentile = playerCombinedScore * 100;
-    const averageUtilityPercentile = averageCombinedScore * 100;
+        const otherUtilDamagePercentile = calculatePercentileForStat(otherUtilDamage, lowUtilDamage, highUtilDamage);
+        const otherUtilPercentile = calculatePercentileForStat(otherUtil, lowUtil, highUtil);
+        const otherFlashesPercentile = calculatePercentileForStat(otherFlashes, lowFlashes, highFlashes);
+        const otherFlashAssistsPercentile = calculatePercentileForStat(otherFlashAssists, lowFlashAssists, highFlashAssists);
 
-    return {
-        playerUtilityPercentile,
-        averageUtilityPercentile
-    };
+        const otherTotalPercentile = otherUtilDamagePercentile + otherUtilPercentile + otherFlashesPercentile + otherFlashAssistsPercentile;
+        allPercentiles.push(otherTotalPercentile);
+    }
+
+    return calculateTotalPercentile(allPercentiles, totalPercentile);
 }

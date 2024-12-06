@@ -17,10 +17,10 @@ type Props = {
 export function PlayerPercentilesOne({ player, stats }: Props) {
     const { players = [] } = useDataContext();
 
-    let { playerFirepowerPercentile, averageFirepowerPercentile } = calculateFirepowerPercentile(player, stats, players);
-    let { playerEntryingPercentile, averageEntryingPercentile } = calculateEntryingPercentile(player, stats, players);
-    let { playerOpeningPercentile, averageOpeningPercentile } = calculateOpeningPercentile(player, stats, players);
-    let { playerSnipingPercentile, averageSnipingPercentile } = calculateSnipingPercentile(player, stats, players);
+    let playerFirepowerPercentile = calculateFirepowerPercentile(player, stats, players);
+    let playerEntryingPercentile = calculateEntryingPercentile(player, stats, players);
+    let playerOpeningPercentile = calculateOpeningPercentile(player, stats, players);
+    let playerSnipingPercentile = calculateSnipingPercentile(player, stats, players);
 
     if (playerFirepowerPercentile > 100.0) {
         playerFirepowerPercentile = 100.0;
@@ -46,7 +46,6 @@ export function PlayerPercentilesOne({ player, stats }: Props) {
                     label="Firepower"
                     stat1={playerFirepowerPercentile}
                     stat2={100}
-                    average={averageFirepowerPercentile}
                     color="default"
                     type="default"
                 />
@@ -55,7 +54,6 @@ export function PlayerPercentilesOne({ player, stats }: Props) {
                     label="Entrying"
                     stat1={playerEntryingPercentile}
                     stat2={100}
-                    average={averageEntryingPercentile}
                     color="default"
                     type="default"
                 />
@@ -64,7 +62,6 @@ export function PlayerPercentilesOne({ player, stats }: Props) {
                     label="Opening"
                     stat1={playerOpeningPercentile}
                     stat2={100}
-                    average={averageOpeningPercentile}
                     color="default"
                     type="default"
                 />
@@ -73,7 +70,6 @@ export function PlayerPercentilesOne({ player, stats }: Props) {
                     label="Sniping"
                     stat1={playerSnipingPercentile}
                     stat2={100}
-                    average={averageSnipingPercentile}
                     color="default"
                     type="default"
                 />
