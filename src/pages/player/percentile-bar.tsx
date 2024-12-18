@@ -8,7 +8,7 @@ interface PercentileBarProps {
 	stat2: number;
 	range?: number;
 	average?: number;
-	color: "red" | "yellow" | "green" | "default";
+	color: "red" | "orange" | "yellow" | "green" | "default";
 	type: "default" | "concy";
 	tooltipMessage?: string;
 }
@@ -33,14 +33,17 @@ export function PercentileBar({
 
 	let defaultColor = "h-1 bg-gradient-to-l from-green-500 to-green-900 via-green-600 rounded-lg";
 
-	if (stat1 <= 40) {
+	if (stat1 < 30) {
 		defaultColor = "h-1 bg-gradient-to-l from-red-500 to-red-900 via-red-600 rounded-lg";
-	} else if (stat1 < 75) {
+	} else if (stat1 < 50) {
+		defaultColor = "h-1 bg-gradient-to-l from-orange-500 to-red-600 via-orange-700 rounded-lg";
+    } else if (stat1 < 75) {
 		defaultColor = "h-1 bg-gradient-to-l from-yellow-500 to-yellow-900 via-yellow-600 rounded-lg";
 	}
 
 	const gradientClasses: GradientClasses = {
 		red: "h-1 bg-gradient-to-l from-red-500 to-red-900 via-red-600 rounded-lg",
+		orange: "h-1 bg-gradient-to-l from-orange-500 to-orange-900 via-orange-600 rounded-lg",
 		yellow: "h-1 bg-gradient-to-l from-yellow-500 to-yellow-900 via-yellow-600 rounded-lg",
 		green: "h-1 bg-gradient-to-l from-green-500 to-green-900 via-green-600 rounded-lg",
 		default: defaultColor
