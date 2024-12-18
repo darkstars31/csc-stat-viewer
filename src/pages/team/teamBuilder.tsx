@@ -109,8 +109,8 @@ export function TeamBuilder() {
         <Container>
             <h2 className="text-3xl font-bold sm:text-4xl">Team Builder</h2>
             <p>
-                The goal of this team builder is to (ideally) try to have as many stat groups in the green as possible
-                which in theory would guarantee you have a well rounded team if intangibles didn't exist.
+                The goal of this team builder is to (ideally) try to have as many stat groups in the yellow (or green)
+                as possible which in theory would guarantee you have a well rounded team if intangibles didn't exist.
             </p>
             <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-800" />
             <p>Search for players by name. Players are filtered by the tier of the first person selected.</p>
