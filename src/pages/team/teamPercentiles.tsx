@@ -77,7 +77,10 @@ export function TeamPercentiles({ selectedPlayers }: Props) {
         averageUtilityPercentile += playerUtilityPercentile;
     });
 
-    averageSnipingPercentile = averageSnipingPercentile / awpers;
+    if (awpers == 0)
+        averageSnipingPercentile = 0;
+    else
+        averageSnipingPercentile = averageSnipingPercentile / awpers;
 
     return (
         /* Games Played*/
