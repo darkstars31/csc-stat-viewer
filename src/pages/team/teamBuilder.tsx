@@ -17,7 +17,7 @@ export function TeamBuilder() {
     const qs = new URLSearchParams(window.location.search);
     const playersFromUrl = qs.get("players") ?? "";
     const [selectedPlayers, setSelectedPlayers] = React.useState<MultiValue<{ label: string; value: Player }>>([]);
-    const { players = [], isLoading } = useDataContext();
+    const { players = [], tiers, isLoading } = useDataContext();
 
     React.useEffect(() => {
         if (playersFromUrl) {
@@ -98,6 +98,13 @@ export function TeamBuilder() {
         filteredPlayerOptions = playerOptions.filter(player => player.value.tier.name === tier);
     }
 
+    const currentTierMMRCap = tiers.find(
+        t => t.tier.name === Array.from(selectedPlayers.values()).map(p => p.value)[0]?.tier.name,
+    );
+    const totalMMR = Array.from(selectedPlayers.values()).map(p => p.value).reduce((accumulator, player) =>
+        accumulator + (player?.mmr ?? 0), 0);
+    const overCap = totalMMR > (currentTierMMRCap?.tier.mmrCap ?? 0);
+
     return (
         <Container>
             <h2 className="text-3xl font-bold sm:text-4xl">Team Builder</h2>
@@ -132,7 +139,7 @@ export function TeamBuilder() {
                     </div>
                 </div>
             </div>
-            <React.Suspense fallback={<Loading />}>
+            <React.Suspense fallback={<Loading/>}>
                 {/*<div className="grid grid-cols-1 sm:grid-cols-2">*/}
                 {/*    <PlayerCompareRadar*/}
                 {/*        selectedPlayers={Array.from(selectedPlayers.values()).map(p => p.value)}*/}
@@ -148,7 +155,13 @@ export function TeamBuilder() {
                 {/*    />*/}
                 {/*</div>*/}
                 {/*<ComparisonTable selectedPlayers={Array.from(selectedPlayers.values()).map(p => p.value)} />*/}
-                <TeamPercentiles selectedPlayers={Array.from(selectedPlayers.values()).map(p => p.value)} />
+                <div className="flex flex-row m-1 mt-2 mb-2 text-sm">
+                     <span className={`${overCap ? "text-red-500" : ""}`}>
+                    ({((totalMMR / (currentTierMMRCap?.tier.mmrCap || 1)) * 100).toFixed(1)}% Cap)
+                     </span>
+                </div>
+
+                <TeamPercentiles selectedPlayers={Array.from(selectedPlayers.values()).map(p => p.value)}/>
             </React.Suspense>
         </Container>
     );

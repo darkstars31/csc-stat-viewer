@@ -28,13 +28,13 @@ export function TeamPercentiles({ selectedPlayers }: Props) {
     let averageUtilityPercentile = 0;
 
     selectedPlayers.forEach(player => {
-        let playerFirepowerPercentile = calculateFirepowerPercentile(player, stats, players);
-        let playerEntryingPercentile = calculateEntryingPercentile(player, stats, players);
-        let playerOpeningPercentile = calculateOpeningPercentile(player, stats, players);
-        let playerSnipingPercentile = calculateSnipingPercentile(player, stats, players);
-        let playerTradePercentile = calculateTradePercentile(player, stats, players);
-        let playerClutchPercentile = calculateClutchPercentile(player, stats, players);
-        let playerUtilityPercentile = calculateUtilityPercentile(player, stats, players);
+        let playerFirepowerPercentile = calculateFirepowerPercentile(player, player.stats, players);
+        let playerEntryingPercentile = calculateEntryingPercentile(player, player.stats, players);
+        let playerOpeningPercentile = calculateOpeningPercentile(player, player.stats, players);
+        let playerSnipingPercentile = calculateSnipingPercentile(player, player.stats, players);
+        let playerTradePercentile = calculateTradePercentile(player, player.stats, players);
+        let playerClutchPercentile = calculateClutchPercentile(player, player.stats, players);
+        let playerUtilityPercentile = calculateUtilityPercentile(player, player.stats, players);
 
         if (playerFirepowerPercentile > 100.0) {
             playerFirepowerPercentile = 100.0;
@@ -79,7 +79,7 @@ export function TeamPercentiles({ selectedPlayers }: Props) {
             <div className="px-[5%] space-y-4 w-full">
                 <PercentileBar
                     label="Firepower"
-                    stat1={averageFirepowerPercentile / selectedPlayers.length}
+                    stat1={averageFirepowerPercentile == 0 ? 0 : averageFirepowerPercentile / selectedPlayers.length}
                     stat2={100}
                     color="default"
                     type="default"
@@ -87,7 +87,7 @@ export function TeamPercentiles({ selectedPlayers }: Props) {
 
                 <PercentileBar
                     label="Entrying"
-                    stat1={averageEntryingPercentile / selectedPlayers.length}
+                    stat1={averageEntryingPercentile  == 0 ? 0 : averageEntryingPercentile / selectedPlayers.length}
                     stat2={100}
                     color="default"
                     type="default"
@@ -95,7 +95,7 @@ export function TeamPercentiles({ selectedPlayers }: Props) {
 
                 <PercentileBar
                     label="Opening"
-                    stat1={averageOpeningPercentile / selectedPlayers.length}
+                    stat1={averageOpeningPercentile  == 0 ? 0 : averageOpeningPercentile / selectedPlayers.length}
                     stat2={100}
                     color="default"
                     type="default"
@@ -103,7 +103,7 @@ export function TeamPercentiles({ selectedPlayers }: Props) {
 
                 <PercentileBar
                     label="Sniping"
-                    stat1={averageSnipingPercentile / selectedPlayers.length}
+                    stat1={averageSnipingPercentile  == 0 ? 0 : averageSnipingPercentile / selectedPlayers.length}
                     stat2={100}
                     color="default"
                     type="default"
@@ -111,7 +111,7 @@ export function TeamPercentiles({ selectedPlayers }: Props) {
 
                 <PercentileBar
                     label="Trading"
-                    stat1={averageTradePercentile / selectedPlayers.length}
+                    stat1={averageTradePercentile  == 0 ? 0 : averageTradePercentile / selectedPlayers.length}
                     stat2={100.0}
                     color={"default"}
                     type="default"
@@ -119,7 +119,7 @@ export function TeamPercentiles({ selectedPlayers }: Props) {
 
                 <PercentileBar
                     label="Clutching"
-                    stat1={averageClutchPercentile / selectedPlayers.length}
+                    stat1={averageClutchPercentile  == 0 ? 0 : averageClutchPercentile / selectedPlayers.length}
                     stat2={100.0}
                     color={"default"}
                     type="default"
@@ -127,7 +127,7 @@ export function TeamPercentiles({ selectedPlayers }: Props) {
 
                 <PercentileBar
                     label="Utility"
-                    stat1={averageUtilityPercentile / selectedPlayers.length}
+                    stat1={averageUtilityPercentile  == 0 ? 0 : averageUtilityPercentile / selectedPlayers.length}
                     stat2={100}
                     color={"default"}
                     type="default"
