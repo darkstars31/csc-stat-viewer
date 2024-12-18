@@ -240,6 +240,9 @@ export function Player() {
 						</div>
 						<div className="float-right w-4 sm:w-40 after:clear-both">
 							<ExternalPlayerLinks player={currentPlayer} />
+							<div className="m-4 pointer-events-auto rounded-md bg-violet-500 px-3 py-2 text-[0.8125rem]/5 font-semibold text-white hover:bg-purple-300">
+								Add to Roster
+							</div>
 						</div>
 						{/* <div className="clear-both" /> */}
 					</div>
