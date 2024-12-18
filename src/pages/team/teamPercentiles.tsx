@@ -27,6 +27,7 @@ export function TeamPercentiles({ selectedPlayers }: Props) {
     let averageClutchPercentile = 0;
     let averageUtilityPercentile = 0;
 
+    let awpers = 0;
     selectedPlayers.forEach(player => {
         let playerFirepowerPercentile = calculateFirepowerPercentile(player, player.stats, players);
         let playerEntryingPercentile = calculateEntryingPercentile(player, player.stats, players);
@@ -67,11 +68,16 @@ export function TeamPercentiles({ selectedPlayers }: Props) {
         averageFirepowerPercentile += playerFirepowerPercentile;
         averageEntryingPercentile += playerEntryingPercentile;
         averageOpeningPercentile += playerOpeningPercentile;
-        averageSnipingPercentile += playerSnipingPercentile;
+        if (playerSnipingPercentile > 0) {
+            averageSnipingPercentile += playerSnipingPercentile;
+            awpers++;
+        }
         averageTradePercentile += playerTradePercentile;
         averageClutchPercentile += playerClutchPercentile;
         averageUtilityPercentile += playerUtilityPercentile;
     });
+
+    averageSnipingPercentile = averageSnipingPercentile / awpers;
 
     return (
         /* Games Played*/
@@ -103,7 +109,7 @@ export function TeamPercentiles({ selectedPlayers }: Props) {
 
                 <PercentileBar
                     label="Sniping"
-                    stat1={averageSnipingPercentile  == 0 ? 0 : averageSnipingPercentile / selectedPlayers.length}
+                    stat1={averageSnipingPercentile}
                     stat2={100}
                     color="default"
                     type="default"
