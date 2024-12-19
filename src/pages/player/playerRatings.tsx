@@ -26,8 +26,6 @@ export function PlayerRatings({ player, stats }: Props) {
 		/* Games Played*/
 		<>
 			<div className="px-[5%] space-y-4 w-full">
-				<div className="relative text-neutral-700 text-sm text-left italic font-bold">{gamesPlayedCaption}</div>
-
 				<RatingBar
 					label="Peak"
 					stat1={stats.peak}
