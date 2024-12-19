@@ -240,9 +240,6 @@ export function Player() {
 						</div>
 						<div className="float-right w-4 sm:w-40 after:clear-both">
 							<ExternalPlayerLinks player={currentPlayer} />
-							<div className="m-4 pointer-events-auto rounded-md bg-violet-500 px-3 py-2 text-[0.8125rem]/5 font-semibold text-white hover:bg-purple-300">
-								Add to Roster
-							</div>
 						</div>
 						{/* <div className="clear-both" /> */}
 					</div>
@@ -276,14 +273,14 @@ export function Player() {
 										<PlayerRatingTrendGraph player={currentPlayer} />
 									</Containers.StandardContentBox>
 								</Containers.StandardBoxRow>
-								<Containers.StandardBoxRow>
-									<Containers.StandardContentBox>
-										<PlayerPercentilesOne player={currentPlayer} stats={currentPlayerStats} />
-									</Containers.StandardContentBox>
-									<Containers.StandardContentBox>
-										<PlayerPercentilesTwo player={currentPlayer} stats={currentPlayerStats} />
-									</Containers.StandardContentBox>
-								</Containers.StandardBoxRow>
+								{/*<Containers.StandardBoxRow>*/}
+								{/*	<Containers.StandardContentBox>*/}
+								{/*		<PlayerPercentilesOne player={currentPlayer} stats={currentPlayerStats} />*/}
+								{/*	</Containers.StandardContentBox>*/}
+								{/*	<Containers.StandardContentBox>*/}
+								{/*		<PlayerPercentilesTwo player={currentPlayer} stats={currentPlayerStats} />*/}
+								{/*	</Containers.StandardContentBox>*/}
+								{/*</Containers.StandardBoxRow>*/}
 								<Containers.StandardBoxRow>
 									<Containers.StandardContentBox>
 										<RoleRadar stats={currentPlayerStats!} />
@@ -297,6 +294,18 @@ export function Player() {
 						</div>
 					)}
 				</Containers.StandardBackgroundPage>
+				{currentPlayerStats && (<div>
+					<Exandable title={'Stat Rankings'}>
+						<Containers.StandardBoxRow>
+							<Containers.StandardContentBox>
+								<PlayerPercentilesOne player={currentPlayer} stats={currentPlayerStats} />
+							</Containers.StandardContentBox>
+							<Containers.StandardContentBox>
+								<PlayerPercentilesTwo player={currentPlayer} stats={currentPlayerStats} />
+							</Containers.StandardContentBox>
+						</Containers.StandardBoxRow>
+					</Exandable>
+				</div>)}
 				{teammates.length > 0 &&
 					false && ( // TODO: fix weird bug in logic that shows same teammate twice
 						<div>
