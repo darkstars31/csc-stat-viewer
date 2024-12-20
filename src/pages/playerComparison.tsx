@@ -1,11 +1,14 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
+import * as Containers from "../common/components/containers";
 import { useDataContext } from "../DataContext";
 import { shortTeamNameTranslator } from "../common/utils/player-utils";
 import { Loading } from "../common/components/loading";
 import Select, { MultiValue } from "react-select";
 import { selectClassNames } from "../common/utils/select-utils";
 import { Player } from "../models/player";
+import {TeamPercentiles} from "./team/teamPercentiles";
+import {Exandable} from "../common/components/containers/Expandable";
 
 const PlayerCompareRadar = React.lazy(() =>import('./charts/playerCompareRadar').then(module => ({default: module.PlayerCompareRadar})));
 const ComparisonTable = React.lazy(() =>import('./playerComparison/comparisonTable').then(module => ({default: module.ComparisonTable})));
@@ -139,6 +142,11 @@ export function PlayerComparison() {
 						startAngle={180}
 					/>
 				</div>
+				<Exandable title="Combined Stat Rankings">
+					<Containers.StandardContentBox>
+						<TeamPercentiles selectedPlayers={Array.from(selectedPlayers.values()).map(p => p.value)}/>
+					</Containers.StandardContentBox>
+				</Exandable>
 				<ComparisonTable selectedPlayers={Array.from(selectedPlayers.values()).map(p => p.value)} />
 			</React.Suspense>
 		</Container>
