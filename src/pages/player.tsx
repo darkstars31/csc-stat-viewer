@@ -273,14 +273,6 @@ export function Player() {
 										<PlayerRatingTrendGraph player={currentPlayer} />
 									</Containers.StandardContentBox>
 								</Containers.StandardBoxRow>
-								{/*<Containers.StandardBoxRow>*/}
-								{/*	<Containers.StandardContentBox>*/}
-								{/*		<PlayerPercentilesOne player={currentPlayer} stats={currentPlayerStats} />*/}
-								{/*	</Containers.StandardContentBox>*/}
-								{/*	<Containers.StandardContentBox>*/}
-								{/*		<PlayerPercentilesTwo player={currentPlayer} stats={currentPlayerStats} />*/}
-								{/*	</Containers.StandardContentBox>*/}
-								{/*</Containers.StandardBoxRow>*/}
 								<Containers.StandardBoxRow>
 									<Containers.StandardContentBox>
 										<RoleRadar stats={currentPlayerStats!} />
