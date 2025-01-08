@@ -4,8 +4,8 @@ import { ExtendedStats } from "../models/extended-stats";
 import { ProfileJson } from "../models/profile-types";
 import { Post } from "../pages/articles/posts";
 
-const getExtendedStats = async () =>
-	await analytikillHttpClient.get(`/analytikill/extendedStats`)
+const getExtendedStats = async ( season?: number) =>
+	await analytikillHttpClient.get(`/analytikill/extendedStats?season=${season}`)
 		.then( response => response.data);
 
 const getExtendedMatchStats = async (matchId?: string) =>
@@ -16,9 +16,10 @@ const getPlayerReputation = async ( discordId?: string) =>
 	await analytikillHttpClient.get(`/analytikill/plusRep?discordId=${discordId}`)
 		.then( response =>  response.data);
 
-export function useAnalytikillExtendedStats(): UseQueryResult<ExtendedStats> {
-	return useQuery(["analytikillExtendedStats"], () => getExtendedStats(), {
+export function useAnalytikillExtendedStats( season?: number): UseQueryResult<ExtendedStats> {
+	return useQuery(["analytikillExtendedStats"], () => getExtendedStats( season ), {
 		staleTime: 1000 * 60 * 60, // 1 second * 60 * 60 * 24 = 24 hour
+		enabled: Boolean(season),
 		onError: () => {},
 	});
 }
