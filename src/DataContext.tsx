@@ -23,7 +23,7 @@ const useDataContextProvider = () => {
 	const { data: matches = [], isLoading: isLoadingMatches } = useCscSeasonMatches("Elite", seasonAndTierConfig?.number ?? 0);
     const [ enableExperimentalHistorialFeature, setEnableExperimentalHistorialFeature] = React.useState<boolean>(false);
 	const [ seasonAndMatchType, setSeasonAndMatchType ] = React.useState<{ season: number; matchType: string }>({ season: seasonAndTierConfig?.number ?? 0, matchType: matches.length > 0 ? "Regulation" : "Combine" });
-	const { data: extendedPlayerStats = undefined, isLoading: isLoadingExtendedStats } = useAnalytikillExtendedStats();
+	const { data: extendedPlayerStats = {}, isLoading: isLoadingExtendedStats } = useAnalytikillExtendedStats(seasonAndMatchType.season);
 	const dataConfig = dataConfiguration.find(item => dataConfiguration[0].name === item.name);
 
 	const hasSeasonStarted = matches.length > 0
@@ -108,14 +108,15 @@ const useDataContextProvider = () => {
 						specialRoles[cscPlayer.steam64Id as keyof typeof specialRoles]
 					:	determinePlayerRole(statsForPlayerByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!);
 				const stats = statsForPlayerByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!;
-	
-				const extendedStats = extendedPlayerStats?.find(
+				
+
+				const extendedStats = Object.keys(extendedPlayerStats).length > 0 ? extendedPlayerStats?.find(
 					(stats: { name: string }) => stats.name === cscPlayer?.name,
-				) as ExtendedStats;
+				) as ExtendedStats : undefined;
 	
 				const statsOutOfTier = statsForPlayerByTier.length > 0 ?
 				statsForPlayerByTier.filter(statsWithTier => statsWithTier.tier !== cscPlayer.tier.name)
-					:	null;
+					: null;
 	
 				acc.push({
 					...cscPlayer,

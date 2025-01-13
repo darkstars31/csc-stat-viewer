@@ -21,6 +21,7 @@ import NAN from "../../assets/images/franchise/NAN.png";
 import OS from "../../assets/images/franchise/OS.png";
 import PA from "../../assets/images/franchise/PA.png";
 import SAV from "../../assets/images/franchise/SAV.png";
+import TSC from "../../assets/images/franchise/TSC.png";
 import UPS from "../../assets/images/franchise/UPS.png";
 import WET from "../../assets/images/franchise/WET.png";
 import YC from "../../assets/images/franchise/YC.png";
@@ -49,6 +50,7 @@ export const franchiseImages: FranchiseImages = {
 	OS,
 	PA,
 	SAV,
+	TSC,
 	UPS,
 	WET,
 	YC,
