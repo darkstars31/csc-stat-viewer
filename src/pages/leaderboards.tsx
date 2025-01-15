@@ -99,8 +99,8 @@ export function LeaderBoards() {
 
 	const pages = [
 		{ name: "General", color: "text-yellow-400" },
-		{ name: "Extended", color: "text-cyan-400" },
-		{ name: "Weapons", color: "text-green-400" },
+		{ name: "Extended", color: "hidden text-cyan-400" },
+		{ name: "Weapons", color: "hidden text-green-400" },
 	];
 
 	if (loading.isLoadingCscPlayers) {
