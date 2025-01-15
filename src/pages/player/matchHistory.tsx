@@ -28,85 +28,126 @@ type Props = {
 
 function PlayerMatchStatLine({ playerStat }: { playerStat: any }) {
 	return (
-		<tr>
-			<td>{playerStat.name}</td>
-			<td>{playerStat.rating.toFixed(2)}</td>
-			<td>
-				{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}
-			</td>
-			<td>{playerStat.damage}</td>
-			<td className={`${getCssColorGradientBasedOnPercentage(playerStat.adr)}`}>{playerStat.adr.toFixed(1)}</td>
-			<div className="basis-1/12">
-				<ToolTip
-					type="generic"
-					message={
-						<span className="bg-gray-800 p-1 rounded text-xs">
-							{((playerStat.ok / (playerStat.ok + playerStat.ol)) * 100).toFixed(2)}%
-						</span>
-					}
+		<>
+			<tr className="sm:hidden">
+				<td className="truncate max-w-[7em]">{playerStat.name}</td>
+				<td className="text-center">
+					{playerStat.rating.toFixed(2)}<br />
+					{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}
+				</td>
+				<td className="text-center">{playerStat.damage}<br />
+					<span className={`${getCssColorGradientBasedOnPercentage(playerStat.adr)}`}>{playerStat.adr.toFixed(1)}</span>
+				</td>
+				<div className="basis-1/12">
+					<ToolTip
+						type="generic"
+						message={
+							<span className="bg-gray-800 p-1 rounded text-xs">
+								{((playerStat.ok / (playerStat.ok + playerStat.ol)) * 100).toFixed(2)}%
+							</span>
+						}
+					>
+						<span className={`${playerStat.ok > playerStat.ol ? "text-green-500" : ""}`}>{playerStat.ok}</span>{" "}
+						: <span className={`${playerStat.ok < playerStat.ol ? "text-red-500" : ""}`}>{playerStat.ol}</span>
+					</ToolTip>
+				</div>
+				<td
+					className={`${getCssColorGradientBasedOnPercentage(Math.round((playerStat.hs / playerStat.kills) * 100) || 0)}`}
 				>
-					<span className={`${playerStat.ok > playerStat.ol ? "text-green-500" : ""}`}>{playerStat.ok}</span>{" "}
-					: <span className={`${playerStat.ok < playerStat.ol ? "text-red-500" : ""}`}>{playerStat.ol}</span>
-				</ToolTip>
-			</div>
-			<td
-				className={`${getCssColorGradientBasedOnPercentage(Math.round((playerStat.hs / playerStat.kills) * 100) || 0)}`}
-			>
-				{Math.round((playerStat.hs / playerStat.kills) * 100) || 0}
-			</td>
-			<td>{playerStat.FAss}</td>
-			<td>{playerStat.utilDmg}</td>
-			<div className="basis-1/12">			
-				<ToolTip
-					type="generic"
-					message={
-						<div className="bg-gray-700 p-2 rounded">
-							<div className="flex flex-row">
-								<div>
-									<div>1v1</div>
-									{playerStat.cl_1}
-								</div>
-								<div>
-									<div>1v2</div>
-									{playerStat.cl_2}
-								</div>
-								<div>
-									<div>1v3</div>
-									{playerStat.cl_3}
-								</div>
-								<div>
-									<div>1v4</div>
-									{playerStat.cl_4}
-								</div>
-								<div>
-									<div>Ace</div>
-									{playerStat.cl_5}
+					{Math.round((playerStat.hs / playerStat.kills) * 100) || 0}
+				</td>
+				<td>{playerStat.utilDmg}</td>
+			</tr>
+			<tr className="hidden sm:table-row">
+				<td>{playerStat.name}</td>
+				<td>{playerStat.rating.toFixed(2)}</td>
+				<td>
+					{playerStat.kills} / {playerStat.deaths} / {playerStat.assists}
+				</td>
+				<td>{playerStat.damage}</td>
+				<td className={`${getCssColorGradientBasedOnPercentage(playerStat.adr)}`}>{playerStat.adr.toFixed(1)}</td>
+				<td className="basis-1/12">
+					<ToolTip
+						type="generic"
+						message={
+							<span className="bg-gray-800 p-1 rounded text-xs">
+								{((playerStat.ok / (playerStat.ok + playerStat.ol)) * 100).toFixed(2)}%
+							</span>
+						}
+					>
+						<span className={`${playerStat.ok > playerStat.ol ? "text-green-500" : ""}`}>{playerStat.ok}</span>{" "}
+						: <span className={`${playerStat.ok < playerStat.ol ? "text-red-500" : ""}`}>{playerStat.ol}</span>
+					</ToolTip>
+				</td>
+				<td
+					className={`${getCssColorGradientBasedOnPercentage(Math.round((playerStat.hs / playerStat.kills) * 100) || 0)}`}
+				>
+					{Math.round((playerStat.hs / playerStat.kills) * 100) || 0}
+				</td>
+				<td>{playerStat.FAss}</td>
+				<td>{playerStat.utilDmg}</td>
+				<td className="basis-1/12">			
+					<ToolTip
+						type="generic"
+						message={
+							<div className="bg-gray-700 p-2 rounded">
+								<div className="flex flex-row">
+									<div>
+										<div>1v1</div>
+										{playerStat.cl_1}
+									</div>
+									<div>
+										<div>1v2</div>
+										{playerStat.cl_2}
+									</div>
+									<div>
+										<div>1v3</div>
+										{playerStat.cl_3}
+									</div>
+									<div>
+										<div>1v4</div>
+										{playerStat.cl_4}
+									</div>
+									<div>
+										<div>Ace</div>
+										{playerStat.cl_5}
+									</div>
 								</div>
 							</div>
-						</div>
-					}
-				>
-					{calculateClutchPoints(playerStat)}
-				</ToolTip>
-			</div>
-		</tr>
+						}
+					>
+						{calculateClutchPoints(playerStat)}
+					</ToolTip>
+				</td>
+			</tr>
+		</>
 	);
 }
 
 function MatchStatsTableHeader() {
 	return (
-		<thead className="text-left border-b border-gray-600">
-			<th>Name</th>
-			<th>Rating</th>
-			<th>K/D/A</th>
-			<th>Damage</th>
-			<th>ADR</th>
-			<th>FK/FD</th>
-			<th>HS%</th>
-			<th>F Asst</th>
-			<th>Util Dmg</th>
-			<th>Clutch Pts</th>
-		</thead>
+		<>
+			<thead className="text-left border-b border-gray-600 sm:hidden">
+				<th>Name</th>
+				<th className="text-center">Rating<br />K/D/A</th>
+				<th className="text-center">Damage<br />ADR</th>
+				<th>FK/FD</th>
+				<th>HS%</th>
+				<th>Util Dmg</th>
+			</thead>
+			<thead className="text-left border-b border-gray-600 hidden sm:table-header-group">
+				<th>Name</th>
+				<th>Rating</th>
+				<th>K/D/A</th>
+				<th>Damage</th>
+				<th>ADR</th>
+				<th>FK/FD</th>
+				<th>HS%</th>
+				<th>F Asst</th>
+				<th>Util Dmg</th>
+				<th>Clutch Pts</th>
+			</thead>
+		</>
 	);
 }
 
@@ -191,17 +232,17 @@ const columnCSS = {
 	"type": "basis-1/12",
 	"map": "basis-14",
 	"score": "basis-14",
-	"rating": "basis-14",
+	"rating": "basis-20 text-center no-wrap",
 	"kda": "basis-1/12",
-	"dmg": "basis-1/12",
+	"dmg": "basis-1/12 text-center",
 	"fk/fd": "basis-1/12",
 	"hs": "basis-1/12",
-	"extras": "basis-1/12",
+	"extras": "basis-1/12 hidden sm:block",
 }
 
 function MatchRow({ player, match }: { player: Player; match: Match }) {
 	const [isExpanded, setIsExpanded] = React.useState(false);
-	const { data: extendedMatchData = {}, isLoading: isLoadingextendedMatchData } = useAnalytikillExtendedMatchStats(String(match.matchId).replace("combines-",""), isExpanded);
+	const { data: extendedMatchData = {}, isLoading: isLoadingextendedMatchData } = useAnalytikillExtendedMatchStats(String(match.matchId).replace("combines-",""),match.matchType, isExpanded);
 	const matchType = match.matchType ?? "broke";
 	const p = match.matchStats.find(ms => ms.name === player.name)!;
 	const matchDateShort = new Date(match.createdAt ?? 0).toLocaleDateString("en-US", {
@@ -258,23 +299,19 @@ function MatchRow({ player, match }: { player: Player; match: Match }) {
 				</div>
 				<div className={columnCSS.rating}>
 					{p.rating.toFixed(2)}
-				</div>
-				<div className={columnCSS.kda}>
 					<div className="flex flex-nowrap">
-						<span className="border-r-2 border-gray-400/40 px-1">{p.kills}</span>
-						<span className="border-r-2 border-gray-400/40 px-1">{p.deaths}</span>
-						<span className="px-1">{p.assists}</span>
+						{p.kills} / {p.deaths} / {p.assists}
 					</div>
 				</div>
 				<div className={columnCSS.dmg}>
-					<div className="flex flex-nowrap">
-						<span className={`border-r-2 border-gray-400/40 px-1 inline ${p.adr > 100 ? "text-yellow-400" : ""}`}>
+					<div className="">
+						<div className="px-1">{p.damage}</div>
+						<div className={`no-wrap inline ${p.adr > 100 ? "text-yellow-400" : ""}`}>
 							{p.adr.toFixed(1)}
 							{p.adr > 100 &&
 								<GoStarFill className="text-yellow-400 inline" />
 							}
-						</span>
-						<span className="px-1">{p.damage}</span>
+						</div>
 					</div>
 				</div>
 				<div className={columnCSS["fk/fd"]}>
@@ -290,24 +327,24 @@ function MatchRow({ player, match }: { player: Player; match: Match }) {
 					{Math.round((p.hs / p.kills) * 100) || 0}
 				</div>
 				<div className={columnCSS.extras}>
-				<div>
-					<ToolTip
-						type="generic"
-						message={
-							<div className="bg-gray-700 p-2 rounded">
-								<div className="flex flex-col">
-									<div>1v1: {p.cl_1}</div>
-									<div>1v2: {p.cl_2}</div>
-									<div>1v3: {p.cl_3}</div>
-									<div>1v4: {p.cl_4}</div>
-									<div>Aces: {p.cl_5}</div>
+					<div>
+						<ToolTip
+							type="generic"
+							message={
+								<div className="bg-gray-700 p-2 rounded">
+									<div className="flex flex-col">
+										<div>1v1: {p.cl_1}</div>
+										<div>1v2: {p.cl_2}</div>
+										<div>1v3: {p.cl_3}</div>
+										<div>1v4: {p.cl_4}</div>
+										<div>Aces: {p.cl_5}</div>
+									</div>
 								</div>
-							</div>
-						}
-					>
-						{calculateClutchPoints(p)}
-					</ToolTip>
-				</div>
+							}
+						>
+							{calculateClutchPoints(p)}
+						</ToolTip>
+					</div>
 				</div>
 				<div className={columnCSS.extras}>
 					<div className="flex flex-row justify-evenly">
@@ -361,9 +398,8 @@ export function PlayerMatchHistory({ player, season }: Props) {
 				<div className={columnCSS.type}>Type</div>
 				<div className={columnCSS.map}>Map</div>
 				<div className={columnCSS.score}>Score</div>
-				<div className={columnCSS.rating}>Rating</div>
-				<div className={columnCSS.kda}>K D A</div>
-				<div className={columnCSS.dmg}>ADR / Dmg</div>
+				<div className={columnCSS.rating}>Rating<br />K/D/A</div>
+				<div className={`${columnCSS.dmg} text-center`}>Damage<br /> ADR</div>
 				<div className={columnCSS["fk/fd"]}>
 					<ToolTip type="generic" message="First Kill / First Death">
 						FK/FD
@@ -427,7 +463,7 @@ export function TeamMatchHistory({ teamName, matchIds }: { teamName: string; mat
 								<img
 									src={mapImages[match.mapName]}
 									className="w-8 inline mx-2"
-									alt="match score line"
+									alt={match.mapName}
 								/>
 								Home <span className="text-indigo-400 mx-2">{match.teamStats[0].name}</span>
 								vs.

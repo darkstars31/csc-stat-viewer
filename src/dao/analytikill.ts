@@ -8,8 +8,8 @@ const getExtendedStats = async ( season?: number) =>
 	await analytikillHttpClient.get(`/analytikill/extendedStats?season=${season}`)
 		.then( response => response.data);
 
-const getExtendedMatchStats = async (matchId?: string) =>
-	await analytikillHttpClient.get(`/analytikill/extendedMatchStats?matchId=${matchId}`)
+const getExtendedMatchStats = async (matchId?: string, matchType?: string) =>
+	await analytikillHttpClient.get(`/analytikill/extendedMatchStats?matchId=${matchId}&matchType=${matchType}`)
 		.then( response => response.data);
 
 const getPlayerReputation = async ( discordId?: string) =>
@@ -24,8 +24,8 @@ export function useAnalytikillExtendedStats( season?: number): UseQueryResult<Ex
 	});
 }
 
-export function useAnalytikillExtendedMatchStats( matchId: string, shouldFetch = false): UseQueryResult<Record<string,any>> {
-	return useQuery(["analytikillExtendedMatchStats", matchId], () => getExtendedMatchStats( matchId ), {
+export function useAnalytikillExtendedMatchStats( matchId: string, matchType: string, shouldFetch = false): UseQueryResult<Record<string,any>> {
+	return useQuery(["analytikillExtendedMatchStats", matchId], () => getExtendedMatchStats( matchId, matchType ), {
 		staleTime: 1000 * 60 * 60 * 24 * 7, // 7 days
 		enabled: shouldFetch,
 		onError: () => {},

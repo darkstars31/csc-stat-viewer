@@ -364,7 +364,7 @@ export function Player() {
 						</div>
 					))}
 				<br />
-				{currentPlayer?.extendedStats && (
+				{Object.keys(currentPlayer?.extendedStats ?? {}).length > 0 && (
 					<div>
 						<Exandable title="Extended Stats">
 							<div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
