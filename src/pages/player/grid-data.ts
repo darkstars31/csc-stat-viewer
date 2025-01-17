@@ -72,7 +72,12 @@ export const getGridData = (currentStats: CscStats) => {
 				value: `${kills} / ${assists} / ${deaths}`,
 				rowIndex: 0,
 			},
-			{ name: PlayerMappings["hs"], value: `${hs}%`, rowIndex: 1 },
+			{
+				name:"Impact",
+				value: `${impact.toFixed(2)}`,
+				rowIndex: 1,
+			},
+			{ name: PlayerMappings["hs"], value: `${hs}%`, rowIndex: 2 },
 			{ name: "K/D Ratio", value: (kills / deaths).toFixed(2), rowIndex: 0 },
 			{ name: PlayerMappings["adr"], value: `${adr.toFixed(2)}`, rowIndex: 1 },
 			// {name: PlayerMappings["KPA"], value: `${KPA}`, rowIndex: 0},
@@ -89,9 +94,14 @@ export const getGridData = (currentStats: CscStats) => {
 				rowIndex: 0,
 			},
 			{
+				name: "Deaths / Round",
+				value: `${(deaths / rounds).toFixed(2)}`,
+				rowIndex: 1,
+			},
+			{
 				name: PlayerMappings["sRate"],
 				value: `${(survivalRate * 100).toFixed(2)}%`,
-				rowIndex: 1,
+				rowIndex: 2,
 			},
 			// {name: PlayerMappings["ATD"], value: `${ATD}s`, rowIndex: 0},
 			{
