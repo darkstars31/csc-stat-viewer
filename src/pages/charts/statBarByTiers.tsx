@@ -7,10 +7,11 @@ import * as Containers from "../../common/components/containers";
 
 type Props = {
 	statProperty: string;
+	statName?: string;
 	playerData?: Player[];
 };
 
-export function StatBarByTiers({ statProperty, playerData = [] }: Props) {
+export function StatBarByTiers({ statProperty, statName, playerData = [] }: Props) {
 	const recruitAverages = getTotalPlayerAverages(playerData, {
 		tier: "Recruit",
 	});
@@ -42,7 +43,7 @@ export function StatBarByTiers({ statProperty, playerData = [] }: Props) {
 
 	const optionHeadShotTier = {
 		title: {
-			text: "Low, Avg, Highest Headshot Percentage by Tier",
+			text: `Low, Avg, Highest ${statName} Percentage by Tier`,
 			left: "center",
 			textStyle: {
 				color: "#FFFFFF",

@@ -112,7 +112,7 @@ const useDataContextProvider = () => {
 
 				const extendedStats = extendedPlayerStats.find(
 					(stats: { name: string }) => stats.name === cscPlayer?.name,
-				) as ExtendedStats ?? [];
+				) as ExtendedStats ?? undefined;
 	
 				const statsOutOfTier = statsForPlayerByTier.length > 0 ?
 				statsForPlayerByTier.filter(statsWithTier => statsWithTier.tier !== cscPlayer.tier.name)

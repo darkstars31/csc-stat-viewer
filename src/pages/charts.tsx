@@ -288,6 +288,7 @@ export function Charts() {
 							>
 								<StatBarByTiers
 									statProperty={statPropertySelected!.value}
+									statName={statPropertySelected?.label}
 									playerData={filteredBySearchPlayers}
 								/>
 								<Containers.ChartButtonBoundingBox>
