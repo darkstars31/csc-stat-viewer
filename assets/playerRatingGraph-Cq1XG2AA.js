@@ -1,4 +1,4 @@
-import{a as y,r as d,j as r,E as h}from"./v-react-CxbgOXn3.js";import{e as p,u,h as g,L as b}from"./index-CZIvFC2S.js";import"./v-echarts-BUbrvsb8.js";import"./v-@sentry-D7IO1rHj.js";import"./v-prosemirror-B74nKu9v.js";import"./v-lodash-BXP2N_uY.js";const S=1e3*60*60,f=async(o,s)=>await fetch(p.endpoints.cscGraphQL.stats,{method:"POST",body:JSON.stringify({operationName:"ProfileTrendGraph",query:`query ProfileTrendGraph($steamId: BigInt!, $season: Int!) {
+import{a as y,r as d,j as r,E as h}from"./v-react-CxbgOXn3.js";import{e as p,u,h as g,L as b}from"./index-CIjZV1yV.js";import"./v-echarts-BUbrvsb8.js";import"./v-@sentry-D7IO1rHj.js";import"./v-prosemirror-B74nKu9v.js";import"./v-lodash-BXP2N_uY.js";const S=1e3*60*60,f=async(o,s)=>await fetch(p.endpoints.cscGraphQL.stats,{method:"POST",body:JSON.stringify({operationName:"ProfileTrendGraph",query:`query ProfileTrendGraph($steamId: BigInt!, $season: Int!) {
                     findManyPlayerMatchStats(
                         where: {
                             steamID: {
