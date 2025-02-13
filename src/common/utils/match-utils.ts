@@ -21,7 +21,7 @@ export const getTeamRecord = (team?: Team, matches?: Match[]) =>
 
 const initialMapBans = {
 	de_inferno: 0,
-	de_vertigo: 0,
+	de_train: 0,
 	de_nuke: 0,
 	de_mirage: 0,
 	de_ancient: 0,

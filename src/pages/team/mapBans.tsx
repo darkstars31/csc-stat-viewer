@@ -8,12 +8,14 @@ import { Exandable } from "../../common/components/containers/Expandable";
 
 type MapBansType = {
 	de_inferno: number;
-	de_vertigo: number;
+	//de_overpass: number;
+	//de_vertigo: number;
 	de_nuke: number;
 	de_mirage: number;
 	de_ancient: number;
 	de_anubis: number;
 	de_dust2: number;
+	de_train: number;
 };
 type Props = {
 	matches?: Match[];
@@ -22,9 +24,10 @@ type Props = {
 
 export function MapBans({ matches, team }: Props) {
 	const mapBans: Record<"Round 1" | "Round 2" | "Round 3", MapBansType> = calculateMapBans(team, matches);
+	console.info(mapBans)
 	const mapFloats = calculateMapBanFloat(team, matches);
 	const roundLabels = Object.keys(mapBans ?? {});
-	const mapLabels = ["de_inferno", "de_vertigo", "de_nuke", "de_mirage", "de_ancient", "de_anubis", "de_dust2"];
+	const mapLabels = ["de_inferno", "de_train", "de_nuke", "de_mirage", "de_ancient", "de_anubis", "de_dust2"];
 	const data = Object.values(mapBans ?? {})
 		.map(i => Object.values(i))
 		.map((round, row) => round.map((_, column) => [column, row, round[column] || "-"]));
