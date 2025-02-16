@@ -68,7 +68,7 @@ export function Franchises() {
 			{loading.isLoadingFranchises && <Loading />}
 			<div className="flex flex-col gap-4">
 				<React.Suspense fallback={<Loading />}>
-					{franchises.filter( f => f.teams.find( t => selectedTier ? t.tier.name.toLowerCase() === selectedTier : true)).map(franchise => (
+					{franchises.filter( f => f.teams.find( t => selectedTier ? t.tier.name.toLowerCase() === selectedTier : true)).sort((a, b) => a.prefix === "SAV" ? -1 : 1).map(franchise => (
 							<FranchisesFranchise franchise={franchise} selectedTier={selectedTier}/>
 					))}
 				</React.Suspense>
