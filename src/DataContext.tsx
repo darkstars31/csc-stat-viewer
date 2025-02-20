@@ -69,6 +69,7 @@ const useDataContextProvider = () => {
 			"76561198855758438": "BAITER",
 			"76561199389109923": "ECO FRAGGER",
 			"76561198368540894": "AWP CRUTCH",
+			"76561198823277559": "IGL"
 		};	
 
 		const players: Player[] = cscPlayers

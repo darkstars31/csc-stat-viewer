@@ -3,7 +3,7 @@ import { Container } from "../common/components/container";
 import { teamNameTranslator, getPlayerRatingIndex, PlayerTypes } from "../common/utils/player-utils";
 import { getGridData } from "./player/grid-data";
 import { GridContainer, GridStat } from "./player/grid-container";
-import { Link, useRoute } from "wouter";
+import { Link, useLocation, useRoute, useSearch } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
 import { RoleRadar } from "../common/components/roleRadar";
@@ -31,6 +31,7 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useNotificationsContext } from "../NotificationsContext";
 import {PlayerPercentilesOne} from "./player/playerPercentilesOne";
 import {PlayerPercentilesTwo} from "./player/playerPercentilesTwo";
+import { FreeAgentPlayerLeague } from "./player/freeAgentPlayerLeague";
 
 const PlayerMatchHistory = React.lazy(() =>import('./player/matchHistory').then(module => ({default: module.PlayerMatchHistory})));
 const TeamSideRatingPie = React.lazy(() =>import('../common/components/teamSideRatingPie').then(module => ({default: module.TeamSideRatingPie})));
@@ -39,11 +40,14 @@ const KillsAssistsDeathsPie = React.lazy(() =>import('../common/components/killA
 
 
 export function Player() {
+	const [, setLocation] = useLocation();
+	const queryParams = new URLSearchParams(useSearch());
 	const divRef = React.useRef<HTMLDivElement>(null);
 	const [, params] = useRoute("/players/:id");
 	const { players = [], franchises = [], loading, seasonAndMatchType, tiers, loggedinUser } = useDataContext();
 	const { addNotification } = useNotificationsContext();
 	const [ showProfile, setShowProfile ] = React.useState(false);
+	const [ activeTab, setActiveTab ] = React.useState<number>(0);
 
 	const nameParam = decodeURIComponent(params?.id ?? "");
 	const nameFromUrl = window.location.href.split("/").pop();
@@ -107,6 +111,29 @@ export function Player() {
 		Elite: "text-blue-400",
 		Premier: "text-purple-400",
 	}
+
+	const tabs = [
+		{
+			name: "Stats",
+		},
+		{
+			name: "Rankings",
+		},
+		{
+			name: "Extended Stats",
+		},
+		{
+			name: "Match History",
+		},
+		{
+			name: "Free Agent Player League",
+			disabled: true
+		}
+	]
+
+	const tierButtonClass =
+	"rounded-md flex-grow px-6 pb-2 pt-2.5 text-sm font-medium uppercase leading-normal transition duration-150 ease-in-out hover:bg-blue-600 focus:bg-blue-700 focus:outline-none focus:ring-0 active:bg-blue-700";
+
 
 	return (
 		<>
@@ -286,18 +313,6 @@ export function Player() {
 						</div>
 					)}
 				</Containers.StandardBackgroundPage>
-				{currentPlayerStats && (<div>
-					<Exandable title={'Stat Rankings'}>
-						<Containers.StandardBoxRow>
-							<Containers.StandardContentBox>
-								<PlayerPercentilesOne player={currentPlayer} stats={currentPlayerStats} />
-							</Containers.StandardContentBox>
-							<Containers.StandardContentBox>
-								<PlayerPercentilesTwo player={currentPlayer} stats={currentPlayerStats} />
-							</Containers.StandardContentBox>
-						</Containers.StandardBoxRow>
-					</Exandable>
-				</div>)}
 				{teammates.length > 0 &&
 					false && ( // TODO: fix weird bug in logic that shows same teammate twice
 						<div>
@@ -322,7 +337,27 @@ export function Player() {
 						</div>
 					)}
 				<br />
-				{currentPlayerStats && (
+				<div
+					className="justify-center flex flex-wrap rounded-md shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out bg-slate-700 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-blue-700 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-blue-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+					role="group"
+				>
+					{tabs.map((tab, index) => (
+						<button
+							key={tab.name}
+							type="button"
+							onClick={() => {
+								//queryParams.set("q", index);
+								//setLocation(window.location.pathname + "?" + queryParams.toString());
+								setActiveTab(index);
+							}}
+							className={`${activeTab === index ? "bg-blue-500" : "bg-slate-700"} ${tierButtonClass} ${tab?.disabled ? "pointer-events-none text-gray-500" : ""}`}
+							disabled={tab?.disabled}
+						>
+							{tab.name}
+						</button>
+					))}
+				</div>
+				{ activeTab === 0 && currentPlayerStats && (
 					<div className="py-2">
 						{Array(Math.ceil(getGridData(currentPlayerStats).length / 2))
 							.fill(0)
@@ -364,58 +399,70 @@ export function Player() {
 						</div>
 					))}
 				<br />
-				{Object.keys(currentPlayer?.extendedStats ?? {}).length > 0 && (
-					<div>
-						<Exandable title="Extended Stats">
-							<div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-								<div className="flex flex-row flex-wrap justify-center">
-									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">
-										Stats
-									</div>
-									{Object.entries(currentPlayer.extendedStats.trackedObj).map(([key, value]) => (
-										<div className="m-2 p-2">
-											<div>{key}</div>
-											<div className="text-center">{value}</div>
-										</div>
-									))}
+				{activeTab === 1 && 
+					currentPlayerStats && (<div>
+						{/* <Exandable title={'Stat Rankings'}> */}
+							<Containers.StandardBoxRow>
+								<Containers.StandardContentBox>
+									<PlayerPercentilesOne player={currentPlayer} stats={currentPlayerStats} />
+								</Containers.StandardContentBox>
+								<Containers.StandardContentBox>
+									<PlayerPercentilesTwo player={currentPlayer} stats={currentPlayerStats} />
+								</Containers.StandardContentBox>
+							</Containers.StandardBoxRow>
+						{/* </Exandable> */}
+					</div>)
+				}
+				{activeTab === 2 && Object.keys(currentPlayer?.extendedStats ?? {}).length > 0 && (
+					<div>					
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+							<div className="flex flex-row flex-wrap justify-center">
+								<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">
+									Stats
 								</div>
-								<div className="flex flex-row flex-wrap justify-center">
-									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">
-										Chickens
+								{Object.entries(currentPlayer.extendedStats.trackedObj).map(([key, value]) => (
+									<div className="m-2 p-2">
+										<div>{key}</div>
+										<div className="text-center">{value}</div>
 									</div>
-									{Object.entries(currentPlayer.extendedStats.chickens).map(([key, value]) => (
-										<div className="m-2 p-2">
-											<div>{key}</div>
-											<div className="text-center">{value}</div>
-										</div>
-									))}
+								))}
+							</div>
+							<div className="flex flex-row flex-wrap justify-center">
+								<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">
+									Chickens
 								</div>
-								<div className="flex flex-row flex-wrap justify-center">
-									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">
-										Pistols
+								{Object.entries(currentPlayer.extendedStats.chickens).map(([key, value]) => (
+									<div className="m-2 p-2">
+										<div>{key}</div>
+										<div className="text-center">{value}</div>
 									</div>
-									{Object.entries(currentPlayer.extendedStats.averages).map(([key, value]) => (
+								))}
+							</div>
+							<div className="flex flex-row flex-wrap justify-center">
+								<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">
+									Pistols
+								</div>
+								{Object.entries(currentPlayer.extendedStats.averages).map(([key, value]) => (
+									<div className="m-2 p-2">
+										<div>{key}</div>
+										<div className="text-center">{String(value.toFixed(2))}</div>
+									</div>
+								))}
+							</div>
+							<div className="flex flex-row flex-wrap justify-center">
+								<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">
+									Flashes
+								</div>
+								{Object.entries(currentPlayer.extendedStats.durationAverages).map(
+									([key, value]) => (
 										<div className="m-2 p-2">
 											<div>{key}</div>
 											<div className="text-center">{String(value.toFixed(2))}</div>
 										</div>
-									))}
-								</div>
-								<div className="flex flex-row flex-wrap justify-center">
-									<div className="h-12 basis-full text-center uppercase font-extrabold border-b border-yellow-400">
-										Flashes
-									</div>
-									{Object.entries(currentPlayer.extendedStats.durationAverages).map(
-										([key, value]) => (
-											<div className="m-2 p-2">
-												<div>{key}</div>
-												<div className="text-center">{String(value.toFixed(2))}</div>
-											</div>
-										),
-									)}
-								</div>
+									),
+								)}
 							</div>
-						</Exandable>
+						</div>
 						<Exandable title="Weapons">
 							<PlayerWeaponsExtended extendedStats={currentPlayer?.extendedStats} />
 						</Exandable>
@@ -425,9 +472,20 @@ export function Player() {
 					</div>
 				)}
 				<br />
-				<React.Suspense fallback={<Loading />}>
-					<PlayerMatchHistory player={currentPlayer} season={seasonAndMatchType.season} />
-				</React.Suspense>
+				{
+				activeTab === 3 && 
+					<React.Suspense fallback={<Loading />}>
+						<PlayerMatchHistory player={currentPlayer} season={seasonAndMatchType.season} />
+					</React.Suspense>
+				}
+				{
+				activeTab === 4 && 
+					<React.Suspense fallback={<Loading />}>
+						<Container>
+							<FreeAgentPlayerLeague />
+						</Container>
+					</React.Suspense>
+				}
 			</Container>
 		</>
 	);

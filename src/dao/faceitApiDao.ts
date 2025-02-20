@@ -30,3 +30,15 @@ export function useFetchFaceItPlayerWithCache(
 		},
 	);
 }
+
+export type HubData = {
+	 player_id: string, 
+	 nickname: string, 
+	 stats: Record<string,string> 
+}
+
+export function useFetchFaceItHubStats(): UseQueryResult<{ Upper: HubData[], Lower: HubData[]}> {
+	return useQuery(["fapl-stats"], () => analytikillHttpClient.get("/faceit/fapl/stats"), {
+		staleTime: 1000 * 60 * 60, // 1 second * 60 * 60 = 1 hour
+	});
+}

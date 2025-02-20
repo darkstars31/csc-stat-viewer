@@ -388,7 +388,7 @@ export function PlayerMatchHistory({ player, season }: Props) {
 	}
 
 	return (
-		<div className="my-4 p-4">
+		<div className="px-4">
 			<h2 className="text-2xl p-2">
 				<div className="font-extrabold uppercase">Match History</div>
 				<div className="text-sm text-gray-500">{playerMatchHistory?.length} matches</div>
