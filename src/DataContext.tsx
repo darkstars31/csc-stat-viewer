@@ -35,8 +35,8 @@ const useDataContextProvider = () => {
 	if ( seasonAndMatchType ) console.info("seasonAndMatchType", seasonAndMatchType);
 
 	React.useEffect(() => {
-		seasonAndTierConfig?.league.leagueTiers.forEach(tier => queryClient.invalidateQueries([`cscstats-graph`, tier.tier.name, seasonAndTierConfig?.number, seasonAndMatchType.matchType]));
-		queryClient.invalidateQueries([`cscplayermatchhistory-graph`]);
+		seasonAndTierConfig?.league.leagueTiers.forEach(tier => queryClient.invalidateQueries({ queryKey:[`cscstats-graph`, tier.tier.name, seasonAndTierConfig?.number, seasonAndMatchType.matchType]}));
+		queryClient.invalidateQueries({ queryKey:[`cscplayermatchhistory-graph`]});
 	}, [seasonAndMatchType]);
 
 	const { data: cscPlayers = [], isLoading: isLoadingCscPlayersCache, error } = useCscPlayersCache(seasonAndTierConfig?.number, { enabled: !isLoadingMatches && !isLoadingCscSeasonAndTiers });

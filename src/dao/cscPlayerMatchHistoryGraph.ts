@@ -62,9 +62,10 @@ export function useCscPlayerMatchHistoryGraph(
 	player: Player,
 	season: number
 ): UseQueryResult<CscPlayerMatchHistoryQuery["data"]["findManyMatch"]> {
-	return useQuery(
-		[`cscplayermatchhistory-graph`, player.name],
-		() =>
+	return useQuery({
+        queryKey: [`cscplayermatchhistory-graph`, player.name],
+
+        queryFn: () =>
 			fetchGraph({
 				whereFilter: {
 					matchStats: {
@@ -79,10 +80,9 @@ export function useCscPlayerMatchHistoryGraph(
 					},
 				},
 			}),
-		{
-			staleTime: OneHour,
-		},
-	);
+
+        staleTime: OneHour
+    });
 }
 
 export function useCscTeamMatchHistoryGraph(
@@ -90,9 +90,10 @@ export function useCscTeamMatchHistoryGraph(
 	matchIds: string[],
 	season: number,
 ): UseQueryResult<CscPlayerMatchHistoryQuery["data"]["findManyMatch"]> {
-	return useQuery(
-		[`cscteammatchhistory-graph`,teamname],
-		() =>
+	return useQuery({
+        queryKey: [`cscteammatchhistory-graph`,teamname],
+
+        queryFn: () =>
 			fetchGraph({
 				whereFilter: {
 					matchId: {
@@ -103,8 +104,7 @@ export function useCscTeamMatchHistoryGraph(
 					},
 				},
 			}),
-		{
-			staleTime: OneHour,
-		},
-	);
+
+        staleTime: OneHour
+    });
 }

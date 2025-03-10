@@ -33,7 +33,7 @@ export function Admin(){
                 approvalState: action
             }
         ).then( () => {
-            queryClient.invalidateQueries(["Posts"])
+            queryClient.invalidateQueries({ queryKey:["Posts"]})
         })
     }
 

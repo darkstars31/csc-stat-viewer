@@ -37,7 +37,9 @@ const fetchGraph = async () =>
 	});
 
 export function useCscSeasonAndTiersGraph(): UseQueryResult<CscLatestSeason["data"]["latestActiveSeason"]> {
-	return useQuery([`cscSeasonAndTiers-graph`], () => fetchGraph(), {
-		staleTime: OneDay,
-	});
+	return useQuery({
+        queryKey: [`cscSeasonAndTiers-graph`],
+        queryFn: () => fetchGraph(),
+        staleTime: OneDay
+    });
 }

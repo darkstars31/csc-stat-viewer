@@ -18,11 +18,8 @@ Sentry.init({
 	environment: env,
 	dsn: "https://179eea2529894294ac431779c30f418f@o4505375554928640.ingest.sentry.io/4505375991398400",
 	integrations: [
-		new Sentry.BrowserTracing({
-			// Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
-			//tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
-		}),
-		new Sentry.Replay({
+		Sentry.browserTracingIntegration(),
+		Sentry.replayIntegration({
 			maskAllText: false,
 			maskAllInputs: false,
 		}),

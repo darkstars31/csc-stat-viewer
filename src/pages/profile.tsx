@@ -118,7 +118,7 @@ export function Profile() {
 		analytikillHttpClient.patch(`/profile`, 
 				profileSettings	
 			)
-			.then(() => queryClient.invalidateQueries(["profile", discordUser?.id]))
+			.then(() => queryClient.invalidateQueries({ queryKey:["profile", discordUser?.id]}))
 			.finally(() => { 
 				setIsSaving(false); 
 				gaEvent("Profile", "Save", loggedinUser ) 

@@ -20,7 +20,7 @@ export function Reputation( { playerDiscordId }: { playerDiscordId: string | und
                 action, 
                 discordId: playerDiscordId 
             })
-            .then( () => queryClient.invalidateQueries(["Reputation", playerDiscordId]));
+            .then( () => queryClient.invalidateQueries({ queryKey:["Reputation", playerDiscordId]}));
     };
 
     const gradientCSS = "bg-clip-text bg-gradient-to-r from-purple-300 to-violet-500 text-transparent hover:cursor-pointer";

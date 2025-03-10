@@ -88,10 +88,12 @@ const fetchCachedGraph = async (tier: CscTiers, season?: number, matchType?: str
 		});
 
 export function useCscStatsGraph(tier: CscTiers, season?: number, matchType?: string): UseQueryResult<CscStats[]> {
-	return useQuery([`cscstats-graph`, tier, season, matchType], () => fetchCachedGraph(tier, season, matchType), {
+	return useQuery({
+        queryKey: [`cscstats-graph`, tier, season, matchType],
+        queryFn: () => fetchCachedGraph(tier, season, matchType),
         enabled: Boolean(season),
-		staleTime: OneHour,
-	});
+        staleTime: OneHour
+    });
 }
 
 type StatsCache = { 
@@ -107,13 +109,15 @@ type StatsCache = {
 }
 
 export function useCscStatsCache(season?: number, matchType?: string, options?: Record<string, unknown>): UseQueryResult<StatsCache> {
-	return useQuery([`cscstats-cache`, season, matchType], 
-        async () => await analytikillHttpClient.get(`/csc/cached-stats?season=${season}&matchType=${matchType}`)
+	return useQuery({
+        queryKey: [`cscstats-cache`, season, matchType],
+
+        queryFn: async () => await analytikillHttpClient.get(`/csc/cached-stats?season=${season}&matchType=${matchType}`)
         .then( response => response.data ),
-    {
+
         enabled: options?.enabled as boolean ?? true,
-		staleTime: OneHour,
-	});
+        staleTime: OneHour
+    });
 }
 
 export function useMultipleCscStatsGraph(tiers: string[], season?: number, matchType?: string): UseQueryResult<void | CscStats[], unknown>[] {

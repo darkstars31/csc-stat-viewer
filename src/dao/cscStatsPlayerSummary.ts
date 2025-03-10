@@ -32,8 +32,10 @@ export function useCscStatsProfileGraph(
 	steamId: string | undefined,
 	season?: number,
 ): UseQueryResult<{ ctRating: number; tRating: number } | undefined> {
-	return useQuery([`cscstats-${steamId}-graph`], () => fetchGraph(steamId, season), {
-		enabled: Boolean(steamId),
-		staleTime: OneHour,
-	});
+	return useQuery({
+        queryKey: [`cscstats-${steamId}-graph`],
+        queryFn: () => fetchGraph(steamId, season),
+        enabled: Boolean(steamId),
+        staleTime: OneHour
+    });
 }

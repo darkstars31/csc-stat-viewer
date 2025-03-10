@@ -19,14 +19,18 @@ export const fetchUserProfile = (discordId?: string) =>
 		});
 
 export function useFetchTwitchStreamData(usernames: string[]): UseQueryResult<TwitchStream[]> {
-	return useQuery(["twitch", usernames], async () => await fetchTwitchStreamData(usernames), {
-		staleTime: 1000 * 60 * 5,
-	});
+	return useQuery({
+        queryKey: ["twitch", usernames],
+        queryFn: async () => await fetchTwitchStreamData(usernames),
+        staleTime: 1000 * 60 * 5
+    });
 }
 
 export function useFetchPlayerProfile(discordId?: string): UseQueryResult<ProfileJson> {
-	return useQuery(["profile", discordId], () => fetchUserProfile(discordId), {
-		enabled: !!discordId,
-		staleTime: 1000 * 60 * 60,
-	});
+	return useQuery({
+        queryKey: ["profile", discordId],
+        queryFn: () => fetchUserProfile(discordId),
+        enabled: !!discordId,
+        staleTime: 1000 * 60 * 60
+    });
 }

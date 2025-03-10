@@ -17,57 +17,75 @@ const getPlayerReputation = async ( discordId?: string) =>
 		.then( response =>  response.data);
 
 export function useAnalytikillExtendedStats( season?: number): UseQueryResult<ExtendedStats> {
-	return useQuery(["analytikillExtendedStats"], () => getExtendedStats( season ), {
-		staleTime: 1000 * 60 * 60, // 1 second * 60 * 60 * 24 = 24 hour
-		enabled: Boolean(season),
-		onError: () => {},
-	});
+	return useQuery({
+        queryKey: ["analytikillExtendedStats"],
+        queryFn: () => getExtendedStats( season ),
+
+        // 1 second * 60 * 60 * 24 = 24 hour
+        staleTime: 1000 * 60 * 60,
+        enabled: Boolean(season)
+    });
 }
 
 export function useAnalytikillExtendedMatchStats( matchId: string, matchType: string, shouldFetch = false): UseQueryResult<Record<string,any>> {
-	return useQuery(["analytikillExtendedMatchStats", matchId], () => getExtendedMatchStats( matchId, matchType ), {
-		staleTime: 1000 * 60 * 60 * 24 * 7, // 7 days
-		enabled: shouldFetch,
-		onError: () => {},
-	});
+	return useQuery({
+        queryKey: ["analytikillExtendedMatchStats", matchId],
+        queryFn: () => getExtendedMatchStats( matchId, matchType ),
+
+        // 7 days
+        staleTime: 1000 * 60 * 60 * 24 * 7,
+        enabled: shouldFetch,
+    });
 }
 
 export function useFetchReputation( discordId?: string): UseQueryResult<{ repped: number, plusRep: Record<string, string>}> {
-	return useQuery(["Reputation", discordId], () => getPlayerReputation( discordId ), {
-		staleTime: 1000 * 60 * 60 * 1, // 1 second * 60 * 60 * 1 = 1 hour
-		enabled: Boolean(discordId),
-		onError: () => {},
-	});
+	return useQuery({
+        queryKey: ["Reputation", discordId],
+        queryFn: () => getPlayerReputation( discordId ),
+
+        // 1 second * 60 * 60 * 1 = 1 hour
+        staleTime: 1000 * 60 * 60 * 1,
+        enabled: Boolean(discordId),
+    });
 }
 
 export function useFetchPlayerProfile( discordId?: string ): UseQueryResult<ProfileJson> {
-	return useQuery(["PlayerProfile", discordId], async () => 
-		await analytikillHttpClient.get(`/profile?discordId=${discordId}`)
-			.then( response => response.data ), 
-	{
-		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 1 = 1 hour
-		onError: () => {},
-	});
+	return useQuery({
+        queryKey: ["PlayerProfile", discordId],
+
+        queryFn: async () => 
+            await analytikillHttpClient.get(`/profile?discordId=${discordId}`)
+                .then( response => response.data ),
+
+        // 1 second * 60 * 60 * 1 = 1 hour
+        staleTime: 1000 * 60 * 60 * 24,
+    });
 }
 
 export function useFetchArticles(): UseQueryResult<Post[]> {
-	return useQuery(["Posts"], async () => 
-		await analytikillHttpClient.get(`/analytikill/articles`)
-			.then( response => response.data ), 
-	{
-		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 1 = 1 hour
-		onError: () => {},
-	});
+	return useQuery({
+        queryKey: ["Posts"],
+
+        queryFn: async () => 
+            await analytikillHttpClient.get(`/analytikill/articles`)
+                .then( response => response.data ),
+
+        // 1 second * 60 * 60 * 1 = 1 hour
+        staleTime: 1000 * 60 * 60 * 24,
+    });
 }
 
 export function useFetchArticle( id: string ): UseQueryResult<Post[]> {
-	return useQuery(["Post", id], async () => 
-		await analytikillHttpClient.get(`/analytikill/articles/${id}`)
-			.then( response => response.data ), 
-	{
-		staleTime: 1000 * 60 * 60 * 24, // 1 second * 60 * 60 * 1 = 1 hour
-		onError: () => {},
-	});
+	return useQuery({
+        queryKey: ["Post", id],
+
+        queryFn: async () => 
+            await analytikillHttpClient.get(`/analytikill/articles/${id}`)
+                .then( response => response.data ),
+
+        // 1 second * 60 * 60 * 1 = 1 hour
+        staleTime: 1000 * 60 * 60 * 24,
+    });
 }
 
 export function useMutateArticle( payload: any ) {

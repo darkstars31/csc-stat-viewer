@@ -41,7 +41,9 @@ const fetchGraph = async (season?: number) =>
 	});
 
 export function useCscSeasonDivisionsByTier(season?: number): UseQueryResult<Standing[]> {
-	return useQuery([`cscSeasonDivisionsByTier-${season}-graph`], () => fetchGraph(season), {
-		staleTime: OneHour,
-	});
+	return useQuery({
+        queryKey: [`cscSeasonDivisionsByTier-${season}-graph`],
+        queryFn: () => fetchGraph(season),
+        staleTime: OneHour
+    });
 }

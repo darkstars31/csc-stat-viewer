@@ -29,33 +29,41 @@ const getRepoData = async (url: string) =>
 	});
 
 export function useFetchGitHubRepoJson(): UseQueryResult<RepoResponse> {
-	return useQuery(["githubRepo"], () => getRepoData(appConfig.endpoints.githubRepository), {
-		staleTime: 1000 * 60 * 60 * 24 * 365, // 1 year
-		onError: () => {},
-	});
+	return useQuery({
+        queryKey: ["githubRepo"],
+        queryFn: () => getRepoData(appConfig.endpoints.githubRepository),
+
+        // 1 year
+        staleTime: 1000 * 60 * 60 * 24 * 365,
+    });
 }
 
 export function useFetchGithubRepoBranchJson(): UseQueryResult<GitHubBranch> {
-	return useQuery(["githubRepoBranch"], () => getRepoData(`${appConfig.endpoints.githubRepository}/branches/gh-pages`), {
-		staleTime: 1000 * 60 * 15, // 15 minutes
-		onError: () => {},
-	});
+	return useQuery({
+        queryKey: ["githubRepoBranch"],
+        queryFn: () => getRepoData(`${appConfig.endpoints.githubRepository}/branches/gh-pages`),
+
+        // 15 minutes
+        staleTime: 1000 * 60 * 15,
+    });
 }
 
 export function useFetchGitHubStargazers(): UseQueryResult<StarGazerResponse[]> {
-	return useQuery(["githubRepoStargazers"], () => getRepoData(`${appConfig.endpoints.githubRepository}/stargazers`), {
-		staleTime: 1000 * 60 * 60 * 24 * 365, // 1 year
-		onError: () => {},
-	});
+	return useQuery({
+        queryKey: ["githubRepoStargazers"],
+        queryFn: () => getRepoData(`${appConfig.endpoints.githubRepository}/stargazers`),
+
+        // 1 year
+        staleTime: 1000 * 60 * 60 * 24 * 365,
+    });
 }
 
 export function useFetchGitHubContributors(): UseQueryResult<ContributorsResponse[]> {
-	return useQuery(
-		["githubRepoContributors"],
-		() => getRepoData(`${appConfig.endpoints.githubRepository}/contributors`),
-		{
-			staleTime: 1000 * 60 * 60 * 24 * 365, // 1 year
-			onError: () => {},
-		},
-	);
+	return useQuery({
+        queryKey: ["githubRepoContributors"],
+        queryFn: () => getRepoData(`${appConfig.endpoints.githubRepository}/contributors`),
+
+        // 1 year
+        staleTime: 1000 * 60 * 60 * 24 * 365,
+    });
 }

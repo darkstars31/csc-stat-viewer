@@ -67,26 +67,22 @@ export function useCscPlayersGraph(
 	playerType: keyof typeof PlayerTypes,
 	options?: Record<string, unknown>,
 ): UseQueryResult<CscPlayer[]> {
-	return useQuery(
-		[`cscplayers-${playerType}-graph`],
-		() => (options?.skipCache ? fetchGraph(playerType) : fetchCachedGraph(playerType)),
-		{
-			enabled: options?.enabled as boolean ?? true,
-			staleTime: OneHour,
-		},
-	);
+	return useQuery({
+        queryKey: [`cscplayers-${playerType}-graph`],
+        queryFn: () => (options?.skipCache ? fetchGraph(playerType) : fetchCachedGraph(playerType)),
+        enabled: options?.enabled as boolean ?? true,
+        staleTime: OneHour
+    });
 }
 
 export function useCscPlayersCache(
 	season?: number,
 	options?: Record<string, unknown>,
 ): UseQueryResult<CscPlayer[]> {
-	return useQuery(
-		[`cscplayers-cache`, season],
-		() => analytikillHttpClient.get(`/csc/cached-players?season=${season}`).then(response => response.data.data),
-		{
-			enabled: options?.enabled as boolean ?? true,
-			staleTime: OneHour,
-		},
-	);
+	return useQuery({
+        queryKey: [`cscplayers-cache`, season],
+        queryFn: () => analytikillHttpClient.get(`/csc/cached-players?season=${season}`).then(response => response.data.data),
+        enabled: options?.enabled as boolean ?? true,
+        staleTime: OneHour
+    });
 }

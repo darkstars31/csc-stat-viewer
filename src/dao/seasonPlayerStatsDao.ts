@@ -19,8 +19,11 @@ const getData = async (seasonConfig: DataConfiguration) =>
 	});
 
 export function useFetchGoogleSheetsSeasonData(seasonConfig: DataConfiguration): UseQueryResult<PlayerStats[]> {
-	return useQuery(["season", seasonConfig.name], () => getData(seasonConfig), {
-		staleTime: 1000 * 60 * 60, // 1 second * 60 * 60 = 1 hour
-		onError: () => {},
-	});
+	return useQuery({
+        queryKey: ["season", seasonConfig.name],
+        queryFn: () => getData(seasonConfig),
+
+        // 1 second * 60 * 60 = 1 hour
+        staleTime: 1000 * 60 * 60,
+    });
 }

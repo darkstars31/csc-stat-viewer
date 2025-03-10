@@ -90,8 +90,10 @@ export function useCscStatsProfileTrendGraph(
 	steamId: string | undefined,
 	season?: number,
 ): UseQueryResult<PlayerMatchStats[] | undefined> {
-	return useQuery([`cscstats-${steamId}-trend-graph`], () => fetchPlayerGraph(steamId, season), {
-		enabled: Boolean(steamId),
-		staleTime: OneHour,
-	});
+	return useQuery({
+        queryKey: [`cscstats-${steamId}-trend-graph`],
+        queryFn: () => fetchPlayerGraph(steamId, season),
+        enabled: Boolean(steamId),
+        staleTime: OneHour
+    });
 }

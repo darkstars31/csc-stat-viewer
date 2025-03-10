@@ -34,7 +34,7 @@ export function Team() {
 	React.useEffect(() => {
 		if (isRefreshing) {
 			setInterval(() => {
-				queryClient.invalidateQueries(["matches-graph", currentTeam?.id]);
+				queryClient.invalidateQueries({ queryKey:["matches-graph", currentTeam?.id]});
 			}, 45 * 1000);
 		}
 	});

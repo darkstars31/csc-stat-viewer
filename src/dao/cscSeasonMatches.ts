@@ -70,8 +70,10 @@ const fetchGraph = async (tier: string, season?: number) =>
 	});
 
 export function useCscSeasonMatches(tier: string, season?: number): UseQueryResult<StandingMatches[]> {
-	return useQuery([`cscSeasonMatches-${season}-${tier}-graph`], () => fetchGraph(tier, season), {
-		enabled: Boolean(season),
-		staleTime: OneHour,
-	});
+	return useQuery({
+        queryKey: [`cscSeasonMatches-${season}-${tier}-graph`],
+        queryFn: () => fetchGraph(tier, season),
+        enabled: Boolean(season),
+        staleTime: OneHour
+    });
 }

@@ -145,10 +145,14 @@ export const fetchIndividualMatchInfoGraph = async (matchId: string) =>
 	});
 
 export function useFetchMatchesGraph(season?: number, teamId?: string): UseQueryResult<Match[]> {
-	return useQuery(["matches-graph", teamId], () => fetchMatchesGraph(teamId, season), {
-		enabled: Boolean(teamId),
-		staleTime: 1000 * 60 * 60, // 1 second * 60 * 60 = 1 hour
-	});
+	return useQuery({
+        queryKey: ["matches-graph", teamId],
+        queryFn: () => fetchMatchesGraph(teamId, season),
+        enabled: Boolean(teamId),
+
+        // 1 second * 60 * 60 = 1 hour
+        staleTime: 1000 * 60 * 60
+    });
 }
 
 export function useFetchMultipleTeamsMatchesGraph(tier: string, teams: Team[]): UseQueryResult<unknown, unknown>[] {

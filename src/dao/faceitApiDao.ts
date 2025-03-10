@@ -18,17 +18,14 @@ export function useFetchFaceItPlayerWithCache(
 	faceitName: string;
 	elo: number;
 }> {
-	return useQuery(
-		["faceitPlayerSearch", player?.steam64Id],
-		() => searchPlayersWithCache(player?.steam64Id, player?.name),
-		{
-			staleTime: 1000 * 60 * 60, // 1 second * 60 * 60 = 1 hour
-			enabled: !!player?.steam64Id,
-			onError: e => {
-				console.info(e);
-			},
-		},
-	);
+	return useQuery({
+        queryKey: ["faceitPlayerSearch", player?.steam64Id],
+        queryFn: () => searchPlayersWithCache(player?.steam64Id, player?.name),
+
+        // 1 second * 60 * 60 = 1 hour
+        staleTime: 1000 * 60 * 60,
+        enabled: !!player?.steam64Id,
+    });
 }
 
 export type HubData = {
@@ -38,7 +35,11 @@ export type HubData = {
 }
 
 export function useFetchFaceItHubStats(): UseQueryResult<{ Upper: HubData[], Lower: HubData[]}> {
-	return useQuery(["fapl-stats"], () => analytikillHttpClient.get("/faceit/fapl/stats"), {
-		staleTime: 1000 * 60 * 60, // 1 second * 60 * 60 = 1 hour
-	});
+	return useQuery({
+        queryKey: ["fapl-stats"],
+        queryFn: () => analytikillHttpClient.get("/faceit/fapl/stats"),
+
+        // 1 second * 60 * 60 = 1 hour
+        staleTime: 1000 * 60 * 60
+    });
 }
