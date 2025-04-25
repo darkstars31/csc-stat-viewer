@@ -29,8 +29,8 @@ import { useFetchPlayerProfile } from "../dao/analytikill";
 import { ProfileJson } from "../models/profile-types";
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useNotificationsContext } from "../NotificationsContext";
-import {PlayerPercentilesOne} from "./player/playerPercentilesOne";
-import {PlayerPercentilesTwo} from "./player/playerPercentilesTwo";
+import { PlayerPercentilesOne } from "./player/playerPercentilesOne";
+import { PlayerPercentilesTwo } from "./player/playerPercentilesTwo";
 import { FreeAgentPlayerLeague } from "./player/freeAgentPlayerLeague";
 
 const PlayerMatchHistory = React.lazy(() =>import('./player/matchHistory').then(module => ({default: module.PlayerMatchHistory})));

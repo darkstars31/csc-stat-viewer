@@ -1,10 +1,13 @@
 import { TIER_CONSTANTS } from "../constants/tiers";
+import { tiers } from "../utils/player-utils";
 
 export const franchiseMetadata = [
     { prefix: "UPS",
         discordUrl: "https://discord.gg/VPdMevRF",
         inceptionSeason: 7,
         trophies: [
+        { season: 16, tier: TIER_CONSTANTS.Premier},
+        { season: 15, tier: TIER_CONSTANTS.Elite},
         { season: 14, tier: TIER_CONSTANTS.Elite},
         { season: 14, tier: TIER_CONSTANTS.Challenger},
         { season: 12, tier: TIER_CONSTANTS.Premier},
@@ -19,6 +22,7 @@ export const franchiseMetadata = [
         discordUrl: "https://discord.gg/hWn2DGhf",
         inceptionSeason: 11,
         trophies: [
+        { season: 16, teir: TIER_CONSTANTS.Contender},
         { season: 14, tier: TIER_CONSTANTS.Prospect},
         { season: 13, tier: TIER_CONSTANTS.Contender},
         { season: 11, tier: TIER_CONSTANTS.Contender},
@@ -37,6 +41,7 @@ export const franchiseMetadata = [
         discordUrl: "https://discord.gg/FFsRZP7yed",
         inceptionSeason: 2,
         trophies: [
+            { season: 15, tier: TIER_CONSTANTS.Contender },
         { season: 8, tier: TIER_CONSTANTS.Challenger},
         { season: 7, tier: TIER_CONSTANTS.Prospect},
         { season: 6, tier: "Minor"},
@@ -56,6 +61,7 @@ export const franchiseMetadata = [
         discordUrl: "https://discord.gg/BAbNKr55",
         inceptionSeason: 5,
         trophies: [
+        { season: 16, tier: TIER_CONSTANTS.Challenger},
         { season: 12, tier: TIER_CONSTANTS.Recruit},
         { season: 9, tier: TIER_CONSTANTS.Contender},
     ]},
@@ -110,6 +116,7 @@ export const franchiseMetadata = [
         discordUrl: "http://discord.gg/bigslime",
         inceptionSeason: 8,
         trophies: [
+            { season: 16, tier: TIER_CONSTANTS.Elite }
         ]
     },
     {
@@ -138,6 +145,7 @@ export const franchiseMetadata = [
         discordUrl: "https://discord.gg/skKsTQyjRe",
         inceptionSeason: 15,
         trophies: [
+            { season: 16, tier: TIER_CONSTANTS.Recruit}
         ]
     },
     {
@@ -152,6 +160,9 @@ export const franchiseMetadata = [
         discordUrl: "https://discord.gg/B3xfuzhFPb",
         inceptionSeason: 15,
         trophies: [
+            { season: 16, tier: TIER_CONSTANTS.Prospect },
+            { season: 15, tier: TIER_CONSTANTS.Challenger },
+            { season: 15, tier: TIER_CONSTANTS.Prospect },
         ]
     },
     {
@@ -159,12 +170,35 @@ export const franchiseMetadata = [
         discordUrl: "https://discord.gg/9GHYYyBmrB",
         inceptionSeason: 13,
         trophies: [
+            { season: 15, tier: TIER_CONSTANTS.Recruit },
+            { season: 15, tier: TIER_CONSTANTS.Premier }
         ]
     },
     {
         prefix: "TSC",
         discordUrl: "https://discord.gg/haXEAbjxvH",
         inceptionSeason: 16,
+        trophies: [
+        ]
+    },
+    {
+        prefix: "ATO",
+        discordUrl: "",
+        inceptionSeason: 17,
+        trophies: [
+        ]
+    },
+    {
+        prefix: "GF",
+        discordUrl: "",
+        inceptionSeason: 17,
+        trophies: [
+        ]
+    },
+    {
+        prefix: "TEE",
+        discordUrl: "",
+        inceptionSeason: 17,
         trophies: [
         ]
     }

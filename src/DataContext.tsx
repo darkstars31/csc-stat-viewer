@@ -63,7 +63,6 @@ const useDataContextProvider = () => {
 	if(playersMissingTier.length > 0) console.info("Players Missing Tier",playersMissingTier);
 
 	React.useEffect(() => {
-
 		const specialRoles = {
 			"76561197998527398": "THE GOAT",
 			"76561198855758438": "BAITER",
@@ -110,7 +109,6 @@ const useDataContextProvider = () => {
 					:	determinePlayerRole(statsForPlayerByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!);
 				const stats = statsForPlayerByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!;
 				
-
 				const extendedStats = extendedPlayerStats.find(
 					(stats: { name: string }) => stats.name === cscPlayer?.name,
 				) as ExtendedStats ?? undefined;
@@ -128,7 +126,9 @@ const useDataContextProvider = () => {
 					statsOutOfTier,
 				});
 			} else {
-				acc.push({ ...(cscPlayer as Player) });
+				//if( !enableExperimentalHistorialFeature || ( enableExperimentalHistorialFeature && cscPlayer?.type !== PlayerTypes.SPECTATOR && statsForPlayerByTier.length > 0 ) ){
+					acc.push({ ...(cscPlayer as Player) });
+				//}
 			}
 			return acc;
 		}, [] as Player[]);

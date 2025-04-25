@@ -7,6 +7,7 @@ export * from "./export";
 
 export * from "./franchises";
 export * from "./franchise";
+export * from "./graphicsPlayer"
 export * from "./team";
 export * from "./leaderboards";
 export * from "./cb";

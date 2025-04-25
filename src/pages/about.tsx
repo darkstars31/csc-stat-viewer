@@ -7,6 +7,8 @@ import { BsGithub } from "react-icons/bs";
 import { useDataContext } from "../DataContext";
 import { Exandable } from "../common/components/containers/Expandable";
 
+const Paragraph = ({ children }: { children: React.ReactNode }) => <p className="mt-4 text-gray-300">{children}</p>
+
 export function About() {
 	const { seasonAndMatchType } = useDataContext();
 	const { data: contributors = [] } = useFetchGitHubContributors();
@@ -16,22 +18,22 @@ export function About() {
 			<Container>
 				<div className="mx-auto max-w-xlg">
 					<h2 className="text-3xl font-bold sm:text-4xl">AnalytiKill</h2>
-					<p className="mt-4 text-gray-300">
+					<Paragraph>
 						Advanced Statistics, Analysis, and Visualizations for{" "}
 						<a href="https://csconfederation.com/" target="_blank" rel="noreferrer">
 							CS:Confederation Draft League
 						</a>
-					</p>
-					<p className="mt-4 text-gray-300">
+					</Paragraph>
+					<Paragraph>
 						Season {seasonAndMatchType.season} Stats now available! Use the dropdown menu in the header to select
 						the data source you're interested in.
-					</p>
-					<p className="mt-4 text-gray-300">
+					</Paragraph>
+					<Paragraph>
 						<a className="flex flex-row leading-8 text-blue-300" href="https://discord.gg/csc">
 							<RxDiscordLogo className="mr-2" size="2em" /> Join the Discord, become apart of our amazing
 							community.
 						</a>
-					</p>
+					</Paragraph>
 					<div className="mt-4 text-gray-300">
 						<a
 							className="flex flex-row leading-8 text-blue-300"
