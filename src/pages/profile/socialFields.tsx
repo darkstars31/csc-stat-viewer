@@ -11,6 +11,7 @@ export function SocialFields( { onChange, profileSettings }: { onChange: (x: Rec
 	const socials = profileSettings?.socials || {};
 
 	const socialOptions = [
+		{ label: "BlueSky", value: "bluesky", url: "https://bsky.app/profile/"},
 		{ label: "Twitter/X", value: "twitter/x", url: "https://x.com/" },
 		{ label: "Reddit", value: "reddit", url: "https://reddit.com/u/" },
 		{ label: "Twitch", value: "twitch", url: "https://twitch.com/" },
