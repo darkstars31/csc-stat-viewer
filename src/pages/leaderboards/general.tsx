@@ -87,7 +87,7 @@ export function GeneralLeaderBoards({ players, limit }: { players: Player[]; lim
 		player: p,
 		value: p.stats["cl_4"].toFixed(0),
 	}));
-	//const clutchOneVsFive = _sort(players, "stats.cl_5", limit, "desc").map( p => ({ player: p, value: p.stats['cl_5'].toFixed(2)}));
+	//const clutchOneVsFive = _sort(players, "stats.cl_5", limit, "desc").map( p => ({ player: p, value: p.stats['cl_5'].toFixed(0)}));
 	// const grenadeDamagePerRound = _sort(playerData, "X/nade", 5).map( p => ({ "Player": p.name,   "Grenade Damage Per Round": p["Xnade"]}));
 	const openDuels = _sort(players, "stats.odr", limit, "desc").map(p => ({
 		player: p,
