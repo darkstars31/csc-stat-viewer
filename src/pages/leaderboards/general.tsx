@@ -77,15 +77,15 @@ export function GeneralLeaderBoards({ players, limit }: { players: Player[]; lim
 	}));
 	const clutchOneVsTwo = _sort(players, "stats.cl_2", limit, "desc").map(p => ({
 		player: p,
-		value: p.stats["cl_2"].toFixed(2),
+		value: p.stats["cl_2"].toFixed(0),
 	}));
 	const clutchOneVsThree = _sort(players, "stats.cl_3", limit, "desc").map(p => ({
 		player: p,
-		value: p.stats["cl_3"].toFixed(2),
+		value: p.stats["cl_3"].toFixed(0),
 	}));
 	const clutchOneVsFour = _sort(players, "stats.cl_4", limit, "desc").map(p => ({
 		player: p,
-		value: p.stats["cl_4"].toFixed(2),
+		value: p.stats["cl_4"].toFixed(0),
 	}));
 	//const clutchOneVsFive = _sort(players, "stats.cl_5", limit, "desc").map( p => ({ player: p, value: p.stats['cl_5'].toFixed(2)}));
 	// const grenadeDamagePerRound = _sort(playerData, "X/nade", 5).map( p => ({ "Player": p.name,   "Grenade Damage Per Round": p["Xnade"]}));
