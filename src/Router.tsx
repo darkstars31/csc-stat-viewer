@@ -36,6 +36,7 @@ import { Posts } from "./pages/articles/posts";
 import { Post } from "./pages/articles/post";
 import { CreatePost } from "./pages/articles/create";
 import { Submitted } from "./pages/articles/submitted";
+import { Pickems } from "./pages/pickems";
 
 export function Router() {
 	const [closeNotificationBanner, setCloseNotificationBanner] = useLocalStorage(
@@ -93,6 +94,7 @@ export function Router() {
 		{ path: `/profile`, component: () => <Profile /> },
 		{ path: `/standings`, component: () => <TeamStandings /> },
 		{ path: `/servers`, component: () => <Servers /> },
+		{ path: `/pickems`, component: () => <Pickems /> },
 
 		{ path: `/admin`, component: () => <Admin /> },
 		{ path: `/franchiseManagement`, component: () => <FranchiseManagement /> },

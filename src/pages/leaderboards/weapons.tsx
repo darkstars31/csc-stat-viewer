@@ -40,9 +40,11 @@ export function WeaponLeaderboards({ players, limit }: { players: Player[]; limi
 		"MAC-10",
 		"M249",
 		"Negev",
+		"G3SG1",
 		"Incendiary Grenade",
 		"Molotov",
 		"HE Grenade",
+		"Flashbang",
 	];
 
 	const weaponLeaderBoards = weaponStrings.map(weapon => {

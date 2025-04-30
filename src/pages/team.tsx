@@ -95,6 +95,9 @@ export function Team() {
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph(
 		seasonAndMatchType.season,
 		currentTeam?.id,
+		{
+			enabled: Boolean(currentTeam?.id)
+		}
 	);
 	const matchIds = React.useMemo(() => matches.map(match => match.id), [matches]);
 

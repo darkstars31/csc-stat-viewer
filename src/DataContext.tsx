@@ -29,22 +29,23 @@ const useDataContextProvider = () => {
 	const hasSeasonStarted = matches.length > 0
 
 	React.useEffect(() => {
-		setSeasonAndMatchType({ season: seasonAndTierConfig?.number ?? 0, matchType: hasSeasonStarted ? "Regulation" : "Combine" });
-	}, [isLoadingCscSeasonAndTiers === false, isLoadingMatches === false]);
-
-	if ( seasonAndMatchType ) console.info("seasonAndMatchType", seasonAndMatchType);
+		if( !isLoadingCscSeasonAndTiers && !isLoadingMatches){
+			setSeasonAndMatchType({ season: seasonAndTierConfig?.number ?? 0, matchType: hasSeasonStarted ? "Regulation" : "Combine" });
+		}
+	}, [isLoadingCscSeasonAndTiers, isLoadingMatches]);
 
 	React.useEffect(() => {
 		seasonAndTierConfig?.league.leagueTiers.forEach(tier => queryClient.invalidateQueries({ queryKey:[`cscstats-graph`, tier.tier.name, seasonAndTierConfig?.number, seasonAndMatchType.matchType]}));
 		queryClient.invalidateQueries({ queryKey:[`cscplayermatchhistory-graph`]});
+		console.info("seasonAndMatchType", seasonAndMatchType);
 	}, [seasonAndMatchType]);
 
-	const { data: cscPlayers = [], isLoading: isLoadingCscPlayersCache, error } = useCscPlayersCache(seasonAndTierConfig?.number, { enabled: !isLoadingMatches && !isLoadingCscSeasonAndTiers });
+	const { data: cscPlayers = [], isLoading: isLoadingCscPlayersCache, error } = useCscPlayersCache(seasonAndTierConfig?.number, { enabled: seasonAndMatchType.season > 0 });
 
 	const { data, isLoading: isLoadingCachedStats} = useCscStatsCache( 
 		seasonAndMatchType?.season,
 		seasonAndMatchType.matchType,
-		{ enabled: !isLoadingMatches && !isLoadingCscSeasonAndTiers }
+		{ enabled: seasonAndMatchType.season > 0 && !isLoadingMatches && !isLoadingCscSeasonAndTiers }
 	)
 
 	const statsByTier = {

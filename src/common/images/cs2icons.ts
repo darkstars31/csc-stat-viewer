@@ -64,6 +64,7 @@ const rifles = {
 const snipers = {
 	AWP: awp,
 	"SSG 08": scout,
+	"G3SG1": awp,
 };
 
 const subMachineGuns = {
@@ -107,6 +108,7 @@ const other = {
 	"HE Grenade": he,
 	"Incendiary Grenade": molly,
 	Molotov: molly,
+	Flashbang: flashAssist,
 };
 
 export const cs2killfeedIcons: Cs2Icons = {

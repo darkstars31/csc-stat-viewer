@@ -19,7 +19,7 @@ export const fetchMatchesGraph = async (teamId?: string, season: number = 11) =>
 		method: "POST",
 		body: JSON.stringify({
 			operationName: "",
-			query: `query matches ( $teamId: String!, $season: Int!) {
+			query: `query matches ( $teamId: String, $season: Int!) {
                     matches (teamId: $teamId, season: $season) {
                         id
                         scheduledDate
@@ -47,6 +47,7 @@ export const fetchMatchesGraph = async (teamId?: string, season: number = 11) =>
                               url
                             }
                           }
+                          id
                           name
                         }
                         away {
@@ -57,6 +58,7 @@ export const fetchMatchesGraph = async (teamId?: string, season: number = 11) =>
                               url
                             }
                           }
+                          id
                           name
                         }
                         dathostServer {
@@ -70,6 +72,7 @@ export const fetchMatchesGraph = async (teamId?: string, season: number = 11) =>
                           mapName
                           mapNumber
                           winner {
+                            id
                             name
                           }
                         }
@@ -144,11 +147,11 @@ export const fetchIndividualMatchInfoGraph = async (matchId: string) =>
 		});
 	});
 
-export function useFetchMatchesGraph(season?: number, teamId?: string): UseQueryResult<Match[]> {
+export function useFetchMatchesGraph(season?: number, teamId?: string, options?: Record<string,unknown>): UseQueryResult<Match[]> {
 	return useQuery({
         queryKey: ["matches-graph", teamId],
         queryFn: () => fetchMatchesGraph(teamId, season),
-        enabled: Boolean(teamId),
+        enabled: options?.enabled as boolean ?? true,
 
         // 1 second * 60 * 60 = 1 hour
         staleTime: 1000 * 60 * 60
