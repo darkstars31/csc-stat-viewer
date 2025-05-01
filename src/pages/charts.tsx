@@ -12,6 +12,7 @@ import { PlayerRolesFilter } from "../common/components/filters/playerRoleFilter
 import * as Containers from "../common/components/containers";
 import { Overlay } from "../common/components/overlay";
 import { selectClassNames } from "../common/utils/select-utils";
+import { MapsPlayedChart } from "./charts/mapsPlayed";
 
 const CartesianCompare = React.lazy(() =>import('./charts/cartesianCompare').then(module => ({default: module.CartesianCompare})));
 const CorrelationByTier = React.lazy(() =>import('./charts/correlationByTier').then(module => ({default: module.CorrelationByTier})));
@@ -34,6 +35,7 @@ export function Charts() {
 			{ label: "Role Distribution" },
 			{ label: "Role Distribution By Tier" },
 			{ label: "Correlations by Tier" },
+			{ label: "Maps Played" },
 		],
 		[],
 	);
@@ -332,6 +334,16 @@ export function Charts() {
 								aria-labelledby="tabs-correlation-tab"
 							>
 								<CorrelationByTier playerData={filteredBySearchPlayers} />
+							</div>
+						)}
+						{currentTab === tabs[6].label && (
+							<div
+								className="transition-opacity duration-150 ease-linear data-[te-tab-active]:block"
+								id="tabs-correlation"
+								role="tabpanel"
+								aria-labelledby="tabs-correlation-tab"
+							>
+								<MapsPlayedChart />
 							</div>
 						)}
 					</div>

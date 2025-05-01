@@ -150,6 +150,40 @@ export const fetchIndividualMatchInfoGraph = async (matchId: string) =>
 		});
 	});
 
+export const fetchMatchesGraphBySeasonTierAndType = (season: number, matchType: string, tier?: string) =>
+  fetch(appConfig.endpoints.cscGraphQL.stats, {
+    method: "POST",
+    body: JSON.stringify({
+      operationName: "SeasonMatches",
+      query: `query SeasonMatches($season: Int!, $tier: Tier, $matchType: MatchType!) {
+                findManyMatch(
+                  where: {season: {equals: $season}, tier: {equals: $tier}, matchType: {equals: $matchType}}
+                ) {
+                  matchId
+                  totalRounds
+                  mapName
+                  matchDay
+                  season
+                  tier
+                  matchType              
+                }
+              }`,
+      variables: {
+        tier,
+        season,
+        matchType,
+      },
+    }),
+    headers: {
+      "content-type": "application/json",
+    },
+  }).then(async response => {
+    return response.json().then(json => {
+      return json.data.findManyMatch;
+    });
+  });
+
+
 export function useFetchMatchesGraph(season?: number, teamId?: string, options?: Record<string,unknown>): UseQueryResult<Match[]> {
 	return useQuery({
         queryKey: ["matches-graph", teamId],
@@ -175,4 +209,27 @@ export function useFetchMultipleMatchInfoGraph(matchIds: string[]): UseQueryResu
 		queryFn: () => fetchIndividualMatchInfoGraph(matchId),
 	}));
 	return useQueries({ queries });
+}
+
+interface MatchBySeasonTierAndType {
+  matchId: string;
+  totalRounds: number;
+  mapName: string;
+  matchDay: number;
+  season: number;
+  tier: string;
+  matchType: string;
+}
+
+export function useFetchMatchesGraphBySeasonTierAndType(
+  season: number,
+  matchType: string,
+  tier?: string,
+): UseQueryResult<MatchBySeasonTierAndType[]> {
+  return useQuery({
+    queryKey: ["matches-graph", season, matchType, tier],
+    queryFn: () => fetchMatchesGraphBySeasonTierAndType(season, matchType, tier),
+    enabled: Boolean(season),
+    staleTime: 1000 * 60 * 60,
+  });
 }
