@@ -7,6 +7,8 @@ import aug from "../../assets/images/cs2icons/aug.png";
 import famas from "../../assets/images/cs2icons/famas.png";
 
 import scout from "../../assets/images/cs2icons/scout.png";
+import G3SG1 from "../../assets/images/cs2icons/G3SG1.png";
+import SCAR20 from "../../assets/images/cs2icons/SCAR20.png";
 
 import deagle from "../../assets/images/cs2icons/deagle.png";
 import usps from "../../assets/images/cs2icons/usp-s.png";
@@ -64,7 +66,8 @@ const rifles = {
 const snipers = {
 	AWP: awp,
 	"SSG 08": scout,
-	"G3SG1": awp,
+	"G3SG1": G3SG1,
+	"SCAR20": SCAR20,
 };
 
 const subMachineGuns = {

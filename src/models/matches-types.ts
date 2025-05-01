@@ -15,7 +15,7 @@ export type Match = {
 	demoUrl: string;
 	lobby: Lobby;
 	matchDay: MatchDay;
-	home: Away;
+	home: Home;
 	away: Away;
 	dathostServer: DathostServer;
 	stats: Stat[];
@@ -32,6 +32,13 @@ export type MapBan = {
 	team: Team;
 };
 
+export type Home = {
+	franchise: Franchise;
+	name: string;
+	tier: {
+		name: string;
+	};
+};
 export type Away = {
 	franchise: Franchise;
 	name: string;

@@ -49,6 +49,9 @@ export const fetchMatchesGraph = async (teamId?: string, season: number = 11) =>
                           }
                           id
                           name
+                          	tier {
+                            name
+                          }
                         }
                         away {
                           franchise {

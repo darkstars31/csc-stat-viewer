@@ -64,6 +64,7 @@ const useDataContextProvider = () => {
 	if(playersMissingTier.length > 0) console.info("Players Missing Tier",playersMissingTier);
 
 	React.useEffect(() => {
+		if (isLoadingCscPlayersCache || isLoadingCachedStats || isLoadingCscSeasonAndTiers) return;
 		const specialRoles = {
 			"76561197998527398": "THE GOAT",
 			"76561198855758438": "BAITER",
@@ -134,7 +135,7 @@ const useDataContextProvider = () => {
 			return acc;
 		}, [] as Player[]);
 		setPlayers(players);
-	}, [isLoadingCachedStats, isLoadingCscPlayersCache, enableExperimentalHistorialFeature]);
+	}, [isLoadingCachedStats, isLoadingCscPlayersCache, enableExperimentalHistorialFeature, isLoadingExtendedStats]);
 	
 
 	// const tierNumber = {
