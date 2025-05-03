@@ -34,6 +34,7 @@ export type MapBan = {
 
 export type Home = {
 	franchise: Franchise;
+	id: number;
 	name: string;
 	tier: {
 		name: string;
@@ -41,6 +42,7 @@ export type Home = {
 };
 export type Away = {
 	franchise: Franchise;
+	id: number;
 	name: string;
 };
 
@@ -73,5 +75,6 @@ export type Stat = {
 };
 
 export type Winner = {
+	id: number;
 	name: string;
 };

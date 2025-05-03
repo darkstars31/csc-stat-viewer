@@ -5,7 +5,9 @@ import { useFetchMatchesGraph } from "../dao/cscMatchesGraphQLDao";
 import dayjs from "dayjs";
 import { Loading } from "../common/components/loading";
 import { franchiseImages } from "../common/images/franchise";
-import { log } from "console";
+import { Match } from "../models/matches-types";
+
+
 
 export const Pickems = () => {
     const x = {
@@ -87,7 +89,7 @@ export const Pickems = () => {
     const currentDate = dayjs("02/18/2025").add(21, "hours").add(1, "minute")
     console.info("currentDate", currentDate);   
 
-    const hasMatchStarted = React.useCallback((matchDate: string) => {
+    const hasMatchStarted = React.useCallback((matchDate: Date) => {
         return dayjs(matchDate).isBefore(currentDate);
     }, []);
 
@@ -108,8 +110,6 @@ export const Pickems = () => {
             acc[matchday].push(match);
             return acc;
         }, {});
-    
-    console.info("matchesByMatchday", matchesByMatchday);
 
     const pastMatchWeeks = Object.keys(matchesByMatchday).filter((matchDate) => 
         dayjs(matchDate).isBefore(currentDate, 'week')
@@ -163,9 +163,35 @@ export const Pickems = () => {
         );
     }
 
+    const TeamSideItem = ({match, selectedMatches, side}: { match: Match, selectedMatches: { [key: string]: { teamId: number, teamName: string } | null }, side: 'home' | 'away' }) => {
+        const team = match[side];
+        return (
+        <div onClick={() => !hasMatchStarted(match.scheduledDate) && handleSelection(match.id, { teamId: team.id, teamName: team.name })}
+        className={`flex flex-col items-center h-14 w-14 rounded-lg p-2
+            ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && match.stats[0]?.winner?.id === team.id
+                ? "bg-green-500 bg-opacity-15 border-2 border-green-500"
+                : ""}
+            ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && match.stats[0]?.winner?.id !== team.id
+                ? "bg-red-500 bg-opacity-15 border-2 border-red-500"
+                : ""
+            }
+            ${!hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id
+                ? "bg-blue-500 bg-opacity-15 border-2 border-blue-500"
+                : ""
+            }
+        `}
+    >
+        <img
+            src={franchiseImages[team.franchise.prefix]}
+            alt={team.franchise.prefix}
+            className="h-12 w-12 rounded-lg"
+        />
+    </div>);
+    }
+
     return (
         <Container>
-            <h1 className="text-2xl font-bold mb-4">{userTier} Weekly Matches</h1>
+            <h1 className="text-3xl font-bold mb-4 text-center">{userTier} Weekly Pickems</h1>
             {/* Timeframe Toggle */}
             <div className="flex justify-center space-x-2 mb-6">
                 {['past', 'current', 'future'].map((timeframe) => (
@@ -198,7 +224,7 @@ export const Pickems = () => {
                                 return false;
                         }
                     })
-                    .map(([matchDate, matches]: [string, any[]]) => (
+                    .map(([matchDate, matches]: [string, Match[]]) => (
                         <div key={matchDate} className="flex flex-col">
                             <div>
                                 <h2 className="text-xl font-semibold mb-2">Match Day {matches[0].matchDay.number.replace("M","")}</h2>
@@ -208,43 +234,23 @@ export const Pickems = () => {
                                 <div>
                                     <div className="flex justify-between px-4 py-2 border-b">
                                         <span className="text-sm font-bold">HOME</span>
+                                        <div className="text-gray-600 text-sm">
+                                        {matches.reduce((acc, match) =>
+                                            selectedMatches[match.id]?.teamId === match.stats[0]?.winner?.id ? acc + 1 : acc, 0)} pts
+                                        </div>
                                         <span className="text-sm font-bold">AWAY</span>
                                     </div>
                                 </div>
-                                {matches.map((match: any) => (
+                                {matches.map((match: Match) => (
                                     <div key={match.id} className="p-1 relative">
                                         {hasMatchStarted(match.scheduledDate) && (
                                             <div className="absolute inset-0 bg-gray-400 bg-opacity-20 z-10" />
                                         )}
                                         <div className="flex flex-col">
                                             <div className="flex space-x-4">
-                                                <div
-                                                    onClick={() => !hasMatchStarted(match.scheduledDate) && handleSelection(match.id, { teamId: match.home.id, teamName: match.home.name })}
-                                                    className={`flex flex-col items-center h-14 w-14 ${selectedMatches[match.id]?.teamId === match.home.id
-                                                            ? "bg-green-500 bg-opacity-15 border-2 border-green-500 p-2 rounded-lg"
-                                                            : ""
-                                                    }`}
-                                                >
-                                                    <img
-                                                        src={franchiseImages[match.home.franchise.prefix]}
-                                                        alt={match.home.franchise.prefix}
-                                                        className="h-12 w-12 rounded-lg"
-                                                    />
-                                                </div>
+                                                <TeamSideItem match={match} selectedMatches={selectedMatches} side={"home"} />
                                                 <span className="m-auto text-md font-semibold">vs.</span>
-                                                <div
-                                                    onClick={() => !hasMatchStarted(match.scheduledDate) && handleSelection(match.id, { teamId: match.away.id, teamName: match.away.name })}
-                                                    className={`flex flex-col items-center h-14 w-14 ${selectedMatches[match.id]?.teamId === match.away.id
-                                                            ? "bg-green-500 bg-opacity-15 border-2 border-green-500 p-2 rounded-lg"
-                                                            : ""
-                                                    }`}
-                                                >
-                                                    <img
-                                                        src={franchiseImages[match.away.franchise.prefix]}
-                                                        alt={match.away.franchise.prefix}
-                                                        className="h-12 w-12 rounded-lg"
-                                                    />
-                                                </div>
+                                                <TeamSideItem match={match} selectedMatches={selectedMatches} side={"away"} />                                     
                                             </div>
                                         </div>
                                     </div>
