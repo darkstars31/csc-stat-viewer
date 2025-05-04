@@ -8,8 +8,12 @@ import { CscStats } from "../../models";
 type Props = {
 	player: Player;
 	stats: CscStats;
+	options?: {
+		dontShowWarnings?: boolean;
+		hideBackground?: boolean;
+	}
 };
-export function PlayerRatings({ player, stats }: Props) {
+export function PlayerRatings({ player, stats, options = { dontShowWarnings: false} }: Props) {
 	const { players = [] } = useDataContext();
 	//const playerStats: PlayerStats[] = players.filter( p => Boolean(p.stats) ).map( p => p.stats) as PlayerStats[];
 	const tierPlayerAverages = getTotalPlayerAverages(players, {
@@ -26,7 +30,7 @@ export function PlayerRatings({ player, stats }: Props) {
 		/* Games Played*/
 		<>
 			<div className="px-[5%] space-y-4 w-full">
-				<div className="relative text-neutral-700 text-sm text-left italic font-bold">{gamesPlayedCaption}</div>
+				{ !options?.dontShowWarnings && <div className="relative text-neutral-700 text-sm text-left italic font-bold">{gamesPlayedCaption}</div> }
 
 				<RatingBar
 					label="Peak"
@@ -75,7 +79,7 @@ export function PlayerRatings({ player, stats }: Props) {
                 type="concy"
             /> */}
 				{/* Warning Not Enough Data */}
-				{stats.gameCount < 3 && (
+				{ (stats.gameCount < 3 && !options?.dontShowWarnings) && (
 					<div className="relative text-center">
 						<div className="text-yellow-500 inline-block text-[0.8rem] w-[90%] italic">
 							Less than 3 matches played. Stats shown may not provide an accurate picture of player skill

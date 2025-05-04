@@ -11,6 +11,7 @@ import COW from "../../assets/images/franchise/COW.png";
 import DRG from "../../assets/images/franchise/DRG.png";
 import FRG from "../../assets/images/franchise/FRG.png";
 import GAS from "../../assets/images/franchise/GAS.png";
+import GF from "../../assets/images/franchise/GF.png";
 import GRN from "../../assets/images/franchise/GRN.png";
 import H4K from "../../assets/images/franchise/H4K.png";
 import HG from "../../assets/images/franchise/HG.png";
@@ -21,6 +22,7 @@ import NAN from "../../assets/images/franchise/NAN.png";
 import OS from "../../assets/images/franchise/OS.png";
 import PA from "../../assets/images/franchise/PA.png";
 import SAV from "../../assets/images/franchise/SAV.png";
+import TEE from "../../assets/images/franchise/TEE.png";
 import TSC from "../../assets/images/franchise/TSC.png";
 import UPS from "../../assets/images/franchise/UPS.png";
 import WET from "../../assets/images/franchise/WET.png";
@@ -41,6 +43,7 @@ export const franchiseImages: FranchiseImages = {
 	DRG,
 	FRG,
 	GAS,
+	GF,
 	GRN,
 	H4K,
 	HG,
@@ -50,6 +53,7 @@ export const franchiseImages: FranchiseImages = {
 	OS,
 	PA,
 	SAV,
+	TEE,
 	TSC,
 	UPS,
 	WET,

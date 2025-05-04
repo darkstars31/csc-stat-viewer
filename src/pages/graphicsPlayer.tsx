@@ -1,43 +1,28 @@
 import * as React from "react";
 import { Container } from "../common/components/container";
 import { teamNameTranslator, getPlayerRatingIndex, PlayerTypes } from "../common/utils/player-utils";
-import { getGridData } from "./player/grid-data";
-import { GridContainer, GridStat } from "./player/grid-container";
-import { Link, useLocation, useRoute, useSearch } from "wouter";
+import chicken from "../assets/images/chicken.png";
+import { useLocation, useRoute, useSearch } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
-import { RoleRadar } from "../common/components/roleRadar";
-import { PlayerNavigator } from "./player/player-navigator";
 import { PlayerRatings } from "./player/playerRatings";
 import { nth } from "../common/utils/string-utils";
 import { getTeammates } from "../common/utils/franchise-utils";
-import { Mmr } from "../common/components/mmr";
-import { ExternalPlayerLinks } from "../common/components/externalPlayerLinks";
-import { PlayerAwards } from "./player/playerAwards";
 import { FaceitRank } from "../common/components/faceitRank";
-import { ToolTip } from "../common/utils/tooltip-utils";
-import * as Containers from "../common/components/containers";
-import { TiWarningOutline } from "react-icons/ti";
-import { Exandable } from "../common/components/containers/Expandable";
-import { Hitbox } from "./player/hitbox";
-import { PlayerWeaponsExtended } from "./player/weapons-extended";
-import { Reputation } from "./player/reputation";
-import { CgProfile } from "react-icons/cg";
-import { PlayerProfile } from "./player/profile";
-import { Transition } from "@headlessui/react";
 import { useFetchPlayerProfile } from "../dao/analytikill";
-import { ProfileJson } from "../models/profile-types";
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { useNotificationsContext } from "../NotificationsContext";
-import { PlayerPercentilesOne } from "./player/playerPercentilesOne";
-import { PlayerPercentilesTwo } from "./player/playerPercentilesTwo";
-import { FreeAgentPlayerLeague } from "./player/freeAgentPlayerLeague";
-import { franchiseImages } from "../common/images/franchise";
 
-const PlayerMatchHistory = React.lazy(() =>import('./player/matchHistory').then(module => ({default: module.PlayerMatchHistory})));
+import { franchiseImages } from "../common/images/franchise";
+import { useCscStatsProfileTrendGraph } from "../dao/cscProfileTrendGraph";
+
 const TeamSideRatingPie = React.lazy(() =>import('../common/components/teamSideRatingPie').then(module => ({default: module.TeamSideRatingPie})));
-const PlayerRatingTrendGraph = React.lazy(() =>import('../common/components/playerRatingGraph').then(module => ({default: module.PlayerRatingTrendGraph})));
 const KillsAssistsDeathsPie = React.lazy(() =>import('../common/components/killAssetDeathPie').then(module => ({default: module.KillsAssistsDeathsPie})));
+
+const StatLine = ({ title, value}: { title: string, value: number | string}) => (
+<div className="text-center">
+	<div className="text-sm font-extrabold">{title}</div>
+	<div className="text-gray-400">{value}</div>
+</div>)
 
 
 export function GraphicsPlayer() {
@@ -63,6 +48,9 @@ export function GraphicsPlayer() {
 	const currentPlayerTierOptions = [ currentPlayer?.tier.name, ...(currentPlayer?.statsOutOfTier ?? []).map( s => s.tier)].filter( item => item !== viewStatSelection)
 
 	const { data: playerProfile = {}, isLoading: isLoadingPlayerProfile } = useFetchPlayerProfile(currentPlayer?.discordId);
+	const { data: cscPlayerProfile, isLoading } = useCscStatsProfileTrendGraph(currentPlayer?.steam64Id, seasonAndMatchType.season);
+
+	console.info("cscPlayerProfile", cscPlayerProfile);
 	
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
@@ -105,112 +93,106 @@ export function GraphicsPlayer() {
 		: "";
 
 	const tierCssColors = {
-		Recruit: "text-red-400",
-		Prospect: "text-orange-400",
-		Contender: "text-yellow-400",
-		Challenger: "text-green-400",
-		Elite: "text-blue-400",
-		Premier: "text-purple-400",
+		Recruit: "text-red-800",
+		Prospect: "text-orange-800",
+		Contender: "text-yellow-800",
+		Challenger: "text-green-800",
+		Elite: "text-blue-800",
+		Premier: "text-purple-800",
 	}
 
-	const tabs = [
-		{
-			name: "Stats",
-		},
-		{
-			name: "Rankings",
-		},
-		{
-			name: "Extended Stats",
-		},
-		{
-			name: "Match History",
-		},
-		{
-			name: "Free Agent Player League",
-			disabled: true
-		}
-	]
-
-
 	return (
-        <Container>
+        <div className="m-8 bg-gradient-to-b from-gray-900 to-red-950 text-white rounded-lg">
             <div className="vh-100 flex">
-                <div className="w-2/12 bg-gray-300 text-center">
-                    <div style={{writingMode: "vertical-lr", textOrientation: "upright"}} className="flex m-auto px-12 py-4 w-full font-extrabold uppercase text-center text-purple-950 text-6xl">
-                        {currentPlayer.name}
-                    </div>
-                    <div className="text-purple-950">
-                        {currentPlayer?.team?.franchise.prefix} | {currentPlayer.tier.name}
-                    </div>
-                    <div className="m-6">
-                        <img src={franchiseImages[currentPlayer?.team?.franchise.prefix ?? ""]} alt={currentPlayer?.name} className="w-full" />
-                    </div>
-                </div>
-                <div className="w-8 bg-yellow-500">
-
-                </div>
-                <div className="w-9/12 bg-midnight2">
+				<div className="w-2/12 bg-gray-300 text-center rounded-l-lg flex flex-col justify-between">
+					<div style={{writingMode: "vertical-lr", textOrientation: "upright", textShadow: "4px 4px 0 rgba(0, 0, 0, .5), 8px 8px 0 rgba(0, 0, 0, .3)"}} className="flex m-auto px-12 py-4 w-full font-extrabold text-center text-blue-950 text-6xl">
+						{currentPlayer.name}
+					</div>
+					<div className="mt-auto">
+						<div className="text-purple-950 font-mono text-lg uppercase">
+							{currentPlayer?.team?.franchise.prefix} | <span className={`${tierCssColors[currentPlayer.tier.name as keyof typeof tierCssColors]}`}>{currentPlayer.tier.name}</span>
+						</div>
+						<div className="m-6">
+							<img src={franchiseImages[currentPlayer?.team?.franchise.prefix ?? ""]} alt={currentPlayer?.name} className="w-full" />
+						</div>
+					</div>
+				</div>
+                <div className="w-8 bg-yellow-500" />
+                <div className="w-9/12">
                     <div className="flex flex-col m-8">
-                        <div className="text-3xl font-bold text-white tracking-widest">
-                            {currentPlayer.role ?? "RIFLER"}: {String(playerRatingIndex + 1).concat(nth(playerRatingIndex + 1))} Overall
-                        </div>
-                        <div className="m-4">
-                            SEASON {seasonAndMatchType.season} STATS
-                        </div>
-						<div className="flex gird grid-cols-4 gap-24 text-xl">
-							<div className="text-center">
-								<div>RATING</div>
-								<div>.6</div>
-							</div>
-							<div className="text-center">
-								<div>ADR</div>
-								<div>.6</div>
-							</div>
-							<div className="text-center">
-								<div>IMPACT</div>
-								<div>.6</div>
-							</div>
-							<div className="text-center">
-								<div>EF</div>
-								<div>.6</div>
-							</div>
+						<div className="text-4xl font-bold text-white tracking-widest">
+						✨ {currentPlayer.role ?? "RIFLER"}: {String(playerRatingIndex + 1).concat(nth(playerRatingIndex + 1))} Overall ✨
 						</div>
-						<div className="flex gird grid-cols-4 gap-24 text-xl">
-							<div className="text-center">
-								<div>CT RATING</div>
-								<div>.6</div>
-							</div>
-							<div className="text-center">
-								<div>T RATING</div>
-								<div>.6</div>
-							</div>
-							<div className="text-center">
-								<div>KAST</div>
-								<div>.6</div>
-							</div>
-							<div className="text-center">
-								<div>UTIL DMG</div>
-								<div>.6</div>
-							</div>
+						<div className="mx-2 pt-2 font-extrabold relative">
+							SEASON {seasonAndMatchType.season} STATS
+							<span className="pt-2 pl-4"><FaceitRank player={currentPlayer} /></span>					
+							<span className="ml-2 bg-gradient-to-r from-amber-300 to-pink-700 bg-clip-text text-transparent">
+								~{currentPlayer?.hltvTwoPointO?.toFixed(2)} HLTV 2.0
+							</span>			
 						</div>
+						<div className="my-2 p-2">
+							<div className="grid grid-cols-4 gap-24 text-xl">
+								<StatLine title="Matches" value={currentPlayerStats?.gameCount ?? "N/A"} />
+								<StatLine title="ADR" value={currentPlayerStats?.adr.toFixed(2) ?? "N/A"} />
+								<StatLine title="IMPACT" value={currentPlayerStats?.impact.toFixed(2) ?? "N/A"} />
+								<StatLine title="EF" value={currentPlayerStats?.ef.toFixed(2) ?? "N/A"} />
+							</div>
+							<div className="grid grid-cols-4 gap-24 text-xl">
+								<StatLine title="CT RATING" value={currentPlayerStats?.ctRating.toFixed(2) ?? "N/A"} />
+								<StatLine title="T RATING" value={currentPlayerStats?.TRating.toFixed(2) ?? "N/A"} />
+								<StatLine title="KAST" value={currentPlayerStats?.kast.toFixed(2) ?? "N/A"} />
+								<StatLine title="UTIL DMG" value={currentPlayerStats?.utilDmg.toFixed(2) ?? "N/A"} />
+							</div>
+						</div>				
 						<div>
-							<Containers.StandardContentBox>
-								<PlayerRatings player={currentPlayer} stats={currentPlayerStats!} />
-							</Containers.StandardContentBox>
+							<PlayerRatings player={currentPlayer} stats={currentPlayerStats!} options={{dontShowWarnings: true}} />	
 						</div>
-						<div>
-							ACCOLADES
+						<div className="m-4 pt-4 font-extrabold uppercase">
 							<ul>
-								<li>Can touch their toes!</li>
-								<li>Throws Util really good</li>
-								<li>Eats Breakfast usually</li>
-								<li>MVP once</li>
+								<li>⭐ Can touch their toes!</li>
+								<li>⭐ Throws Util really good</li>
+								<li>⭐ Eats Breakfast usually</li>
+								<li>⭐ MVP once</li>
+								<li>⭐ This section still a WIP</li>
 							</ul>
 						</div>
+						<div className="flex grid-cols-3 gap-2 item-center">							
+							<TeamSideRatingPie player={currentPlayer} />														
+							<KillsAssistsDeathsPie stats={currentPlayerStats!} />
+							{currentPlayer?.extendedStats &&
+								<div className="flex flex-col items-center justify-center">
+								{currentPlayer.extendedStats.chickens.killed} 
+								<div className="uppercase text-sm text-center">Chickens Killed</div>
+								<img className="m-auto h-20 w-20" src={chicken} alt="Chickens" />
+							</div>		
+}			
+						</div>
                     </div>
+					<div className="text-xs text-gray-500 m-0.5 pl-2 p-0.5 italic">
+							Designed by skrunkly
+					</div>
                 </div>
+				<div>
+					<div className="flex flex-col items-center mt-8">
+						{cscPlayerProfile?.map((item, index) => (
+							<React.Fragment key={index}>
+								<div
+									className={`w-4 h-4 rounded-full ${
+										activeTab === index ? "bg-purple-500" : "bg-gray-400"
+									}`}
+									onClick={() => setActiveTab(index)}
+									style={{ cursor: "pointer" }}
+								></div>
+								{index < cscPlayerProfile.length - 1 && (
+									<div className="w-1 bg-gray-400 text-xs relative" style={{ height: "2rem" }}> 
+										<div className="absolute left-4 -top-4">{item.rating.toFixed(2)}</div>
+									</div>
+								)}
+							</React.Fragment>
+						))}
+					</div>
+				</div>
             </div>
-        </Container>
+        </div>
 	);
 }

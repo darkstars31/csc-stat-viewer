@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import * as React from "react";
 import { Container } from "../common/components/container";
 import { useDataContext } from "../DataContext";
@@ -6,8 +8,6 @@ import dayjs from "dayjs";
 import { Loading } from "../common/components/loading";
 import { franchiseImages } from "../common/images/franchise";
 import { Match } from "../models/matches-types";
-
-
 
 export const Pickems = () => {
     const x = {
@@ -86,8 +86,7 @@ export const Pickems = () => {
     const [ selectedMatches, setSelectedMatches ] = React.useState<{ [key: string]: { teamId: number, teamName: string} | null }>(x);
     const [ selectedTimeframe, setSelectedTimeframe ] = React.useState<'past' | 'current' | 'future'>('current');
 
-    const currentDate = dayjs("02/18/2025").add(21, "hours").add(1, "minute")
-    console.info("currentDate", currentDate);   
+    const currentDate = dayjs("02/18/2025").add(21, "hours").add(1, "minute") 
 
     const hasMatchStarted = React.useCallback((matchDate: Date) => {
         return dayjs(matchDate).isBefore(currentDate);
@@ -120,7 +119,6 @@ export const Pickems = () => {
     const futrueMatchWeeks = Object.keys(matchesByMatchday).filter((matchDate) =>
         dayjs(matchDate).isAfter(currentDate, 'week')
     );
-    console.info("filtered match weeks", pastMatchWeeks, currentMatchWeek, futrueMatchWeeks);
 
     const handleSelection = (matchId: string, selected: { teamId: number; teamName: string }) => {
         setSelectedMatches((prev) => ({
