@@ -77,6 +77,7 @@ export type WeaponKills = {
 	Knife: number;
 	AWP: number;
 	"SSG 08": number;
+	"Zeus x27": number;
 };
 
 export type HitboxTags = {

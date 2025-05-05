@@ -2,7 +2,6 @@ import * as React from "react";
 import { Container } from "../common/components/container";
 import { teamNameTranslator, getPlayerRatingIndex, PlayerTypes } from "../common/utils/player-utils";
 import chicken from "../assets/images/chicken.png";
-import { useLocation, useRoute, useSearch } from "wouter";
 import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
 import { PlayerRatings } from "./player/playerRatings";
@@ -10,10 +9,10 @@ import { nth } from "../common/utils/string-utils";
 import { getTeammates } from "../common/utils/franchise-utils";
 import { FaceitRank } from "../common/components/faceitRank";
 import { useFetchPlayerProfile } from "../dao/analytikill";
-import { useNotificationsContext } from "../NotificationsContext";
 
 import { franchiseImages } from "../common/images/franchise";
 import { useCscStatsProfileTrendGraph } from "../dao/cscProfileTrendGraph";
+import { useRoute } from "wouter";
 
 const TeamSideRatingPie = React.lazy(() =>import('../common/components/teamSideRatingPie').then(module => ({default: module.TeamSideRatingPie})));
 const KillsAssistsDeathsPie = React.lazy(() =>import('../common/components/killAssetDeathPie').then(module => ({default: module.KillsAssistsDeathsPie})));
@@ -26,14 +25,8 @@ const StatLine = ({ title, value}: { title: string, value: number | string}) => 
 
 
 export function GraphicsPlayer() {
-	const [, setLocation] = useLocation();
-	const queryParams = new URLSearchParams(useSearch());
-	const divRef = React.useRef<HTMLDivElement>(null);
 	const [, params] = useRoute("/graphics/players/:id");
 	const { players = [], franchises = [], loading, seasonAndMatchType, tiers, loggedinUser } = useDataContext();
-	const { addNotification } = useNotificationsContext();
-	const [ showProfile, setShowProfile ] = React.useState(false);
-	const [ activeTab, setActiveTab ] = React.useState<number>(0);
 
 	const nameParam = decodeURIComponent(params?.id ?? "");
 	const nameFromUrl = window.location.href.split("/").pop();
@@ -68,16 +61,6 @@ export function GraphicsPlayer() {
 		return <Container>An error occured. Player could not found. Please inform Camps of this error.</Container>;
 	}
 
-	if ( currentPlayer === loggedinUser && !isLoadingPlayerProfile && Object.keys(playerProfile).length === 0 ) {
-		addNotification({
-			id: "FillOutProfile",
-			title: "It Looks like your profile is empty.",
-			subText: "Click here to go to your profile.",
-			shouldNewTab: false,
-			href: "/profile",
-		})
-	}
-
 	const teamAndFranchise =
 		currentPlayer?.team?.franchise ?
 			`${currentPlayer?.team?.franchise.name} (${currentPlayer?.team?.franchise.prefix}) > ${currentPlayer?.team?.name}`
@@ -93,27 +76,82 @@ export function GraphicsPlayer() {
 		: "";
 
 	const tierCssColors = {
-		Recruit: "text-red-800",
-		Prospect: "text-orange-800",
-		Contender: "text-yellow-800",
-		Challenger: "text-green-800",
-		Elite: "text-blue-800",
-		Premier: "text-purple-800",
+		Recruit: "text-red-700",
+		Prospect: "text-orange-700",
+		Contender: "text-yellow-700",
+		Challenger: "text-green-700",
+		Elite: "text-blue-700",
+		Premier: "text-purple-700",
 	}
 
+	const gradientColors = {
+		Recruit: "from-gray-950 via-gray-900 to-red-950",
+		Prospect: "from-gray-950 via-gray-900 to-orange-950",
+		Contender: "from-gray-950 via-gray-900 to-yellow-950",
+		Challenger: "from-gray-950 via-gray-900 to-green-950",
+		Elite: "from-gray-950 via-gray-900 to-blue-950",
+		Premier: "from-gray-950 via-gray-900 to-purple-950",
+	}
+
+	const playerTypesShortHand = {
+		[PlayerTypes.TEMPSIGNED]: "SUB",
+		[PlayerTypes.DRAFT_ELIGIBLE]: "DE",
+		[PlayerTypes.FREE_AGENT]: "FA",
+		[PlayerTypes.PERMANENT_FREE_AGENT]: "PFA",
+	}
+
+	const gameCount = currentPlayerStats?.gameCount ?? 0;
+
+	const accolades = [
+		"⭐ Can touch their toes!",
+		"⭐ Throws Util real good",
+		"⭐ Eats Breakfast usually",
+		"⭐ Has Legs",
+		currentPlayer.stats.clutchR > .1 ? `⭐ Clutch God` : undefined,
+		(currentPlayer.stats.fAssists) > 3 ? `⭐ Flashbang Picasso - ${currentPlayer.stats.fAssists / gameCount} flash assists per game` : undefined,
+		(currentPlayer.extendedStats.weaponKillSubTypes.grenade / gameCount) > 2 ? `⭐ Utility Maniac - ${currentPlayer.extendedStats.weaponKillSubTypes.grenade / gameCount} utility kills` : undefined,
+		((currentPlayer.extendedStats.weaponKills.Knife ?? 0) / gameCount) > 0.5 ? `⭐ Stabber Extraordinaire - ${currentPlayer.extendedStats.weaponKills.Knife! / gameCount} knife kills per game` : undefined,
+		((currentPlayer.extendedStats.weaponKills["Zeus x27"] ?? 0) / gameCount) > 0.5 ? `⭐ Zeus Abuser ${currentPlayer.extendedStats.weaponKills["Zeus x27"]!}` : undefined,
+		(currentPlayer.extendedStats.trackedObj.selfKills) > 0 ? `⭐ Self-Sabotage Specialist - ${currentPlayer.extendedStats.trackedObj.selfKills} self-inflicted deaths` : undefined,
+		currentPlayer.stats.hs > .5 ? `⭐ Big Head MODE ACTIVATED - ${currentPlayer.stats.hs.toFixed(2)} percentage` : undefined,
+		currentPlayer.stats.kills - currentPlayer.stats.deaths > 0 ? `⭐ Kills more than they die - positive k/d $()` : undefined,
+		(currentPlayer.extendedStats.trackedObj.wallBangKills / gameCount) > 1.2 ? `⭐ What wall? - ${currentPlayer.extendedStats.trackedObj.wallBangKills} kills through walls` : undefined,
+		(currentPlayer.extendedStats.trackedObj.noScopesKills / gameCount) > 2 ? `⭐ No Crosshairs required - ${currentPlayer.extendedStats.trackedObj.noScopesKills} no scopes` : undefined,
+		(currentPlayer.extendedStats.trackedObj.airborneKills / gameCount) > 2 ? `⭐ Blue Angel Flying Mac10 Squadon` : undefined,
+		(currentPlayer.extendedStats.trackedObj.diedToBomb) > 5 ? `⭐ Doesn't understand Bomb Radius` : undefined,
+		(currentPlayer.extendedStats.trackedObj.bombsDefused / gameCount) > 3 ? `⭐ The Red Wire Award w/ ${currentPlayer.extendedStats.trackedObj.bombsDefused / gameCount} defuses` : undefined,
+		(currentPlayer.extendedStats.trackedObj.bombsPlanted / gameCount) > 5 ? `⭐ Designated Bomb Carrier w/ ${currentPlayer.extendedStats.trackedObj.bombsPlanted / gameCount} plants` : undefined,
+		(currentPlayer.extendedStats.trackedObj.smokeKills / gameCount) > 2 ? `⭐ The Smoke Criminal w/ ${currentPlayer.extendedStats.trackedObj.smokeKills / gameCount} kills through smoke` : undefined,
+		(currentPlayer.extendedStats.trackedObj.ninjaDefuses / gameCount) > 0.7 ? `⭐ Certified Ninja @ ${(currentPlayer.extendedStats.trackedObj.ninjaDefuses / gameCount)} defuses per game` : undefined,
+		`⭐ ${currentPlayer.extendedStats.trackedObj.mvpCount} Time Round MVP`,
+		(currentPlayer.extendedStats.trackedObj.teamKills / gameCount > 0.5 ? `⭐ Should be more careful which direction their gun is pointed - ${currentPlayer.extendedStats.trackedObj.teamKills} Team Kills` : undefined),
+	].filter(Boolean);
+
+	const randomizedAccolades = accolades.sort(() => Math.random() - 0.5).slice(0, 4);
+
+	const teamPrefixOrType = currentPlayer?.team?.franchise.prefix ?? playerTypesShortHand[currentPlayer.type as keyof typeof playerTypesShortHand];
+
 	return (
-        <div className="m-8 bg-gradient-to-b from-gray-900 to-red-950 text-white rounded-lg">
+        <div className={`m-8 bg-gradient-to-b from-gray-900 ${gradientColors[currentPlayer.tier.name as keyof typeof tierCssColors]} text-white rounded-lg`}>
             <div className="vh-100 flex">
 				<div className="w-2/12 bg-gray-300 text-center rounded-l-lg flex flex-col justify-between">
-					<div style={{writingMode: "vertical-lr", textOrientation: "upright", textShadow: "4px 4px 0 rgba(0, 0, 0, .5), 8px 8px 0 rgba(0, 0, 0, .3)"}} className="flex m-auto px-12 py-4 w-full font-extrabold text-center text-blue-950 text-6xl">
+					<div style={{writingMode: "vertical-lr", textOrientation: "upright", textShadow: "4px 4px 0 rgba(0, 0, 0, .5), 8px 8px 0 rgba(0, 0, 0, .3)"}} className={`flex m-auto px-12 py-4 w-full font-extrabold text-center text-blue-950 ${ currentPlayer.name.length < 10 ? "text-6xl" : "text-5xl"}`}>
 						{currentPlayer.name}
 					</div>
 					<div className="mt-auto">
-						<div className="text-purple-950 font-mono text-lg uppercase">
-							{currentPlayer?.team?.franchise.prefix} | <span className={`${tierCssColors[currentPlayer.tier.name as keyof typeof tierCssColors]}`}>{currentPlayer.tier.name}</span>
+						<div className="text-purple-950 font-mono text-lg font-extrabold uppercase">
+							{teamPrefixOrType}|<span className={`${tierCssColors[currentPlayer.tier.name as keyof typeof tierCssColors]}`}>{currentPlayer.tier.name}</span>
 						</div>
 						<div className="m-6">
-							<img src={franchiseImages[currentPlayer?.team?.franchise.prefix ?? ""]} alt={currentPlayer?.name} className="w-full" />
+							{ currentPlayer?.team?.franchise.prefix ? 
+								<img src={franchiseImages[currentPlayer?.team?.franchise.prefix ?? ""]} alt={currentPlayer?.name} className="w-full" />
+								:
+								<img
+										className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px]"
+										src={currentPlayer?.avatarUrl}
+										alt="Discord PFP Missing"
+									/>
+							}
 						</div>
 					</div>
 				</div>
@@ -149,11 +187,9 @@ export function GraphicsPlayer() {
 						</div>
 						<div className="m-4 pt-4 font-extrabold uppercase">
 							<ul>
-								<li>⭐ Can touch their toes!</li>
-								<li>⭐ Throws Util really good</li>
-								<li>⭐ Eats Breakfast usually</li>
-								<li>⭐ MVP once</li>
-								<li>⭐ This section still a WIP</li>
+								{randomizedAccolades.map((accolade, index) => (
+									<li key={index}>{accolade}</li>
+								))}
 							</ul>
 						</div>
 						<div className="flex grid-cols-3 gap-2 item-center">							
@@ -174,13 +210,11 @@ export function GraphicsPlayer() {
                 </div>
 				<div>
 					<div className="flex flex-col items-center mt-8">
-						{cscPlayerProfile?.map((item, index) => (
+						{cscPlayerProfile?.reverse().slice(0, 15)?.map((item, index) => (
 							<React.Fragment key={index}>
 								<div
 									className={`w-4 h-4 rounded-full ${
-										activeTab === index ? "bg-purple-500" : "bg-gray-400"
-									}`}
-									onClick={() => setActiveTab(index)}
+										item.rating > 1.0 ? "bg-yellow-500" : "bg-gray-400"}`}								
 									style={{ cursor: "pointer" }}
 								></div>
 								{index < cscPlayerProfile.length - 1 && (
