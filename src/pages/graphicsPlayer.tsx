@@ -6,7 +6,6 @@ import { useDataContext } from "../DataContext";
 import { Loading } from "../common/components/loading";
 import { PlayerRatings } from "./player/playerRatings";
 import { nth } from "../common/utils/string-utils";
-import { getTeammates } from "../common/utils/franchise-utils";
 import { FaceitRank } from "../common/components/faceitRank";
 import { useFetchPlayerProfile } from "../dao/analytikill";
 
@@ -26,7 +25,7 @@ const StatLine = ({ title, value}: { title: string, value: number | string}) => 
 
 export function GraphicsPlayer() {
 	const [, params] = useRoute("/graphics/players/:id");
-	const { players = [], franchises = [], loading, seasonAndMatchType, tiers, loggedinUser } = useDataContext();
+	const { players = [], loading, seasonAndMatchType } = useDataContext();
 
 	const nameParam = decodeURIComponent(params?.id ?? "");
 	const nameFromUrl = window.location.href.split("/").pop();
@@ -65,7 +64,6 @@ export function GraphicsPlayer() {
 		currentPlayer?.team?.franchise ?
 			`${currentPlayer?.team?.franchise.name} (${currentPlayer?.team?.franchise.prefix}) > ${currentPlayer?.team?.name}`
 		:	teamNameTranslator(currentPlayer);
-	const teammates = getTeammates(currentPlayer, players, franchises);
 	const playerRatingIndex = getPlayerRatingIndex(currentPlayer, players) ?? 0;
 
 	const isSubbing =
@@ -113,17 +111,18 @@ export function GraphicsPlayer() {
 		((currentPlayer.extendedStats.weaponKills.Knife ?? 0) / gameCount) > 0.5 ? `⭐ Stabber Extraordinaire - ${currentPlayer.extendedStats.weaponKills.Knife! / gameCount} knife kills per game` : undefined,
 		((currentPlayer.extendedStats.weaponKills["Zeus x27"] ?? 0) / gameCount) > 0.5 ? `⭐ Zeus Abuser ${currentPlayer.extendedStats.weaponKills["Zeus x27"]!}` : undefined,
 		(currentPlayer.extendedStats.trackedObj.selfKills) > 0 ? `⭐ Self-Sabotage Specialist - ${currentPlayer.extendedStats.trackedObj.selfKills} self-inflicted deaths` : undefined,
-		currentPlayer.stats.hs > .5 ? `⭐ Big Head MODE ACTIVATED - ${currentPlayer.stats.hs.toFixed(2)} percentage` : undefined,
-		currentPlayer.stats.kills - currentPlayer.stats.deaths > 0 ? `⭐ Kills more than they die - positive k/d $()` : undefined,
+		currentPlayer.stats.hs > 50 ? `⭐ Big Head MODE ACTIVATED - ${currentPlayer.stats.hs.toFixed(2)} percentage` : undefined,
+		currentPlayer.stats.kills - currentPlayer.stats.deaths > 0 ? `⭐ Kills more than they die - positive k/d ${currentPlayer.stats.kills - currentPlayer.stats.deaths}` : undefined,
 		(currentPlayer.extendedStats.trackedObj.wallBangKills / gameCount) > 1.2 ? `⭐ What wall? - ${currentPlayer.extendedStats.trackedObj.wallBangKills} kills through walls` : undefined,
 		(currentPlayer.extendedStats.trackedObj.noScopesKills / gameCount) > 2 ? `⭐ No Crosshairs required - ${currentPlayer.extendedStats.trackedObj.noScopesKills} no scopes` : undefined,
 		(currentPlayer.extendedStats.trackedObj.airborneKills / gameCount) > 2 ? `⭐ Blue Angel Flying Mac10 Squadon` : undefined,
 		(currentPlayer.extendedStats.trackedObj.diedToBomb) > 5 ? `⭐ Doesn't understand Bomb Radius` : undefined,
 		(currentPlayer.extendedStats.trackedObj.bombsDefused / gameCount) > 3 ? `⭐ The Red Wire Award w/ ${currentPlayer.extendedStats.trackedObj.bombsDefused / gameCount} defuses` : undefined,
 		(currentPlayer.extendedStats.trackedObj.bombsPlanted / gameCount) > 5 ? `⭐ Designated Bomb Carrier w/ ${currentPlayer.extendedStats.trackedObj.bombsPlanted / gameCount} plants` : undefined,
-		(currentPlayer.extendedStats.trackedObj.smokeKills / gameCount) > 2 ? `⭐ The Smoke Criminal w/ ${currentPlayer.extendedStats.trackedObj.smokeKills / gameCount} kills through smoke` : undefined,
+		(currentPlayer.extendedStats.trackedObj.smokeKills / gameCount) > 2 ? `⭐ The Smoke Criminal w/ ${(currentPlayer.extendedStats.trackedObj.smokeKills / gameCount).toFixed(2)} kills through smoke` : undefined,
 		(currentPlayer.extendedStats.trackedObj.ninjaDefuses / gameCount) > 0.7 ? `⭐ Certified Ninja @ ${(currentPlayer.extendedStats.trackedObj.ninjaDefuses / gameCount)} defuses per game` : undefined,
 		`⭐ ${currentPlayer.extendedStats.trackedObj.mvpCount} Time Round MVP`,
+		(currentPlayer.stats.fiveK > 2) ?`⭐ ${currentPlayer.stats.fiveK} Aces` : undefined,
 		(currentPlayer.extendedStats.trackedObj.teamKills / gameCount > 0.5 ? `⭐ Should be more careful which direction their gun is pointed - ${currentPlayer.extendedStats.trackedObj.teamKills} Team Kills` : undefined),
 	].filter(Boolean);
 
@@ -132,10 +131,11 @@ export function GraphicsPlayer() {
 	const teamPrefixOrType = currentPlayer?.team?.franchise.prefix ?? playerTypesShortHand[currentPlayer.type as keyof typeof playerTypesShortHand];
 
 	return (
-        <div className={`m-8 bg-gradient-to-b from-gray-900 ${gradientColors[currentPlayer.tier.name as keyof typeof tierCssColors]} text-white rounded-lg`}>
+        <div className={`max-w-5xl m-8 bg-gradient-to-b from-gray-900 ${gradientColors[currentPlayer.tier.name as keyof typeof tierCssColors]} text-white rounded-lg`}>
             <div className="vh-100 flex">
 				<div className="w-2/12 bg-gray-300 text-center rounded-l-lg flex flex-col justify-between">
-					<div style={{writingMode: "vertical-lr", textOrientation: "upright", textShadow: "4px 4px 0 rgba(0, 0, 0, .5), 8px 8px 0 rgba(0, 0, 0, .3)"}} className={`flex m-auto px-12 py-4 w-full font-extrabold text-center text-blue-950 ${ currentPlayer.name.length < 10 ? "text-6xl" : "text-5xl"}`}>
+					<div style={{writingMode: "vertical-lr", textOrientation: "upright", textShadow: "4px 4px 0 rgba(0, 0, 0, .5), 8px 8px 0 rgba(0, 0, 0, .3)"}} 
+					className={`flex m-auto px-12 py-4 w-full font-extrabold text-center text-blue-950 ${ currentPlayer.name.length < 8 ? "text-6xl" : currentPlayer.name.length < 12 ? "text-5xl" : "text-4xl" }`}>
 						{currentPlayer.name}
 					</div>
 					<div className="mt-auto">

@@ -24,7 +24,7 @@ import { PlayerWeaponsExtended } from "./player/weapons-extended";
 import { Reputation } from "./player/reputation";
 import { CgProfile } from "react-icons/cg";
 import { PlayerProfile } from "./player/profile";
-import { Transition } from "@headlessui/react";
+import { Dialog, DialogPanel, DialogTitle, Transition } from "@headlessui/react";
 import { useFetchPlayerProfile } from "../dao/analytikill";
 import { ProfileJson } from "../models/profile-types";
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
@@ -32,6 +32,10 @@ import { useNotificationsContext } from "../NotificationsContext";
 import { PlayerPercentilesOne } from "./player/playerPercentilesOne";
 import { PlayerPercentilesTwo } from "./player/playerPercentilesTwo";
 import { FreeAgentPlayerLeague } from "./player/freeAgentPlayerLeague";
+import { TbPlayCardStarFilled } from "react-icons/tb";
+import { GraphicsPlayer } from "./graphicsPlayer";
+import { Button } from "../common/components/button";
+import { toPng } from 'html-to-image';
 
 const PlayerMatchHistory = React.lazy(() =>import('./player/matchHistory').then(module => ({default: module.PlayerMatchHistory})));
 const TeamSideRatingPie = React.lazy(() =>import('../common/components/teamSideRatingPie').then(module => ({default: module.TeamSideRatingPie})));
@@ -47,6 +51,7 @@ export function Player() {
 	const { players = [], franchises = [], loading, seasonAndMatchType, tiers, loggedinUser } = useDataContext();
 	const { addNotification } = useNotificationsContext();
 	const [ showProfile, setShowProfile ] = React.useState(false);
+	const [ isPlayerCardOpen, setIsPlayerCardOpen ] = React.useState(false);
 	const [ activeTab, setActiveTab ] = React.useState<number>(0);
 
 	const nameParam = decodeURIComponent(params?.id ?? "");
@@ -266,7 +271,16 @@ export function Player() {
 							<PlayerAwards player={currentPlayer} players={players} />
 						</div>
 						<div className="float-right w-4 sm:w-40 after:clear-both">
-							<ExternalPlayerLinks player={currentPlayer} />
+							<div className="flex flex-col justify-center items-center">
+								<ExternalPlayerLinks player={currentPlayer} />
+								<div className="pt-1 justify-end text-xs italic font-bold hover:cursor-pointer">
+									{/* <Link to={`/graphics/players/${currentPlayer.name}`}>
+										<TbPlayCardStarFilled className="inline" /> Player Card
+									</Link> */}
+									<a onClick={() => setIsPlayerCardOpen(true)}><TbPlayCardStarFilled className="inline" /> Player Card</a>
+								</div>
+							</div>
+							
 						</div>
 						{/* <div className="clear-both" /> */}
 					</div>
@@ -487,6 +501,61 @@ export function Player() {
 					</React.Suspense>
 				}
 			</Container>
+			<Dialog 
+				open={isPlayerCardOpen} 
+				onClose={() => setIsPlayerCardOpen(false)} 
+				className="fixed inset-0 z-10 overflow-y-auto"
+				>
+					<div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+						<DialogPanel className="space-y-4 p-12">
+						<DialogTitle className="font-bold bg-slate-600 rounded-lg bg-opacity-50 backdrop-blur-md text-white p-4 shadow-lg">
+							<div className="flex flex-row justify-between items-center">
+								<div>
+									Player Card
+								</div>
+								<div className="text-sm italic text-gray-400">
+									Work in Progress
+								</div>
+								<div>
+									<Button onClick={() => { 
+										const node = document.getElementById('player-card');
+										if (!node) return;
+										
+										toPng(node, {
+											filter: (node) => {
+												// Skip elements with external CSS
+												const tagName = node.tagName?.toLowerCase();
+												if (tagName === 'link') return false;
+												return true;
+											},
+											style: {
+												// Add any necessary styles inline
+												backgroundColor: 'transparent',
+											},
+											quality: 1.0
+										})
+										.then((dataUrl) => {
+											// Create a download link instead of appending to body
+											const link = document.createElement('a');
+											link.download = `${currentPlayer?.name ?? 'player'}-card.png`;
+											link.href = dataUrl;
+											link.click();
+										})
+										.catch((err) => {
+											console.error('Failed to export image:', err);
+										});
+									}}>
+										Export as PNG
+									</Button>
+								</div>
+							</div>
+						</DialogTitle>
+							<div id="player-card">
+								<GraphicsPlayer />
+							</div>						
+						</DialogPanel>
+					</div>
+			</Dialog>
 		</>
 	);
 }
