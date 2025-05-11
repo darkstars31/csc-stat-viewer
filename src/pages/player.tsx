@@ -36,6 +36,7 @@ import { TbPlayCardStarFilled } from "react-icons/tb";
 import { GraphicsPlayer } from "./graphicsPlayer";
 import { Button } from "../common/components/button";
 import { toPng } from 'html-to-image';
+import ReactGA from "react-ga4";
 
 const PlayerMatchHistory = React.lazy(() =>import('./player/matchHistory').then(module => ({default: module.PlayerMatchHistory})));
 const TeamSideRatingPie = React.lazy(() =>import('../common/components/teamSideRatingPie').then(module => ({default: module.TeamSideRatingPie})));
@@ -72,7 +73,7 @@ export function Player() {
 		window.scrollTo(0, 0);
 	}, []);
 
-	if (loading.isLoadingCscPlayers) {
+	if (loading.isLoadingCscPlayers && loading.isLoadingCscSeasonAndTiers && loading.isLoadingExtendedStats) {
 		return (
 			<Container>
 				<Loading />
@@ -83,6 +84,12 @@ export function Player() {
 	if (!currentPlayer) {
 		return <Container>An error occured. Player could not found. Please inform Camps of this error.</Container>;
 	}
+
+	ReactGA.send({
+		hitType: "pageview",
+		page: `/players/${currentPlayer.name}`,
+		title: `Player - ${currentPlayer.name}`,
+	});
 
 	if ( currentPlayer === loggedinUser && !isLoadingPlayerProfile && Object.keys(playerProfile).length === 0 ) {
 		addNotification({
@@ -549,10 +556,8 @@ export function Player() {
 									</Button>
 								</div>
 							</div>
-						</DialogTitle>
-							<div id="player-card">
-								<GraphicsPlayer />
-							</div>						
+						</DialogTitle>							
+							<GraphicsPlayer />											
 						</DialogPanel>
 					</div>
 			</Dialog>

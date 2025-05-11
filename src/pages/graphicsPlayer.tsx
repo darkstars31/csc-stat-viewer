@@ -131,7 +131,7 @@ export function GraphicsPlayer() {
 	const teamPrefixOrType = currentPlayer?.team?.franchise.prefix ?? playerTypesShortHand[currentPlayer.type as keyof typeof playerTypesShortHand];
 
 	return (
-        <div className={`max-w-5xl m-8 bg-gradient-to-b from-gray-900 ${gradientColors[currentPlayer.tier.name as keyof typeof tierCssColors]} text-white rounded-lg`}>
+        <div id="player-card" className={`max-w-5xl m-8 bg-gradient-to-b from-gray-900 ${gradientColors[currentPlayer.tier.name as keyof typeof tierCssColors]} text-white rounded-lg`}>
             <div className="vh-100 flex">
 				<div className="w-2/12 bg-gray-300 text-center rounded-l-lg flex flex-col justify-between">
 					<div style={{writingMode: "vertical-lr", textOrientation: "upright", textShadow: "4px 4px 0 rgba(0, 0, 0, .5), 8px 8px 0 rgba(0, 0, 0, .3)"}} 
@@ -201,7 +201,7 @@ export function GraphicsPlayer() {
 								<div className="uppercase text-sm text-center">Chickens Killed</div>
 								<img className="m-auto h-20 w-20" src={chicken} alt="Chickens" />
 							</div>		
-}			
+							}				
 						</div>
                     </div>
 					<div className="text-xs text-gray-500 m-0.5 pl-2 p-0.5 italic">

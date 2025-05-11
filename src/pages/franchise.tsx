@@ -6,6 +6,7 @@ import { Loading } from "../common/components/loading";
 import { PlayerRow } from "./franchise/player-row";
 import { franchiseImages } from "../common/images/franchise";
 import { FranchiseManagementNamePlate } from "./franchises/franchiseManagementNamePlate";
+import ReactGA from "react-ga4";
 
 export const COLUMNS = 4;
 
@@ -31,6 +32,12 @@ export function Franchise() {
 			</Container>
 		);
 	}
+
+	ReactGA.send({
+		hitType: "pageview",
+		page: `/franchises/${currentFranchise?.name}`,
+		title: `Franchise - ${currentFranchise?.name}`,
+	});
 
 	return (
 		<div

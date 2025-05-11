@@ -119,7 +119,7 @@ export function Router() {
 		ga = { ...ga, discordId: loggedinUser.discordId, user_id: loggedinUser.name };
 		ReactGA.gtag('config',`G-EZ2R1EHT34`, { user_id: loggedinUser?.discordId });
 	}
-	ReactGA.send(ga);
+	//ReactGA.send(ga);
 
 	return (
 		<>

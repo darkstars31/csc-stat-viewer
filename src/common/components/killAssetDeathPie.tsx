@@ -66,5 +66,5 @@ export function KillsAssistsDeathsPie({ stats }: Props) {
 		},
 	};
 
-	return <ReactECharts option={defaultOptions} className="w-full md:w-1/2" style={{ height: "180px" }} />;
+	return <ReactECharts opts={{renderer: 'svg'}} option={defaultOptions} className="w-full md:w-1/2" style={{ height: "180px" }} />;
 }

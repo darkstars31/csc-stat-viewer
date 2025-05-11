@@ -15,6 +15,7 @@ import { MapAnalysis } from "./team/mapBans";
 import { CompareLink } from "../common/components/compareLink";
 import { ToolTip } from "../common/utils/tooltip-utils";
 import { TeamMatchHistory } from "./player/matchHistory";
+import ReactGA from "react-ga4";
 
 export function Team() {
 	// zeslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -90,6 +91,12 @@ export function Team() {
 			avgMmr: 0,
 		} as any,
 	);
+
+	ReactGA.send({
+		hitType: "pageview",
+		page: `/franchises/team/${currentTeam?.name}`,
+		title: `Team - ${currentTeam?.name}`,
+	});
 
 	// zeslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { data: matches = [], isLoading: isLoadingMatches } = useFetchMatchesGraph(

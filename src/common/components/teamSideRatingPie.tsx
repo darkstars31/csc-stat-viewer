@@ -69,5 +69,5 @@ export function TeamSideRatingPie({ player }: Props) {
 		},
 	};
 
-	return <ReactECharts className="w-full md:w-1/2" option={defaultOptions} style={{ height: "180px" }} />;
+	return <ReactECharts opts={{renderer: 'svg'}} className="w-full md:w-1/2" option={defaultOptions} style={{ height: "180px" }} />;
 }
