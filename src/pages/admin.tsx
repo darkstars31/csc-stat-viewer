@@ -14,8 +14,8 @@ import papa from "papaparse";
 type approvalState = "APPROVED" | "PENDING" | "REJECTED";
 
 export function Admin(){
-
-    const { players, setGmRTLCsv } = useDataContext();
+    const [ hasUploadedGmRTLCsv, setHasUploadedGmRTLCsv ] = React.useState<boolean>(false);
+    const { players, gmRTLCsv, setGmRTLCsv } = useDataContext();
     const { data: posts = [], isLoading: isLoadingPosts } = useFetchArticles();
     const [ customServerNotice, setCustomServerNotice ] = React.useState<string>();
 
@@ -46,41 +46,76 @@ export function Admin(){
         )
     }
 
+    const onHandleGmRTLCsv = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file && file.type === "text/csv") {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const csvContent = event.target?.result;
+                if (csvContent) {
+                    papa.parse(csvContent as string, {
+                        header: true,
+                        skipEmptyLines: true,
+                        complete: (result) => {
+                            if (result.data.map((item) => {
+                                if (typeof item === "object" && item !== null && "MMR" in item && "CSC ID" in item) {
+                                    return true;
+                                }
+                                return false;
+                            })) {
+                                console.log("CSV parsed successfully");
+                                setGmRTLCsv(result.data as Record<string, string>[]);
+                                setHasUploadedGmRTLCsv(true);
+                            } else {
+                                console.error("CSV is missing required columns: MMR and CSC ID");
+                            }
+                        },
+                        error: (error: any) => {
+                            console.error("Error parsing CSV:", error);
+                        },
+                    });
+                }
+            };
+            reader.readAsText(file);
+        }
+    }
+    
     return (
         <Container>
             <div className="flex flex-row">
                 <div className="basis-1/3 space-y-3">
                     <div className="text-center">Upload CSV File</div>
-                    <p>GM RTL</p>
-                    <Input
-                        type="file"
-                        accept=".csv"
-                        className="w-full rounded-lg border border-gray-500 p-2"
-                        onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                                const reader = new FileReader();
-                                reader.onload = (event) => {
-                                    const csvContent = event.target?.result;
-                                    console.log("CSV Content:", csvContent);
-                                    if (csvContent) {
-                                        papa.parse(csvContent as string, {
-                                            header: true,
-                                            skipEmptyLines: true,
-                                            complete: (result) => {
-                                                console.log("Parsed CSV Data:", result.data);
-                                                setGmRTLCsv(result.data);
-                                            },
-                                            error: (error) => {
-                                                console.error("Error parsing CSV:", error);
-                                            },
-                                        });
-                                    }
-                                };
-                                reader.readAsText(file);
-                            }
+                    <p>GM RTL {gmRTLCsv?.length}</p>
+                    { !gmRTLCsv ? 
+                        <div className="w-full rounded-lg border border-gray-500 p-4 text-center h-24"
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => {
+                            e.preventDefault();
+                            const file = e.dataTransfer.files?.[0];
+                            onHandleGmRTLCsv({ target: { files: [file] } } as unknown as React.ChangeEvent<HTMLInputElement>);
                         }}
-                    />
+                    >
+                        Drag and drop your CSV file here, or click to select a file.
+                        <Input
+                            type="file"
+                            accept=".csv"
+                            className="hidden"
+                            onChange={onHandleGmRTLCsv}
+                        />
+                    </div>
+                    :
+                    <div>
+                        <div className="text-center">GM RTL CSV Uploaded</div>           
+                        <div className="w-full rounded-lg border border-gray-500 p-4 text-center">
+                            CSV file has been uploaded successfully.
+                            <div className="bg-yellow-400 text-black p-1 m-1 rounded">
+                               Warning. Please be careful not to expose MMR to the public.
+                            </div>
+                            <br />
+                            <button className="rounded bg-red-500 h-6 m-1 p-1" onClick={ () => setGmRTLCsv(null)}>Remove</button>
+                        </div>
+                    </div>
+                    }
                 </div>
                 <div className="basis-1/3">
                     Articles Under Review

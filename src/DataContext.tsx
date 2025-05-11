@@ -130,8 +130,6 @@ const useDataContextProvider = () => {
 				const statsOutOfTier = statsForPlayerByTier.length > 0 ?
 				statsForPlayerByTier.filter(statsWithTier => statsWithTier.tier !== cscPlayer.tier.name)
 					: null;
-
-				console.info( 'mmr', cscPlayer.name, (gmRTLCsv as any ?? []).find( p => p["CSC ID"] === cscPlayer.id))
 	
 				acc.push({
 					...cscPlayer,
@@ -192,6 +190,8 @@ const useDataContextProvider = () => {
 		[error]
 	);
 
+	console.info(loggedinUser, "Logged in User");
+
 	return {
 		discordUser,
 		setDiscordUser,
@@ -215,6 +215,7 @@ const useDataContextProvider = () => {
 		setEnableExperimentalHistorialFeature,
 		tiers,
 		setSeasonAndMatchType,
+		gmRTLCsv,
 		setGmRTLCsv,
 		errors,
 	};

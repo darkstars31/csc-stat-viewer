@@ -6,6 +6,7 @@ import { useDataContext } from "../DataContext";
 import { Link } from "wouter";
 import { isUserInScope } from "../common/utils/user-utils";
 import { FaToggleOff, FaToggleOn } from "react-icons/fa";
+import { PlayerTypes } from "../common/utils/player-utils";
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");
@@ -142,6 +143,20 @@ export function HeaderProfile() {
 							</button>								
 						)}
 					</MenuItem>
+					{ currentLoggedInPlayer && [PlayerTypes.UNROSTERED_AGM,PlayerTypes.UNROSTERED_GM].includes(currentLoggedInPlayer.type!)  && 
+						<MenuItem>
+							{({ active }) => (
+								<Link to={`#`}	>
+									<button disabled className={classNames(
+										active ? "bg-gray-100" : "",
+										"block px-4 py-2 text-sm text-gray-700 text-opacity-40 w-full",
+									)}>
+										GM Panel
+									</button>
+								</Link>								
+							)}
+						</MenuItem> 
+					}
 					{ isUserInScope("admin") && 
 						<MenuItem>
 							{({ active }) => (
