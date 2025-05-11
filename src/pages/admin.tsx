@@ -9,12 +9,13 @@ import { analytikillHttpClient } from "../dao/httpClients";
 import { queryClient } from "../App";
 import { Input } from "../common/components/forms/input";
 import { Button } from "../common/components/button";
+import papa from "papaparse";
 
 type approvalState = "APPROVED" | "PENDING" | "REJECTED";
 
 export function Admin(){
 
-    const { players } = useDataContext();
+    const { players, setGmRTLCsv } = useDataContext();
     const { data: posts = [], isLoading: isLoadingPosts } = useFetchArticles();
     const [ customServerNotice, setCustomServerNotice ] = React.useState<string>();
 
@@ -48,6 +49,39 @@ export function Admin(){
     return (
         <Container>
             <div className="flex flex-row">
+                <div className="basis-1/3 space-y-3">
+                    <div className="text-center">Upload CSV File</div>
+                    <p>GM RTL</p>
+                    <Input
+                        type="file"
+                        accept=".csv"
+                        className="w-full rounded-lg border border-gray-500 p-2"
+                        onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = (event) => {
+                                    const csvContent = event.target?.result;
+                                    console.log("CSV Content:", csvContent);
+                                    if (csvContent) {
+                                        papa.parse(csvContent as string, {
+                                            header: true,
+                                            skipEmptyLines: true,
+                                            complete: (result) => {
+                                                console.log("Parsed CSV Data:", result.data);
+                                                setGmRTLCsv(result.data);
+                                            },
+                                            error: (error) => {
+                                                console.error("Error parsing CSV:", error);
+                                            },
+                                        });
+                                    }
+                                };
+                                reader.readAsText(file);
+                            }
+                        }}
+                    />
+                </div>
                 <div className="basis-1/3">
                     Articles Under Review
                     <>

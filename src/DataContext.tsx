@@ -17,6 +17,7 @@ import { useCscSeasonMatches } from "./dao/cscSeasonMatches";
 import { queryClient } from "./App";
 
 const useDataContextProvider = () => {
+	const [gmRTLCsv, setGmRTLCsv] = React.useState<Record<string,string>[] | null>(null);
 	const [discordUser, setDiscordUser] = React.useState<DiscordUser | null>(null);
 	const { data: seasonAndTierConfig = undefined, isLoading: isLoadingCscSeasonAndTiers } = useCscSeasonAndTiersGraph();
 	const [ players, setPlayers ] = React.useState<Player[]>([]);
@@ -129,9 +130,12 @@ const useDataContextProvider = () => {
 				const statsOutOfTier = statsForPlayerByTier.length > 0 ?
 				statsForPlayerByTier.filter(statsWithTier => statsWithTier.tier !== cscPlayer.tier.name)
 					: null;
+
+				console.info( 'mmr', cscPlayer.name, (gmRTLCsv as any ?? []).find( p => p["CSC ID"] === cscPlayer.id))
 	
 				acc.push({
 					...cscPlayer,
+					...( gmRTLCsv ? { mmr: Number((gmRTLCsv as any ?? []).find( p => p["CSC ID"] === cscPlayer.id)?.MMR ?? 0) } : {}),
 					hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
 					role,
 					stats,
@@ -146,7 +150,7 @@ const useDataContextProvider = () => {
 			return acc;
 		}, [] as Player[]);
 		setPlayers(players);
-	}, [isLoadingCachedStats, isLoadingCscPlayersCache, enableExperimentalHistorialFeature, isLoadingExtendedStats]);
+	}, [isLoadingCachedStats, isLoadingCscPlayersCache, enableExperimentalHistorialFeature, isLoadingExtendedStats, gmRTLCsv]);
 	
 
 	// const tierNumber = {
@@ -211,6 +215,7 @@ const useDataContextProvider = () => {
 		setEnableExperimentalHistorialFeature,
 		tiers,
 		setSeasonAndMatchType,
+		setGmRTLCsv,
 		errors,
 	};
 };
