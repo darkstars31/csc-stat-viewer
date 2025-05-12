@@ -5,12 +5,21 @@ import { Input } from "../common/components/forms/input";
 import papa from "papaparse";
 import { useFetchFranchiseManagementIdsGraph } from "../dao/franchisesGraphQLDao";
 import { MdOutlineUploadFile } from "react-icons/md";
+import { set } from "lodash";
 
 export const GMPanel = () => {
+    const [ rtlUploadError, setRtlUploadError ] = React.useState<Error | null>(null);
+    const [ isDragOver, setIsDragOver ] = React.useState(false);
     const { loggedinUser, gmRTLCsv, setGmRTLCsv } = useDataContext();
     const { data: franchiseManagementIds, } = useFetchFranchiseManagementIdsGraph({ enabled: !!loggedinUser });
     const managementIds = franchiseManagementIds?.map( item => ([item.gm.id, item.agm.id,item.agms.map(agm => agm.id)]).flat()).filter(Boolean).flat() ?? [];
     
+    React.useEffect(() => {
+        setTimeout(() => {
+            setRtlUploadError(null);
+        }, 10000);
+    }, [rtlUploadError]);
+
     if( !managementIds.includes(loggedinUser?.id ?? "")){
         return (
             <Container>
@@ -20,12 +29,25 @@ export const GMPanel = () => {
     }
 
     const onHandleGmRTLCsv = (e: React.ChangeEvent<HTMLInputElement>) => {
+            setRtlUploadError(null);
+            setIsDragOver(false);
             const file = e.target.files?.[0];
-            if (file && file.type === "text/csv") {
+            if ( file && file.type === "text/csv") {
                 const reader = new FileReader();
                 reader.onload = (event) => {
-                    const csvContent = event.target?.result;
-                    if (csvContent) {
+                    const fileContent = event.target?.result;
+                    if (fileContent && typeof fileContent === "string" && fileContent.trim().length > 0) {
+                        const csvContent = fileContent.trim();
+                        const isCsv = csvContent.includes(",") && csvContent.split("\n").every(line => line.split(",").length > 1);
+
+                        if (!isCsv) {
+                            setRtlUploadError(new Error("The uploaded file does not appear to be a valid CSV file."));
+                            return;
+                        }
+                        if (!csvContent.includes("MMR") && !csvContent.includes("CSC ID")) {
+                            setRtlUploadError(new Error("CSV is missing required columns: MMR and CSC ID. Are you sure this is a GM RTL CSV?"));
+                            return;
+                        }
                         papa.parse(csvContent as string, {
                             header: true,
                             skipEmptyLines: true,
@@ -39,16 +61,22 @@ export const GMPanel = () => {
                                     console.log("CSV parsed successfully");
                                     setGmRTLCsv(result.data as Record<string, string>[]);
                                 } else {
+                                    setRtlUploadError(new Error("Welp that's a new one. Please show Campsite this error. ${error}"));
                                     console.error("CSV is missing required columns: MMR and CSC ID");
                                 }
                             },
                             error: (error: any) => {
+                                setRtlUploadError(error);
                                 console.error("Error parsing CSV:", error);
                             },
                         });
                     }
                 };
                 reader.readAsText(file);
+            } else {
+                if( file?.type !== "text/csv"){
+                    setRtlUploadError(new Error(`File uploaded was ${file?.type} and is not a valid CSV file. Please upload a valid GM RTL CSV file, found in #gm-documents`));
+                }
             }
         }
 
@@ -61,7 +89,8 @@ export const GMPanel = () => {
                           { !gmRTLCsv ? 
                               <div 
                                   className="w-full rounded-lg border-2 border-dashed border-gray-300 p-6 text-center h-32 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition"
-                                  onDragOver={(e) => e.preventDefault()}
+                                  onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); setRtlUploadError(null); }}
+                                  onDragLeave={(e => { e.preventDefault(); setIsDragOver(false); })}
                                   onDrop={(e) => {
                                       e.preventDefault();
                                       const file = e.dataTransfer.files?.[0];
@@ -96,6 +125,7 @@ export const GMPanel = () => {
                           </div>
                           }
                       </div>
+        {rtlUploadError && <div className="text-red-500">{rtlUploadError.message}</div>}
     </Container>
   );
 }

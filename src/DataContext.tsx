@@ -190,8 +190,6 @@ const useDataContextProvider = () => {
 		[error]
 	);
 
-	console.info(loggedinUser, "Logged in User");
-
 	return {
 		discordUser,
 		setDiscordUser,

@@ -18,6 +18,7 @@ export function HeaderProfile() {
 	const { data: franchiseManagementIds, } = useFetchFranchiseManagementIdsGraph({ enabled: !!currentLoggedInPlayer });
 	const managementIds = franchiseManagementIds?.map( item => ([item.gm.id, item.agm.id,item.agms.map(agm => agm.id)]).flat()).filter(Boolean).flat() ?? [];
 
+
 	const hoverBgColor = "bg-gray-100";
 
 	return (
