@@ -60,6 +60,11 @@ export const GMPanel = () => {
                                 })) {
                                     console.log("CSV parsed successfully");
                                     setGmRTLCsv(result.data as Record<string, string>[]);
+                                    // ReactGA.event({
+                                    //     category: "GM Panel",
+                                    //     action: "GM RTL CSV Uploaded",
+                                    //     label: `GM RTL CSV Uploaded with ${result.data.length} players`,                                      
+                                    // });
                                 } else {
                                     setRtlUploadError(new Error("Welp that's a new one. Please show Campsite this error. ${error}"));
                                     console.error("CSV is missing required columns: MMR and CSC ID");
@@ -126,6 +131,16 @@ export const GMPanel = () => {
                           }
                       </div>
         {rtlUploadError && <div className="text-red-500">{rtlUploadError.message}</div>}
+        <div className="text-sm mt-4">
+            <div className="uppercase font-extrabold text-xl">Troubleshooting</div>
+            <ul>
+                <li>
+                    <p>If you get an error while using Firefox related to "application/vnd.ms-excel", this is most likely related to this issue:</p>
+                    <p>If you are uncomfortable making registry edits as suggested in the article, using Chrome *should* work.</p>
+                    <a className="hover:text-blue-400" href="https://support.mozilla.org/en-US/questions/1401889" target="_blank">https://support.mozilla.org/en-US/questions/1401889</a>.
+                </li>
+            </ul>
+        </div>
     </Container>
   );
 }
