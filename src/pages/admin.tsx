@@ -14,7 +14,6 @@ import papa from "papaparse";
 type approvalState = "APPROVED" | "PENDING" | "REJECTED";
 
 export function Admin(){
-    const [ hasUploadedGmRTLCsv, setHasUploadedGmRTLCsv ] = React.useState<boolean>(false);
     const { players, gmRTLCsv, setGmRTLCsv } = useDataContext();
     const { data: posts = [], isLoading: isLoadingPosts } = useFetchArticles();
     const [ customServerNotice, setCustomServerNotice ] = React.useState<string>();
@@ -65,7 +64,6 @@ export function Admin(){
                             })) {
                                 console.log("CSV parsed successfully");
                                 setGmRTLCsv(result.data as Record<string, string>[]);
-                                setHasUploadedGmRTLCsv(true);
                             } else {
                                 console.error("CSV is missing required columns: MMR and CSC ID");
                             }

@@ -6,7 +6,7 @@ import { useDataContext } from "../DataContext";
 import { Link } from "wouter";
 import { isUserInScope } from "../common/utils/user-utils";
 import { FaToggleOff, FaToggleOn } from "react-icons/fa";
-import { PlayerTypes } from "../common/utils/player-utils";
+import { useFetchFranchiseManagementIdsGraph } from "../dao/franchisesGraphQLDao";
 
 function classNames(...classes: string[]) {
 	return classes.filter(Boolean).join(" ");
@@ -15,6 +15,10 @@ function classNames(...classes: string[]) {
 export function HeaderProfile() {
 	const { discordUser, players, enableExperimentalHistorialFeature, setEnableExperimentalHistorialFeature } = useDataContext();
 	const currentLoggedInPlayer = players.find(p => p.discordId === discordUser?.id);
+	const { data: franchiseManagementIds, } = useFetchFranchiseManagementIdsGraph({ enabled: !!currentLoggedInPlayer });
+	const managementIds = franchiseManagementIds?.map( item => ([item.gm.id, item.agm.id,item.agms.map(agm => agm.id)]).flat()).filter(Boolean).flat() ?? [];
+
+	const hoverBgColor = "bg-gray-100";
 
 	return (
 		<Menu as="div" className="relative inline-block text-left">
@@ -55,7 +59,7 @@ export function HeaderProfile() {
 							<Link to={`/profile`}>
 								<button
 									className={classNames(
-										active ? "bg-gray-100" : "",
+										active ? hoverBgColor : "",
 										"block px-4 py-2 text-sm text-gray-700 w-full",
 									)}
 								>
@@ -71,7 +75,7 @@ export function HeaderProfile() {
 									<Link to={`/players/${currentLoggedInPlayer?.name}`}>
 										<button
 											className={classNames(
-												active ? "bg-gray-100" : "",
+												active ? hoverBgColor : "",
 												"block px-4 py-2 text-sm text-gray-700 w-full",
 											)}
 										>
@@ -87,7 +91,7 @@ export function HeaderProfile() {
 									>
 										<button
 											className={classNames(
-												active ? "bg-gray-100" : "",
+												active ? hoverBgColor : "",
 												"block px-4 py-2 text-sm text-gray-700 w-full",
 											)}
 										>
@@ -101,7 +105,7 @@ export function HeaderProfile() {
 									<Link to={`/franchises/${currentLoggedInPlayer?.team?.franchise.name}`}>
 										<button
 											className={classNames(
-												active ? "bg-gray-100" : "",
+												active ? hoverBgColor : "",
 												"block px-4 py-2 text-sm text-gray-700 w-full",
 											)}
 										>
@@ -118,7 +122,7 @@ export function HeaderProfile() {
 								<Link to={`/servers`}>
 									<button
 										className={classNames(
-											active ? "bg-gray-100" : "",
+											active ? hoverBgColor : "",
 											"block px-4 py-2 text-sm text-gray-700 w-full",
 										)}
 									>
@@ -132,7 +136,7 @@ export function HeaderProfile() {
 						{({ active }) => (									
 							<button
 								className={classNames(
-									active ? "bg-gray-100" : "",
+									active ? hoverBgColor : "",
 									"block px-4 py-2 text-sm text-gray-700 w-full",
 								)}
 								onClick={() => {
@@ -143,13 +147,13 @@ export function HeaderProfile() {
 							</button>								
 						)}
 					</MenuItem>
-					{ currentLoggedInPlayer && [PlayerTypes.UNROSTERED_AGM,PlayerTypes.UNROSTERED_GM].includes(currentLoggedInPlayer.type!)  && 
+					{ managementIds.includes(currentLoggedInPlayer?.id ?? "") && 
 						<MenuItem>
 							{({ active }) => (
-								<Link to={`#`}	>
-									<button disabled className={classNames(
-										active ? "bg-gray-100" : "",
-										"block px-4 py-2 text-sm text-gray-700 text-opacity-40 w-full",
+								<Link to={`/gm`}	>
+									<button className={classNames(
+										active ? hoverBgColor : "",
+										"block px-4 py-2 text-sm text-gray-700 w-full",
 									)}>
 										GM Panel
 									</button>
@@ -162,7 +166,7 @@ export function HeaderProfile() {
 							{({ active }) => (
 								<Link to={`/admin`}	>
 									<button className={classNames(
-										active ? "bg-gray-100" : "",
+										active ? hoverBgColor : "",
 										"block px-4 py-2 text-sm text-gray-700 w-full",
 									)}>
 										Admin
@@ -175,7 +179,7 @@ export function HeaderProfile() {
 						{({ active }) => (
 							<button
 								className={classNames(
-									active ? "bg-gray-100" : "",
+									active ? hoverBgColor : "",
 									"block px-4 py-2 text-sm text-gray-700",
 									"w-full",
 								)}

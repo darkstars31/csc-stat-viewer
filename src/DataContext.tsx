@@ -133,7 +133,7 @@ const useDataContextProvider = () => {
 	
 				acc.push({
 					...cscPlayer,
-					...( gmRTLCsv ? { mmr: Number((gmRTLCsv as any ?? []).find( p => p["CSC ID"] === cscPlayer.id)?.MMR ?? 0) } : {}),
+					...( gmRTLCsv ? { mmr: Number((gmRTLCsv ?? []).find( p => p["CSC ID"] === cscPlayer.id)?.MMR ?? 0) } : {}),
 					hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
 					role,
 					stats,
