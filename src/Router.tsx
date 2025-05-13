@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Router as Wouter, Route, Switch, useLocation, Link } from "wouter";
+import { Router as Wouter, Route, Switch, useLocation, Link, useSearch } from "wouter";
 import { Container } from "./common/components/container";
 import {
 	Admin,
@@ -49,6 +49,7 @@ export function Router() {
 	const { isLoading, loading, discordUser, setDiscordUser, loggedinUser } = useDataContext();
 	const BASE_ROUTE = "";
 	const [location] = useLocation();
+	const params = useSearch();
 	const enableFeature = useEnableFeature("canRequestServers");
 
 	React.useEffect(() => {
@@ -116,10 +117,19 @@ export function Router() {
 		fetchUser();
 	}, [discordUser, setDiscordUser]);
 
+	React.useEffect(() => {
+			ReactGA.send({
+				hitType: "pageview",
+				page: `${location}${params ? `?${params}` : ""}`,
+				title: `${location}${params ? `?${params}` : ""}`,
+			});
+			document.title = `${location.split('/').at(-1)}${params ? `?${params}` : ""} - AnalytiKill`;			
+	}, [location, params]);
+
 	let ga: Record<string, string> = { hitType: "pageview", page: location, title: document.title };
 	if( loggedinUser?.discordId && loggedinUser?.name ) {
 		ga = { ...ga, discordId: loggedinUser.discordId, user_id: loggedinUser.name };
-		ReactGA.gtag('config',`G-EZ2R1EHT34`, { user_id: loggedinUser?.discordId });
+		ReactGA.gtag('config',`G-EZ2R1EHT34`, { discordId: loggedinUser?.discordId, user: loggedinUser?.name });
 	}
 	//ReactGA.send(ga);
 

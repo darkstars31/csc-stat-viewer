@@ -63,12 +63,12 @@ export function Player() {
 
 	const currentPlayer = players.find(p => p.name === nameParam || p.name === nameFromUrl);
 	const [ viewStatSelection, setViewStatSelection ] = React.useState<string | undefined>(currentPlayer?.tier.name);
-
+	
 	const currentPlayerStats = viewStatSelection === currentPlayer?.tier.name ? currentPlayer?.stats : currentPlayer?.statsOutOfTier?.find(s => s.tier === viewStatSelection)?.stats;
 	const currentPlayerTierOptions = [ currentPlayer?.tier.name, ...(currentPlayer?.statsOutOfTier ?? []).map( s => s.tier)].filter( item => item !== viewStatSelection)
 
 	const { data: playerProfile = {}, isLoading: isLoadingPlayerProfile } = useFetchPlayerProfile(currentPlayer?.discordId);
-	
+
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
@@ -84,12 +84,6 @@ export function Player() {
 	if (!currentPlayer) {
 		return <Container>An error occured. Player could not found. Please inform Camps of this error.</Container>;
 	}
-
-	ReactGA.send({
-		hitType: "pageview",
-		page: `/players/${currentPlayer.name}`,
-		title: `Player - ${currentPlayer.name}`,
-	});
 
 	if ( currentPlayer === loggedinUser && !isLoadingPlayerProfile && Object.keys(playerProfile).length === 0 ) {
 		addNotification({
