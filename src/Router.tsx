@@ -118,12 +118,12 @@ export function Router() {
 	}, [discordUser, setDiscordUser]);
 
 	React.useEffect(() => {
+			document.title = `${location.split('/').at(-1)}${params ? `?${params}` : ""} - AnalytiKill`;
 			ReactGA.send({
 				hitType: "pageview",
 				page: `${location}${params ? `?${params}` : ""}`,
-				title: `${location}${params ? `?${params}` : ""}`,
-			});
-			document.title = `${location.split('/').at(-1)}${params ? `?${params}` : ""} - AnalytiKill`;			
+				title: document.title,
+			});		
 	}, [location, params]);
 
 	let ga: Record<string, string> = { hitType: "pageview", page: location, title: document.title };

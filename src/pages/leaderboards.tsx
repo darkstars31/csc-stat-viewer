@@ -9,7 +9,7 @@ import { Toggle } from "../common/components/toggle";
 
 // Lazy load the leaderboard components
 const GeneralLeaderBoards = React.lazy(() => import('./leaderboards/general').then(module => ({default: module.GeneralLeaderBoards})));
-const Chickens = React.lazy(() => import('./leaderboards/chickens').then(module => ({default: module.Chickens})));
+const ExtendedLeaderboards = React.lazy(() => import('./leaderboards/extended').then(module => ({default: module.ExtendedLeaderboards})));
 const WeaponLeaderboards = React.lazy(() => import('./leaderboards/weapons').then(module => ({default: module.WeaponLeaderboards})));
 
 export function LeaderBoards() {
@@ -110,6 +110,7 @@ export function LeaderBoards() {
 			</Container>
 		);
 	}
+	console.info( selectedPage)
 
 	return (
 		<Container>
@@ -181,7 +182,7 @@ export function LeaderBoards() {
 									<Toggle checked={filterThreeGameMinumum} onChange={setFilterThreeGameMinumum} />
 								</div>
 							</div>
-							{ selectedPage === "extended" &&
+							{ selectedPage !== "general" &&
 							<div className="flex flex-row justify-between">
 								<label title="Order By" className="pr-1 leading-4">
 									Per Match
@@ -216,8 +217,8 @@ export function LeaderBoards() {
 					<div className="pt-6">
 						<div className="flex flex-row flex-wrap gap-6">
 							{selectedPage === "general" && <GeneralLeaderBoards players={playerData} limit={limit} />}
-							{selectedPage === "extended" && <Chickens players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
-							{selectedPage === "weapons" && <WeaponLeaderboards players={playerData} limit={limit} />}
+							{selectedPage === "extended" && <ExtendedLeaderboards players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
+							{selectedPage === "weapons" && <WeaponLeaderboards players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
 						</div>
 					</div>
 				)}

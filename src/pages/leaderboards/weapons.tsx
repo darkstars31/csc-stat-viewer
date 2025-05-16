@@ -4,7 +4,7 @@ import { StatsLeaderBoard } from "./stats";
 import { WeaponKills } from "../../models/extended-stats";
 import { cs2icons } from "../../common/images/cs2icons";
 
-export function WeaponLeaderboards({ players, limit }: { players: Player[]; limit: number }) {
+export function WeaponLeaderboards({ players, limit }: { players: Player[]; limit: number, filterExtendedStatsByGamesPlayed?: boolean }) {
 	const weaponStrings = [
 		"Zeus x27",
 		"Knife",

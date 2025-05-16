@@ -90,7 +90,7 @@ export function PlayerTable({ players }: Props) {
 					totalCount={players.length}
 					components={{
 						Table: (props) => <table className="table-auto w-full font-light text-sx md:text-sm" {...props} />,
-						TableHead: (props) => <thead className="border-b font-medium dark:border-neutral-500" {...props} />,
+						TableHead: (props) => { return <thead className="border-b font-medium dark:border-neutral-500" {...props} />; },
 						TableRow: (props) => {
 								return <tr className="w-full cursor-pointer border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-neutral-600" onClick={() => setLocation(`/players/${encodeURIComponent(props.item.name)}`)}  {...props} /> },
 					}}

@@ -6,9 +6,10 @@ import { StatsLeaderBoard } from "./stats";
 import { _sort, _sortByGameCount } from "../../common/utils/player-utils";
 import { cs2killfeedIcons } from "../../common/images/cs2icons";
 
-export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: { players: Player[]; limit?: number, filterExtendedStatsByGamesPlayed?: boolean }) {
+export function ExtendedLeaderboards({ players, limit, filterExtendedStatsByGamesPlayed }: { players: Player[]; limit?: number, filterExtendedStatsByGamesPlayed?: boolean }) {
 	const playersWithExtendedStats = players.filter(p => p.extendedStats);
 	const sortingFunction = filterExtendedStatsByGamesPlayed ? _sortByGameCount : _sort;
+	const toFixedAmount = filterExtendedStatsByGamesPlayed ? 2 : 0;
 
 	const totalChickenKills = playersWithExtendedStats.reduce(
 		(total, player) => total + player.extendedStats.chickens.killed,
@@ -24,7 +25,7 @@ export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: {
 	const chickenLeaderBoard = sortingFunction(playersWithExtendedStats, "extendedStats.chickens.killed", limit, "desc").map(
 		player => ({
 			player: player,
-			value: player.extendedStats.chickens.killed.toFixed(2),
+			value: player.extendedStats.chickens.killed.toFixed(toFixedAmount),
 		}),
 	);
 	const ninjaLeaderBoard = sortingFunction(
@@ -34,7 +35,7 @@ export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: {
 		"desc",
 	).map(player => ({
 		player: player,
-		value: player.extendedStats.trackedObj.ninjaDefuses.toFixed(2),
+		value: player.extendedStats.trackedObj.ninjaDefuses.toFixed(toFixedAmount),
 	}));
 	const noScopesLeaderBoard = sortingFunction(
 		playersWithExtendedStats,
@@ -43,7 +44,7 @@ export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: {
 		"desc",
 	).map(player => ({
 		player: player,
-		value: player.extendedStats.trackedObj.noScopesKills.toFixed(2),
+		value: player.extendedStats.trackedObj.noScopesKills.toFixed(toFixedAmount),
 	}));
 	const wallBangLeaderBoard = sortingFunction(
 		playersWithExtendedStats,
@@ -52,7 +53,7 @@ export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: {
 		"desc",
 	).map(player => ({
 		player: player,
-		value: player.extendedStats.trackedObj.wallBangKills.toFixed(2),
+		value: player.extendedStats.trackedObj.wallBangKills.toFixed(toFixedAmount),
 	}));
 	const smokeKillLeaderBoard = sortingFunction(
 		playersWithExtendedStats,
@@ -61,37 +62,37 @@ export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: {
 		"desc",
 	).map(player => ({
 		player: player,
-		value: player.extendedStats.trackedObj.smokeKills.toFixed(2),
+		value: player.extendedStats.trackedObj.smokeKills.toFixed(toFixedAmount),
 	}));
 	const airborneKills = sortingFunction(playersWithExtendedStats, "extendedStats.trackedObj.airborneKills", limit, "desc").map(
 		player => ({
 			player: player,
-			value: player.extendedStats.trackedObj.airborneKills.toFixed(2),
+			value: player.extendedStats.trackedObj.airborneKills.toFixed(toFixedAmount),
 		}),
 	);
 
 	const bombPlants = sortingFunction(playersWithExtendedStats, "extendedStats.trackedObj.bombsPlanted", limit, "desc").map(
 		player => ({
 			player: player,
-			value: player.extendedStats.trackedObj.bombsPlanted.toFixed(2),
+			value: player.extendedStats.trackedObj.bombsPlanted.toFixed(toFixedAmount),
 		}),
 	);
 	const defuses = sortingFunction(playersWithExtendedStats, "extendedStats.trackedObj.bombsDefused", limit, "desc").map(
 		player => ({
 			player: player,
-			value: player.extendedStats.trackedObj.bombsDefused.toFixed(2),
+			value: player.extendedStats.trackedObj.bombsDefused.toFixed(toFixedAmount),
 		}),
 	);
 	const diedToBomb = sortingFunction(playersWithExtendedStats, "extendedStats.trackedObj.diedToBomb", limit, "desc").map(
 		player => ({
 			player: player,
-			value: player.extendedStats.trackedObj.diedToBomb.toFixed(2),
+			value: player.extendedStats.trackedObj.diedToBomb.toFixed(toFixedAmount),
 		}),
 	);
 	const mvpStars = sortingFunction(playersWithExtendedStats, "extendedStats.trackedObj.mvpCount", limit, "desc").map(
 		player => ({
 			player: player,
-			value: player.extendedStats.trackedObj.mvpCount.toFixed(2),
+			value: player.extendedStats.trackedObj.mvpCount.toFixed(toFixedAmount),
 		}),
 	);
 
@@ -102,7 +103,7 @@ export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: {
 		"desc",
 	).map(player => ({
 		player: player,
-		value: player.extendedStats.trackedObj.teamKills.toFixed(2),
+		value: player.extendedStats.trackedObj.teamKills.toFixed(toFixedAmount),
 	}));
 	const selfKillLeaderBoard = sortingFunction(
 		playersWithExtendedStats,
@@ -111,7 +112,7 @@ export function Chickens({ players, limit, filterExtendedStatsByGamesPlayed }: {
 		"desc",
 	).map(player => ({
 		player: player,
-		value: player.extendedStats.trackedObj.selfKills.toFixed(2),
+		value: player.extendedStats.trackedObj.selfKills.toFixed(toFixedAmount),
 	}));
 
 	const subtitle = filterExtendedStatsByGamesPlayed ? `Per Match` : ``;

@@ -36,7 +36,7 @@ import { TbPlayCardStarFilled } from "react-icons/tb";
 import { GraphicsPlayer } from "./graphicsPlayer";
 import { Button } from "../common/components/button";
 import { toPng } from 'html-to-image';
-import ReactGA from "react-ga4";
+import { MdKeyboardArrowDown } from "react-icons/md";
 
 const PlayerMatchHistory = React.lazy(() =>import('./player/matchHistory').then(module => ({default: module.PlayerMatchHistory})));
 const TeamSideRatingPie = React.lazy(() =>import('../common/components/teamSideRatingPie').then(module => ({default: module.TeamSideRatingPie})));
@@ -73,7 +73,9 @@ export function Player() {
 		window.scrollTo(0, 0);
 	}, []);
 
-	if (loading.isLoadingCscPlayers && loading.isLoadingCscSeasonAndTiers && loading.isLoadingExtendedStats) {
+	if ([loading.isLoadingCscPlayers, 
+		loading.isLoadingCscSeasonAndTiers, 
+		loading.isLoadingCachedStats].some(Boolean)) {
 		return (
 			<Container>
 				<Loading />
@@ -222,11 +224,11 @@ export function Player() {
 													className={`transition ease-in-out hover:scale-105 duration-100`}
 												>
 													{viewStatSelection}
-													{currentPlayer?.tier.name === viewStatSelection ? "" : "*"}
+													{currentPlayer?.tier.name === viewStatSelection ? "" : "*"} { currentPlayerTierOptions.length > 0 && <MdKeyboardArrowDown className="inline" /> }
 												</PopoverButton>
 												<PopoverPanel
 													anchor="bottom"
-													className="border-gray-800 divide-y divide-white/5 rounded-xl bg-midnight2 text-sm/6 transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0"
+													className="border-gray-800 divide-y divide-white/5 rounded-xl bg-gray-700 bg-opacity-50 text-sm/6 transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0"
 												>
 													<div className="p-2 shadow-inner">
 														{currentPlayerTierOptions.map(tier => (
@@ -300,7 +302,7 @@ export function Player() {
 						</Transition>
 					)}
 					{viewStatSelection !== currentPlayer.tier.name && (
-						<div className="text-sm italic font-bold text-gray-600 text-center w-full">
+						<div className="text-sm italic font-bold text-gray-500 text-center w-full">
 							*Non-Primary Tier Stats
 						</div>
 					)}
