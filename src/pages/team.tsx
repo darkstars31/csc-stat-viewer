@@ -178,7 +178,7 @@ export function Team() {
 						</div>
 						<div className="p-4 rounded">
 							<hr className="h-px my-4 border-0" />
-							<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 justify-center gap-2 pt-4">
+							<div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 justify-center gap-2 pt-4">
 								{currentTeam?.players?.map(player => (
 									<TeamPlayerCards
 										key={player.name}

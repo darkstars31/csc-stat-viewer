@@ -32,7 +32,7 @@ const useDataContextProvider = () => {
 		matchType: hasSeasonStarted ? "Regulation" : "Combine" 
 	});
 	
-	const { data: extendedPlayerStats = [], isLoading: isLoadingExtendedStats } = useAnalytikillExtendedStats(seasonAndMatchType.season);
+	const { data: extendedPlayerStats, isLoading: isLoadingExtendedStats } = useAnalytikillExtendedStats(seasonAndMatchType.season);
 	const dataConfig = React.useMemo(() => dataConfiguration.find(item => dataConfiguration[0].name === item.name), []);
 
 	React.useEffect(() => {
@@ -123,7 +123,8 @@ const useDataContextProvider = () => {
 					:	determinePlayerRole(statsForPlayerByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!);
 				const stats = statsForPlayerByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!;
 				
-				const extendedStats = extendedPlayerStats.find(
+				const extendedStatsApiResponse = Object.keys(extendedPlayerStats ?? {}).includes("data") ? extendedPlayerStats?.data : extendedPlayerStats;
+				const extendedStats = extendedStatsApiResponse?.find(
 					(stats: { name: string }) => stats.name === cscPlayer?.name,
 				) as ExtendedStats ?? undefined;
 	

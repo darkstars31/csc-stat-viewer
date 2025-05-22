@@ -16,7 +16,7 @@ const getPlayerReputation = async ( discordId?: string) =>
 	await analytikillHttpClient.get(`/analytikill/plusRep?discordId=${discordId}`)
 		.then( response =>  response.data);
 
-export function useAnalytikillExtendedStats( season?: number): UseQueryResult<ExtendedStats> {
+export function useAnalytikillExtendedStats( season?: number): UseQueryResult<{ lastUpdated: string, data: ExtendedStats[]}> {
 	return useQuery({
         queryKey: ["analytikillExtendedStats"],
         queryFn: () => getExtendedStats( season ),

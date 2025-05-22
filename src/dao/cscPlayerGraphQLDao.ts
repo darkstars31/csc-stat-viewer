@@ -68,10 +68,10 @@ export function useCscPlayersGraph(
 	options?: Record<string, unknown>,
 ): UseQueryResult<CscPlayer[]> {
 	return useQuery({
-        queryKey: [`cscplayers-${playerType}-graph`],
+        queryKey: [ options?.queryKeyOverride ?? `cscplayers-${playerType}-graph`],
         queryFn: () => (options?.skipCache ? fetchGraph(playerType) : fetchCachedGraph(playerType)),
         enabled: options?.enabled as boolean ?? true,
-        staleTime: OneHour
+        staleTime: options?.ttl as number ?? OneHour
     });
 }
 
