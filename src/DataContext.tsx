@@ -124,7 +124,7 @@ const useDataContextProvider = () => {
 				const stats = statsForPlayerByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!;
 				
 				const extendedStatsApiResponse = Object.keys(extendedPlayerStats ?? {}).includes("data") ? extendedPlayerStats?.data : extendedPlayerStats;
-				const extendedStats = extendedStatsApiResponse?.find(
+				const extendedStats = (extendedStatsApiResponse as any[])?.find(
 					(stats: { name: string }) => stats.name === cscPlayer?.name,
 				) as ExtendedStats ?? undefined;
 	

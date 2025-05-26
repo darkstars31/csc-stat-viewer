@@ -24,7 +24,7 @@ export const Draft = () => {
     const premierPlayers = React.useMemo(() => {
         return data
             .filter(p => p.tier.name === "Premier")
-            .sort((a, b) => b.mmr - a.mmr);
+            .sort((a, b) => (b.mmr ?? 0 ) - (a.mmr ?? 0));
     }, [data]);
 
     const isPlayerInData = (playerName: string) => {
@@ -112,7 +112,7 @@ export const Draft = () => {
                     <tbody>
                         {data
                             .filter(p => p.tier.name === "Premier")
-                            .sort((a, b) => b.mmr - a.mmr)
+                            .sort((a, b) => (b.mmr ?? 0) - (a.mmr ?? 0))
                             .map(player => (
                                 <tr key={player.steam64Id} className="text-sm">
                                     <td className="border border-gray-400 px-2 py-1">{player.id}</td>

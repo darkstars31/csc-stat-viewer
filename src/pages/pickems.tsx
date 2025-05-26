@@ -8,85 +8,31 @@ import dayjs from "dayjs";
 import { Loading } from "../common/components/loading";
 import { franchiseImages } from "../common/images/franchise";
 import { Match } from "../models/matches-types";
+import { analytikillHttpClient } from "../dao/httpClients";
 
 export const Pickems = () => {
-    const x = {
-        "5353": {
-          "teamId": "176",
-          "teamName": "Lawless Llamas"
-        },
-        "5354": {
-          "teamId": "147",
-          "teamName": "The Watchers"
-        },
-        "5355": {
-          "teamId": "106",
-          "teamName": "Cheetahs"
-        },
-        "5356": {
-          "teamId": "54",
-          "teamName": "Pho Fighters"
-        },
-        "5357": {
-          "teamId": "57",
-          "teamName": "Ravens"
-        },
-        "5358": {
-          "teamId": "90",
-          "teamName": "Sirens"
-        },
-        "5359": {
-          "teamId": "126",
-          "teamName": "Storm"
-        },
-        "5360": {
-          "teamId": "127",
-          "teamName": "Fraggin Frogs"
-        },
-        "5361": {
-          "teamId": "150",
-          "teamName": "Decibel Demons"
-        },
-        "5387": {
-          "teamId": "127",
-          "teamName": "Fraggin Frogs"
-        },
-        "5388": {
-          "teamId": "106",
-          "teamName": "Cheetahs"
-        },
-        "5389": {
-          "teamId": "54",
-          "teamName": "Pho Fighters"
-        },
-        "5390": {
-          "teamId": "150",
-          "teamName": "Decibel Demons"
-        },
-        "5391": {
-          "teamId": "132",
-          "teamName": "Salty Scripters"
-        },
-        "5392": {
-          "teamId": "124",
-          "teamName": "The Bachelors"
-        },
-        "5394": {
-          "teamId": "90",
-          "teamName": "Sirens"
-        },
-        "5395": {
-          "teamId": "147",
-          "teamName": "The Watchers"
-        }
-      }
     const { loggedinUser, seasonAndMatchType } = useDataContext();
     const [ userTier, setUserTier ] = React.useState<string | undefined>(loggedinUser?.tier?.name);
-    const { data: matches, isLoading } = useFetchMatchesGraph(16); // seasonAndMatchType.season
-    const [ selectedMatches, setSelectedMatches ] = React.useState<{ [key: string]: { teamId: number, teamName: string} | null }>(x);
+    const { data: matches = [], isLoading } = useFetchMatchesGraph(seasonAndMatchType.season, undefined, { enabled: seasonAndMatchType.season > 0}); // seasonAndMatchType.season
+    const [ selectedMatches, setSelectedMatches ] = React.useState<{ [key: string]: { teamId: number, teamName: string} | null }>([]);
     const [ selectedTimeframe, setSelectedTimeframe ] = React.useState<'past' | 'current' | 'future'>('current');
 
-    const currentDate = dayjs("02/18/2025").add(21, "hours").add(1, "minute") 
+    React.useEffect(() => {
+        if (loggedinUser?.tier?.name) {
+            setUserTier(loggedinUser.tier.name);
+        }
+    }, [loggedinUser]);
+
+    React.useEffect(() => {
+        if (seasonAndMatchType.season < 1 && Object.keys(selectedMatches).length) return;
+        const response = analytikillHttpClient.get(`/analytikill/pickems?season=${seasonAndMatchType.season}`)
+            .catch(error => {
+                console.error("Error fetching pickems data:", error);
+            });
+        setSelectedMatches(response?.data ?? {});
+    }, [])
+
+    const currentDate = dayjs(); //dayjs("02/18/2025").add(21, "hours").add(1, "minute") 
 
     const hasMatchStarted = React.useCallback((matchDate: Date) => {
         return dayjs(matchDate).isBefore(currentDate);
@@ -108,7 +54,7 @@ export const Pickems = () => {
             }
             acc[matchday].push(match);
             return acc;
-        }, {});
+        }, {}) ?? [];
 
     const pastMatchWeeks = Object.keys(matchesByMatchday).filter((matchDate) => 
         dayjs(matchDate).isBefore(currentDate, 'week')
@@ -127,8 +73,14 @@ export const Pickems = () => {
         }));
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         console.log("Selected Matches:", selectedMatches);
+        const response = await analytikillHttpClient.post("/analytikill/pickems", {
+            tier: userTier,
+            picks: selectedMatches
+        }).catch((error) => {
+            console.error("Error submitting picks:", error);
+        });
     }
 
     if (!loggedinUser){
@@ -142,7 +94,7 @@ export const Pickems = () => {
         </Container>;
     }
 
-    if( userTier === undefined ) {
+    if( userTier === undefined || userTier.includes("Unrated") ) {
         return (
             <Container>
                 <h1 className="text-2xl font-bold mb-4">Select Your Tier</h1>
@@ -264,14 +216,14 @@ export const Pickems = () => {
                     <button
                         onClick={() => handleSubmit()}
                         className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold text-xl rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 animate-pulse hover:animate-none active:translate-y-1 active:shadow-inner active:scale-95 active:bg-gradient-to-r active:from-blue-600 active:to-purple-700"
-                        disabled={Object.keys(selectedMatches).length === 0}
+                        disabled={Object.keys(selectedMatches ?? []).length === 0}
                     >
                         SUBMIT YOUR PICKS! ✨
                     </button>
                 </div>
             )}
             
-            {Object.keys(selectedMatches).length > 0 && (
+            {Object.keys(selectedMatches ?? []).length > 0 && (
                 <div className="mt-6 p-4 bg-blue-700 border border-blue-300 rounded-lg">
                     <p className="text-blue-700">Your selections:</p>
                     <ul className="list-disc pl-5">
