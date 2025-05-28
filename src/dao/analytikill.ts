@@ -96,4 +96,25 @@ export function useMutateArticle( payload: any ) {
 	});
 }
 
+export function usePickems( discordId: string, season: number, options?: { enabled?: boolean }): UseQueryResult<any> {
+    return useQuery({
+        queryKey: ["pickems", discordId, season],
+        queryFn: async () => 
+            await analytikillHttpClient.get(`/analytikill/pickems?discordId=${discordId}&season=${season}`)
+                .then( response => response.data ),
+
+        // 1 second * 60 * 60 * 1 = 1 hour
+        staleTime: 1000 * 60 * 60 * 24,
+        enabled: options?.enabled ?? true,
+    });
+}
+
+export function usePickemsMutation( season: number ) {
+    return useMutation({
+        mutationFn: async ( payload ) => 
+            await analytikillHttpClient.post(`/analytikill/pickems?season=${season}`, payload)
+                .then( response => response.data ),
+    });
+}
+
 
