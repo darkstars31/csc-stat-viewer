@@ -15,6 +15,7 @@ export const Pickems = () => {
     const { loggedinUser, seasonAndMatchType } = useDataContext();
     const { data: pickemsData, isLoading: isLoadingPickems } = usePickems( loggedinUser?.discordId, seasonAndMatchType.season, undefined, { enabled: loggedinUser?.discordId && seasonAndMatchType.season > 0 });
     console.info("Pickems Data:", pickemsData);
+    const [ submitWasSuccessful, setSubmitWasSuccessful ] = React.useState<boolean>(false);
     const mutation = usePickemsMutation(seasonAndMatchType.season);
     const [ userTier, setUserTier ] = React.useState<string | undefined>(pickemsData?.tier ?? loggedinUser?.tier?.name ?? undefined);
     const { data: matches = [], isLoading } = useFetchMatchesGraph(seasonAndMatchType.season, undefined, { enabled: seasonAndMatchType.season > 0}); // seasonAndMatchType.season
@@ -138,7 +139,16 @@ export const Pickems = () => {
     return (
         <Container>
             <div className="h-fit">
-                <h1 className="text-3xl font-bold mb-4 text-center">{userTier} Weekly Pickems</h1>
+                <h1 className="text-3xl font-bold mb-4 text-center">{userTier} Weekly Pickems
+                    <span className="px-2 py-1 bg-blue-500 text-white text-sm font-bold rounded-full">
+                        Beta
+                    </span>
+                </h1>
+                <div className="text-center mb-4">             
+                    <p className="text-xs text-red-500 mt-2">
+                        *All picks will be wiped before the season starts.
+                    </p>
+                </div>
                 {/* Timeframe Toggle */}
                 <div className="flex justify-center space-x-2 mb-6">
                     {['past', 'current', 'future'].map((timeframe) => (
@@ -159,13 +169,23 @@ export const Pickems = () => {
                 <div className="flex space-x-8">
                 {selectedTimeframe !== 'past' && (
                     <div className="mt-8 flex justify-center">
-                        <button
-                            onClick={() => handleSubmit()}
-                            className={`px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold text-xl rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 animate-pulse hover:animate-none active:translate-y-1 active:shadow-inner active:scale-95 active:bg-gradient-to-r active:from-blue-600 active:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed`}
-                            disabled={mutation.isPending}
-                        >
-                            { !mutation.isPending ? "SUBMIT YOUR PICKS! ✨": "Submitting" }
-                        </button>
+                        {submitWasSuccessful ? (
+                            <div className="flex items-center justify-center">
+                                <div className="text-green-500 text-6xl animate-bounce">✔️</div>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={async () => {
+                                    await handleSubmit();
+                                    setSubmitWasSuccessful(true);
+                                    setTimeout(() => setSubmitWasSuccessful(false), 3000);
+                                }}
+                                className={`px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold text-xl rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 animate-pulse hover:animate-none active:translate-y-1 active:shadow-inner active:scale-95 active:bg-gradient-to-r active:from-blue-600 active:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed`}
+                                disabled={mutation.isPending}
+                            >
+                                {!mutation.isPending ? "SUBMIT YOUR PICKS! ✨" : "Submitting"}
+                            </button>
+                        )}
                     </div>
                 )}
                     {matchesByMatchday &&
@@ -220,7 +240,7 @@ export const Pickems = () => {
                 
                 {Object.keys(selectedMatches ?? []).length > 0 && (
                     <div className="mt-6 p-4 bg-blue-700 border border-blue-300 rounded-lg text-xs">
-                        Budeg
+                        Debug
                         <p className="">Your selections:</p>
                         <ul className="flex flex-row flex-wrap gap-2">
                             {Object.entries(selectedMatches).map(([matchId, obj]) => (

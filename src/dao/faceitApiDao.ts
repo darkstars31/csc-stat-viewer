@@ -21,9 +21,7 @@ export function useFetchFaceItPlayerWithCache(
 	return useQuery({
         queryKey: ["faceitPlayerSearch", player?.steam64Id],
         queryFn: () => searchPlayersWithCache(player?.steam64Id, player?.name),
-
-        // 1 second * 60 * 60 = 1 hour
-        staleTime: 1000 * 60 * 60,
+        staleTime: 1000 * 60 * 60 * 6,
         enabled: !!player?.steam64Id,
     });
 }
