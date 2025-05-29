@@ -33,7 +33,6 @@ const useDataContextProvider = () => {
 	const dataConfig = React.useMemo(() => dataConfiguration.find(item => dataConfiguration[0].name === item.name), []);
 
 	React.useEffect(() => {
-		console.info('x', seasonAndTierConfig);
 		if( !isLoadingCscSeasonAndTiers ){
 			setSeasonAndMatchType({ season: seasonAndTierConfig?.number ?? 0, matchType: seasonAndTierConfig?.hasSeasonStarted ? "Regulation" : "Combine" });
 		}

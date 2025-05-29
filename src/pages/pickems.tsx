@@ -14,7 +14,7 @@ import { queryClient } from "../App";
 
 export const Pickems = () => {
     const { loggedinUser, seasonAndMatchType } = useDataContext();
-    const { data: pickemsData, isLoading: isLoadingPickems } = usePickems( loggedinUser?.discordId, seasonAndMatchType.season, undefined, { enabled: loggedinUser?.discordId && seasonAndMatchType.season > 0 });
+    const { data: pickemsData, isLoading: isLoadingPickems, isFetching: isFetchingPickems } = usePickems( loggedinUser?.discordId, seasonAndMatchType.season, undefined, { enabled: loggedinUser?.discordId && seasonAndMatchType.season > 0 });
     const { data: pickemsConcensusData, isLoading: isLoadingPickemsConsensus } = usePickemsMatchUpConsensus(seasonAndMatchType.season, { enabled: loggedinUser?.discordId && seasonAndMatchType.season > 0 });
     console.info("Pickems Data:", pickemsData);
     const [ submitWasSuccessful, setSubmitWasSuccessful ] = React.useState<boolean>(false);
@@ -25,13 +25,18 @@ export const Pickems = () => {
     const [ selectedTimeframe, setSelectedTimeframe ] = React.useState<'past' | 'current' | 'future'>('current');
 
     React.useEffect(() => {
-        if (pickemsData?.tier) {
+        if (pickemsData?.tier && !isLoadingPickems) {
             setUserTier(pickemsData.tier);
-            setSelectedMatches(pickemsData.pickems ?? {});
         } else if (loggedinUser?.tier && loggedinUser.tier.name) {
             setUserTier(loggedinUser.tier.name);
         }
-    }, [loggedinUser, pickemsData]);
+    }, [loggedinUser, ]);
+
+    React.useEffect(() => {
+        if( !isFetchingPickems ){
+            setSelectedMatches( pickemsData?.pickems ?? {});
+        }
+    }, [isFetchingPickems]);
 
     React.useEffect(() => {
         queryClient.invalidateQueries({ queryKey: ["pickems", loggedinUser?.discordId, seasonAndMatchType.season] });
