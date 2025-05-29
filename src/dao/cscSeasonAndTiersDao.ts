@@ -1,6 +1,7 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { appConfig } from "../dataConfig";
 import { CscLatestSeason } from "../models/csc-season-tiers-types";
+import { analytikillHttpClient } from "./httpClients";
 
 const OneDay = 1000 * 60 * 60 * 24;
 
@@ -41,5 +42,13 @@ export function useCscSeasonAndTiersGraph(): UseQueryResult<CscLatestSeason["dat
         queryKey: [`cscSeasonAndTiers-graph`],
         queryFn: () => fetchGraph(),
         staleTime: OneDay
+    });
+}
+
+export function useCachedCscSeasonAndTiers(): UseQueryResult<CscLatestSeason["data"]["latestActiveSeason"] & { hasSeasonStarted: boolean, lastUpadated: string }> {
+    return useQuery({
+        queryKey: [`cscSeasonAndTiers-graph`],
+        queryFn: async () => (await analytikillHttpClient.get(`/csc/cached-season-metadata`)).data,
+        staleTime: OneDay,
     });
 }

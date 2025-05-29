@@ -109,6 +109,16 @@ export function usePickems( discordId: string, season: number, options?: { enabl
     });
 }
 
+export function usePickemsMatchUpConsensus( season: number): UseQueryResult<{ [matchId: string]: { [teamId: string]: number}}> {
+    return useQuery({
+        queryKey: ["pickemsMatchUpConsensus", season],
+        queryFn: async () => 
+            await analytikillHttpClient.get(`/analytikill/pickems/matchup-concensus?season=${season}`)
+                .then( response => response.data ),
+        staleTime: 1000 * 60 * 15,
+    });
+}
+
 export function usePickemsMutation( season: number ) {
     return useMutation({
         mutationFn: async ( payload ) => 

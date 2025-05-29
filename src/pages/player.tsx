@@ -162,21 +162,28 @@ export function Player() {
 								{!currentPlayer?.avatarUrl && (
 									<div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border" />
 								)}
-								<div className="flex flex-row justify-evenly">
-									<Reputation playerDiscordId={currentPlayer.discordId} />
+								<div className="flex flex-col justify-center w-full">
 									{Object.keys(playerProfile).length > 0 ?
-										<div className={`${showProfile ? "text-blue-400" : "text-purple-400"}`}>
+										<>
 											<ToolTip type="generic" message={"Show Profile"}>
-												<CgProfile
-													className="m-3 w-4 h-4"
-													onClick={() => setShowProfile(!showProfile)}
-												/>
+												<div 
+													onClick={() => setShowProfile(!showProfile)} 
+													className="text-center rounded-md text-xs m-1 border-2 border-blue-400 text-blue-400">
+													<CgProfile
+														className="m-1 w-4 h-4 inline"									
+													/> Profile
+												</div>
 											</ToolTip>
-										</div>
+										</>
 									:	<ToolTip type="generic" message={"Player has not updated their profile."}>
-											<CgProfile className="text-gray-600 m-3 w-4 h-4" />
+											<div className="text-center rounded-md text-xs m-1 border-2 border-gray-400 opacity-50">
+												<CgProfile
+													className="m-1 w-4 h-4 inline"												
+												/> Profile
+											</div>
 										</ToolTip>
 									}
+									<Reputation playerDiscordId={currentPlayer.discordId} />
 								</div>
 							</div>
 							<div id="player-tier" className="text-left basis-3/4">

@@ -9,11 +9,13 @@ import { Loading } from "../common/components/loading";
 import { franchiseImages } from "../common/images/franchise";
 import { Match } from "../models/matches-types";
 import { analytikillHttpClient } from "../dao/httpClients";
-import { usePickems, usePickemsMutation } from "../dao/analytikill";
+import { usePickems, usePickemsMatchUpConsensus, usePickemsMutation } from "../dao/analytikill";
+import { queryClient } from "../App";
 
 export const Pickems = () => {
     const { loggedinUser, seasonAndMatchType } = useDataContext();
     const { data: pickemsData, isLoading: isLoadingPickems } = usePickems( loggedinUser?.discordId, seasonAndMatchType.season, undefined, { enabled: loggedinUser?.discordId && seasonAndMatchType.season > 0 });
+    const { data: pickemsConcensusData, isLoading: isLoadingPickemsConsensus } = usePickemsMatchUpConsensus(seasonAndMatchType.season, { enabled: loggedinUser?.discordId && seasonAndMatchType.season > 0 });
     console.info("Pickems Data:", pickemsData);
     const [ submitWasSuccessful, setSubmitWasSuccessful ] = React.useState<boolean>(false);
     const mutation = usePickemsMutation(seasonAndMatchType.season);
@@ -30,6 +32,11 @@ export const Pickems = () => {
             setUserTier(loggedinUser.tier.name);
         }
     }, [loggedinUser, pickemsData]);
+
+    React.useEffect(() => {
+        queryClient.invalidateQueries({ queryKey: ["pickems", loggedinUser?.discordId, seasonAndMatchType.season] });
+        queryClient.invalidateQueries({ queryKey: ["pickemsMatchUpConsensus", seasonAndMatchType.season] });
+    }, [mutation.isSuccess])
 
     const currentDate = dayjs(); //dayjs("02/18/2025").add(21, "hours").add(1, "minute") 
 
@@ -112,27 +119,32 @@ export const Pickems = () => {
 
     const TeamSideItem = ({match, selectedMatches, side}: { match: Match, selectedMatches: { [key: string]: { teamId: number, teamName: string } | null }, side: 'home' | 'away' }) => {
         const team = match[side];
+        const totalVotes = Object.values(pickemsConcensusData?.[match.id] ?? {}).reduce((acc, votes) => acc + (votes || 0), 0);
+        const percentage = ((pickemsConcensusData[match.id]?.[team.id]?? 0) / totalVotes) * 100 || 0;
         return (
         <div onClick={() => !hasMatchStarted(match.scheduledDate) && handleSelection(match.id, { teamId: team.id, teamName: team.name })}
-        className={`flex flex-col cursor-pointer items-center h-14 w-14 rounded-lg p-2
+        className={`flex flex-col cursor-pointer items-center h-20 w-16 rounded-lg p-2
             ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && match.stats[0]?.winner?.id === team.id
                 ? "bg-green-500 bg-opacity-15 border-2 border-green-500"
                 : ""}
             ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && match.stats[0]?.winner?.id !== team.id
                 ? "bg-red-500 bg-opacity-15 border-2 border-red-500"
-                : ""
-            }
+                : ""}
             ${!hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id
                 ? "bg-blue-500 bg-opacity-15 border-2 border-blue-500"
-                : ""
-            }
+                : ""}
         `}
     >
         <img
             src={franchiseImages[team.franchise.prefix]}
             alt={team.franchise.prefix}
-            className="h-12 w-12 rounded-lg"
+            className="h-14 w-14 rounded-lg"
         />
+        <div>
+            { pickemsConcensusData && pickemsConcensusData[match.id] &&
+                <span className="text-xs text-gray-500">{percentage.toFixed(1)}%</span>
+            }
+        </div>
     </div>);
     }
 
