@@ -16,13 +16,13 @@ export const Pickems = () => {
     const { loggedinUser, seasonAndMatchType } = useDataContext();
     const { data: pickemsData, isLoading: isLoadingPickems, isFetching: isFetchingPickems } = usePickems( loggedinUser?.discordId, seasonAndMatchType.season, undefined, { enabled: loggedinUser?.discordId && seasonAndMatchType.season > 0 });
     const { data: pickemsConcensusData, isLoading: isLoadingPickemsConsensus } = usePickemsMatchUpConsensus(seasonAndMatchType.season, { enabled: loggedinUser?.discordId && seasonAndMatchType.season > 0 });
-    console.info("Pickems Data:", pickemsData);
     const [ submitWasSuccessful, setSubmitWasSuccessful ] = React.useState<boolean>(false);
     const mutation = usePickemsMutation(seasonAndMatchType.season);
     const [ userTier, setUserTier ] = React.useState<string | undefined>(pickemsData?.tier ?? loggedinUser?.tier?.name ?? undefined);
     const { data: matches = [], isLoading } = useFetchMatchesGraph(seasonAndMatchType.season, undefined, { enabled: seasonAndMatchType.season > 0}); // seasonAndMatchType.season
-    const [ selectedMatches, setSelectedMatches ] = React.useState<{ [key: string]: { teamId: number, teamName: string} | null }>([]);
+    const [ selectedMatches, setSelectedMatches ] = React.useState<{ [key: string]: { teamId: number, teamName: string} | null }>(pickemsData?.pickems ?? {});
     const [ selectedTimeframe, setSelectedTimeframe ] = React.useState<'past' | 'current' | 'future'>('current');
+
 
     React.useEffect(() => {
         if (pickemsData?.tier && !isLoadingPickems) {
@@ -30,13 +30,7 @@ export const Pickems = () => {
         } else if (loggedinUser?.tier && loggedinUser.tier.name) {
             setUserTier(loggedinUser.tier.name);
         }
-    }, [loggedinUser, ]);
-
-    React.useEffect(() => {
-        if( !isFetchingPickems ){
-            setSelectedMatches( pickemsData?.pickems ?? {});
-        }
-    }, [isFetchingPickems]);
+    }, [loggedinUser, pickemsData]);
 
     React.useEffect(() => {
         queryClient.invalidateQueries({ queryKey: ["pickems", loggedinUser?.discordId, seasonAndMatchType.season] });
@@ -85,11 +79,19 @@ export const Pickems = () => {
     };
 
     const handleSubmit = async () => {
-        console.log("Selected Matches:", selectedMatches);
-        mutation.mutate({
-            tier: userTier,
-            picks: selectedMatches
-        })
+        try{
+            const result = await mutation.mutateAsync({
+                tier: userTier,
+                picks: selectedMatches
+            })
+            setSelectedMatches(result.pickems)
+            queryClient.invalidateQueries({ queryKey: ["pickems", loggedinUser?.discordId, seasonAndMatchType.season] });
+            queryClient.invalidateQueries({ queryKey: ["pickemsMatchUpConsensus", seasonAndMatchType.season] });
+            setSubmitWasSuccessful(true);
+            setTimeout(() => setSubmitWasSuccessful(false), 3000);
+        } catch (error) {
+            console.error("Error submitting pickems:", error);
+        }
     }
 
     if (!loggedinUser){
@@ -194,8 +196,6 @@ export const Pickems = () => {
                             <button
                                 onClick={async () => {
                                     await handleSubmit();
-                                    setSubmitWasSuccessful(true);
-                                    setTimeout(() => setSubmitWasSuccessful(false), 3000);
                                 }}
                                 className={`px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold text-xl rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 animate-pulse hover:animate-none active:translate-y-1 active:shadow-inner active:scale-95 active:bg-gradient-to-r active:from-blue-600 active:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed`}
                                 disabled={mutation.isPending}
