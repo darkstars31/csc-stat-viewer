@@ -12,6 +12,42 @@ import { analytikillHttpClient } from "../dao/httpClients";
 import { usePickems, usePickemsMatchUpConsensus, usePickemsMutation } from "../dao/analytikill";
 import { queryClient } from "../App";
 
+const ConcensusBar = (match, pickemsConcensusData) => {
+    if( !match || !pickemsConcensusData) return null;
+    const totalVotes = Object.values(pickemsConcensusData?.[match.id] ?? {}).reduce((acc, votes) => acc + (votes || 0), 0);
+    console.info( 'match', match, totalVotes)
+    return (
+        <div className="mt-2">
+            {totalVotes > 0 ? (
+                <>
+                    <div className="h-6 w-full bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                        <div className="flex h-full">
+                            <div 
+                                className="bg-blue-500 text-xs flex items-center justify-center text-white transition-all duration-300"
+                                style={{width: `${((pickemsConcensusData[match.id]?.[match.home.id] ?? 0) / totalVotes) * 100}%`}}
+                            >
+                                {((pickemsConcensusData[match.id]?.[match.home.id] ?? 0) / totalVotes * 100).toFixed(0)}%
+                            </div>
+                            <div 
+                                className="bg-red-500 text-xs flex items-center justify-center text-white transition-all duration-300"
+                                style={{width: `${((pickemsConcensusData[match.id]?.[match.away.id] ?? 0) / totalVotes) * 100}%`}}
+                            >
+                                {((pickemsConcensusData[match.id]?.[match.away.id] ?? 0) / totalVotes * 100).toFixed(0)}%
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex justify-between text-xs mt-1">
+                        <span className="font-semibold">{pickemsConcensusData[match.id]?.[match.home.id] ?? 0} votes</span>
+                        <span className="font-semibold">{pickemsConcensusData[match.id]?.[match.away.id] ?? 0} votes</span>
+                    </div>
+                </>
+            ) : (
+                <div className="text-xs text-center text-gray-500 italic">No votes yet</div>
+            )}
+        </div>
+    );
+};
+
 export const Pickems = () => {
     const { loggedinUser, seasonAndMatchType } = useDataContext();
     const { data: pickemsData, isLoading: isLoadingPickems, isFetching: isFetchingPickems } = usePickems( loggedinUser?.discordId, seasonAndMatchType.season, undefined, { enabled: loggedinUser?.discordId && seasonAndMatchType.season > 0 });
@@ -23,6 +59,16 @@ export const Pickems = () => {
     const [ selectedMatches, setSelectedMatches ] = React.useState<{ [key: string]: { teamId: number, teamName: string} | null }>(pickemsData?.pickems ?? {});
     const [ selectedTimeframe, setSelectedTimeframe ] = React.useState<'past' | 'current' | 'future'>('current');
 
+    const [timeUpdateTrigger, setTimeUpdateTrigger] = React.useState(0);
+
+    // Add this effect to update the time display every minute
+    React.useEffect(() => {
+        const timer = setInterval(() => {
+            setTimeUpdateTrigger(prev => prev + 1);
+        }, 60000); // Update every minute (60000ms)
+        
+        return () => clearInterval(timer);
+    }, []);
 
     React.useEffect(() => {
         if (pickemsData?.tier && !isLoadingPickems) {
@@ -184,6 +230,7 @@ export const Pickems = () => {
                         </button>
                     ))}
                 </div>
+                <div>Picks last saved {pickemsData ? dayjs(pickemsData.dateUpdated).fromNow() : "Never"}</div>
 
                 <div className="flex space-x-8">
                 {selectedTimeframe !== 'past' && (
@@ -247,6 +294,7 @@ export const Pickems = () => {
                                                     <span className="m-auto text-md font-semibold">vs.</span>
                                                     <TeamSideItem match={match} selectedMatches={selectedMatches} side={"away"} />                                     
                                                 </div>
+                                                <ConcensusBar match={match} pickemsConcensusData={pickemsConcensusData} />
                                             </div>
                                         </div>
                                     ))}
