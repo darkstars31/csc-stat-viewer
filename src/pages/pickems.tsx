@@ -11,35 +11,36 @@ import { Match } from "../models/matches-types";
 import { analytikillHttpClient } from "../dao/httpClients";
 import { usePickems, usePickemsMatchUpConsensus, usePickemsMutation } from "../dao/analytikill";
 import { queryClient } from "../App";
+import { Dialog, DialogPanel, DialogTitle, Transition } from "@headlessui/react";
 
-const ConcensusBar = (match, pickemsConcensusData) => {
-    if( !match || !pickemsConcensusData) return null;
+const ConcensusBar = ({match, pickemsConcensusData}) => {
+    const [isHovered, setIsHovered] = React.useState(false);
+    console.info( 'match', pickemsConcensusData)
     const totalVotes = Object.values(pickemsConcensusData?.[match.id] ?? {}).reduce((acc, votes) => acc + (votes || 0), 0);
-    console.info( 'match', match, totalVotes)
     return (
         <div className="mt-2">
             {totalVotes > 0 ? (
                 <>
-                    <div className="h-6 w-full bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                    <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="h-3 w-full bg-gray-200 rounded-full overflow-hidden shadow-inner">
                         <div className="flex h-full">
                             <div 
-                                className="bg-blue-500 text-xs flex items-center justify-center text-white transition-all duration-300"
+                                className="bg-gradient-to-r from-blue-500 via-blue-500 to-yellow-800 text-xs flex items-center justify-center text-white transition-all duration-300"
                                 style={{width: `${((pickemsConcensusData[match.id]?.[match.home.id] ?? 0) / totalVotes) * 100}%`}}
                             >
                                 {((pickemsConcensusData[match.id]?.[match.home.id] ?? 0) / totalVotes * 100).toFixed(0)}%
                             </div>
                             <div 
-                                className="bg-red-500 text-xs flex items-center justify-center text-white transition-all duration-300"
+                                className="bg-gradient-to-r from-yellow-800 via-red-500 to-red-500 text-xs flex items-center justify-center text-white transition-all duration-300"
                                 style={{width: `${((pickemsConcensusData[match.id]?.[match.away.id] ?? 0) / totalVotes) * 100}%`}}
                             >
                                 {((pickemsConcensusData[match.id]?.[match.away.id] ?? 0) / totalVotes * 100).toFixed(0)}%
                             </div>
                         </div>
                     </div>
-                    <div className="flex justify-between text-xs mt-1">
+                    { isHovered && <div className="flex justify-between text-xs mt-1">
                         <span className="font-semibold">{pickemsConcensusData[match.id]?.[match.home.id] ?? 0} votes</span>
                         <span className="font-semibold">{pickemsConcensusData[match.id]?.[match.away.id] ?? 0} votes</span>
-                    </div>
+                    </div>}
                 </>
             ) : (
                 <div className="text-xs text-center text-gray-500 italic">No votes yet</div>
@@ -50,6 +51,7 @@ const ConcensusBar = (match, pickemsConcensusData) => {
 
 export const Pickems = () => {
     const { loggedinUser, seasonAndMatchType } = useDataContext();
+    const [ isShowRules, setIsShowRules ] = React.useState<boolean>(false);
     const { data: pickemsData, isLoading: isLoadingPickems, isFetching: isFetchingPickems } = usePickems( loggedinUser?.discordId, seasonAndMatchType.season, undefined, { enabled: loggedinUser?.discordId && seasonAndMatchType.season > 0 });
     const { data: pickemsConcensusData, isLoading: isLoadingPickemsConsensus } = usePickemsMatchUpConsensus(seasonAndMatchType.season, { enabled: loggedinUser?.discordId && seasonAndMatchType.season > 0 });
     const [ submitWasSuccessful, setSubmitWasSuccessful ] = React.useState<boolean>(false);
@@ -73,6 +75,7 @@ export const Pickems = () => {
     React.useEffect(() => {
         if (pickemsData?.tier && !isLoadingPickems) {
             setUserTier(pickemsData.tier);
+            setSelectedMatches(pickemsData.pickems);
         } else if (loggedinUser?.tier && loggedinUser.tier.name) {
             setUserTier(loggedinUser.tier.name);
         }
@@ -142,7 +145,7 @@ export const Pickems = () => {
 
     if (!loggedinUser){
         return <Container>
-            <h1 className="text-2xl font-bold mb-4">Weekly Matches</h1>
+            <h1 className="text-2xl font-bold mb-4">My Weekly Pickems</h1>
             <div className="flex space-x-8">
                 <div className="flex-1">
                     <h2 className="text-xl font-semibold mb-2">Please login to make your Pickems</h2>
@@ -175,8 +178,9 @@ export const Pickems = () => {
         const totalVotes = Object.values(pickemsConcensusData?.[match.id] ?? {}).reduce((acc, votes) => acc + (votes || 0), 0);
         const percentage = ((pickemsConcensusData[match.id]?.[team.id]?? 0) / totalVotes) * 100 || 0;
         return (
-        <div onClick={() => !hasMatchStarted(match.scheduledDate) && handleSelection(match.id, { teamId: team.id, teamName: team.name })}
-        className={`flex flex-col cursor-pointer items-center h-20 w-16 rounded-lg p-2
+        <div 
+            onClick={() => !hasMatchStarted(match.scheduledDate) && handleSelection(match.id, { teamId: team.id, teamName: team.name })}
+            className={`flex flex-col cursor-pointer items-center h-20 w-16 rounded-lg p-2
             ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && match.stats[0]?.winner?.id === team.id
                 ? "bg-green-500 bg-opacity-15 border-2 border-green-500"
                 : ""}
@@ -188,27 +192,36 @@ export const Pickems = () => {
                 : ""}
         `}
     >
-        <img
-            src={franchiseImages[team.franchise.prefix]}
-            alt={team.franchise.prefix}
-            className="h-14 w-14 rounded-lg"
-        />
-        <div>
-            { pickemsConcensusData && pickemsConcensusData[match.id] &&
-                <span className="text-xs text-gray-500">{percentage.toFixed(1)}%</span>
-            }
-        </div>
-    </div>);
+            <img
+                src={franchiseImages[team.franchise.prefix]}
+                alt={team.franchise.prefix}
+                className="h-14 w-14 rounded-lg"
+            />
+            <div className={``}>
+                { pickemsConcensusData && pickemsConcensusData[match.id] &&
+                    <span className="text-xs text-gray-500">{percentage.toFixed(1)}%</span>
+                }
+            </div>
+        </div>);
     }
 
     return (
         <Container>
             <div className="h-fit">
-                <h1 className="text-3xl font-bold mb-4 text-center">{userTier} Weekly Pickems
+                <h1 className="text-3xl font-bold mb-4 text-center">My {userTier} Weekly Pickems
                     <span className="px-2 py-1 bg-blue-500 text-white text-sm font-bold rounded-full">
                         Beta
                     </span>
                 </h1>
+                <button 
+                    onClick={() => setIsShowRules(true)}
+                    className="ml-2 inline-flex items-center px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full transition-colors"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Rules
+                </button>
                 <div className="text-center mb-4">             
                     <p className="text-xs text-red-500 mt-2">
                         *All picks will be wiped before the season starts.
@@ -216,7 +229,7 @@ export const Pickems = () => {
                 </div>
                 {/* Timeframe Toggle */}
                 <div className="flex justify-center space-x-2 mb-6">
-                    {['past', 'current', 'future'].map((timeframe) => (
+                    {['past', 'this week', 'future'].map((timeframe) => (
                         <button
                             key={timeframe}
                             onClick={() => setSelectedTimeframe(timeframe as 'past' | 'current' | 'future')}
@@ -230,7 +243,7 @@ export const Pickems = () => {
                         </button>
                     ))}
                 </div>
-                <div>Picks last saved {pickemsData ? dayjs(pickemsData.dateUpdated).fromNow() : "Never"}</div>
+                <div className="text-xs font-extrabold uppercase text-gray-500">Picks last saved {pickemsData ? dayjs(pickemsData.dateUpdated).fromNow() : "Never"}</div>
 
                 <div className="flex space-x-8">
                 {selectedTimeframe !== 'past' && (
@@ -269,7 +282,7 @@ export const Pickems = () => {
                         .map(([matchDate, matches]: [string, Match[]]) => (
                             <div key={matchDate} className="flex flex-col">
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-2">Match Day {matches[0].matchDay.number.replace("M","")}</h2>
+                                    <h2 className="text-xl font-semibold mb-2 uppercase">Match Day {matches[0].matchDay.number.replace("M","")}</h2>
                                 </div>
                                 <div className="border rounded-lg shadow-sm">
                                     <div>
@@ -294,7 +307,7 @@ export const Pickems = () => {
                                                     <span className="m-auto text-md font-semibold">vs.</span>
                                                     <TeamSideItem match={match} selectedMatches={selectedMatches} side={"away"} />                                     
                                                 </div>
-                                                <ConcensusBar match={match} pickemsConcensusData={pickemsConcensusData} />
+                                                {/* { !isLoadingPickemsConsensus && <ConcensusBar match={match} pickemsConcensusData={pickemsConcensusData} /> } */}
                                             </div>
                                         </div>
                                     ))}
@@ -318,6 +331,40 @@ export const Pickems = () => {
                     </div>
                 )}
             </div>
+            <Dialog 
+                open={isShowRules} 
+                onClose={() => setIsShowRules(false)} 
+                className="fixed inset-0 z-10 overflow-y-auto"
+            >
+                <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+                    <DialogPanel className="w-full max-w-md rounded-lg bg-white shadow-xl overflow-hidden">
+                        <div className="bg-blue-600 p-4">
+                            <DialogTitle className="text-xl font-bold text-white flex justify-between items-center">
+                                Pickems Rules
+                                <button 
+                                    onClick={() => setIsShowRules(false)}
+                                    className="text-white hover:text-gray-200"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </DialogTitle>
+                        </div>
+                        <div className="p-6">
+                            <p className="mb-4">Pick the winner for each match-up. Predictions must be submitted before matches begins.</p>
+                            <ul className="list-disc pl-5 mb-4">
+                                <li>You can update your picks at any time up to 5 minutes before the scheduled match start time.</li>
+                            </ul>
+                            <p className="font-semibold mb-2">Points are awarded as follows:</p>
+                            <ul className="list-disc pl-5 mb-4">
+                                <li>1 point for each correct prediction</li>
+                            </ul>
+                            <p className="mt-4 font-semibold">May your picks be ever in your favor!</p>
+                        </div>
+                    </DialogPanel>
+                </div>
+            </Dialog>
         </Container>
     );
 };
