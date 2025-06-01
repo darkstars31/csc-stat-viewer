@@ -1,66 +1,69 @@
-// @ts-nocheck
-
 import * as React from "react";
 import { Container } from "../common/components/container";
 import { useDataContext } from "../DataContext";
 import { useFetchMatchesGraph } from "../dao/cscMatchesGraphQLDao";
 import dayjs from "dayjs";
 import { Loading } from "../common/components/loading";
-import { franchiseImages } from "../common/images/franchise";
 import { Match } from "../models/matches-types";
-import { analytikillHttpClient } from "../dao/httpClients";
-import { usePickems, usePickemsMatchUpConsensus, usePickemsMutation } from "../dao/analytikill";
+import { usePickems, usePickemsMatchUpConsensus, usePickemsSearch, usePickemsMutation } from "../dao/analytikill";
 import { queryClient } from "../App";
-import { Dialog, DialogPanel, DialogTitle, Transition } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
+import { TeamSide } from "./pickems/teamSide";
+import { hasMatchStarted, matchesByMatchDay } from "./pickems/utils";
+import { GiChoice } from "react-icons/gi";
+import { PickemsRules } from "./pickems/rules";
 
-const ConcensusBar = ({match, pickemsConcensusData}) => {
-    const [isHovered, setIsHovered] = React.useState(false);
-    const totalVotes = Object.values(pickemsConcensusData?.[match.id] ?? {}).reduce((acc, votes) => acc + (votes || 0), 0);
-    return (
-        <div className="mt-2">
-            {totalVotes > 0 ? (
-                <>
-                    <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="h-3 w-full bg-gray-200 rounded-full overflow-hidden shadow-inner">
-                        <div className="flex h-full">
-                            <div 
-                                className="bg-gradient-to-r from-blue-500 via-blue-500 to-yellow-800 text-xs flex items-center justify-center text-white transition-all duration-300"
-                                style={{width: `${((pickemsConcensusData[match.id]?.[match.home.id] ?? 0) / totalVotes) * 100}%`}}
-                            >
-                                {((pickemsConcensusData[match.id]?.[match.home.id] ?? 0) / totalVotes * 100).toFixed(0)}%
-                            </div>
-                            <div 
-                                className="bg-gradient-to-r from-yellow-800 via-red-500 to-red-500 text-xs flex items-center justify-center text-white transition-all duration-300"
-                                style={{width: `${((pickemsConcensusData[match.id]?.[match.away.id] ?? 0) / totalVotes) * 100}%`}}
-                            >
-                                {((pickemsConcensusData[match.id]?.[match.away.id] ?? 0) / totalVotes * 100).toFixed(0)}%
-                            </div>
-                        </div>
-                    </div>
-                    { isHovered && <div className="flex justify-between text-xs mt-1">
-                        <span className="font-semibold">{pickemsConcensusData[match.id]?.[match.home.id] ?? 0} votes</span>
-                        <span className="font-semibold">{pickemsConcensusData[match.id]?.[match.away.id] ?? 0} votes</span>
-                    </div>}
-                </>
-            ) : (
-                <div className="text-xs text-center text-gray-500 italic">No votes yet</div>
-            )}
-        </div>
-    );
-};
+// const ConcensusBar = ({match, pickemsConcensusData}) => {
+//     const [isHovered, setIsHovered] = React.useState(false);
+//     const totalVotes = Object.values(pickemsConcensusData?.[match.id] ?? {}).reduce((acc, votes) => acc + (votes || 0), 0);
+//     return (
+//         <div className="mt-2">
+//             {totalVotes > 0 ? (
+//                 <>
+//                     <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="h-3 w-full bg-gray-200 rounded-full overflow-hidden shadow-inner">
+//                         <div className="flex h-full">
+//                             <div 
+//                                 className="bg-gradient-to-r from-blue-500 via-blue-500 to-yellow-800 text-xs flex items-center justify-center text-white transition-all duration-300"
+//                                 style={{width: `${((pickemsConcensusData[match.id]?.[match.home.id] ?? 0) / totalVotes) * 100}%`}}
+//                             >
+//                                 {((pickemsConcensusData[match.id]?.[match.home.id] ?? 0) / totalVotes * 100).toFixed(0)}%
+//                             </div>
+//                             <div 
+//                                 className="bg-gradient-to-r from-yellow-800 via-red-500 to-red-500 text-xs flex items-center justify-center text-white transition-all duration-300"
+//                                 style={{width: `${((pickemsConcensusData[match.id]?.[match.away.id] ?? 0) / totalVotes) * 100}%`}}
+//                             >
+//                                 {((pickemsConcensusData[match.id]?.[match.away.id] ?? 0) / totalVotes * 100).toFixed(0)}%
+//                             </div>
+//                         </div>
+//                     </div>
+//                     { isHovered && <div className="flex justify-between text-xs mt-1">
+//                         <span className="font-semibold">{pickemsConcensusData[match.id]?.[match.home.id] ?? 0} votes</span>
+//                         <span className="font-semibold">{pickemsConcensusData[match.id]?.[match.away.id] ?? 0} votes</span>
+//                     </div>}
+//                 </>
+//             ) : (
+//                 <div className="text-xs text-center text-gray-500 italic">No votes yet</div>
+//             )}
+//         </div>
+//     );
+// };
 
 export const Pickems = () => {
     const { loggedinUser, seasonAndMatchType } = useDataContext();
     const [ isShowRules, setIsShowRules ] = React.useState<boolean>(false);
-    const { data: pickemsData, isLoading: isLoadingPickems, isFetching: isFetchingPickems } = usePickems( loggedinUser?.discordId, seasonAndMatchType.season, undefined, { enabled: loggedinUser?.discordId && seasonAndMatchType.season > 0 });
-    const { data: pickemsConcensusData, isLoading: isLoadingPickemsConsensus } = usePickemsMatchUpConsensus(seasonAndMatchType.season, { enabled: loggedinUser?.discordId && seasonAndMatchType.season > 0 });
+    const [ exploringPlayerPickems, setExploringPlayerPickems ] = React.useState<boolean>(false);
+
+    const { data: pickemsData, isLoading: isLoadingPickems, isFetching: isFetchingPickems } = usePickems( loggedinUser?.discordId, seasonAndMatchType.season, { enabled: !!(loggedinUser?.discordId && seasonAndMatchType.season > 0) });
+    const { data: pickemsConcensusData, isLoading: isLoadingPickemsConsensus } = usePickemsMatchUpConsensus(seasonAndMatchType.season, { enabled: !!(loggedinUser?.discordId && seasonAndMatchType.season > 0) });
+    //const { data: pickemsSearchData, isLoading: isLoadingPickemsSearch } = usePickemsSearch(seasonAndMatchType.season, { enabled: exploringPlayerPickems });
     const [ submitWasSuccessful, setSubmitWasSuccessful ] = React.useState<boolean>(false);
     const mutation = usePickemsMutation(seasonAndMatchType.season);
     const [ userTier, setUserTier ] = React.useState<string | undefined>(pickemsData?.tier ?? loggedinUser?.tier?.name ?? undefined);
     const { data: matches = [], isLoading } = useFetchMatchesGraph(seasonAndMatchType.season, undefined, { enabled: seasonAndMatchType.season > 0}); // seasonAndMatchType.season
     const [ selectedMatches, setSelectedMatches ] = React.useState<{ [key: string]: { teamId: number, teamName: string} | null }>(pickemsData?.pickems ?? {});
-    const [ selectedTimeframe, setSelectedTimeframe ] = React.useState<[]>(['current']);
+    const [ selectedTimeframe, setSelectedTimeframe ] = React.useState<string[]>(['current']);
 
-    const [timeUpdateTrigger, setTimeUpdateTrigger] = React.useState(0);
+    const [_, setTimeUpdateTrigger] = React.useState(0);
 
     const TimeToggles = [
         { label: 'Past Matches', value: 'past' },
@@ -93,10 +96,6 @@ export const Pickems = () => {
 
     const currentDate = dayjs()
 
-    const hasMatchStarted = React.useCallback((matchDate: Date) => {
-        return dayjs(matchDate).isBefore(currentDate);
-    }, []);
-
     if (isLoading || isLoadingPickems) {
         return <Container>
             <Loading />
@@ -104,16 +103,7 @@ export const Pickems = () => {
     }
 
     // write a reduce function on matches to organize all the matches by matchday
-    const matchesByMatchday = matches?.filter( m => m.matchDay.number.includes("M") && !m.home.franchise.name.includes("To Be Determined"))
-    .filter( m => m.home.tier.name === userTier)
-        .reduce((acc: any, match: any) => {
-            const matchday = dayjs(match.scheduledDate).format("YYYY-MM-DD");
-            if (!acc[matchday]) {
-                acc[matchday] = [];
-            }
-            acc[matchday].push(match);
-            return acc;
-        }, {}) ?? [];
+    const matchesByMatchday = matchesByMatchDay(matches, userTier);
 
     const pastMatchWeeks = Object.keys(matchesByMatchday).filter((matchDate) => 
         dayjs(matchDate).isBefore(currentDate, 'week')
@@ -162,7 +152,8 @@ export const Pickems = () => {
     if( userTier === undefined || userTier.includes("Unrated") ) {
         return (
             <Container>
-                <h1 className="text-2xl font-bold mb-4">Select Your Tier</h1>
+                <h1 className="text-2xl font-bold mb-4">Uh oh! It looks like your tierless, please select a Tier to get started.</h1>
+                <p>Select the tier you want to participate in wisely, once you save your first pickems - you cannot switch tiers.</p>
                 <div className="flex space-x-4">
                     {["Recruit", "Prospect", "Contender", "Challenger", "Elite", "Premier"].map((tier: any) => (
                     <button
@@ -178,45 +169,11 @@ export const Pickems = () => {
         );
     }
 
-    const TeamSideItem = ({match, selectedMatches, side}: { match: Match, selectedMatches: { [key: string]: { teamId: number, teamName: string } | null }, side: 'home' | 'away' }) => {
-        const team = match[side];
-        const totalVotes = Object.values(pickemsConcensusData?.[match.id] ?? {}).reduce((acc, votes) => acc + (votes || 0), 0);
-        const percentage = ((pickemsConcensusData[match.id]?.[team.id]?? 0) / totalVotes) * 100 || 0;
-        return (
-        <div 
-            onClick={() => !hasMatchStarted(match.scheduledDate) && handleSelection(match.id, { teamId: team.id, teamName: team.name })}
-            className={`flex flex-col cursor-pointer items-center h-20 w-16 rounded-lg p-2
-            ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && match.stats[0]?.winner?.id === team.id
-            ? "bg-green-500 bg-opacity-15 border-2 border-green-500"
-            : ""}
-            ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && match.stats[0]?.winner?.id !== team.id
-            ? "bg-red-500 bg-opacity-15 border-2 border-red-500"
-            : ""}
-            ${!hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id
-            ? "bg-blue-500 bg-opacity-15 border-2 border-blue-500"
-            : ""}
-        `}
-    >
-            <div className="object-contain flex items-center justify-center h-12 w-12">
-                <img
-                    src={franchiseImages[team.franchise.prefix]}
-                    alt={team.franchise.prefix}
-                    className="rounded-lg"
-                />
-            </div>
-            <div className={``}>
-                { pickemsConcensusData && pickemsConcensusData[match.id] &&
-                    <span className="text-xs text-gray-500">{percentage.toFixed(1)}%</span>
-                }
-            </div>
-        </div>);
-    }
-
     return (
         <Container>
             <div className="h-fit">
                 <h1 className="text-3xl font-bold mb-4 text-center">
-                    My {userTier} Weekly Pickems
+                    { exploringPlayerPickems ? "Exploring" : `My ${userTier}`} Weekly Pickems
                 </h1>
                 <div className="text-center mb-4">
                     <div className="flex items-center justify-center gap-2 mb-4">
@@ -235,8 +192,16 @@ export const Pickems = () => {
                             </svg>
                             Rules
                         </button>
+                        <span 
+                            className="inline-flex items-center px-3 py-1 text-white text-sm font-bold rounded-full hover:text-blue-400 cursor-pointer transition-colors"
+                            onClick={() => setExploringPlayerPickems(true)}
+                            >
+                            Explore Players Pickems <GiChoice size={"1.5rem"} className="inline" />
+                        </span>
                     </div>
-                </div>              
+                </div>
+                { !exploringPlayerPickems &&
+                <>      
                 {/* Timeframe Toggle */}
                 <div className="flex justify-center space-x-2 mb-6">
                     {TimeToggles.map((timeframe) => (
@@ -255,10 +220,9 @@ export const Pickems = () => {
                         </button>
                     ))}
                 </div>
-                <div className="text-xs font-extrabold uppercase text-gray-500">Picks last saved {pickemsData ? dayjs(pickemsData.dateUpdated).fromNow() : "Never"}</div>
+                <div className="text-xs font-extrabold uppercase text-gray-500">Picks last saved {pickemsData?.dateUpdated ? dayjs(pickemsData.dateUpdated).fromNow() : "Never"}</div>
 
-                <div className="flex space-x-8">
-                {selectedTimeframe !== 'past' && (
+                <div className="flex space-x-8">               
                     <div className="mt-8 flex justify-center">
                         {submitWasSuccessful ? (
                             <div className="flex items-center justify-center">
@@ -275,8 +239,7 @@ export const Pickems = () => {
                                 {!mutation.isPending ? "SUBMIT YOUR PICKS! ✨" : "Submitting"}
                             </button>
                         )}
-                    </div>
-                )}
+                    </div>               
                     {matchesByMatchday &&
                         (Object.entries(matchesByMatchday) as [string, any[]][])
                         .filter(([matchDate]) => {
@@ -319,9 +282,9 @@ export const Pickems = () => {
                                             )}
                                             <div className="flex flex-col">
                                                 <div className="flex space-x-4">
-                                                    <TeamSideItem match={match} selectedMatches={selectedMatches} side={"home"} />
+                                                    <TeamSide match={match} selectedMatches={selectedMatches} side={"home"} pickemsConcensusData={pickemsConcensusData} handleSelection={handleSelection} />
                                                     <span className="m-auto text-md font-semibold">vs.</span>
-                                                    <TeamSideItem match={match} selectedMatches={selectedMatches} side={"away"} />                                     
+                                                    <TeamSide match={match} selectedMatches={selectedMatches} side={"away"} pickemsConcensusData={pickemsConcensusData} handleSelection={handleSelection} />                                     
                                                 </div>
                                                 {/* { !isLoadingPickemsConsensus && <ConcensusBar match={match} pickemsConcensusData={pickemsConcensusData} /> } */}
                                             </div>
@@ -332,7 +295,64 @@ export const Pickems = () => {
                             </Transition>        
                         ))}
                 </div>
-                
+                </>}
+                {exploringPlayerPickems && (
+                    <div className="mt-8">
+                        <p className="mb-4">This feature is under development, please check back later!</p>
+                        <button 
+                            onClick={() => setExploringPlayerPickems(false)}
+                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                        >
+                            Back to My Pickems
+                        </button>
+                        {/* <div>
+                            {isLoadingPickemsSearch ? (
+                                <div className="flex justify-center items-center py-8">
+                                    <Loading />
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {pickemsSearchData?.length > 0 ? (
+                                        pickemsSearchData.map((player) => {
+                                            const { players } = useDataContext();
+                                            const cscPlayer = players.find(p => p.discordId === player.discordId);
+                                            return (
+                                            <button 
+                                                key={player.discordId}
+                                                onClick={() => {
+                                                    // TODO: Implement viewing another player's pickems
+                                                    console.log(`View ${player.username}'s pickems`);
+                                                }}
+                                                className="p-4 border rounded-lg shadow-md hover:shadow-lg transition-shadow flex items-center gap-3 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-blue-50 hover:to-blue-100"
+                                            >
+                                                {player.avatarUrl && (
+                                                    <img 
+                                                        src={cscPlayer?.avatarUrl} 
+                                                        alt={cscPlayer?.name} 
+                                                        className="w-10 h-10 rounded-full"
+                                                    />
+                                                )}
+                                                <div className="text-left">
+                                                    <div className="font-medium">{cscPlayer?.name}</div>
+                                                    <div className="text-xs text-gray-600">Tier: {player.tier || "Unknown"}</div>
+                                                </div>
+                                                <div className="ml-auto text-blue-600">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                                                    </svg>
+                                                </div>
+                                            </button>
+                                        )})
+                                    ) : (
+                                        <div className="col-span-full text-center py-8 text-gray-500">
+                                            No player data available
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div> */}
+                    </div>
+                )}
                 {/* {Object.keys(selectedMatches ?? []).length > 0 && (
                     <div className="mt-6 p-4 bg-blue-700 border border-blue-300 rounded-lg text-xs">
                         Debug
@@ -353,34 +373,7 @@ export const Pickems = () => {
                 onClose={() => setIsShowRules(false)} 
                 className="fixed inset-0 z-10 overflow-y-auto"
             >
-                <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
-                    <DialogPanel className="w-full max-w-md rounded-lg bg-white shadow-xl overflow-hidden">
-                        <div className="bg-blue-600 p-4">
-                            <DialogTitle className="text-xl font-bold text-white flex justify-between items-center">
-                                Pickems Rules
-                                <button 
-                                    onClick={() => setIsShowRules(false)}
-                                    className="text-white hover:text-gray-200"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </DialogTitle>
-                        </div>
-                        <div className="p-6">
-                            <p className="mb-4">Pick the winner for each match-up. Predictions must be submitted before matches begins.</p>
-                            <ul className="list-disc pl-5 mb-4">
-                                <li>You can update your picks at any time up to 5 minutes before the scheduled match start time.</li>
-                            </ul>
-                            <p className="font-semibold mb-2">Points are awarded as follows:</p>
-                            <ul className="list-disc pl-5 mb-4">
-                                <li>1 point for each correct prediction</li>
-                            </ul>
-                            <p className="mt-4 font-semibold">May your picks be ever in your favor!</p>
-                        </div>
-                    </DialogPanel>
-                </div>
+                <PickemsRules setIsShowRules={setIsShowRules} />
             </Dialog>
         </Container>
     );

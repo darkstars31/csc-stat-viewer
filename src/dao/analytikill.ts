@@ -96,7 +96,7 @@ export function useMutateArticle( payload: any ) {
 	});
 }
 
-export function usePickems( discordId: string, season: number, options?: { enabled?: boolean }): UseQueryResult<any> {
+export function usePickems( discordId?: string, season?: number, options?: { enabled?: boolean }): UseQueryResult<any> {
     return useQuery({
         queryKey: ["pickems", discordId, season],
         queryFn: async () => 
@@ -109,19 +109,31 @@ export function usePickems( discordId: string, season: number, options?: { enabl
     });
 }
 
-export function usePickemsMatchUpConsensus( season: number): UseQueryResult<{ [matchId: string]: { [teamId: string]: number}}> {
+export function usePickemsMatchUpConsensus( season: number, options?: { enabled?: boolean }): UseQueryResult<{ [matchId: string]: { [teamId: string]: number}}> {
     return useQuery({
         queryKey: ["pickemsMatchUpConsensus", season],
         queryFn: async () => 
             await analytikillHttpClient.get(`/analytikill/pickems/matchup-concensus?season=${season}`)
                 .then( response => response.data ),
         staleTime: 1000 * 60 * 15,
+        enabled: options?.enabled ?? true,
+    });
+}
+
+export function usePickemsSearch( season: number, options?: { enabled?: boolean }): UseQueryResult<{ [matchId: string]: { [teamId: string]: number}}> {
+    return useQuery({
+        queryKey: ["pickemsMatchUpConsensus", season],
+        queryFn: async () => 
+            await analytikillHttpClient.get(`/analytikill/pickemsSearch?season=${season}`)
+                .then( response => response.data ),
+        staleTime: 1000 * 60 * 15,
+        enabled: options?.enabled ?? true,
     });
 }
 
 export function usePickemsMutation( season: number ) {
     return useMutation({
-        mutationFn: async ( payload ) => 
+        mutationFn: async ( payload: any ) => 
             await analytikillHttpClient.post(`/analytikill/pickems?season=${season}`, payload)
                 .then( response => response.data ),
     });
