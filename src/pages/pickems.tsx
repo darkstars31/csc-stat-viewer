@@ -15,7 +15,6 @@ import { Dialog, DialogPanel, DialogTitle, Transition } from "@headlessui/react"
 
 const ConcensusBar = ({match, pickemsConcensusData}) => {
     const [isHovered, setIsHovered] = React.useState(false);
-    console.info( 'match', pickemsConcensusData)
     const totalVotes = Object.values(pickemsConcensusData?.[match.id] ?? {}).reduce((acc, votes) => acc + (votes || 0), 0);
     return (
         <div className="mt-2">
@@ -59,9 +58,15 @@ export const Pickems = () => {
     const [ userTier, setUserTier ] = React.useState<string | undefined>(pickemsData?.tier ?? loggedinUser?.tier?.name ?? undefined);
     const { data: matches = [], isLoading } = useFetchMatchesGraph(seasonAndMatchType.season, undefined, { enabled: seasonAndMatchType.season > 0}); // seasonAndMatchType.season
     const [ selectedMatches, setSelectedMatches ] = React.useState<{ [key: string]: { teamId: number, teamName: string} | null }>(pickemsData?.pickems ?? {});
-    const [ selectedTimeframe, setSelectedTimeframe ] = React.useState<'past' | 'current' | 'future'>('current');
+    const [ selectedTimeframe, setSelectedTimeframe ] = React.useState<[]>(['current']);
 
     const [timeUpdateTrigger, setTimeUpdateTrigger] = React.useState(0);
+
+    const TimeToggles = [
+        { label: 'Past Matches', value: 'past' },
+        { label: 'This Week', value: 'current' },
+        { label: 'Future Matches', value: 'future' }
+    ]
 
     // Add this effect to update the time display every minute
     React.useEffect(() => {
@@ -86,7 +91,7 @@ export const Pickems = () => {
         queryClient.invalidateQueries({ queryKey: ["pickemsMatchUpConsensus", seasonAndMatchType.season] });
     }, [mutation.isSuccess])
 
-    const currentDate = dayjs(); //dayjs("02/18/2025").add(21, "hours").add(1, "minute") 
+    const currentDate = dayjs()
 
     const hasMatchStarted = React.useCallback((matchDate: Date) => {
         return dayjs(matchDate).isBefore(currentDate);
@@ -99,7 +104,7 @@ export const Pickems = () => {
     }
 
     // write a reduce function on matches to organize all the matches by matchday
-    const matchesByMatchday = matches?.filter( m => m.matchDay.number.includes("M"))
+    const matchesByMatchday = matches?.filter( m => m.matchDay.number.includes("M") && !m.home.franchise.name.includes("To Be Determined"))
     .filter( m => m.home.tier.name === userTier)
         .reduce((acc: any, match: any) => {
             const matchday = dayjs(match.scheduledDate).format("YYYY-MM-DD");
@@ -182,21 +187,23 @@ export const Pickems = () => {
             onClick={() => !hasMatchStarted(match.scheduledDate) && handleSelection(match.id, { teamId: team.id, teamName: team.name })}
             className={`flex flex-col cursor-pointer items-center h-20 w-16 rounded-lg p-2
             ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && match.stats[0]?.winner?.id === team.id
-                ? "bg-green-500 bg-opacity-15 border-2 border-green-500"
-                : ""}
+            ? "bg-green-500 bg-opacity-15 border-2 border-green-500"
+            : ""}
             ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && match.stats[0]?.winner?.id !== team.id
-                ? "bg-red-500 bg-opacity-15 border-2 border-red-500"
-                : ""}
+            ? "bg-red-500 bg-opacity-15 border-2 border-red-500"
+            : ""}
             ${!hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id
-                ? "bg-blue-500 bg-opacity-15 border-2 border-blue-500"
-                : ""}
+            ? "bg-blue-500 bg-opacity-15 border-2 border-blue-500"
+            : ""}
         `}
     >
-            <img
-                src={franchiseImages[team.franchise.prefix]}
-                alt={team.franchise.prefix}
-                className="h-14 w-14 rounded-lg"
-            />
+            <div className="object-contain flex items-center justify-center h-12 w-12">
+                <img
+                    src={franchiseImages[team.franchise.prefix]}
+                    alt={team.franchise.prefix}
+                    className="rounded-lg"
+                />
+            </div>
             <div className={``}>
                 { pickemsConcensusData && pickemsConcensusData[match.id] &&
                     <span className="text-xs text-gray-500">{percentage.toFixed(1)}%</span>
@@ -208,38 +215,43 @@ export const Pickems = () => {
     return (
         <Container>
             <div className="h-fit">
-                <h1 className="text-3xl font-bold mb-4 text-center">My {userTier} Weekly Pickems
-                    <span className="px-2 py-1 bg-blue-500 text-white text-sm font-bold rounded-full">
-                        Beta
-                    </span>
+                <h1 className="text-3xl font-bold mb-4 text-center">
+                    My {userTier} Weekly Pickems
                 </h1>
-                <button 
-                    onClick={() => setIsShowRules(true)}
-                    className="ml-2 inline-flex items-center px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full transition-colors"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Rules
-                </button>
-                <div className="text-center mb-4">             
-                    <p className="text-xs text-red-500 mt-2">
-                        *All picks will be wiped before the season starts.
-                    </p>
-                </div>
+                <div className="text-center mb-4">
+                    <div className="flex items-center justify-center gap-2 mb-4">
+                        <span className="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-sm font-bold rounded-full">
+                            Beta
+                        </span>
+                        <span className="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-sm font-bold rounded-full">
+                            Live
+                        </span>
+                        <button 
+                            onClick={() => setIsShowRules(true)}
+                            className="inline-flex items-center px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full transition-colors"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Rules
+                        </button>
+                    </div>
+                </div>              
                 {/* Timeframe Toggle */}
                 <div className="flex justify-center space-x-2 mb-6">
-                    {['past', 'this week', 'future'].map((timeframe) => (
+                    {TimeToggles.map((timeframe) => (
                         <button
-                            key={timeframe}
-                            onClick={() => setSelectedTimeframe(timeframe as 'past' | 'current' | 'future')}
+                            key={timeframe.value}
+                            onClick={() => setSelectedTimeframe(prev => prev.includes(timeframe.value) ? 
+                                prev.filter( p => p !== timeframe.value) 
+                                : [...prev, timeframe.value])}
                             className={`px-4 py-2 rounded-lg transition-all duration-200 ${
-                                selectedTimeframe === timeframe
+                                selectedTimeframe.includes(timeframe.value)
                                 ? 'bg-blue-500 text-white'
                                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             }`}
                         >
-                            {timeframe.charAt(0).toUpperCase() + timeframe.slice(1)} Matches
+                            {timeframe.label}
                         </button>
                     ))}
                 </div>
@@ -268,18 +280,22 @@ export const Pickems = () => {
                     {matchesByMatchday &&
                         (Object.entries(matchesByMatchday) as [string, any[]][])
                         .filter(([matchDate]) => {
-                            switch(selectedTimeframe) {
-                                case 'past':
-                                    return pastMatchWeeks.includes(matchDate);
-                                case 'current':
-                                    return currentMatchWeek.includes(matchDate);
-                                case 'future':
-                                    return futrueMatchWeeks.includes(matchDate);
-                                default:
-                                    return false;
-                            }
+                            return (selectedTimeframe.includes('past') && pastMatchWeeks.includes(matchDate))
+                            || (selectedTimeframe.includes('current') && currentMatchWeek.includes(matchDate))
+                            || (selectedTimeframe.includes('future') && futrueMatchWeeks.includes(matchDate))
+                            || selectedTimeframe.length === 0;
                         })
                         .map(([matchDate, matches]: [string, Match[]]) => (
+                            <Transition
+                                appear={true}
+                                show={true}
+                                enter="transition-opacity duration-500"
+                                enterFrom="opacity-0"
+                                enterTo="opacity-100"
+                                leave="transition-opacity duration-500"
+                                leaveFrom="opacity-100"
+                                leaveTo="opacity-0"
+                                >    
                             <div key={matchDate} className="flex flex-col">
                                 <div>
                                     <h2 className="text-xl font-semibold mb-2 uppercase">Match Day {matches[0].matchDay.number.replace("M","")}</h2>
@@ -299,7 +315,7 @@ export const Pickems = () => {
                                     {matches.map((match: Match) => (
                                         <div key={match.id} className="p-1 relative">
                                             {hasMatchStarted(match.scheduledDate) && (
-                                                <div className="absolute inset-0 bg-gray-400 bg-opacity-20 z-10" />
+                                                <div className="absolute inset-0 bg-gray-400 bg-opacity-15 z-10" />
                                             )}
                                             <div className="flex flex-col">
                                                 <div className="flex space-x-4">
@@ -313,10 +329,11 @@ export const Pickems = () => {
                                     ))}
                                 </div>
                             </div>
+                            </Transition>        
                         ))}
                 </div>
                 
-                {Object.keys(selectedMatches ?? []).length > 0 && (
+                {/* {Object.keys(selectedMatches ?? []).length > 0 && (
                     <div className="mt-6 p-4 bg-blue-700 border border-blue-300 rounded-lg text-xs">
                         Debug
                         <p className="">Your selections:</p>
@@ -329,7 +346,7 @@ export const Pickems = () => {
                             ))}
                         </ul>
                     </div>
-                )}
+                )} */}
             </div>
             <Dialog 
                 open={isShowRules} 

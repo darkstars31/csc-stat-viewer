@@ -281,6 +281,18 @@ export function TeamStandings() {
 					))}
 				</div>
 			</div>
+			<div>
+				<div className="mt-4 mb-4"></div>
+					<Link to="/pickems" className="block w-full max-w-md mx-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform transition duration-300 ease-in-out hover:scale-105 text-center">
+						<div className="flex items-center justify-center">
+							<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+							</svg>
+							<span className="text-lg">Take me to Pickems!</span>
+						</div>
+						<div className="text-sm mt-1 opacity-80">Predict match outcomes & score points</div>
+					</Link>
+				</div>
 			<div className="pt-2">
 				{isLoading ?
 					<Loading />

@@ -101,6 +101,8 @@ export function LeaderBoards() {
 		{ name: "General", color: "text-yellow-400" },
 		{ name: "Extended", color: "text-cyan-400" },
 		{ name: "Weapons", color: "text-green-400" },
+		{ name: "FAPL", color: "text-purple-400" },
+		{ name: "Pickems", color: "text-red-400" },
 	];
 
 	if (loading.isLoadingCscPlayers) {
@@ -219,6 +221,8 @@ export function LeaderBoards() {
 							{selectedPage === "general" && <GeneralLeaderBoards players={playerData} limit={limit} />}
 							{selectedPage === "extended" && <ExtendedLeaderboards players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
 							{selectedPage === "weapons" && <WeaponLeaderboards players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
+							{selectedPage === "fapl" && <div className="text-center text-gray-500 w-full text-2xl font-extrabold">FAPL Leaderboards coming soon.</div>}
+							{selectedPage === "pickems" && <div className="text-center text-gray-500 w-full text-2xl font-extrabold">Pickems Leaderboards coming soon.</div>}
 						</div>
 					</div>
 				)}
