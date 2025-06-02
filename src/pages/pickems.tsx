@@ -12,6 +12,7 @@ import { TeamSide } from "./pickems/teamSide";
 import { hasMatchStarted, matchesByMatchDay } from "./pickems/utils";
 import { GiChoice } from "react-icons/gi";
 import { PickemsRules } from "./pickems/rules";
+import * as Sentry from "@sentry/react";
 
 // const ConcensusBar = ({match, pickemsConcensusData}) => {
 //     const [isHovered, setIsHovered] = React.useState(false);
@@ -57,6 +58,7 @@ export const Pickems = () => {
     const { data: pickemsConcensusData, isLoading: isLoadingPickemsConsensus } = usePickemsMatchUpConsensus(seasonAndMatchType.season, { enabled: !!(loggedinUser?.discordId && seasonAndMatchType.season > 0) });
     //const { data: pickemsSearchData, isLoading: isLoadingPickemsSearch } = usePickemsSearch(seasonAndMatchType.season, { enabled: exploringPlayerPickems });
     const [ submitWasSuccessful, setSubmitWasSuccessful ] = React.useState<boolean>(false);
+    const [ submissionError, setSubmissionError ] = React.useState<string | undefined>(undefined);
     const mutation = usePickemsMutation(seasonAndMatchType.season);
     const [ userTier, setUserTier ] = React.useState<string | undefined>(pickemsData?.tier ?? loggedinUser?.tier?.name ?? undefined);
     const { data: matches = [], isLoading } = useFetchMatchesGraph(seasonAndMatchType.season, undefined, { enabled: seasonAndMatchType.season > 0}); // seasonAndMatchType.season
@@ -134,7 +136,8 @@ export const Pickems = () => {
             setSubmitWasSuccessful(true);
             setTimeout(() => setSubmitWasSuccessful(false), 3000);
         } catch (error) {
-            console.error("Error submitting pickems:", error);
+            Sentry.captureException(error);
+            console.info("Error submitting pickems:", error);
         }
     }
 
