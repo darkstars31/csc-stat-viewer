@@ -42,7 +42,6 @@ export function GraphicsPlayer() {
 	const { data: playerProfile = {}, isLoading: isLoadingPlayerProfile } = useFetchPlayerProfile(currentPlayer?.discordId);
 	const { data: cscPlayerProfile, isLoading } = useCscStatsProfileTrendGraph(currentPlayer?.steam64Id, seasonAndMatchType.season);
 
-	console.info("cscPlayerProfile", cscPlayerProfile);
 	
 	React.useEffect(() => {
 		window.scrollTo(0, 0);

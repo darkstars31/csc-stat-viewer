@@ -22,7 +22,6 @@ const HeaderItem = ({
 	item: { href: string; name: string | React.JSX.Element; current: boolean, styling?: string };
 	close: () => void;
 }) => {
-	console.info('item', item.styling)
 	return (
 		<Link
 			key={item.href}

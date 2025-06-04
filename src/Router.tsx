@@ -26,7 +26,7 @@ import { useDataContext } from "./DataContext";
 import { ProgressBar } from "./common/components/progress";
 import ReactGA from "react-ga4";
 import { ErrorBoundary } from "./common/components/errorBoundary";
-import { discordFetchUser } from "./dao/oAuth";
+import { discordFetchUser, discordRefreshToken } from "./dao/oAuth";
 import cookie from "js-cookie";
 import { useLocalStorage } from "./common/hooks/localStorage";
 import { AiOutlineCloseCircle } from "react-icons/ai";
@@ -107,6 +107,10 @@ export function Router() {
 
 	React.useEffect(() => {
 		const fetchUser = async () => {
+			// const refreshtoken = cookie.get("refresh_token");
+			// if (refreshtoken) {
+			// 	await discordRefreshToken();
+			// }
 			const accessToken = cookie.get("access_token");
 			if (accessToken && discordUser === null) {
 				const user = await discordFetchUser(accessToken);
@@ -120,12 +124,12 @@ export function Router() {
 	}, [discordUser, setDiscordUser]);
 
 	React.useEffect(() => {
-			document.title = `${location.split('/').at(-1)}${params ? `?${params}` : ""} - AnalytiKill`;
-			ReactGA.send({
-				hitType: "pageview",
-				page: `${location}${params ? `?${params}` : ""}`,
-				title: document.title,
-			});		
+		document.title = `${location.split('/').at(-1)}${params ? `?${params}` : ""} - AnalytiKill`;
+		ReactGA.send({
+			hitType: "pageview",
+			page: `${location}${params ? `?${params}` : ""}`,
+			title: document.title,
+		});		
 	}, [location, params]);
 
 	let ga: Record<string, string> = { hitType: "pageview", page: location, title: document.title };
