@@ -60,7 +60,6 @@ export const Pickems = () => {
 
     const { data: pickemsData, isLoading: isLoadingPickems, isFetching: isFetchingPickems } = usePickems( loggedinUser?.discordId, seasonAndMatchType.season, { enabled: !!(loggedinUser?.discordId && seasonAndMatchType.season > 0) });
     const { data: pickemsConcensusData, isLoading: isLoadingPickemsConsensus } = usePickemsMatchUpConsensus(seasonAndMatchType.season, { enabled: !!(loggedinUser?.discordId && seasonAndMatchType.season > 0) });
-    //const { data: pickemsSearchData, isLoading: isLoadingPickemsSearch } = usePickemsSearch(seasonAndMatchType.season, { enabled: exploringPlayerPickems });
     const [ submitWasSuccessful, setSubmitWasSuccessful ] = React.useState<boolean>(false);
     const [ submitError, setSubmitError ] = React.useState<unknown | undefined>(undefined);
     const mutation = usePickemsMutation(seasonAndMatchType.season);
@@ -246,7 +245,6 @@ export const Pickems = () => {
                 </>}
                 {exploringPlayerPickems && (
                     <PlayerPickemsExplorer 
-                        seasonId={seasonAndMatchType.season} 
                         onBackToMyPickems={() => setExploringPlayerPickems(false)} 
                     />
                 )}

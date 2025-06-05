@@ -31,10 +31,10 @@ type ProcessedTeamStandings = {
 };
 
 const calclulateElo = (team1: ProcessedTeamStandings, team2Elo: number, team1Won: boolean) => {
-	const k = 21.333;
+	const k = 51.333;
 	const c = 266.66;
 	const team1Win = team1Won ? 1 : 0;
-	return team1.elo + k * (team1Win - 1 / (1 + 10 ** ((team2Elo - team1.elo) / c)));
+	return team1.elo + team1.roundsWon - team1.roundsLost + k * (team1Win - 1 / (1 + 10 ** ((team2Elo - team1.elo) / c))) ;
 };
 
 function TeamRecordRow({
@@ -103,10 +103,10 @@ function TeamRecordRow({
 			>
 				{calculatePercentage(team.pistolRoundsWon, team.pistolTotalRounds, 1)}%
 			</td>
+			<td className={`${getCssColorGradientBasedOnPercentage(100 - SoS)}`}>{SoS.toFixed(1)}%</td>
 			{showExtras && (
 				<>
-					{/* <td>{team.elo.toFixed(0)}</td> */}
-					<td className={`${getCssColorGradientBasedOnPercentage(100 - SoS)}`}>{SoS.toFixed(1)}%</td>
+					<td>{team.elo.toFixed(0)}</td>
 				</>
 			)}
 		</tr>
@@ -120,7 +120,7 @@ export function TeamStandings() {
 	const queryParams = new URLSearchParams(useSearch());
 	const { franchises = [], seasonAndMatchType, loggedinUser } = useDataContext();
 	const [selectedTier, setSelectedTier] = React.useState(q ?? "Contender");
-	const [showExtras, setShowExtras] = React.useState(true);
+	const [showExtras, setShowExtras] = React.useState(false);
 	const [showJson, setShowJson] = React.useState(true);
 
 	const { data: matches = [], isLoading } = useCscSeasonMatches(
@@ -329,14 +329,14 @@ export function TeamStandings() {
 											<th className="collapse md:visible">CT</th>
 											<th className="collapse md:visible">T</th>
 											<th className="collapse md:visible">Pistols</th>
+											<th>
+												<ToolTip type="generic" message="Strength of Schedule">
+													<span className="underline decoration-yellow-400">SoS</span>
+												</ToolTip>
+											</th>
 											{showExtras && (
-												<>
-													{/* <th><ToolTip type="generic" message="Calculated based on opponent record and the weighted odds of winning against each opponent. Base Elo is 1000."><span className="underline decoration-yellow-400">Elo</span></ToolTip></th> */}
-													<th>
-														<ToolTip type="generic" message="Strength of Schedule">
-															<span className="underline decoration-yellow-400">SoS</span>
-														</ToolTip>
-													</th>
+												<>													
+													<th><ToolTip type="generic" message="Calculated based on opponent record and the weighted odds of winning against each opponent. Base Elo is 1000."><span className="underline decoration-yellow-400">Elo</span></ToolTip></th>
 												</>
 											)}
 										</tr>

@@ -21,11 +21,11 @@ export const TeamSide =  ({ match, selectedMatches, side, pickemsConcensusData, 
         <div 
             onClick={() => !hasMatchStarted(match.scheduledDate) && handleSelection(match.id, { teamId: team.id, teamName: team.name })}
             className={`flex flex-col cursor-pointer items-center h-20 w-16 rounded-lg p-2
-            ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && match.stats[0]?.winner?.id === team.id
-            ? "bg-green-500 bg-opacity-15 border-2 border-green-500"
+            ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && !!match.stats[0]?.winner && match.stats[0]?.winner?.id === team.id
+            ? "bg-emerald-400 bg-opacity-15 border-2 border-green-500"
             : ""}
-            ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && match.stats[0]?.winner?.id !== team.id
-            ? "bg-red-500 bg-opacity-15 border-2 border-red-500"
+            ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && !!match.stats[0]?.winner && match.stats[0]?.winner?.id !== team.id
+            ? "bg-red-500 bg-opacity-15 border-2 border-amber-600"
             : ""}
             ${!hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id
             ? "bg-blue-500 bg-opacity-15 border-2 border-blue-500"

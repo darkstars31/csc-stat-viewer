@@ -98,6 +98,7 @@ export function Router() {
 		{ path: `/standings`, component: () => <TeamStandings /> },
 		{ path: `/servers`, component: () => <Servers /> },
 		{ path: `/pickems`, component: () => <Pickems /> },
+		{ path: `/pickems/:id`, component: () => <Pickems /> },
 
 		{ path: `/draft`, component: () => <Draft /> },
 		{ path: `/admin`, component: () => <Admin /> },

@@ -120,9 +120,20 @@ export function usePickemsMatchUpConsensus( season: number, options?: { enabled?
     });
 }
 
-export function usePickemsSearch( season: number, options?: { enabled?: boolean }): UseQueryResult<{ [matchId: string]: { [teamId: string]: number}}> {
+export function usePickemsLeaderboard<T>( season: number, options?: { enabled?: boolean }): UseQueryResult<T> {
     return useQuery({
-        queryKey: ["pickemsMatchUpConsensus", season],
+        queryKey: ["pickemsLeaderboard", season],
+        queryFn: async () => 
+                await analytikillHttpClient.get(`/analytikill/pickems/leaderboard?season=${season}`)
+                    .then( response => response.data ),
+        staleTime: 1000 * 60 * 15,
+        enabled: options?.enabled ?? true,
+    })
+}
+
+export function usePickemsSearch<T>( season: number, options?: { enabled?: boolean }): UseQueryResult<T> {
+    return useQuery({
+        queryKey: ["pickemsSearch", season],
         queryFn: async () => 
             await analytikillHttpClient.get(`/analytikill/pickemsSearch?season=${season}`)
                 .then( response => response.data ),

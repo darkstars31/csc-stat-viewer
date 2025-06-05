@@ -11,6 +11,7 @@ import { Toggle } from "../common/components/toggle";
 const GeneralLeaderBoards = React.lazy(() => import('./leaderboards/general').then(module => ({default: module.GeneralLeaderBoards})));
 const ExtendedLeaderboards = React.lazy(() => import('./leaderboards/extended').then(module => ({default: module.ExtendedLeaderboards})));
 const WeaponLeaderboards = React.lazy(() => import('./leaderboards/weapons').then(module => ({default: module.WeaponLeaderboards})));
+const PickemLeaderboards = React.lazy(() => import('./leaderboards/pickems').then(module => ({default: module.PickemLeaderboards})));
 
 export function LeaderBoards() {
 	const qs = new URLSearchParams(window.location.search);
@@ -112,7 +113,6 @@ export function LeaderBoards() {
 			</Container>
 		);
 	}
-	console.info( selectedPage)
 
 	return (
 		<Container>
@@ -214,19 +214,16 @@ export function LeaderBoards() {
 					</div>
 				</div>
 			</div>
-			<React.Suspense fallback={<Loading />}>
-				{playerData.length > 0 && (
-					<div className="pt-6">
-						<div className="flex flex-row flex-wrap gap-6">
-							{selectedPage === "general" && <GeneralLeaderBoards players={playerData} limit={limit} />}
-							{selectedPage === "extended" && <ExtendedLeaderboards players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
-							{selectedPage === "weapons" && <WeaponLeaderboards players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
-							{selectedPage === "fapl" && <div className="text-center text-gray-500 w-full text-2xl font-extrabold">FAPL Leaderboards coming soon.</div>}
-							{selectedPage === "pickems" && <div className="text-center text-gray-500 w-full text-2xl font-extrabold">Pickems Leaderboards coming soon.</div>}
-						</div>
+			<React.Suspense fallback={<Loading />}>			
+				<div className="pt-6">
+					<div className="flex flex-row flex-wrap gap-6">
+						{selectedPage === "general" && <GeneralLeaderBoards players={playerData} limit={limit} />}
+						{selectedPage === "extended" && <ExtendedLeaderboards players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
+						{selectedPage === "weapons" && <WeaponLeaderboards players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
+						{selectedPage === "fapl" && <div className="text-center text-gray-500 w-full text-2xl font-extrabold">FAPL Leaderboards coming soon.</div>}
+						{selectedPage === "pickems" && <PickemLeaderboards limit={limit} />}
 					</div>
-				)}
-				{!playerData.length && <div>No Players in this Tier for this stats sheet.</div>}
+				</div>			
 			</React.Suspense>
 		</Container>
 	);

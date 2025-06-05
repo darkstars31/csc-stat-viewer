@@ -119,73 +119,81 @@ export function ExtendedLeaderboards({ players, limit, filterExtendedStatsByGame
 
 	return (
 		<Container>
-			<div className="flex">
-				<div className="flex flex-row flex-wrap w-full">
-					<div className="flex flex-col">
-						<div>
-							<div className="text-3xl text-center m-4">
-								<img className="m-auto h-16 w-16" src={chicken} alt="Chickens" />
-								killed
-							</div>
-							<div className="text-6xl text-center m-4 pt-4">{totalChickenKills}</div>
-						</div>
-						<div className="flex flex-row flex-wrap">
-							{Object.entries(chickenDeathTotals).map(([key, value]) => (
-								<div className="text-l text-center m-auto w-32">
-									<div>{key}</div>
-									<div className="text-center">{value}</div>
+		{ players.length ?
+			<>
+				<div className="flex">
+					<div className="flex flex-row flex-wrap w-full">
+						<div className="flex flex-col">
+							<div>
+								<div className="text-3xl text-center m-4">
+									<img className="m-auto h-16 w-16" src={chicken} alt="Chickens" />
+									killed
 								</div>
-							))}
+								<div className="text-6xl text-center m-4 pt-4">{totalChickenKills}</div>
+							</div>
+							<div className="flex flex-row flex-wrap">
+								{Object.entries(chickenDeathTotals).map(([key, value]) => (
+									<div className="text-l text-center m-auto w-32">
+										<div>{key}</div>
+										<div className="text-center">{value}</div>
+									</div>
+								))}
+							</div>
 						</div>
+						<StatsLeaderBoard title="Chickens Killed" rows={chickenLeaderBoard} />
 					</div>
-					<StatsLeaderBoard title="Chickens Killed" rows={chickenLeaderBoard} />
 				</div>
+				<div className="flex flex-row flex-wrap m-auto gap-4">
+					<StatsLeaderBoard
+						title="Ninja Defuses"
+						subtitle={subtitle}
+						rows={ninjaLeaderBoard} 
+					/>
+					<StatsLeaderBoard
+						title="No Scopes"
+						subtitle={subtitle}
+						rows={noScopesLeaderBoard}
+						headerImage={cs2killfeedIcons["noScope"]}
+					/>
+					<StatsLeaderBoard
+						title="Wall Bangs"
+						subtitle={subtitle}
+						rows={wallBangLeaderBoard}
+						headerImage={cs2killfeedIcons["wallBang"]}
+					/>
+					<StatsLeaderBoard
+						title="Smoke Kills"
+						subtitle={subtitle}
+						rows={smokeKillLeaderBoard}
+						headerImage={cs2killfeedIcons["smokeKill"]}
+					/>
+					<StatsLeaderBoard 
+						title="Airborne Kills" 
+						subtitle={subtitle} 
+						rows={airborneKills}
+						headerImage={cs2killfeedIcons["airborne"]}
+					/>
+
+					<StatsLeaderBoard title="Bombs Planted" subtitle={subtitle} rows={bombPlants} />
+					<StatsLeaderBoard title="Bombs Defused" subtitle={subtitle} rows={defuses} />
+					<StatsLeaderBoard title="Died To Bomb" subtitle={subtitle} rows={diedToBomb} />
+
+					<StatsLeaderBoard title="MVPs" subtitle={subtitle} rows={mvpStars} />
+
+					<StatsLeaderBoard title="Team Kills" subtitle={subtitle} rows={TeamKillLeaderBoard} />
+					<StatsLeaderBoard
+						title="Self Kills"
+						subtitle={subtitle}
+						rows={selfKillLeaderBoard}
+						headerImage={cs2killfeedIcons["suicide"]}
+					/>
+				</div>
+			</>
+			:			
+			<div className="w-full m-4 text-center text-2xl text-gray-500 font-extrabold uppercase">
+				No Players seem to meet the criteria.
 			</div>
-			<div className="flex flex-row flex-wrap m-auto gap-4">
-				<StatsLeaderBoard
-					title="Ninja Defuses"
-					subtitle={subtitle}
-					rows={ninjaLeaderBoard} 
-				/>
-				<StatsLeaderBoard
-					title="No Scopes"
-					subtitle={subtitle}
-					rows={noScopesLeaderBoard}
-					headerImage={cs2killfeedIcons["noScope"]}
-				/>
-				<StatsLeaderBoard
-					title="Wall Bangs"
-					subtitle={subtitle}
-					rows={wallBangLeaderBoard}
-					headerImage={cs2killfeedIcons["wallBang"]}
-				/>
-				<StatsLeaderBoard
-					title="Smoke Kills"
-					subtitle={subtitle}
-					rows={smokeKillLeaderBoard}
-					headerImage={cs2killfeedIcons["smokeKill"]}
-				/>
-				<StatsLeaderBoard 
-					title="Airborne Kills" 
-					subtitle={subtitle} 
-					rows={airborneKills}
-					headerImage={cs2killfeedIcons["airborne"]}
-				/>
-
-				<StatsLeaderBoard title="Bombs Planted" subtitle={subtitle} rows={bombPlants} />
-				<StatsLeaderBoard title="Bombs Defused" subtitle={subtitle} rows={defuses} />
-				<StatsLeaderBoard title="Died To Bomb" subtitle={subtitle} rows={diedToBomb} />
-
-				<StatsLeaderBoard title="MVPs" subtitle={subtitle} rows={mvpStars} />
-
-				<StatsLeaderBoard title="Team Kills" subtitle={subtitle} rows={TeamKillLeaderBoard} />
-				<StatsLeaderBoard
-					title="Self Kills"
-					subtitle={subtitle}
-					rows={selfKillLeaderBoard}
-					headerImage={cs2killfeedIcons["suicide"]}
-				/>
-			</div>
+		 }
 		</Container>
 	);
 }
