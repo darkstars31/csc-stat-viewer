@@ -21,8 +21,9 @@ export const WeeklyPickems: React.FC<WeeklyPickemsProps> = ({
     pickemsConcensusData,
     handleSelection,
 }) => {
-    const [timeRemaining, setTimeRemaining] = React.useState<dayjs.Dayjs | undefined>(undefined);
+    const [timeRemaining, setTimeRemaining] = React.useState<dayjs.Dayjs | undefined>(dayjs(matches.at(0)?.scheduledDate));
     const isToday = dayjs().isSame(matchDate, "day");
+
     React.useEffect(() => {
         const updateTimeRemaining = () => {
             const timeToMatchesStart = matches.at(0)?.scheduledDate;
@@ -50,7 +51,7 @@ export const WeeklyPickems: React.FC<WeeklyPickemsProps> = ({
             >
                 <div className="flex flex-col">
                     <div>
-                        <h2 className="text-xl font-semibold mb-2 uppercase">Match Day {matches[0].matchDay.number.replace("M", "")}</h2>
+                        <h2 className="text-xl font-semibold mb-2 uppercase">Match Day {matches.at(-1)?.matchDay.number.replace("M", "")}</h2>
                     </div>
                     <div className="border rounded-lg shadow-sm">
                         <div>
