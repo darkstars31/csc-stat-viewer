@@ -70,20 +70,22 @@ export function WeaponLeaderboards({ players, limit }: { players: Player[]; limi
 
 	return (
 		<Container>
-		{ players.length ? 
-			weaponLeaderBoards.map(board => (
-				<StatsLeaderBoard
-					key={board.title}
-					title={board.title}
-					headerImage={cs2icons[board.title]}
-					rows={board.rows.filter(row => row.value > 0)}
-				/>
-			))
-		:		
-		<div className="w-full m-4 text-center text-2xl text-gray-500 font-extrabold uppercase">
-			No Players seem to meet the criteria.
+			<div className="flex flex-row flex-wrap m-auto gap-4">
+			{ players.length ? 
+				weaponLeaderBoards.map(board => (
+					<StatsLeaderBoard
+						key={board.title}
+						title={board.title}
+						headerImage={cs2icons[board.title]}
+						rows={board.rows.filter(row => row.value > 0)}
+					/>
+				))
+			:		
+			<div className="w-full m-4 text-center text-2xl text-gray-500 font-extrabold uppercase">
+				No Players seem to meet the criteria.
+			</div>
+			}
 		</div>
-		}
 		</Container>
 	);
 }

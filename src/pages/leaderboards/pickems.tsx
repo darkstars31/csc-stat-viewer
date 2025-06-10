@@ -12,7 +12,7 @@ type PickemLeaderboards = {
 }
 
 export const PickemLeaderboards = ({ limit }: { limit: number}) => {
-    const { seasonAndMatchType, players } = useDataContext();
+    const { seasonAndMatchType, players, loading } = useDataContext();
     const { data: pickemsLeaderboardData, isLoading: isLoadingPickemLeaderboards } = usePickemsLeaderboard<{ lastUpdate: string, leaderboard: PickemLeaderboards[]}>(seasonAndMatchType.season, { enabled: !!seasonAndMatchType.season });
     const leaderboards = pickemsLeaderboardData?.leaderboard.filter( l => l.points > 0);
     const leaderboardsByTier = {
@@ -24,20 +24,23 @@ export const PickemLeaderboards = ({ limit }: { limit: number}) => {
         Premier: leaderboards?.filter(p => p.tier === "Premier").slice(0, limit) ?? [],
     }
 
-    if( isLoadingPickemLeaderboards ){
-        <Container><Loading /></Container>
+    if( isLoadingPickemLeaderboards || loading.isLoadingCscPlayers ){
+        <Container>
+            <Loading />
+        </Container>
     }
 
     return (
         <Container>
             <div className='flex flex-wrap gap-8'>
-            { Object.entries(leaderboardsByTier).map(([tier, leaderboards]) => (
+            { Object.entries(leaderboardsByTier).map(([tier, leaderboards], index) => (
                 <StatsLeaderBoard
-                    key={tier}
+                    key={`${tier}-${index}`}
                     title={`Pickems ${tier} Leaderboard`}
                     subtitle={`Season ${seasonAndMatchType.season}`}
                     rows={leaderboards?.map(lb => ({
                         player: players.find( p => p.discordId === lb.discordId)!,
+                        tier: { name: lb.tier },
                         value: lb.points
                     })).filter( p => p.player) ?? []}
                     //headerImage={`/assets/leaderboard-${tier.toLowerCase()}.png`}

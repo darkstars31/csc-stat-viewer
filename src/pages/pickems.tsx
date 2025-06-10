@@ -12,11 +12,12 @@ import { matchesByMatchDay } from "./pickems/utils";
 import { GiChoice } from "react-icons/gi";
 import { PickemsRules } from "./pickems/rules";
 import * as Sentry from "@sentry/react";
-import { PlayerPickemsExplorer } from "./pickems/PlayerPickemsExplorer";
 import { WeeklyPickems } from "./pickems/WeeklyPickems";
 import { TimeframeToggle } from "./pickems/TimeframeToggle";
 import { SubmitPickemsButton } from "./pickems/SubmitPickemsButton";
+import { LastSaved } from "./pickems/lastSaved";
 import { ErrorMessage } from "./pickems/ErrorMessage";
+import { Link } from "wouter";
 
 // const ConcensusBar = ({match, pickemsConcensusData}) => {
 //     const [isHovered, setIsHovered] = React.useState(false);
@@ -56,28 +57,16 @@ import { ErrorMessage } from "./pickems/ErrorMessage";
 export const Pickems = () => {
     const { loggedinUser, seasonAndMatchType } = useDataContext();
     const [ isShowRules, setIsShowRules ] = React.useState<boolean>(false);
-    const [ exploringPlayerPickems, setExploringPlayerPickems ] = React.useState<boolean>(false);
 
     const { data: pickemsData, isLoading: isLoadingPickems, isFetching: isFetchingPickems } = usePickems( loggedinUser?.discordId, seasonAndMatchType.season, { enabled: !!(loggedinUser?.discordId && seasonAndMatchType.season > 0) });
     const { data: pickemsConcensusData, isLoading: isLoadingPickemsConsensus } = usePickemsMatchUpConsensus(seasonAndMatchType.season, { enabled: !!(loggedinUser?.discordId && seasonAndMatchType.season > 0) });
     const [ submitWasSuccessful, setSubmitWasSuccessful ] = React.useState<boolean>(false);
-    const [ submitError, setSubmitError ] = React.useState<unknown | undefined>(undefined);
+    //const [ submitError, setSubmitError ] = React.useState<unknown | undefined>(undefined);
     const mutation = usePickemsMutation(seasonAndMatchType.season);
     const [ userTier, setUserTier ] = React.useState<string | undefined>(pickemsData?.tier ?? loggedinUser?.tier?.name ?? undefined);
     const { data: matches = [], isLoading } = useFetchMatchesGraph(seasonAndMatchType.season, undefined, { enabled: seasonAndMatchType.season > 0}); // seasonAndMatchType.season
     const [ selectedMatches, setSelectedMatches ] = React.useState<{ [key: string]: { teamId: number, teamName: string} | null }>(pickemsData?.pickems ?? {});
     const [ selectedTimeframe, setSelectedTimeframe ] = React.useState<string[]>(['current']);
-
-    const [_, setTimeUpdateTrigger] = React.useState(0);    // Time toggles now handled by TimeframeToggle component
-
-    // Add this effect to update the time display every minute
-    React.useEffect(() => {
-        const timer = setInterval(() => {
-            setTimeUpdateTrigger(prev => prev + 1);
-        }, 60000); // Update every minute (60000ms)
-        
-        return () => clearInterval(timer);
-    }, []);
 
     React.useEffect(() => {
         if (pickemsData?.tier && !isLoadingPickems) {
@@ -119,8 +108,9 @@ export const Pickems = () => {
             ...prev,
             [matchId]: selected,
         }));
-    };    const handleSubmit = async () => {
-        setSubmitError(undefined);
+    };    
+    const handleSubmit = async () => {
+        //setSubmitError(undefined);
         try {
             const result = await mutation.mutateAsync({
                 tier: userTier,
@@ -135,13 +125,13 @@ export const Pickems = () => {
             Sentry.captureException(error);
             
             // Improved error handling
-            if (error instanceof Error) {
-                setSubmitError(error.message);
-            } else if (typeof error === "object" && error !== null && "message" in error) {
-                setSubmitError((error as any).message);
-            } else {
-                setSubmitError("An unexpected error occurred while submitting your picks");
-            }
+            // if (error instanceof Error) {
+            //     setSubmitError(error.message);
+            // } else if (typeof error === "object" && error !== null && "message" in error) {
+            //     setSubmitError((error as any).message);
+            // } else {
+            //     setSubmitError("An unexpected error occurred while submitting your picks");
+            // }
             
             console.error("Error submitting pickems:", error);
         }
@@ -182,7 +172,7 @@ export const Pickems = () => {
         <Container>
             <div className="h-fit">
                 <h1 className="text-3xl font-bold mb-4 text-center">
-                    { exploringPlayerPickems ? "Exploring" : `My ${userTier}`} Weekly Pickems
+                    My ${userTier} Weekly Pickems
                 </h1>
                 <div className="text-center mb-4">
                     <div className="flex items-center justify-center gap-2 mb-4">
@@ -201,24 +191,23 @@ export const Pickems = () => {
                             </svg>
                             Rules
                         </button>
-                        <span 
-                            className="inline-flex items-center px-3 py-1 text-white text-sm font-bold rounded-full hover:text-blue-400 cursor-pointer transition-colors"
-                            onClick={() => setExploringPlayerPickems(true)}
-                            >
+                        <Link className="inline-flex items-center px-3 py-1 text-white text-sm font-bold rounded-full hover:text-blue-400 cursor-pointer transition-colors"
+                            href="/pickems/explorer"
+                        >
                             Explore Players Pickems <GiChoice size={"1.5rem"} className="inline" />
-                        </span>
+                        </Link>
                     </div>
                 </div>
-                { !exploringPlayerPickems &&
+                { 
                 <>      
                     <TimeframeToggle selectedTimeframe={selectedTimeframe} setSelectedTimeframe={setSelectedTimeframe} />
                     {/* {submitError && <ErrorMessage error={submitError} />} */}
-                    <div className="text-xs font-extrabold uppercase text-gray-500">Picks last saved {pickemsData?.dateUpdated ? dayjs(pickemsData.dateUpdated).fromNow() : "Never"}</div>
-
+                    <LastSaved dateUpdated={pickemsData?.dateUpdated} />  
                     <div className="flex space-x-8">               
                         <SubmitPickemsButton 
                             submitWasSuccessful={submitWasSuccessful} 
                             handleSubmit={handleSubmit}
+                            //submitError={submitError}
                             isSubmitting={mutation.isPending} 
                         />
                         {matchesByMatchday &&
@@ -242,12 +231,7 @@ export const Pickems = () => {
                             ))
                         }
                     </div>
-                </>}
-                {exploringPlayerPickems && (
-                    <PlayerPickemsExplorer 
-                        onBackToMyPickems={() => setExploringPlayerPickems(false)} 
-                    />
-                )}
+                </>}            
                 {/* {Object.keys(selectedMatches ?? []).length > 0 && (
                     <div className="mt-6 p-4 bg-blue-700 border border-blue-300 rounded-lg text-xs">
                         Debug

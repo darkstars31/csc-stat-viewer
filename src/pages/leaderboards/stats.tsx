@@ -10,6 +10,10 @@ type Props = {
 	headerImage?: string;
 	rows: {
 		player: Player;
+		tier?: {
+			name: string;
+			color?: string;
+		};
 		value: string | number; //Record<string, React.ReactNode | string | number | null | undefined>[]
 	}[];
 };
@@ -70,7 +74,7 @@ export function StatsLeaderBoard({ title, subtitle, rows, header = true, headerI
 												</Link>
 											</div>
 										</td>
-										<td className={`${tiers.find(t => t.name === row.player.tier.name)?.color}`}>{row.player.tier.name}</td>
+										<td className={`${tiers.find(t => t.name === row.player.tier.name)?.color}`}>{row.tier?.name ?? row.player.tier.name}</td>
 										<td className="font-black">{row.value}</td>
 									</tr>
 								:	<tr

@@ -39,6 +39,7 @@ import { Submitted } from "./pages/articles/submitted";
 import { Pickems } from "./pages/pickems";
 import { GMPanel } from "./pages/gmPanel";
 import { Draft } from "./pages/draft";
+import { PickemsExplorer } from "./pages/pickems/PickemsExplorer";
 
 export function Router() {
 	const [closeNotificationBanner, setCloseNotificationBanner] = useLocalStorage(
@@ -98,7 +99,8 @@ export function Router() {
 		{ path: `/standings`, component: () => <TeamStandings /> },
 		{ path: `/servers`, component: () => <Servers /> },
 		{ path: `/pickems`, component: () => <Pickems /> },
-		{ path: `/pickems/:id`, component: () => <Pickems /> },
+		{ path: `/pickems/explorer`, component: () => <PickemsExplorer /> },
+		{ path: `/pickems/explorer/:id`, component: () => <PickemsExplorer /> },
 
 		{ path: `/draft`, component: () => <Draft /> },
 		{ path: `/admin`, component: () => <Admin /> },

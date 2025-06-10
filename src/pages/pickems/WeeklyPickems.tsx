@@ -23,6 +23,7 @@ export const WeeklyPickems: React.FC<WeeklyPickemsProps> = ({
 }) => {
     const [timeRemaining, setTimeRemaining] = React.useState<dayjs.Dayjs | undefined>(dayjs(matches.at(0)?.scheduledDate));
     const isToday = dayjs().isSame(matchDate, "day");
+    //usePerspectiveEffect("weekly-pickems-container", "weekly-pickems-layer", 20);
 
     React.useEffect(() => {
         const updateTimeRemaining = () => {
@@ -49,7 +50,7 @@ export const WeeklyPickems: React.FC<WeeklyPickemsProps> = ({
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
             >
-                <div className="flex flex-col">
+                <div id="weekly-pickems-container" className="flex flex-col">
                     <div>
                         <h2 className="text-xl font-semibold mb-2 uppercase">Match Day {matches.at(-1)?.matchDay.number.replace("M", "")}</h2>
                     </div>
@@ -74,7 +75,7 @@ export const WeeklyPickems: React.FC<WeeklyPickemsProps> = ({
                             </div>
                         </div>
                         {matches.map((match: Match) => (
-                            <div key={match.id} className="p-1 relative">
+                            <div id="weekly-pickems-layer" key={match.id} className="p-1 relative">
                                 {hasMatchStarted(match.scheduledDate) && (
                                     <div className="absolute inset-0 bg-gray-400 bg-opacity-15 z-10" />
                                 )}
