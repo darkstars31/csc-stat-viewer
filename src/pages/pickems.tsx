@@ -172,7 +172,7 @@ export const Pickems = () => {
         <Container>
             <div className="h-fit">
                 <h1 className="text-3xl font-bold mb-4 text-center">
-                    My ${userTier} Weekly Pickems
+                    My {userTier} Weekly Pickems
                 </h1>
                 <div className="text-center mb-4">
                     <div className="flex items-center justify-center gap-2 mb-4">
@@ -221,7 +221,8 @@ export const Pickems = () => {
                                     );
                                 })
                                 .map(([matchDate, matches]: [string, Match[]]) => (
-                                <WeeklyPickems                           
+                                <WeeklyPickems
+                                    key={matchDate}                  
                                     matchDate={matchDate}
                                     matches={matches}
                                     selectedMatches={selectedMatches}

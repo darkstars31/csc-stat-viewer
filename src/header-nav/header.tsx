@@ -117,10 +117,10 @@ export function Header() {
 								<div className="hidden sm:ml-6 sm:block">
 									<div className="flex space-x-4">
 										{navigation.map(item => (
-											<>
+											<div key={item.name}>
 												{item.href && <HeaderItem item={item} close={() => {}} />}
 												{item.component && item.component()}
-											</>
+											</div>
 										))}
 									</div>
 								</div>
@@ -135,10 +135,10 @@ export function Header() {
 					<DisclosurePanel className="sm:hidden">
 						<div className="space-y-1 px-2 pt-2 pb-3">
 							{navigation.map(item => (
-								<>
+								<div key={item.name}>
 									{item.href && <HeaderItem item={item} close={close} />}
 									{item.component && item.component()}
-								</>
+								</div>
 							))}
 						</div>
 					</DisclosurePanel>

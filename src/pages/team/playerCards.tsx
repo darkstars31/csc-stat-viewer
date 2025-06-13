@@ -72,7 +72,7 @@ export const TeamPlayerCards = ({ franchisePlayer, team }: Props) => {
 						alt=""
 					/>
 					{specialStatuses && (
-						<div className="absolute left-24 -top-28 bg-slate-950 p-2 rounded-full">
+						<div className="absolute -right-2 -top-6 bg-blue-950 px-2 py-1 rounded-xl z-10">
 							{specialStatuses}
 						</div>
 					)}

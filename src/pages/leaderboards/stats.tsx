@@ -60,6 +60,7 @@ export function StatsLeaderBoard({ title, subtitle, rows, header = true, headerI
 							{rows.map((row, rowIndex) =>
 								rowIndex === 0 ?
 									<tr
+										key={row.player.discordId}
 										className={`${rowIndex % 2 === 1 ? "bg-midnight1" : "bg-midnight2"} rounded h-16`}
 									>
 										<td>
