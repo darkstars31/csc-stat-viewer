@@ -28,3 +28,21 @@ export type ProfileJson = {
 	firstCSCSeason: number;
 	whatExperienceDoYouWant: string;
 }
+
+export type TeamHistory = {
+	season: number;
+	changeType: "sign" | "cut" | "sub";
+	value: string;
+	dateCreated: string;
+	metadata: Record<string, string>;
+}
+
+export type NameAliases = {
+	name: string;
+	date: string;
+}
+
+export type MmrHistory = {
+	mmr: number;
+	date: string;
+}

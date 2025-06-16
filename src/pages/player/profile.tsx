@@ -4,7 +4,7 @@ import { Player } from "../../models"
 import { CopyToClipboard } from "../servers"
 import { ProfileJson } from "../../models/profile-types"
 
-export const PlayerProfile = ({ player, playerProfile }: { player: Player, playerProfile: ProfileJson }) => {
+export const PlayerProfile = ({ player, playerProfile }: { player: Player, playerProfile: ProfileJson}) => {
     
     return (
         <div className="relative my-2">

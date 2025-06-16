@@ -67,7 +67,7 @@ export function Player() {
 	const currentPlayerStats = viewStatSelection === currentPlayer?.tier.name ? currentPlayer?.stats : currentPlayer?.statsOutOfTier?.find(s => s.tier === viewStatSelection)?.stats;
 	const currentPlayerTierOptions = [ currentPlayer?.tier.name, ...(currentPlayer?.statsOutOfTier ?? []).map( s => s.tier)].filter( item => item !== viewStatSelection)
 
-	const { data: playerProfile = {}, isLoading: isLoadingPlayerProfile } = useFetchPlayerProfile(currentPlayer?.discordId);
+	const { data: playerProfile, isLoading: isLoadingPlayerProfile } = useFetchPlayerProfile(currentPlayer?.discordId);
 
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
@@ -87,7 +87,7 @@ export function Player() {
 		return <Container>An error occured. Player could not found. Please inform Camps of this error.</Container>;
 	}
 
-	if ( currentPlayer === loggedinUser && !isLoadingPlayerProfile && Object.keys(playerProfile).length === 0 ) {
+	if ( currentPlayer === loggedinUser && !isLoadingPlayerProfile && Object.keys(playerProfile?.profile ?? {}).length === 0 ) {
 		addNotification({
 			id: "FillOutProfile",
 			title: "It Looks like your profile is empty.",
@@ -163,7 +163,7 @@ export function Player() {
 									<div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border" />
 								)}
 								<div className="flex flex-col justify-center w-full">
-									{Object.keys(playerProfile).length > 0 ?
+									{Object.keys(playerProfile?.profile ?? {}).length > 0 ?
 										<>
 											<ToolTip type="generic" message={"Show Profile"}>
 												<div 
@@ -305,7 +305,7 @@ export function Player() {
 							leaveFrom="transform opacity-100 scale-100"
 							leaveTo="transform opacity-0 scale-95"
 						>
-							<PlayerProfile player={currentPlayer} playerProfile={playerProfile as ProfileJson} />
+							<PlayerProfile player={currentPlayer} playerProfile={playerProfile?.profile!} />
 						</Transition>
 					)}
 					{viewStatSelection !== currentPlayer.tier.name && (
