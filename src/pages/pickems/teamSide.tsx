@@ -8,15 +8,15 @@ type Props = {
     match: Match;
     selectedMatches: { [key: string]: { teamId: number, teamName: string } | null };
     side: 'home' | 'away';
-    pickemsConcensusData: { [matchId: string]: { [teamId: number]: number } } | undefined;
+    pickemsConcensusData: { [matchId: string]: { [teamId: number]: { count: number, discordIds: string[]} } } | undefined;
     handleSelection: (matchId: string, selection: { teamId: number, teamName: string }) => void;
 }
 
 
 export const TeamSide =  ({ match, selectedMatches, side, pickemsConcensusData, handleSelection }: Props) => {
         const team = match[side];
-        const totalVotes = Object.values(pickemsConcensusData?.[match.id] ?? {}).reduce((acc, votes) => acc + (votes || 0), 0);
-        const percentage = ((pickemsConcensusData?.[match.id]?.[team.id]?? 0) / totalVotes) * 100 || 0;
+        const totalVotes = Object.values(pickemsConcensusData?.[match.id] ?? {}).reduce((acc, votes) => acc + (votes.count || 0), 0);
+        const percentage = ((pickemsConcensusData?.[match.id]?.[team.id]?.count ?? 0) / totalVotes) * 100 || 0;
         return (
         <div 
             onClick={() => !hasMatchStarted(match.scheduledDate) && handleSelection(match.id, { teamId: team.id, teamName: team.name })}

@@ -109,7 +109,7 @@ export function usePickems( discordId?: string, season?: number, options?: { ena
     });
 }
 
-export function usePickemsMatchUpConsensus( season: number, options?: { enabled?: boolean }): UseQueryResult<{ [matchId: string]: { [teamId: string]: number}}> {
+export function usePickemsMatchUpConsensus( season: number, options?: { enabled?: boolean }): UseQueryResult<{ [matchId: string]: { [teamId: string]: { count: number, discordIds: string[]}}}> {
     return useQuery({
         queryKey: ["pickemsMatchUpConsensus", season],
         queryFn: async () => 
