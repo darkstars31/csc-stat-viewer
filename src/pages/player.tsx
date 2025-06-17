@@ -37,6 +37,8 @@ import { GraphicsPlayer } from "./graphicsPlayer";
 import { Button } from "../common/components/button";
 import { toPng } from 'html-to-image';
 import { MdKeyboardArrowDown } from "react-icons/md";
+import dayjs from "dayjs";
+import { PlayerHistory } from "./player/playerHistory";
 
 const PlayerMatchHistory = React.lazy(() =>import('./player/matchHistory').then(module => ({default: module.PlayerMatchHistory})));
 const TeamSideRatingPie = React.lazy(() =>import('../common/components/teamSideRatingPie').then(module => ({default: module.TeamSideRatingPie})));
@@ -53,6 +55,7 @@ export function Player() {
 	const { addNotification } = useNotificationsContext();
 	const [ showProfile, setShowProfile ] = React.useState(false);
 	const [ isPlayerCardOpen, setIsPlayerCardOpen ] = React.useState(false);
+	const [ showPlayerHistory, setShowPlayerHistory ] = React.useState(false);
 	const [ activeTab, setActiveTab ] = React.useState<number>(0);
 
 	const nameParam = decodeURIComponent(params?.id ?? "");
@@ -335,6 +338,32 @@ export function Player() {
 								</Containers.StandardBoxRow>
 							</React.Suspense>
 						</div>
+					)}
+					{playerProfile?.teamHistory && (
+						<Transition
+							as={"div"}
+							show={true}
+							enter="transition ease-out duration-300"
+							enterFrom="transform opacity-0 scale-95"
+							enterTo="transform opacity-100 scale-100"
+							leave="transition ease-in duration-75"
+							leaveFrom="transform opacity-100 scale-100"
+							leaveTo="transform opacity-0 scale-95"
+						>
+							<div className="space-y-2 w-full">
+								{ showPlayerHistory ?
+								<React.Suspense fallback={<Loading />}>
+									<PlayerHistory playerProfile={playerProfile} />
+								</React.Suspense>
+								: 
+								<div
+									onClick={() => setShowPlayerHistory(prev => !prev)}
+									className="flex flex-col mt-2 w-full text-center text-gray-400 text-sm">								
+										Expand Player History									
+								</div>
+								}
+							</div>
+						</Transition>
 					)}
 				</Containers.StandardBackgroundPage>
 				{teammates.length > 0 &&
