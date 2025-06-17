@@ -10,39 +10,36 @@ import {
 	determinePlayerRole,
 } from "./common/utils/player-utils";
 import { DiscordUser } from "./models/discord-users";
-import { useCscSeasonAndTiersGraph } from "./dao/cscSeasonAndTiersDao";
+import { useCachedCscSeasonAndTiers } from "./dao/cscSeasonAndTiersDao";
 import { ExtendedStats } from "./models/extended-stats";
 import { useAnalytikillExtendedStats } from "./dao/analytikill";
-import { useCscSeasonMatches } from "./dao/cscSeasonMatches";
 import { queryClient } from "./App";
 
 const useDataContextProvider = () => {
 	const [gmRTLCsv, setGmRTLCsv] = React.useState<Record<string,string>[] | null>(null);
 	const [discordUser, setDiscordUser] = React.useState<DiscordUser | null>(null);
-	const { data: seasonAndTierConfig = undefined, isLoading: isLoadingCscSeasonAndTiers } = useCscSeasonAndTiersGraph();
+	const { data: seasonAndTierConfig = undefined, isLoading: isLoadingCscSeasonAndTiers } = useCachedCscSeasonAndTiers();
 	const [ players, setPlayers ] = React.useState<Player[]>([]);
-	const { data: matches = [], isLoading: isLoadingMatches } = useCscSeasonMatches("Elite", seasonAndTierConfig?.number ?? 0);
     const [ enableExperimentalHistorialFeature, setEnableExperimentalHistorialFeature] = React.useState<boolean>(false);
 	
-	const currentSeason = React.useMemo(() => seasonAndTierConfig?.number ?? 0, [seasonAndTierConfig?.number]);
-	const hasSeasonStarted = React.useMemo(() => matches.length > 0, [matches.length]);
+	const hasSeasonStarted = seasonAndTierConfig?.hasSeasonStarted;
 	
 	const [ seasonAndMatchType, setSeasonAndMatchType ] = React.useState<{ season: number; matchType: string }>({ 
-		season: currentSeason, 
-		matchType: hasSeasonStarted ? "Regulation" : "Combine" 
+		season: 0, 
+		matchType: "Combine" 
 	});
 	
-	const { data: extendedPlayerStats = [], isLoading: isLoadingExtendedStats } = useAnalytikillExtendedStats(seasonAndMatchType.season);
+	const { data: extendedPlayerStats, isLoading: isLoadingExtendedStats } = useAnalytikillExtendedStats(seasonAndMatchType.season);
 	const dataConfig = React.useMemo(() => dataConfiguration.find(item => dataConfiguration[0].name === item.name), []);
 
 	React.useEffect(() => {
-		if( !isLoadingCscSeasonAndTiers && !isLoadingMatches){
-			setSeasonAndMatchType({ season: currentSeason, matchType: hasSeasonStarted ? "Regulation" : "Combine" });
+		if( !isLoadingCscSeasonAndTiers ){
+			setSeasonAndMatchType({ season: seasonAndTierConfig?.number ?? 0, matchType: seasonAndTierConfig?.hasSeasonStarted ? "Regulation" : "Combine" });
 		}
-	}, [isLoadingCscSeasonAndTiers, isLoadingMatches, currentSeason, hasSeasonStarted]);
+	}, [isLoadingCscSeasonAndTiers]);
 
 	React.useEffect(() => {
-		seasonAndTierConfig?.league.leagueTiers.forEach(tier => queryClient.invalidateQueries({ queryKey:[`cscstats-graph`, tier.tier.name, seasonAndTierConfig?.number, seasonAndMatchType.matchType]}));
+		seasonAndTierConfig?.league?.leagueTiers.forEach(tier => queryClient.invalidateQueries({ queryKey:[`cscstats-graph`, tier.tier.name, seasonAndTierConfig?.number, seasonAndMatchType.matchType]}));
 		queryClient.invalidateQueries({ queryKey:[`cscplayermatchhistory-graph`]});
 		console.info("seasonAndMatchType", seasonAndMatchType);
 	}, [seasonAndMatchType, seasonAndTierConfig]);
@@ -52,7 +49,7 @@ const useDataContextProvider = () => {
 	const { data, isLoading: isLoadingCachedStats} = useCscStatsCache( 
 		seasonAndMatchType?.season,
 		seasonAndMatchType.matchType,
-		{ enabled: seasonAndMatchType.season > 0 && !isLoadingMatches && !isLoadingCscSeasonAndTiers }
+		{ enabled: seasonAndMatchType.season > 0 && !isLoadingCscSeasonAndTiers }
 	)
 
 	const statsByTier = React.useMemo(() => ({
@@ -123,7 +120,8 @@ const useDataContextProvider = () => {
 					:	determinePlayerRole(statsForPlayerByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!);
 				const stats = statsForPlayerByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!;
 				
-				const extendedStats = extendedPlayerStats.find(
+				const extendedStatsApiResponse = Object.keys(extendedPlayerStats ?? {}).includes("data") ? extendedPlayerStats?.data : extendedPlayerStats;
+				const extendedStats = (extendedStatsApiResponse as any[])?.find(
 					(stats: { name: string }) => stats.name === cscPlayer?.name,
 				) as ExtendedStats ?? undefined;
 	
@@ -171,8 +169,8 @@ const useDataContextProvider = () => {
 	// a.click()
 
 	const isLoading = React.useMemo(() => 
-		isLoadingCscPlayersCache || isLoadingCachedStats || isLoadingCscSeasonAndTiers || isLoadingMatches, 
-		[isLoadingCscPlayersCache, isLoadingCachedStats, isLoadingCscSeasonAndTiers, isLoadingMatches]
+		isLoadingCscPlayersCache || isLoadingCachedStats || isLoadingCscSeasonAndTiers, 
+		[isLoadingCscPlayersCache, isLoadingCachedStats, isLoadingCscSeasonAndTiers]
 	);
 	
 	const loggedinUser = React.useMemo(() => 
@@ -182,7 +180,7 @@ const useDataContextProvider = () => {
 	
 	const tiers = React.useMemo(() => 
 		seasonAndTierConfig?.league.leagueTiers ?? [], 
-		[seasonAndTierConfig?.league.leagueTiers]
+		[seasonAndTierConfig?.league?.leagueTiers]
 	);
 	
 	const errors = React.useMemo(() => 
@@ -207,7 +205,6 @@ const useDataContextProvider = () => {
 		statsByTier,
 		dataConfig,
 		seasonAndMatchType,
-		currentSeason,
 		hasSeasonStarted,
 		enableExperimentalHistorialFeature,
 		setEnableExperimentalHistorialFeature,

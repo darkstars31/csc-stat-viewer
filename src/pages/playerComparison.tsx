@@ -81,7 +81,6 @@ export function PlayerComparison() {
 	}));
 	players.filter(player => !player.tier.name.includes("Unrated")).forEach(player => {
 		Object.values(player?.statsOutOfTier ?? {}).forEach((item) => {
-			//if ( player.name.includes('XIE') ) console.info( 'statsOutOfTier', player.name, player.tier.name, item.tier, player.stats, player.statsOutOfTier)
 			playerOptions.push({
 				label: `${player.name} (${item.tier}* ${shortTeamNameTranslator(player)})`,
 				value: { ...player, name: `${player.name}|${item.tier}`, tier: { name: item.tier}, stats: player.statsOutOfTier!.find( s => s.tier === item.tier)!.stats! },

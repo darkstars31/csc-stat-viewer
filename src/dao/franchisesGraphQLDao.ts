@@ -31,6 +31,7 @@ const fetchFranchisesGraph = async () =>
                                 mmrCap
                             }
                             players {
+                                id
                                 name
                                 discordId
                                 steam64Id
@@ -63,7 +64,7 @@ const fetchCachedGraph = async () =>
 export function useFetchFranchisesGraph(): UseQueryResult<Franchise[]> {
 	return useQuery({
 		queryKey: ["franchises-graph"],
-		queryFn: fetchCachedGraph,
+		queryFn: fetchFranchisesGraph,
 		staleTime: 1000 * 60 * 60,
 	}); // 1 second * 60 * 60 = 1 hour
 }

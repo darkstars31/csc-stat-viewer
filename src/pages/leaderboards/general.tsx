@@ -2,6 +2,7 @@ import * as React from "react";
 import { StatsLeaderBoard } from "./stats";
 import { CscStats, Player } from "../../models";
 import { _sort } from "../../common/utils/player-utils";
+import { Container } from "../../common/components/container";
 
 function buildTableRow(player: Player, columnName: string, property: keyof CscStats) {
 	return { player, value: player.stats[property] };
@@ -103,30 +104,40 @@ export function GeneralLeaderBoards({ players, limit }: { players: Player[]; lim
 	}));
 
 	return (
-		<>
-			<StatsLeaderBoard title="Games Played" rows={gamesPlayed} />
-			<StatsLeaderBoard title="Most Kills" rows={kills} />
-			<StatsLeaderBoard title="Highest K/D Ratio" rows={killDeathRatio} />
-			<StatsLeaderBoard title="Most Aces" rows={aces} />
-			<StatsLeaderBoard title="Damager Per Round" rows={damagePerRound} />
-			<StatsLeaderBoard title="Most 2K's" rows={twoK} />
-			<StatsLeaderBoard title="Most 3K's" rows={threeK} />
-			<StatsLeaderBoard title="Most 4K's" rows={fourK} />
-			<StatsLeaderBoard title="Flash Assists per Match" rows={fAssists} />
-			<StatsLeaderBoard title="Awp Kills per Round" rows={awpKillsPerRound} />
-			<StatsLeaderBoard title="Utility Damage per Match" rows={utilDamagePerMatch} />
-			<StatsLeaderBoard title="CT-Side Rating" rows={ctRating} />
-			<StatsLeaderBoard title="T-Side Rating" rows={tRating} />
-			<StatsLeaderBoard title="Kill/Assist/Survive/Traded" rows={kastPercentage} />
-			<StatsLeaderBoard title="Utility Thrown Per Match" rows={utilThrownPerMatch} />
-			<StatsLeaderBoard title="Least Utility Thrown Per Match" rows={leastUtilThrownPerMatch} />
-			<StatsLeaderBoard title="Highest Headshot Percentage" rows={headshotPercentage} />
-			<StatsLeaderBoard title="Clutch Points Average per Match" rows={clutchAbility} />
-			<StatsLeaderBoard title="One vs Two Clutch" rows={clutchOneVsTwo} />
-			<StatsLeaderBoard title="One vs Three Clutch" rows={clutchOneVsThree} />
-			<StatsLeaderBoard title="One vs Four Clutch" rows={clutchOneVsFour} />
-			<StatsLeaderBoard title="Open Duels Per Round" rows={openDuels} />
-			<StatsLeaderBoard title="Enemies Flashed per Match" rows={ef} />
-		</>
+		<Container>
+		{ players.length ?
+			<div className="flex">
+				<div className="flex flex-row flex-wrap w-full gap-6">
+					<StatsLeaderBoard title="Games Played" rows={gamesPlayed} />
+					<StatsLeaderBoard title="Most Kills" rows={kills} />
+					<StatsLeaderBoard title="Highest K/D Ratio" rows={killDeathRatio} />
+					<StatsLeaderBoard title="Most Aces" rows={aces} />
+					<StatsLeaderBoard title="Damager Per Round" rows={damagePerRound} />
+					<StatsLeaderBoard title="Most 2K's" rows={twoK} />
+					<StatsLeaderBoard title="Most 3K's" rows={threeK} />
+					<StatsLeaderBoard title="Most 4K's" rows={fourK} />
+					<StatsLeaderBoard title="Flash Assists per Match" rows={fAssists} />
+					<StatsLeaderBoard title="Awp Kills per Round" rows={awpKillsPerRound} />
+					<StatsLeaderBoard title="Utility Damage per Match" rows={utilDamagePerMatch} />
+					<StatsLeaderBoard title="CT-Side Rating" rows={ctRating} />
+					<StatsLeaderBoard title="T-Side Rating" rows={tRating} />
+					<StatsLeaderBoard title="Kill/Assist/Survive/Traded" rows={kastPercentage} />
+					<StatsLeaderBoard title="Utility Thrown Per Match" rows={utilThrownPerMatch} />
+					<StatsLeaderBoard title="Least Utility Thrown Per Match" rows={leastUtilThrownPerMatch} />
+					<StatsLeaderBoard title="Highest Headshot Percentage" rows={headshotPercentage} />
+					<StatsLeaderBoard title="Clutch Points Average per Match" rows={clutchAbility} />
+					<StatsLeaderBoard title="One vs Two Clutch" rows={clutchOneVsTwo} />
+					<StatsLeaderBoard title="One vs Three Clutch" rows={clutchOneVsThree} />
+					<StatsLeaderBoard title="One vs Four Clutch" rows={clutchOneVsFour} />
+					<StatsLeaderBoard title="Open Duels Per Round" rows={openDuels} />
+					<StatsLeaderBoard title="Enemies Flashed per Match" rows={ef} />
+				</div>
+			</div>
+			:
+			<div className="w-full m-4 text-center text-2xl text-gray-500 font-extrabold uppercase">
+				No Players seem to meet the criteria.
+			</div>
+		}
+		</Container>
 	);
 }

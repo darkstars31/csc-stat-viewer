@@ -36,7 +36,7 @@ import { TbPlayCardStarFilled } from "react-icons/tb";
 import { GraphicsPlayer } from "./graphicsPlayer";
 import { Button } from "../common/components/button";
 import { toPng } from 'html-to-image';
-import ReactGA from "react-ga4";
+import { MdKeyboardArrowDown } from "react-icons/md";
 
 const PlayerMatchHistory = React.lazy(() =>import('./player/matchHistory').then(module => ({default: module.PlayerMatchHistory})));
 const TeamSideRatingPie = React.lazy(() =>import('../common/components/teamSideRatingPie').then(module => ({default: module.TeamSideRatingPie})));
@@ -67,13 +67,15 @@ export function Player() {
 	const currentPlayerStats = viewStatSelection === currentPlayer?.tier.name ? currentPlayer?.stats : currentPlayer?.statsOutOfTier?.find(s => s.tier === viewStatSelection)?.stats;
 	const currentPlayerTierOptions = [ currentPlayer?.tier.name, ...(currentPlayer?.statsOutOfTier ?? []).map( s => s.tier)].filter( item => item !== viewStatSelection)
 
-	const { data: playerProfile = {}, isLoading: isLoadingPlayerProfile } = useFetchPlayerProfile(currentPlayer?.discordId);
+	const { data: playerProfile, isLoading: isLoadingPlayerProfile } = useFetchPlayerProfile(currentPlayer?.discordId);
 
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
 
-	if (loading.isLoadingCscPlayers && loading.isLoadingCscSeasonAndTiers && loading.isLoadingExtendedStats) {
+	if ([loading.isLoadingCscPlayers, 
+		loading.isLoadingCscSeasonAndTiers, 
+		loading.isLoadingCachedStats].some(Boolean)) {
 		return (
 			<Container>
 				<Loading />
@@ -85,7 +87,7 @@ export function Player() {
 		return <Container>An error occured. Player could not found. Please inform Camps of this error.</Container>;
 	}
 
-	if ( currentPlayer === loggedinUser && !isLoadingPlayerProfile && Object.keys(playerProfile).length === 0 ) {
+	if ( currentPlayer === loggedinUser && !isLoadingPlayerProfile && Object.keys(playerProfile?.profile ?? {}).length === 0 ) {
 		addNotification({
 			id: "FillOutProfile",
 			title: "It Looks like your profile is empty.",
@@ -160,21 +162,28 @@ export function Player() {
 								{!currentPlayer?.avatarUrl && (
 									<div className="shadow-lg shadow-black/20 dark:shadow-black/40 rounded-xl min-w-[128px] min-h-[128px] border" />
 								)}
-								<div className="flex flex-row justify-evenly">
-									<Reputation playerDiscordId={currentPlayer.discordId} />
-									{Object.keys(playerProfile).length > 0 ?
-										<div className={`${showProfile ? "text-blue-400" : "text-purple-400"}`}>
+								<div className="flex flex-col justify-center w-full">
+									{Object.keys(playerProfile?.profile ?? {}).length > 0 ?
+										<>
 											<ToolTip type="generic" message={"Show Profile"}>
-												<CgProfile
-													className="m-3 w-4 h-4"
-													onClick={() => setShowProfile(!showProfile)}
-												/>
+												<div 
+													onClick={() => setShowProfile(!showProfile)} 
+													className="text-center rounded-md text-xs m-1 border-2 border-blue-400 text-blue-400">
+													<CgProfile
+														className="m-1 w-4 h-4 inline"									
+													/> Profile
+												</div>
 											</ToolTip>
-										</div>
+										</>
 									:	<ToolTip type="generic" message={"Player has not updated their profile."}>
-											<CgProfile className="text-gray-600 m-3 w-4 h-4" />
+											<div className="text-center rounded-md text-xs m-1 border-2 border-gray-400 opacity-50">
+												<CgProfile
+													className="m-1 w-4 h-4 inline"												
+												/> Profile
+											</div>
 										</ToolTip>
 									}
+									<Reputation playerDiscordId={currentPlayer.discordId} />
 								</div>
 							</div>
 							<div id="player-tier" className="text-left basis-3/4">
@@ -222,11 +231,11 @@ export function Player() {
 													className={`transition ease-in-out hover:scale-105 duration-100`}
 												>
 													{viewStatSelection}
-													{currentPlayer?.tier.name === viewStatSelection ? "" : "*"}
+													{currentPlayer?.tier.name === viewStatSelection ? "" : "*"} { currentPlayerTierOptions.length > 0 && <MdKeyboardArrowDown className="inline" /> }
 												</PopoverButton>
 												<PopoverPanel
 													anchor="bottom"
-													className="border-gray-800 divide-y divide-white/5 rounded-xl bg-midnight2 text-sm/6 transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0"
+													className="border-gray-800 divide-y divide-white/5 rounded-xl bg-gray-700 bg-opacity-50 text-sm/6 transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0"
 												>
 													<div className="p-2 shadow-inner">
 														{currentPlayerTierOptions.map(tier => (
@@ -296,11 +305,11 @@ export function Player() {
 							leaveFrom="transform opacity-100 scale-100"
 							leaveTo="transform opacity-0 scale-95"
 						>
-							<PlayerProfile player={currentPlayer} playerProfile={playerProfile as ProfileJson} />
+							<PlayerProfile player={currentPlayer} playerProfile={playerProfile?.profile!} />
 						</Transition>
 					)}
 					{viewStatSelection !== currentPlayer.tier.name && (
-						<div className="text-sm italic font-bold text-gray-600 text-center w-full">
+						<div className="text-sm italic font-bold text-gray-500 text-center w-full">
 							*Non-Primary Tier Stats
 						</div>
 					)}

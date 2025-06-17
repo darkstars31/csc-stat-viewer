@@ -1,114 +1,97 @@
-// @ts-nocheck
-
 import * as React from "react";
 import { Container } from "../common/components/container";
 import { useDataContext } from "../DataContext";
 import { useFetchMatchesGraph } from "../dao/cscMatchesGraphQLDao";
 import dayjs from "dayjs";
 import { Loading } from "../common/components/loading";
-import { franchiseImages } from "../common/images/franchise";
 import { Match } from "../models/matches-types";
+import { usePickems, usePickemsMatchUpConsensus, usePickemsMutation } from "../dao/analytikill";
+import { queryClient } from "../App";
+import { Dialog } from "@headlessui/react";
+import { matchesByMatchDay } from "./pickems/utils";
+import { GiChoice } from "react-icons/gi";
+import { PickemsRules } from "./pickems/rules";
+import * as Sentry from "@sentry/react";
+import { WeeklyPickems } from "./pickems/WeeklyPickems";
+import { TimeframeToggle } from "./pickems/TimeframeToggle";
+import { SubmitPickemsButton } from "./pickems/SubmitPickemsButton";
+import { LastSaved } from "./pickems/lastSaved";
+import { ErrorMessage } from "./pickems/ErrorMessage";
+import { Link } from "wouter";
+
+// const ConcensusBar = ({match, pickemsConcensusData}) => {
+//     const [isHovered, setIsHovered] = React.useState(false);
+//     const totalVotes = Object.values(pickemsConcensusData?.[match.id] ?? {}).reduce((acc, votes) => acc + (votes || 0), 0);
+//     return (
+//         <div className="mt-2">
+//             {totalVotes > 0 ? (
+//                 <>
+//                     <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="h-3 w-full bg-gray-200 rounded-full overflow-hidden shadow-inner">
+//                         <div className="flex h-full">
+//                             <div 
+//                                 className="bg-gradient-to-r from-blue-500 via-blue-500 to-yellow-800 text-xs flex items-center justify-center text-white transition-all duration-300"
+//                                 style={{width: `${((pickemsConcensusData[match.id]?.[match.home.id] ?? 0) / totalVotes) * 100}%`}}
+//                             >
+//                                 {((pickemsConcensusData[match.id]?.[match.home.id] ?? 0) / totalVotes * 100).toFixed(0)}%
+//                             </div>
+//                             <div 
+//                                 className="bg-gradient-to-r from-yellow-800 via-red-500 to-red-500 text-xs flex items-center justify-center text-white transition-all duration-300"
+//                                 style={{width: `${((pickemsConcensusData[match.id]?.[match.away.id] ?? 0) / totalVotes) * 100}%`}}
+//                             >
+//                                 {((pickemsConcensusData[match.id]?.[match.away.id] ?? 0) / totalVotes * 100).toFixed(0)}%
+//                             </div>
+//                         </div>
+//                     </div>
+//                     { isHovered && <div className="flex justify-between text-xs mt-1">
+//                         <span className="font-semibold">{pickemsConcensusData[match.id]?.[match.home.id] ?? 0} votes</span>
+//                         <span className="font-semibold">{pickemsConcensusData[match.id]?.[match.away.id] ?? 0} votes</span>
+//                     </div>}
+//                 </>
+//             ) : (
+//                 <div className="text-xs text-center text-gray-500 italic">No votes yet</div>
+//             )}
+//         </div>
+//     );
+// };
 
 export const Pickems = () => {
-    const x = {
-        "5353": {
-          "teamId": "176",
-          "teamName": "Lawless Llamas"
-        },
-        "5354": {
-          "teamId": "147",
-          "teamName": "The Watchers"
-        },
-        "5355": {
-          "teamId": "106",
-          "teamName": "Cheetahs"
-        },
-        "5356": {
-          "teamId": "54",
-          "teamName": "Pho Fighters"
-        },
-        "5357": {
-          "teamId": "57",
-          "teamName": "Ravens"
-        },
-        "5358": {
-          "teamId": "90",
-          "teamName": "Sirens"
-        },
-        "5359": {
-          "teamId": "126",
-          "teamName": "Storm"
-        },
-        "5360": {
-          "teamId": "127",
-          "teamName": "Fraggin Frogs"
-        },
-        "5361": {
-          "teamId": "150",
-          "teamName": "Decibel Demons"
-        },
-        "5387": {
-          "teamId": "127",
-          "teamName": "Fraggin Frogs"
-        },
-        "5388": {
-          "teamId": "106",
-          "teamName": "Cheetahs"
-        },
-        "5389": {
-          "teamId": "54",
-          "teamName": "Pho Fighters"
-        },
-        "5390": {
-          "teamId": "150",
-          "teamName": "Decibel Demons"
-        },
-        "5391": {
-          "teamId": "132",
-          "teamName": "Salty Scripters"
-        },
-        "5392": {
-          "teamId": "124",
-          "teamName": "The Bachelors"
-        },
-        "5394": {
-          "teamId": "90",
-          "teamName": "Sirens"
-        },
-        "5395": {
-          "teamId": "147",
-          "teamName": "The Watchers"
-        }
-      }
     const { loggedinUser, seasonAndMatchType } = useDataContext();
-    const [ userTier, setUserTier ] = React.useState<string | undefined>(loggedinUser?.tier?.name);
-    const { data: matches, isLoading } = useFetchMatchesGraph(16); // seasonAndMatchType.season
-    const [ selectedMatches, setSelectedMatches ] = React.useState<{ [key: string]: { teamId: number, teamName: string} | null }>(x);
-    const [ selectedTimeframe, setSelectedTimeframe ] = React.useState<'past' | 'current' | 'future'>('current');
+    const [ isShowRules, setIsShowRules ] = React.useState<boolean>(false);
 
-    const currentDate = dayjs("02/18/2025").add(21, "hours").add(1, "minute") 
+    const { data: pickemsData, isLoading: isLoadingPickems, isFetching: isFetchingPickems } = usePickems( loggedinUser?.discordId, seasonAndMatchType.season, { enabled: !!(loggedinUser?.discordId && seasonAndMatchType.season > 0) });
+    const { data: pickemsConcensusData, isLoading: isLoadingPickemsConsensus } = usePickemsMatchUpConsensus(seasonAndMatchType.season, { enabled: !!(loggedinUser?.discordId && seasonAndMatchType.season > 0) });
+    const [ submitWasSuccessful, setSubmitWasSuccessful ] = React.useState<boolean>(false);
+    //const [ submitError, setSubmitError ] = React.useState<unknown | undefined>(undefined);
+    const mutation = usePickemsMutation(seasonAndMatchType.season);
+    const [ userTier, setUserTier ] = React.useState<string | undefined>(pickemsData?.tier ?? loggedinUser?.tier?.name ?? undefined);
+    const { data: matches = [], isLoading } = useFetchMatchesGraph(seasonAndMatchType.season, undefined, { enabled: seasonAndMatchType.season > 0}); // seasonAndMatchType.season
+    const [ selectedMatches, setSelectedMatches ] = React.useState<{ [key: string]: { teamId: number, teamName: string} | null }>(pickemsData?.pickems ?? {});
+    const [ selectedTimeframe, setSelectedTimeframe ] = React.useState<string[]>(['current']);
 
-    const hasMatchStarted = React.useCallback((matchDate: Date) => {
-        return dayjs(matchDate).isBefore(currentDate);
-    }, []);
+    React.useEffect(() => {
+        if (pickemsData?.tier && !isLoadingPickems) {
+            setUserTier(pickemsData.tier);
+            setSelectedMatches(pickemsData.pickems);
+        } else if (loggedinUser?.tier && loggedinUser.tier.name) {
+            setUserTier(loggedinUser.tier.name);
+        }
+    }, [loggedinUser, pickemsData]);
 
-    if (isLoading) {
+    React.useEffect(() => {
+        queryClient.invalidateQueries({ queryKey: ["pickems", loggedinUser?.discordId, seasonAndMatchType.season] });
+        queryClient.invalidateQueries({ queryKey: ["pickemsMatchUpConsensus", seasonAndMatchType.season] });
+    }, [mutation.isSuccess])
+
+    const currentDate = dayjs()
+
+    if (isLoading || isLoadingPickems) {
         return <Container>
             <Loading />
         </Container>;
     }
 
     // write a reduce function on matches to organize all the matches by matchday
-    const matchesByMatchday = matches?.filter( m => m.matchDay.number.includes("M"))
-    .filter( m => m.home.tier.name === userTier)
-        .reduce((acc: any, match: any) => {
-            const matchday = dayjs(match.scheduledDate).format("YYYY-MM-DD");
-            if (!acc[matchday]) {
-                acc[matchday] = [];
-            }
-            acc[matchday].push(match);
-            return acc;
-        }, {});
+    const matchesByMatchday = matchesByMatchDay(matches, userTier);
 
     const pastMatchWeeks = Object.keys(matchesByMatchday).filter((matchDate) => 
         dayjs(matchDate).isBefore(currentDate, 'week')
@@ -125,15 +108,38 @@ export const Pickems = () => {
             ...prev,
             [matchId]: selected,
         }));
-    };
-
-    const handleSubmit = () => {
-        console.log("Selected Matches:", selectedMatches);
+    };    
+    const handleSubmit = async () => {
+        //setSubmitError(undefined);
+        try {
+            const result = await mutation.mutateAsync({
+                tier: userTier,
+                picks: selectedMatches
+            });
+            setSelectedMatches(result.pickems);
+            queryClient.invalidateQueries({ queryKey: ["pickems", loggedinUser?.discordId, seasonAndMatchType.season] });
+            queryClient.invalidateQueries({ queryKey: ["pickemsMatchUpConsensus", seasonAndMatchType.season] });
+            setSubmitWasSuccessful(true);
+            setTimeout(() => setSubmitWasSuccessful(false), 3000);
+        } catch (error) {
+            Sentry.captureException(error);
+            
+            // Improved error handling
+            // if (error instanceof Error) {
+            //     setSubmitError(error.message);
+            // } else if (typeof error === "object" && error !== null && "message" in error) {
+            //     setSubmitError((error as any).message);
+            // } else {
+            //     setSubmitError("An unexpected error occurred while submitting your picks");
+            // }
+            
+            console.error("Error submitting pickems:", error);
+        }
     }
 
     if (!loggedinUser){
         return <Container>
-            <h1 className="text-2xl font-bold mb-4">Weekly Matches</h1>
+            <h1 className="text-2xl font-bold mb-4">My Weekly Pickems</h1>
             <div className="flex space-x-8">
                 <div className="flex-1">
                     <h2 className="text-xl font-semibold mb-2">Please login to make your Pickems</h2>
@@ -142,10 +148,11 @@ export const Pickems = () => {
         </Container>;
     }
 
-    if( userTier === undefined ) {
+    if( userTier === undefined || userTier.includes("Unrated") ) {
         return (
             <Container>
-                <h1 className="text-2xl font-bold mb-4">Select Your Tier</h1>
+                <h1 className="text-2xl font-bold mb-4">Uh oh! It looks like your tierless, please select a Tier to get started.</h1>
+                <p>Select the tier you want to participate in wisely, once you save your first pickems - you cannot switch tiers.</p>
                 <div className="flex space-x-4">
                     {["Recruit", "Prospect", "Contender", "Challenger", "Elite", "Premier"].map((tier: any) => (
                     <button
@@ -161,128 +168,93 @@ export const Pickems = () => {
         );
     }
 
-    const TeamSideItem = ({match, selectedMatches, side}: { match: Match, selectedMatches: { [key: string]: { teamId: number, teamName: string } | null }, side: 'home' | 'away' }) => {
-        const team = match[side];
-        return (
-        <div onClick={() => !hasMatchStarted(match.scheduledDate) && handleSelection(match.id, { teamId: team.id, teamName: team.name })}
-        className={`flex flex-col items-center h-14 w-14 rounded-lg p-2
-            ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && match.stats[0]?.winner?.id === team.id
-                ? "bg-green-500 bg-opacity-15 border-2 border-green-500"
-                : ""}
-            ${hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id && match.stats[0]?.winner?.id !== team.id
-                ? "bg-red-500 bg-opacity-15 border-2 border-red-500"
-                : ""
-            }
-            ${!hasMatchStarted(match.scheduledDate) && selectedMatches[match.id]?.teamId === team.id
-                ? "bg-blue-500 bg-opacity-15 border-2 border-blue-500"
-                : ""
-            }
-        `}
-    >
-        <img
-            src={franchiseImages[team.franchise.prefix]}
-            alt={team.franchise.prefix}
-            className="h-12 w-12 rounded-lg"
-        />
-    </div>);
-    }
-
     return (
         <Container>
-            <h1 className="text-3xl font-bold mb-4 text-center">{userTier} Weekly Pickems</h1>
-            {/* Timeframe Toggle */}
-            <div className="flex justify-center space-x-2 mb-6">
-                {['past', 'current', 'future'].map((timeframe) => (
-                    <button
-                        key={timeframe}
-                        onClick={() => setSelectedTimeframe(timeframe as 'past' | 'current' | 'future')}
-                        className={`px-4 py-2 rounded-lg transition-all duration-200 ${
-                            selectedTimeframe === timeframe
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}
-                    >
-                        {timeframe.charAt(0).toUpperCase() + timeframe.slice(1)} Matches
-                    </button>
-                ))}
-            </div>
-
-            <div className="flex space-x-8">
-                {matchesByMatchday &&
-                    (Object.entries(matchesByMatchday) as [string, any[]][])
-                    .filter(([matchDate]) => {
-                        switch(selectedTimeframe) {
-                            case 'past':
-                                return pastMatchWeeks.includes(matchDate);
-                            case 'current':
-                                return currentMatchWeek.includes(matchDate);
-                            case 'future':
-                                return futrueMatchWeeks.includes(matchDate);
-                            default:
-                                return false;
+            <div className="h-fit">
+                <h1 className="text-3xl font-bold mb-4 text-center">
+                    My {userTier} Weekly Pickems
+                </h1>
+                <div className="text-center mb-4">
+                    <div className="flex items-center justify-center gap-2 mb-4">
+                        <span className="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-sm font-bold rounded-full">
+                            Beta
+                        </span>
+                        <span className="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-sm font-bold rounded-full">
+                            Live
+                        </span>
+                        <button 
+                            onClick={() => setIsShowRules(true)}
+                            className="inline-flex items-center px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full transition-colors"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Rules
+                        </button>
+                        <Link className="inline-flex items-center px-3 py-1 text-white text-sm font-bold rounded-full hover:text-blue-400 cursor-pointer transition-colors"
+                            href="/pickems/explorer"
+                        >
+                            Explore Players Pickems <GiChoice size={"1.5rem"} className="inline" />
+                        </Link>
+                    </div>
+                </div>
+                { 
+                <>      
+                    <TimeframeToggle selectedTimeframe={selectedTimeframe} setSelectedTimeframe={setSelectedTimeframe} />
+                    {/* {submitError && <ErrorMessage error={submitError} />} */}
+                    <LastSaved dateUpdated={pickemsData?.dateUpdated} />  
+                    <div className="flex space-x-8">               
+                        <SubmitPickemsButton 
+                            submitWasSuccessful={submitWasSuccessful} 
+                            handleSubmit={handleSubmit}
+                            //submitError={submitError}
+                            isSubmitting={mutation.isPending} 
+                        />
+                        {matchesByMatchday &&
+                            (Object.entries(matchesByMatchday) as [string, any[]][])
+                                .filter(([matchDate]) => {
+                                    return (
+                                        (selectedTimeframe.includes("past") && pastMatchWeeks.includes(matchDate)) ||
+                                        (selectedTimeframe.includes("current") && currentMatchWeek.includes(matchDate)) ||
+                                        (selectedTimeframe.includes("future") && futrueMatchWeeks.includes(matchDate)) ||
+                                        selectedTimeframe.length === 0
+                                    );
+                                })
+                                .map(([matchDate, matches]: [string, Match[]]) => (
+                                <WeeklyPickems
+                                    key={matchDate}                  
+                                    matchDate={matchDate}
+                                    matches={matches}
+                                    selectedMatches={selectedMatches}
+                                    pickemsConcensusData={pickemsConcensusData}
+                                    handleSelection={handleSelection}                         
+                                />
+                            ))
                         }
-                    })
-                    .map(([matchDate, matches]: [string, Match[]]) => (
-                        <div key={matchDate} className="flex flex-col">
-                            <div>
-                                <h2 className="text-xl font-semibold mb-2">Match Day {matches[0].matchDay.number.replace("M","")}</h2>
-                                <h2 className="text-sm font-semibold mb-2">{dayjs(matchDate).format("MM/DD/YYYY")}</h2>
-                            </div>
-                            <div className="border rounded-lg shadow-sm">
-                                <div>
-                                    <div className="flex justify-between px-4 py-2 border-b">
-                                        <span className="text-sm font-bold">HOME</span>
-                                        <div className="text-gray-600 text-sm">
-                                        {matches.reduce((acc, match) =>
-                                            selectedMatches[match.id]?.teamId === match.stats[0]?.winner?.id ? acc + 1 : acc, 0)} pts
-                                        </div>
-                                        <span className="text-sm font-bold">AWAY</span>
-                                    </div>
+                    </div>
+                </>}            
+                {/* {Object.keys(selectedMatches ?? []).length > 0 && (
+                    <div className="mt-6 p-4 bg-blue-700 border border-blue-300 rounded-lg text-xs">
+                        Debug
+                        <p className="">Your selections:</p>
+                        <ul className="flex flex-row flex-wrap gap-2">
+                            {Object.entries(selectedMatches).map(([matchId, obj]) => (
+                                <div key={matchId}>
+                                    <div>Match ID {matchId}:</div>
+                                    <div>{obj?.teamName}</div>
                                 </div>
-                                {matches.map((match: Match) => (
-                                    <div key={match.id} className="p-1 relative">
-                                        {hasMatchStarted(match.scheduledDate) && (
-                                            <div className="absolute inset-0 bg-gray-400 bg-opacity-20 z-10" />
-                                        )}
-                                        <div className="flex flex-col">
-                                            <div className="flex space-x-4">
-                                                <TeamSideItem match={match} selectedMatches={selectedMatches} side={"home"} />
-                                                <span className="m-auto text-md font-semibold">vs.</span>
-                                                <TeamSideItem match={match} selectedMatches={selectedMatches} side={"away"} />                                     
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
+                            ))}
+                        </ul>
+                    </div>
+                )} */}
             </div>
-            
-            {/* Big shiny submit button */}
-            {selectedTimeframe === 'current' && (
-                <div className="mt-8 flex justify-center">
-                    <button
-                        onClick={() => handleSubmit()}
-                        className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold text-xl rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 animate-pulse hover:animate-none active:translate-y-1 active:shadow-inner active:scale-95 active:bg-gradient-to-r active:from-blue-600 active:to-purple-700"
-                        disabled={Object.keys(selectedMatches).length === 0}
-                    >
-                        SUBMIT YOUR PICKS! ✨
-                    </button>
-                </div>
-            )}
-            
-            {Object.keys(selectedMatches).length > 0 && (
-                <div className="mt-6 p-4 bg-blue-700 border border-blue-300 rounded-lg">
-                    <p className="text-blue-700">Your selections:</p>
-                    <ul className="list-disc pl-5">
-                        {Object.entries(selectedMatches).map(([matchId, obj]) => (
-                            <li key={matchId}>
-                                Match ID {matchId}: {obj?.teamName} (ID: {obj?.teamId})
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+            <Dialog 
+                open={isShowRules} 
+                onClose={() => setIsShowRules(false)} 
+                className="fixed inset-0 z-10 overflow-y-auto"
+            >
+                <PickemsRules setIsShowRules={setIsShowRules} />
+            </Dialog>
         </Container>
     );
 };

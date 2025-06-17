@@ -26,7 +26,7 @@ import { useDataContext } from "./DataContext";
 import { ProgressBar } from "./common/components/progress";
 import ReactGA from "react-ga4";
 import { ErrorBoundary } from "./common/components/errorBoundary";
-import { discordFetchUser } from "./dao/oAuth";
+import { discordFetchUser, discordRefreshToken } from "./dao/oAuth";
 import cookie from "js-cookie";
 import { useLocalStorage } from "./common/hooks/localStorage";
 import { AiOutlineCloseCircle } from "react-icons/ai";
@@ -38,6 +38,8 @@ import { CreatePost } from "./pages/articles/create";
 import { Submitted } from "./pages/articles/submitted";
 import { Pickems } from "./pages/pickems";
 import { GMPanel } from "./pages/gmPanel";
+import { Draft } from "./pages/draft";
+import { PickemsExplorer } from "./pages/pickems/PickemsExplorer";
 
 export function Router() {
 	const [closeNotificationBanner, setCloseNotificationBanner] = useLocalStorage(
@@ -97,7 +99,10 @@ export function Router() {
 		{ path: `/standings`, component: () => <TeamStandings /> },
 		{ path: `/servers`, component: () => <Servers /> },
 		{ path: `/pickems`, component: () => <Pickems /> },
+		{ path: `/pickems/explorer`, component: () => <PickemsExplorer /> },
+		{ path: `/pickems/explorer/:id`, component: () => <PickemsExplorer /> },
 
+		{ path: `/draft`, component: () => <Draft /> },
 		{ path: `/admin`, component: () => <Admin /> },
 		{ path: `/gm`, component: () => <GMPanel /> },
 		{ path: `/franchiseManagement`, component: () => <FranchiseManagement /> },
@@ -105,6 +110,10 @@ export function Router() {
 
 	React.useEffect(() => {
 		const fetchUser = async () => {
+			// const refreshtoken = cookie.get("refresh_token");
+			// if (refreshtoken) {
+			// 	await discordRefreshToken();
+			// }
 			const accessToken = cookie.get("access_token");
 			if (accessToken && discordUser === null) {
 				const user = await discordFetchUser(accessToken);
@@ -118,12 +127,12 @@ export function Router() {
 	}, [discordUser, setDiscordUser]);
 
 	React.useEffect(() => {
-			ReactGA.send({
-				hitType: "pageview",
-				page: `${location}${params ? `?${params}` : ""}`,
-				title: `${location}${params ? `?${params}` : ""}`,
-			});
-			document.title = `${location.split('/').at(-1)}${params ? `?${params}` : ""} - AnalytiKill`;			
+		document.title = `${location.split('/').at(-1)}${params ? `?${params}` : ""} - AnalytiKill`;
+		ReactGA.send({
+			hitType: "pageview",
+			page: `${location}${params ? `?${params}` : ""}`,
+			title: document.title,
+		});		
 	}, [location, params]);
 
 	let ga: Record<string, string> = { hitType: "pageview", page: location, title: document.title };

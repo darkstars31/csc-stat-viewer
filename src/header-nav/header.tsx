@@ -19,7 +19,7 @@ const HeaderItem = ({
 	item,
 	close,
 }: {
-	item: { href: string; name: string | React.JSX.Element; current: boolean };
+	item: { href: string; name: string | React.JSX.Element; current: boolean, styling?: string };
 	close: () => void;
 }) => {
 	return (
@@ -28,6 +28,7 @@ const HeaderItem = ({
 			to={item.href}
 			onClick={() => close()}
 			className={classNames(
+				item?.styling ? item.styling : "",
 				item.current ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
 				"block px-3 py-2 rounded-md text-sm font-medium",
 				"min-h-6",
@@ -56,6 +57,12 @@ export function Header() {
 			name: "Standings",
 			href: "/standings",
 			current: location.endsWith("standings"),
+		},
+		{
+			name: "Pickems",
+			href: "/pickems",
+			current: location.includes("pickems"),
+			styling: "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold hover:bg-gradient-to-r hover:from-indigo-600 hover:to-purple-600",
 		},
 		{
 			name: "Players",
@@ -110,10 +117,10 @@ export function Header() {
 								<div className="hidden sm:ml-6 sm:block">
 									<div className="flex space-x-4">
 										{navigation.map(item => (
-											<>
+											<div key={item.name}>
 												{item.href && <HeaderItem item={item} close={() => {}} />}
 												{item.component && item.component()}
-											</>
+											</div>
 										))}
 									</div>
 								</div>
@@ -128,10 +135,10 @@ export function Header() {
 					<DisclosurePanel className="sm:hidden">
 						<div className="space-y-1 px-2 pt-2 pb-3">
 							{navigation.map(item => (
-								<>
+								<div key={item.name}>
 									{item.href && <HeaderItem item={item} close={close} />}
 									{item.component && item.component()}
-								</>
+								</div>
 							))}
 						</div>
 					</DisclosurePanel>

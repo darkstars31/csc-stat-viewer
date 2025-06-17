@@ -26,6 +26,7 @@ import TEE from "../../assets/images/franchise/TEE.png";
 import TSC from "../../assets/images/franchise/TSC.png";
 import UPS from "../../assets/images/franchise/UPS.png";
 import WET from "../../assets/images/franchise/WET.png";
+import WIZ from "../../assets/images/franchise/WIZ.png";
 import YC from "../../assets/images/franchise/YC.png";
 
 type FranchiseImages = Record<string, string>;
@@ -57,5 +58,6 @@ export const franchiseImages: FranchiseImages = {
 	TSC,
 	UPS,
 	WET,
+	WIZ,
 	YC,
 };

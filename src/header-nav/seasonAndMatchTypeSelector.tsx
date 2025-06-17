@@ -9,8 +9,8 @@ export function SeasonAndMatchTypeSelector() {
 
     if (!enableExperimentalHistorialFeature) return null;
 
-    const { currentSeason, hasSeasonStarted, seasonAndMatchType, setSeasonAndMatchType } = useDataContext();
-	const seasonOptions = [ ...Array.from({ length: currentSeason - 10 }, (_, i) => ({ label: `Season ${ i + 11 }`, value: i + 11 })).reverse() ];
+    const { hasSeasonStarted, seasonAndMatchType, setSeasonAndMatchType } = useDataContext();
+	const seasonOptions = [ ...Array.from({ length: seasonAndMatchType.season - 10 }, (_, i) => ({ label: `Season ${ i + 11 }`, value: i + 11 })).reverse() ];
     const matchTypeOptions = [ { label: "Regulation", value: "Regulation" }, { label: "Combines", value: "Combine" } ];
 
 	const handleSelectSeason = ( value: any ) => {

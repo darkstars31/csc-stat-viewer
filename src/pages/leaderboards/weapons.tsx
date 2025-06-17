@@ -3,8 +3,9 @@ import { Player } from "../../models";
 import { StatsLeaderBoard } from "./stats";
 import { WeaponKills } from "../../models/extended-stats";
 import { cs2icons } from "../../common/images/cs2icons";
+import { Container } from "../../common/components/container";
 
-export function WeaponLeaderboards({ players, limit }: { players: Player[]; limit: number }) {
+export function WeaponLeaderboards({ players, limit }: { players: Player[]; limit: number, filterExtendedStatsByGamesPlayed?: boolean }) {
 	const weaponStrings = [
 		"Zeus x27",
 		"Knife",
@@ -68,15 +69,23 @@ export function WeaponLeaderboards({ players, limit }: { players: Player[]; limi
 	});
 
 	return (
-		<>
-			{weaponLeaderBoards.map(board => (
-				<StatsLeaderBoard
-					key={board.title}
-					title={board.title}
-					headerImage={cs2icons[board.title]}
-					rows={board.rows.filter(row => row.value > 0)}
-				/>
-			))}
-		</>
+		<Container>
+			<div className="flex flex-row flex-wrap m-auto gap-4">
+			{ players.length ? 
+				weaponLeaderBoards.map(board => (
+					<StatsLeaderBoard
+						key={board.title}
+						title={board.title}
+						headerImage={cs2icons[board.title]}
+						rows={board.rows.filter(row => row.value > 0)}
+					/>
+				))
+			:		
+			<div className="w-full m-4 text-center text-2xl text-gray-500 font-extrabold uppercase">
+				No Players seem to meet the criteria.
+			</div>
+			}
+		</div>
+		</Container>
 	);
 }

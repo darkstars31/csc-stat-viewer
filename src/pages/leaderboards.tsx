@@ -9,8 +9,9 @@ import { Toggle } from "../common/components/toggle";
 
 // Lazy load the leaderboard components
 const GeneralLeaderBoards = React.lazy(() => import('./leaderboards/general').then(module => ({default: module.GeneralLeaderBoards})));
-const Chickens = React.lazy(() => import('./leaderboards/chickens').then(module => ({default: module.Chickens})));
+const ExtendedLeaderboards = React.lazy(() => import('./leaderboards/extended').then(module => ({default: module.ExtendedLeaderboards})));
 const WeaponLeaderboards = React.lazy(() => import('./leaderboards/weapons').then(module => ({default: module.WeaponLeaderboards})));
+const PickemLeaderboards = React.lazy(() => import('./leaderboards/pickems').then(module => ({default: module.PickemLeaderboards})));
 
 export function LeaderBoards() {
 	const qs = new URLSearchParams(window.location.search);
@@ -101,6 +102,8 @@ export function LeaderBoards() {
 		{ name: "General", color: "text-yellow-400" },
 		{ name: "Extended", color: "text-cyan-400" },
 		{ name: "Weapons", color: "text-green-400" },
+		{ name: "FAPL", color: "text-purple-400" },
+		{ name: "Pickems", color: "text-red-400" },
 	];
 
 	if (loading.isLoadingCscPlayers) {
@@ -181,7 +184,7 @@ export function LeaderBoards() {
 									<Toggle checked={filterThreeGameMinumum} onChange={setFilterThreeGameMinumum} />
 								</div>
 							</div>
-							{ selectedPage === "extended" &&
+							{ selectedPage !== "general" &&
 							<div className="flex flex-row justify-between">
 								<label title="Order By" className="pr-1 leading-4">
 									Per Match
@@ -211,17 +214,16 @@ export function LeaderBoards() {
 					</div>
 				</div>
 			</div>
-			<React.Suspense fallback={<Loading />}>
-				{playerData.length > 0 && (
-					<div className="pt-6">
-						<div className="flex flex-row flex-wrap gap-6">
-							{selectedPage === "general" && <GeneralLeaderBoards players={playerData} limit={limit} />}
-							{selectedPage === "extended" && <Chickens players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
-							{selectedPage === "weapons" && <WeaponLeaderboards players={playerData} limit={limit} />}
-						</div>
+			<React.Suspense fallback={<Loading />}>			
+				<div className="pt-6">
+					<div className="flex flex-row flex-wrap gap-6">
+						{selectedPage === "general" && <GeneralLeaderBoards players={playerData} limit={limit} />}
+						{selectedPage === "extended" && <ExtendedLeaderboards players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
+						{selectedPage === "weapons" && <WeaponLeaderboards players={playerData} limit={limit} filterExtendedStatsByGamesPlayed={filterExtendedStatsByGamesPlayed} />}
+						{selectedPage === "fapl" && <div className="text-center text-gray-500 w-full text-2xl font-extrabold">FAPL Leaderboards coming soon.</div>}
+						{selectedPage === "pickems" && <PickemLeaderboards limit={limit} />}
 					</div>
-				)}
-				{!playerData.length && <div>No Players in this Tier for this stats sheet.</div>}
+				</div>			
 			</React.Suspense>
 		</Container>
 	);
