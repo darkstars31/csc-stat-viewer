@@ -12,7 +12,6 @@ export const PlayerHistory = ( { playerProfile }: Props ) => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-bold text-center uppercase text-gray-400">Player History (WIP)</h2>
             <div className="overflow-x-auto">
                 <ul className="flex flex-col gap-3">
                     {playerProfile.teamHistory.map((history, index) => {

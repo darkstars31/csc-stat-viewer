@@ -39,6 +39,7 @@ import { toPng } from 'html-to-image';
 import { MdKeyboardArrowDown } from "react-icons/md";
 import dayjs from "dayjs";
 import { PlayerHistory } from "./player/playerHistory";
+import { RiArrowDownWideFill } from "react-icons/ri";
 
 const PlayerMatchHistory = React.lazy(() =>import('./player/matchHistory').then(module => ({default: module.PlayerMatchHistory})));
 const TeamSideRatingPie = React.lazy(() =>import('../common/components/teamSideRatingPie').then(module => ({default: module.TeamSideRatingPie})));
@@ -340,30 +341,28 @@ export function Player() {
 						</div>
 					)}
 					{playerProfile?.teamHistory && (
-						<Transition
-							as={"div"}
-							show={true}
-							enter="transition ease-out duration-300"
-							enterFrom="transform opacity-0 scale-95"
-							enterTo="transform opacity-100 scale-100"
-							leave="transition ease-in duration-75"
-							leaveFrom="transform opacity-100 scale-100"
-							leaveTo="transform opacity-0 scale-95"
-						>
-							<div className="space-y-2 w-full">
-								{ showPlayerHistory ?
-								<React.Suspense fallback={<Loading />}>
+						<div className="space-y-2 w-full">
+							<div
+								onClick={() => setShowPlayerHistory(prev => !prev)}
+								className="flex flex-col mt-3 w-full text-center items-center justify-center text-gray-400 text-sm">								
+									<div>Expand Player History</div>
+									<div className="w-full flex justify-center items-center">
+										<RiArrowDownWideFill style={{transform: 'scale(2.8,1.5)'}} />
+									</div>
+							</div>										
+								<Transition
+									as={"div"}
+									show={showPlayerHistory}
+									enter="transition ease-out duration-300"
+									enterFrom="transform opacity-0 scale-95"
+									enterTo="transform opacity-100 scale-100"
+									leave="transition ease-in duration-100"
+									leaveFrom="transform opacity-100 scale-100"
+									leaveTo="transform opacity-0 scale-95"
+								>	
 									<PlayerHistory playerProfile={playerProfile} />
-								</React.Suspense>
-								: 
-								<div
-									onClick={() => setShowPlayerHistory(prev => !prev)}
-									className="flex flex-col mt-2 w-full text-center text-gray-400 text-sm">								
-										Expand Player History									
-								</div>
-								}
-							</div>
-						</Transition>
+							</Transition>															
+						</div>					
 					)}
 				</Containers.StandardBackgroundPage>
 				{teammates.length > 0 &&
