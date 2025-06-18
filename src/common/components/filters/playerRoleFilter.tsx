@@ -14,7 +14,6 @@ export const viewRolesList = [
 	{ label: "Rifler", value: "RIFLER" },
 	{ label: "Support", value: "SUPPORT" },
 	{ label: "Entry", value: "ENTRY" },
-	//{ label: "Lurker", value: "LURKER"},
 ];
 
 export function PlayerRolesFilter({ onChange, hideLabel, placeHolder }: Props) {

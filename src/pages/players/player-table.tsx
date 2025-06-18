@@ -8,14 +8,13 @@ import { GiMoneyStack } from "react-icons/gi";
 import { PlayerTypes, teamNameTranslator } from "../../common/utils/player-utils";
 import { TiWarningOutline } from "react-icons/ti";
 import { ToolTip } from "../../common/utils/tooltip-utils";
-import { Virtuoso, TableVirtuoso } from "react-virtuoso";
+import { TableVirtuoso } from "react-virtuoso";
 
 type Props = {
 	players: Player[];
 };
 
 function PlayerRows({ index, player }: { index: number; player: Player }) {
-
 	return (
 			<>
 				<td className="whitespace-nowrap px-4 py-4 font-medium">{index + 1}</td>

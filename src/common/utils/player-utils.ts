@@ -125,6 +125,8 @@ export const teamNameTranslator = (player?: Player) => {
 			return "Free Agent";
 		case "UNROSTERED_GM":
 			return `GM`;
+		case "UNROSTERED_AGM":
+			return `AGM`;
 		default:
 			return name;
 	}

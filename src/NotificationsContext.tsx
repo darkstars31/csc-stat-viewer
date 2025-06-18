@@ -17,6 +17,7 @@ const useNotificationsContextProvider = () => {
 		"csconfederation_c",
 		"dripcsc",
 		"teamupsetti",
+		"cscacademics"
 	]);
 
 	const notifications: Notification[] = [
