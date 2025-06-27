@@ -150,4 +150,11 @@ export function usePickemsMutation( season: number ) {
     });
 }
 
+export function usePlayerBadgeMutation( ) {
+    return useMutation({
+        mutationFn: async ( payload: any ) => 
+            await analytikillHttpClient.post(`/analytikill/playerBadge`, payload)
+                .then( response => response.data ),
+    });
+}
 

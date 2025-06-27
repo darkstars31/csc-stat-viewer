@@ -16,7 +16,7 @@ export function HeaderProfile() {
 	const { discordUser, players, enableExperimentalHistorialFeature, setEnableExperimentalHistorialFeature } = useDataContext();
 	const currentLoggedInPlayer = players.find(p => p.discordId === discordUser?.id);
 	const { data: franchiseManagementIds, } = useFetchFranchiseManagementIdsGraph({ enabled: !!currentLoggedInPlayer });
-	const managementIds = franchiseManagementIds?.map( item => ([item.gm.id, item.agm.id,item.agms.map(agm => agm.id)]).flat()).filter(Boolean).flat() ?? [];
+	const managementIds = franchiseManagementIds?.map( item => ([item.gm?.id, item.agm?.id,item.agms.map(agm => agm?.id)]).flat()).filter(Boolean).flat() ?? [];
 
 
 	const hoverBgColor = "bg-gray-100";
