@@ -40,6 +40,7 @@ import { Pickems } from "./pages/pickems";
 import { GMPanel } from "./pages/gmPanel";
 import { Draft } from "./pages/draft";
 import { PickemsExplorer } from "./pages/pickems/PickemsExplorer";
+import { TeamBuilder } from "./pages/teamBuilder";
 
 export function Router() {
 	const [closeNotificationBanner, setCloseNotificationBanner] = useLocalStorage(
@@ -93,6 +94,7 @@ export function Router() {
 		{ path: `/players`, component: () => <Players /> },
 		{ path: `/players/:id`, component: () => <Player /> },
 		{ path: `/player-compare`, component: () => <PlayerComparison /> },
+		{ path: `/team-builder`, component: () => <TeamBuilder /> },
 		{ path: `/leaderboards`, component: () => <LeaderBoards /> },
 		{ path: `/playground`, component: () => <Playground /> },
 		{ path: `/profile`, component: () => <Profile /> },

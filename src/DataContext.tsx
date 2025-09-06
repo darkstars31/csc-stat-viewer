@@ -193,6 +193,7 @@ const useDataContextProvider = () => {
 		setDiscordUser,
 		loggedinUser,
 		players,
+		extendedPlayerStats,
 		franchises: cscFranchises,
 		isLoading,
 		loading: {
