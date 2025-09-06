@@ -208,6 +208,14 @@ export function TeamBuilder() {
   const formatVal = (val: any) =>
     typeof val === "number" ? Number(val).toFixed(2) : val ?? "-";
 
+  const formatPlayerType = (t?: string) => {
+    if (!t) return "-";
+    return String(t)
+      .replaceAll("_", " ")
+      .toLowerCase()
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  };
+
   if (isLoading) {
     return (
       <Container>
@@ -337,7 +345,7 @@ export function TeamBuilder() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex flex-col">
                     <span className="font-medium">{p.name}</span>
-                    <span className="text-xs text-gray-500">{p.tier?.name}</span>
+                    <span className="text-xs text-gray-500">{p.tier?.name} → {formatPlayerType((p as any)?.type)}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="text-xs text-gray-600 dark:text-gray-300 space-x-3">
