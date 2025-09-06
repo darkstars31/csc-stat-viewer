@@ -319,7 +319,18 @@ export function TeamBuilder() {
 
         {/* Right: Matching Players */}
         <div className="border border-gray-200 dark:border-gray-800 rounded">
-          <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-800 font-semibold">Matching Players ({matchingPlayers.length})</div>
+          <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-800 flex items-center gap-3">
+            <div className="font-semibold">Matching Players ({matchingPlayers.length})</div>
+            <div className="ml-auto w-64">
+              <input
+                type="text"
+                placeholder="Search players..."
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+                className="w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm dark:bg-gray-900 dark:border-gray-700"
+              />
+            </div>
+          </div>
           <div className="max-h-[60vh] overflow-auto divide-y divide-gray-200 dark:divide-gray-800">
             {matchingPlayers.map((p) => (
               <div key={p.name} className="px-3 py-2">
