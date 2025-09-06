@@ -25,6 +25,7 @@ export function TeamBuilder() {
   const [filters, setFilters] = useState<FilterRow[]>([{ op: ">=", value: undefined, field: undefined }]);
   const [searchName, setSearchName] = useState<string>("");
   const [tierFilter, setTierFilter] = useState<string[]>([]);
+  const [typeFilter, setTypeFilter] = useState<string[]>([]);
 
   // Build list of stat keys from PlayerMappings (core stats) and extended stats
   const extendedStatsArray = useMemo(() => {
@@ -89,7 +90,8 @@ export function TeamBuilder() {
   const matchingPlayers = useMemo(() => {
     const normalized = players
       .filter((p) => !p.tier?.name?.includes("Unrated"))
-      .filter((p) => (tierFilter.length > 0 ? tierFilter.includes(p.tier?.name ?? "") : true));
+      .filter((p) => (tierFilter.length > 0 ? tierFilter.includes(p.tier?.name ?? "") : true))
+      .filter((p) => (typeFilter.length > 0 ? typeFilter.includes((p as any)?.type ?? "") : true));
     const filtered = normalized.filter((p) => {
       // name search first
       if (searchName && !p.name.toLowerCase().includes(searchName.toLowerCase())) return false;
@@ -170,7 +172,7 @@ export function TeamBuilder() {
     });
 
     return sorted;
-  }, [players, filters, searchName, tierFilter]);
+  }, [players, filters, searchName, tierFilter, typeFilter]);
 
   const addFilterRow = () => setFilters((rows) => [...rows, { op: ">=", value: undefined, field: undefined }]);
   const removeFilterRow = (idx: number) => setFilters((rows) => rows.filter((_, i) => i !== idx));
@@ -244,6 +246,24 @@ export function TeamBuilder() {
                 options={(tiers ?? []).map((t: any) => ({ label: t.tier.name, value: t.tier.name }))}
                 value={tierFilter.map((t) => ({ label: t, value: t }))}
                 onChange={(opts) => setTierFilter((opts as any[] | null)?.map((o) => o.value) ?? [])}
+                isClearable
+                isSearchable
+              />
+            </div>
+          </div>
+          {/* Type filter */}
+          <div className="flex items-center gap-2">
+            <div className="grow">
+              <Select
+                placeholder="Filter by type..."
+                unstyled
+                isMulti
+                classNames={selectClassNames}
+                options={Array.from(new Set(players.map((p: any) => p?.type).filter(Boolean)))
+                  .sort()
+                  .map((t: any) => ({ label: formatPlayerType(String(t)), value: String(t) }))}
+                value={typeFilter.map((t) => ({ label: formatPlayerType(t), value: t }))}
+                onChange={(opts) => setTypeFilter((opts as any[] | null)?.map((o) => o.value) ?? [])}
                 isClearable
                 isSearchable
               />
