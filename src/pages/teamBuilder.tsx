@@ -54,12 +54,14 @@ export function TeamBuilder() {
         label: `${statDescriptionsShort[key as keyof typeof statDescriptionsShort] ?? key} (${key})`,
         group: "Extended",
       }));
-    return [...coreOptions, ...extOptions].sort((a, b) => a.label.localeCompare(b.label));
+    const mmrOption = { value: "mmr", label: "MMR (mmr)", group: "Core" };
+    return [mmrOption, ...coreOptions, ...extOptions].sort((a, b) => a.label.localeCompare(b.label));
   }, [extendedKeys]);
 
   // Helper to read stat value from player
   const getStatValue = (player: Player, key?: string): any => {
     if (!key) return undefined;
+    if (key === "mmr") return player.mmr;
     // core stat
     if (key in PlayerMappings) {
       return (player.stats as any)?.[key];
