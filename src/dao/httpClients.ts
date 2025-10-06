@@ -4,8 +4,11 @@ import { appConfig } from "../dataConfig";
 
 const authorization = Cookies.get("jwt")
 
+const useLocalApi = false;
+const baseURL = useLocalApi ? "http://localhost:3001" : appConfig.endpoints.analytikill;
+
 const analytikillClient = axios.create({
-    baseURL: appConfig.endpoints.analytikill,
+    baseURL,
     timeout: 5000,
     headers: {
         "content-type": "application/json",

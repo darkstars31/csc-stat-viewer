@@ -6,7 +6,6 @@ const fetchFranchisesGraph = async () =>
 	await fetch(appConfig.endpoints.cscGraphQL.core, {
 		method: "POST",
 		body: JSON.stringify({
-			operationName: "",
 			query: `query franchises {
                     franchises(active: true) {
                         name
@@ -86,7 +85,6 @@ export const fetchFranchiseManagementIds = async (): Promise<FranchiseManagement
     await fetch(`https://core.csconfederation.com/graphql`,
     { method: "POST",
         body: JSON.stringify({
-            "operationName": "franchises",
             "query": `query franchises {
                 franchises(active: true) {
                     prefix
