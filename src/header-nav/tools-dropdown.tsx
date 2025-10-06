@@ -60,6 +60,20 @@ export const ToolsDropdown = () => {
 					</Menu.Item>
 					<Menu.Item>
 						{({ active }) => (
+							<Link to="/team-builder">
+								<span
+									className={classNames(
+										active ? "bg-gray-100" : "",
+										"block px-4 py-2 text-sm text-gray-100 hover:bg-gray-700",
+									)}
+								>
+									Team Builder
+								</span>
+							</Link>
+						)}
+					</Menu.Item>
+					<Menu.Item>
+						{({ active }) => (
 							<Link to="/export">
 								<span
 									className={classNames(
