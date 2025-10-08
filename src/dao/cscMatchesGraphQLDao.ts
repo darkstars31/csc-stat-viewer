@@ -18,7 +18,6 @@ export const fetchMatchesGraph = async (teamId?: string, season: number = 11) =>
 	await fetch(appConfig.endpoints.cscGraphQL.core, {
 		method: "POST",
 		body: JSON.stringify({
-			operationName: "",
 			query: `query matches ( $teamId: String, $season: Int!) {
                     matches (teamId: $teamId, season: $season) {
                         id

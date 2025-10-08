@@ -12,7 +12,6 @@ const fetchGraph = async (playerType: keyof typeof PlayerTypes) =>
 	await fetch(appConfig.endpoints.cscGraphQL.core, {
 		method: "POST",
 		body: JSON.stringify({
-			operationName: "",
 			query: `query CscPlayers ( $playerType: PlayerTypes) {
                 players ( type: $playerType ) {
                     id

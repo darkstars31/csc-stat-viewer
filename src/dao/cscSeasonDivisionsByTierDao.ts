@@ -8,7 +8,6 @@ const fetchGraph = async (season?: number) =>
 	await fetch(appConfig.endpoints.cscGraphQL.core, {
 		method: "POST",
 		body: JSON.stringify({
-			operationName: "",
 			query: `query Seasons( $season: Int) {
                 season(number: $season) {
                     standings {
