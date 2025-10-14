@@ -25,7 +25,7 @@ const initialMapBans = {
 	de_nuke: 0,
 	de_mirage: 0,
 	de_ancient: 0,
-	de_anubis: 0,
+	de_overpass: 0,
 	de_dust2: 0,
 };
 
