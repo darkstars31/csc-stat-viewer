@@ -6,6 +6,7 @@ import ATL from "../../assets/images/franchise/ATL.png";
 import ATO from "../../assets/images/franchise/ATO.png";
 import AVI from "../../assets/images/franchise/AVI.png";
 import dB from "../../assets/images/franchise/dB.png";
+import BOA from "../../assets/images/franchise/BOA.png";
 import BS from "../../assets/images/franchise/BS.png";
 import COW from "../../assets/images/franchise/COW.png";
 import DRG from "../../assets/images/franchise/DRG.png";
@@ -39,6 +40,7 @@ export const franchiseImages: FranchiseImages = {
 	ATO,
 	AVI,
 	dB,
+	BOA,
 	BS,
 	COW,
 	DRG,
