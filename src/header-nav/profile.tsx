@@ -117,7 +117,7 @@ export function HeaderProfile() {
 							</MenuItem>
 						</>
 					)}
-					<hr />
+					{/* <hr />
 						<MenuItem>
 							{({ active }) => (
 								<Link to={`/servers`}>
@@ -132,7 +132,7 @@ export function HeaderProfile() {
 								</Link>
 							)}
 						</MenuItem>
-					<hr />
+					<hr /> */}
 					<MenuItem>
 						{({ active }) => (									
 							<button

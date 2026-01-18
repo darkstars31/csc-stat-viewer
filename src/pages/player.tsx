@@ -124,7 +124,7 @@ export function Player() {
 		Premier: "text-purple-400",
 	}
 
-	const tabs = [
+	const tabs: { name: string; disabled?: boolean }[] = [
 		{
 			name: "Stats",
 		},
@@ -137,10 +137,10 @@ export function Player() {
 		{
 			name: "Match History",
 		},
-		{
-			name: "Free Agent Player League",
-			disabled: true
-		}
+		// {
+		// 	name: "Free Agent Player League",
+		// 	disabled: true
+		// }
 	]
 
 	const tierButtonClass =

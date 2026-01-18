@@ -102,7 +102,7 @@ export function LeaderBoards() {
 		{ name: "General", color: "text-yellow-400" },
 		{ name: "Extended", color: "text-cyan-400" },
 		{ name: "Weapons", color: "text-green-400" },
-		{ name: "FAPL", color: "text-purple-400" },
+		// { name: "FAPL", color: "text-purple-400" },
 		{ name: "Pickems", color: "text-red-400" },
 	];
 
