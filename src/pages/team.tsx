@@ -11,7 +11,7 @@ import { calculateTeamRecord } from "../common/utils/match-utils";
 import { AwardsMappings } from "../common/utils/awards-utils";
 import { queryClient } from "../App";
 import { TeamPlayerCards } from "./team/playerCards";
-import { MapAnalysis } from "./team/mapBans";
+import { MapBans } from "./team/mapBans";
 import { CompareLink } from "../common/components/compareLink";
 import { ToolTip } from "../common/utils/tooltip-utils";
 import { TeamMatchHistory } from "./player/matchHistory";
@@ -212,7 +212,7 @@ export function Team() {
 										)}
 									</h2>
 									<MapRecord matches={regularSeasonMatches} team={currentTeam} />
-									{matches.length > 0 && <MapAnalysis matches={matches} team={currentTeam} />}
+									{matches.length > 0 && <MapBans matches={matches} team={currentTeam} />}
 									<div className="mt-4">
 										{matches.length > 0 &&
 											regularSeasonMatches.some(match =>

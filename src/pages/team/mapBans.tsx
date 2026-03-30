@@ -213,17 +213,3 @@ export function PistolRounds({ matches, team }: Props) {
 }
 
 export function TeamSide({ matches, team }: Props) {}
-
-export function MapAnalysis({ matches, team }: Props) {
-	const { loggedinUser } = useDataContext();
-	return (
-		<Exandable title="Map Analysis">
-			{loggedinUser ?
-				<MapBans matches={matches} team={team} />
-			:	<div className="w-full text-center font-italic">
-					AnalytiKill Prime is only available for logged in users.
-				</div>
-			}
-		</Exandable>
-	);
-}
