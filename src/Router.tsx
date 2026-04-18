@@ -21,15 +21,13 @@ import {
 	TeamStandings,
 	Servers,
 } from "./pages";
-import { ArticleRoutes } from "./pages/articles/routes";
 import { useDataContext } from "./DataContext";
 import { ProgressBar } from "./common/components/progress";
+import { FullWidthBanner } from "./common/components/fullWidthBanner";
 import ReactGA from "react-ga4";
 import { ErrorBoundary } from "./common/components/errorBoundary";
-import { discordFetchUser, discordRefreshToken } from "./dao/oAuth";
+import { discordFetchUser } from "./dao/oAuth";
 import cookie from "js-cookie";
-import { useLocalStorage } from "./common/hooks/localStorage";
-import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useEnableFeature } from "./common/hooks/enableFeature";
 import { useFetchGithubRepoBranchJson } from "./dao/githubRepo";
 import { Posts } from "./pages/articles/posts";
@@ -43,26 +41,20 @@ import { PickemsExplorer } from "./pages/pickems/PickemsExplorer";
 import { TeamBuilder } from "./pages/teamBuilder";
 
 export function Router() {
-	const [closeNotificationBanner, setCloseNotificationBanner] = useLocalStorage(
-		"closeNotificationBannerRequestAServer",
-		"",
-	);
-	const [ newVersionBanner, setNewVersionBanner] = React.useState<{ isOpen: boolean, commitHash: string | undefined }>({ isOpen: false, commitHash: undefined });
+
+	const { isLoading, discordUser, setDiscordUser, loggedinUser, isOffSeason } = useDataContext();
+	const [baselineCommitHash, setBaselineCommitHash] = React.useState<string | undefined>(undefined);
 	const { data: githubBranch, isLoading: isLoadingGithubBranch } = useFetchGithubRepoBranchJson();
-	const { isLoading, loading, discordUser, setDiscordUser, loggedinUser } = useDataContext();
 	const BASE_ROUTE = "";
 	const [location] = useLocation();
 	const params = useSearch();
 	const enableFeature = useEnableFeature("canRequestServers");
 
 	React.useEffect(() => {
-		if(!isLoadingGithubBranch && newVersionBanner.commitHash === undefined ) {
-			setNewVersionBanner({ ...newVersionBanner, commitHash: githubBranch?.commit?.sha });
-		} 
-		if( newVersionBanner.commitHash !== githubBranch?.commit?.sha && newVersionBanner.commitHash !== undefined) {
-			setNewVersionBanner(  perv => ({ ...perv, isOpen: true }));
+		if (!isLoadingGithubBranch && baselineCommitHash === undefined) {
+			setBaselineCommitHash(githubBranch?.commit?.sha);
 		}
-	}, [ isLoadingGithubBranch, githubBranch ]);
+	}, [baselineCommitHash, githubBranch?.commit?.sha, isLoadingGithubBranch]);
 
 	// const Player = React.lazy(() => import("./pages/player").then(module => { return { default: module.Player } }) );
 	// const Franchises = React.lazy(() => import("./pages/franchises").then(module => { return { default: module.Franchises } }) );
@@ -142,34 +134,35 @@ export function Router() {
 		ga = { ...ga, discordId: loggedinUser.discordId, user_id: loggedinUser.name };
 		ReactGA.gtag('config',`G-EZ2R1EHT34`, { discordId: loggedinUser?.discordId, user: loggedinUser?.name });
 	}
-	//ReactGA.send(ga);
+
+	const hasNewVersion = Boolean(
+		baselineCommitHash && githubBranch?.commit?.sha && baselineCommitHash !== githubBranch.commit.sha,
+	);
 
 	return (
 		<>
 			{isLoading && <ProgressBar />}
 			<Wouter base={BASE_ROUTE}>
-				{newVersionBanner.isOpen && (
+				<FullWidthBanner show={isOffSeason}>
+					Looks like it's the off-season! Check back when the season starts for the latest stats and updates.
+				</FullWidthBanner>
+				<FullWidthBanner show={hasNewVersion} resetKey={githubBranch?.commit?.sha}>
+					A new version of AnalytiKill is available.
 					<button
-						className="w-full h-8 bg-teal-600 text-center"
-						onClick={() => setNewVersionBanner({ ...newVersionBanner, isOpen: false })}
+						type="button"
+						className="px-1 text-blue-200 underline hover:text-white"
+						onClick={() => window.location.reload()}
 					>
-						A new version of AnalytiKill is available. 
-						<a className="px-1 text-blue-600 underline" onClick={() => window.location.reload()}>Click here to update</a> or refresh the page!
-						<AiOutlineCloseCircle className="float-right mr-4" size="1.5em" />
+						Click here to update
 					</button>
-				)}
-				{!closeNotificationBanner && enableFeature && (
-					<button
-						className="w-full h-8 bg-teal-600 text-center"
-						onClick={() => setCloseNotificationBanner("true")}
-					>
-						Need a retake server to warm-up on match days? Request a server (beta){" "}
-						<Link className="hover:underline text-white font-bold hover:text-sky-400" to="/servers">
-							here.
-						</Link>
-						<AiOutlineCloseCircle className="float-right mr-4" size="1.5em" />
-					</button>
-				)}
+					or refresh the page!
+				</FullWidthBanner>
+				<FullWidthBanner show={enableFeature} persistKey="closeNotificationBannerRequestAServer">
+					Need a retake server to warm-up on match days? Request a server (beta){" "}
+					<Link className="font-bold text-white underline hover:text-sky-200" to="/servers">
+						here.
+					</Link>
+				</FullWidthBanner>
 				<ErrorBoundary>					
 					<Switch>
 						{routes.map(route => <Route key={`route${route.path}`} {...route} />)}

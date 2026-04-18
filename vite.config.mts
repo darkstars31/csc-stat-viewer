@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
 import { compression } from 'vite-plugin-compression2'
 import tailwindcss from 'tailwindcss'
+import path from 'path'
 //import { analyzer } from 'vite-bundle-analyzer'
 
 export default defineConfig({
@@ -17,6 +18,11 @@ export default defineConfig({
         })
         //analyzer(),
     ],
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "src"),
+        }
+    },
     css: {
         postcss: {
             plugins: [tailwindcss],

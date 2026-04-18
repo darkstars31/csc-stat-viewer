@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCscPlayersCache, useCscPlayersGraph } from "./dao/cscPlayerGraphQLDao";
+import { useCscPlayersCache } from "./dao/cscPlayerGraphQLDao";
 import { dataConfiguration } from "./dataConfig";
 import { Player } from "./models/player";
 import { useFetchFranchisesGraph } from "./dao/franchisesGraphQLDao";
@@ -15,11 +15,12 @@ import { ExtendedStats } from "./models/extended-stats";
 import { useAnalytikillExtendedStats } from "./dao/analytikill";
 import { queryClient } from "./App";
 
+const CSC_TIERS = ["Recruit", "Prospect", "Contender", "Challenger", "Elite", "Premier"] as const;
+
 const useDataContextProvider = () => {
 	const [gmRTLCsv, setGmRTLCsv] = React.useState<Record<string,string>[] | null>(null);
 	const [discordUser, setDiscordUser] = React.useState<DiscordUser | null>(null);
 	const { data: seasonAndTierConfig = undefined, isLoading: isLoadingCscSeasonAndTiers } = useCachedCscSeasonAndTiers();
-	const [ players, setPlayers ] = React.useState<Player[]>([]);
     const [ enableExperimentalHistorialFeature, setEnableExperimentalHistorialFeature] = React.useState<boolean>(false);
 	
 	const hasSeasonStarted = seasonAndTierConfig?.hasSeasonStarted;
@@ -72,81 +73,74 @@ const useDataContextProvider = () => {
 		if(playersMissingTier.length > 0) console.info("Players Missing Tier", playersMissingTier);
 	}, [playersMissingTier]);
 
-	React.useEffect(() => {
-		if (isLoadingCscPlayersCache || isLoadingCachedStats || isLoadingCscSeasonAndTiers) return;
+	const isOffSeason = React.useMemo(
+		() => cscPlayers.filter(player => player?.tier?.name === "Unrated").length > 50,
+		[cscPlayers],
+	);
+
+	const players = React.useMemo(() => {
+		if (isLoadingCscPlayersCache || isLoadingCachedStats || isLoadingCscSeasonAndTiers) {
+			return [] as Player[];
+		}
+
 		const specialRoles = {
 			"76561197998527398": "THE GOAT",
 			"76561198855758438": "BAITER",
 			"76561199389109923": "ECO FRAGGER",
 			"76561198368540894": "AWP CRUTCH",
-			"76561198823277559": "IGL"
-		};	
+			"76561198823277559": "IGL",
+		};
 
-		const players: Player[] = cscPlayers
-		?.filter(cscPlayer => cscPlayer.tier?.name)
-		.filter(cscPlayer => !enableExperimentalHistorialFeature ? cscPlayer?.type !== PlayerTypes.SPECTATOR : true)
-		.reduce((acc, cscPlayer) => {
-			const statsForPlayerByTier = [
-				{
-					tier: "Recruit",
-					stats: statsByTier.Recruit?.find(stats => stats.name === cscPlayer?.name),
-				},
-				{
-					tier: "Prospect",
-					stats: statsByTier.Prospect?.find(stats => stats.name === cscPlayer?.name),
-				},
-				{
-					tier: "Contender",
-					stats: statsByTier.Contender?.find(stats => stats.name === cscPlayer?.name),
-				},
-				{
-					tier: "Challenger",
-					stats: statsByTier.Challenger?.find(stats => stats.name === cscPlayer?.name),
-				},
-				{
-					tier: "Elite",
-					stats: statsByTier.Elite?.find(stats => stats.name === cscPlayer?.name),
-				},
-				{
-					tier: "Premier",
-					stats: statsByTier.Premier?.find(stats => stats.name === cscPlayer?.name),
-				},
-			].filter(statsWithTier => statsWithTier?.stats);
-	
-			if (statsForPlayerByTier.length > 0) {
-				var role =
-					specialRoles[cscPlayer.steam64Id as keyof typeof specialRoles] ?
-						specialRoles[cscPlayer.steam64Id as keyof typeof specialRoles]
-					:	determinePlayerRole(statsForPlayerByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!);
-				const stats = statsForPlayerByTier.find(s => s.tier === cscPlayer.tier.name)?.stats!;
-				
-				const extendedStatsApiResponse = Object.keys(extendedPlayerStats ?? {}).includes("data") ? extendedPlayerStats?.data : extendedPlayerStats;
+		const extendedStatsApiResponse = Object.keys(extendedPlayerStats ?? {}).includes("data")
+			? extendedPlayerStats?.data
+			: extendedPlayerStats;
+
+		return cscPlayers
+			.filter(cscPlayer => cscPlayer.tier?.name)
+			.filter(cscPlayer => !enableExperimentalHistorialFeature ? cscPlayer?.type !== PlayerTypes.SPECTATOR : true)
+			.reduce((acc, cscPlayer) => {
+				const statsForPlayerByTier = CSC_TIERS.map(tier => ({
+					tier,
+					stats: statsByTier[tier]?.find(stats => stats.name === cscPlayer?.name),
+				})).filter(statsWithTier => statsWithTier.stats);
+
+				if (statsForPlayerByTier.length === 0) {
+					acc.push({ ...(cscPlayer as Player) });
+					return acc;
+				}
+
+				const stats = statsForPlayerByTier.find(statsWithTier => statsWithTier.tier === cscPlayer.tier.name)?.stats;
+				const role = specialRoles[cscPlayer.steam64Id as keyof typeof specialRoles]
+					?? (stats ? determinePlayerRole(stats) : undefined);
 				const extendedStats = (extendedStatsApiResponse as any[])?.find(
-					(stats: { name: string }) => stats.name === cscPlayer?.name,
+					(playerStats: { name: string }) => playerStats.name === cscPlayer?.name,
 				) as ExtendedStats ?? undefined;
-	
-				const statsOutOfTier = statsForPlayerByTier.length > 0 ?
-				statsForPlayerByTier.filter(statsWithTier => statsWithTier.tier !== cscPlayer.tier.name)
-					: null;
-	
+				const statsOutOfTier = statsForPlayerByTier.filter(
+					statsWithTier => statsWithTier.tier !== cscPlayer.tier.name,
+				);
+
 				acc.push({
 					...cscPlayer,
-					...( gmRTLCsv ? { mmr: Number((gmRTLCsv ?? []).find( p => p["CSC ID"] === cscPlayer.id)?.MMR ?? 0) } : {}),
+					...(gmRTLCsv ? { mmr: Number(gmRTLCsv.find(player => player["CSC ID"] === cscPlayer.id)?.MMR ?? 0) } : {}),
 					hltvTwoPointO: stats ? calculateHltvTwoPointOApproximationFromStats(stats) : undefined,
 					role,
-					stats,
+					stats: stats!,
 					extendedStats,
 					statsOutOfTier,
 				});
-			} else {
-				//if( !enableExperimentalHistorialFeature || ( enableExperimentalHistorialFeature && cscPlayer?.type !== PlayerTypes.SPECTATOR && statsForPlayerByTier.length > 0 ) ){
-					acc.push({ ...(cscPlayer as Player) });
-				//}
-			}
-			return acc;
-		}, [] as Player[]);
-		setPlayers(players);
-	}, [isLoadingCachedStats, isLoadingCscPlayersCache, enableExperimentalHistorialFeature, isLoadingExtendedStats, gmRTLCsv]);
+
+				return acc;
+			}, [] as Player[]);
+	}, [
+		cscPlayers,
+		enableExperimentalHistorialFeature,
+		extendedPlayerStats,
+		gmRTLCsv,
+		isLoadingCachedStats,
+		isLoadingCscPlayersCache,
+		isLoadingCscSeasonAndTiers,
+		statsByTier,
+	]);
 	
 
 	// const tierNumber = {
@@ -211,6 +205,7 @@ const useDataContextProvider = () => {
 		setEnableExperimentalHistorialFeature,
 		tiers,
 		setSeasonAndMatchType,
+		isOffSeason,
 		gmRTLCsv,
 		setGmRTLCsv,
 		errors,
