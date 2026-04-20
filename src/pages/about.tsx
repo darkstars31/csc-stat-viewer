@@ -20,7 +20,7 @@ export function About() {
 					<h2 className="text-3xl font-bold sm:text-4xl">AnalytiKill</h2>
 					<Paragraph>
 						Advanced Statistics, Analysis, and Visualizations for{" "}
-						<a href="https://csconfederation.com/" target="_blank" rel="noreferrer">
+						<a href="https://playcsc.com/" target="_blank" rel="noreferrer">
 							CS:Confederation Draft League
 						</a>
 					</Paragraph>
@@ -93,7 +93,7 @@ export function About() {
 							Most of the data comes directly from{" "}
 							<a
 								className="text-blue-300"
-								href="https://csconfederation.com/"
+								href="https://playcsc.com/"
 								target="_blank"
 								rel="noreferrer"
 							>

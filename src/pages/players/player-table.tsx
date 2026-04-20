@@ -9,38 +9,44 @@ import { PlayerTypes, teamNameTranslator } from "../../common/utils/player-utils
 import { TiWarningOutline } from "react-icons/ti";
 import { ToolTip } from "../../common/utils/tooltip-utils";
 import { TableVirtuoso } from "react-virtuoso";
-import styled from "styled-components";
+import { Avatar } from "@/components/ui/avatar";
+import { Table, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ArrowDownWideNarrow, ArrowUpNarrowWide, ArrowUpDown } from "lucide-react";
+
+import { SortDirection, SortOption } from "./sort";
 
 type Props = {
 	players: Player[];
+	onSortChange: (sortValue: string) => void;
+	sortBy: SortOption;
+	sortDirection: SortDirection;
 };
 
-const TableHeader = styled.th.attrs({
-    className: "px-6 py-4 whitespace-nowrap",
-})`
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-`;
-const Cell = styled.td.attrs({
-    className: "px-6 py-4 whitespace-nowrap",
-})`
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-`;
+type SortableHeaderProps = {
+	children: React.ReactNode;
+	className?: string;
+	sortDirection: SortDirection;
+	sortValue: string;
+	sortedBy: string;
+	onSortChange: (sortValue: string) => void;
+};
 
 function PlayerRows({ index, player }: { index: number; player: Player }) {
 	return (
 			<>
-				<Cell className="font-medium">{index + 1}</Cell>
-				<Cell>
-					<div className="mr-4 rounded float-left">
-						{ player.avatarUrl ? 
-						<img width={32} height={32} className="rounded" src={player.avatarUrl} loading="lazy" alt="" /> :
-						 <div className="w-8 h-8 bg-gray-300 rounded" /> }
-					</div>
+				<TableCell className="font-medium">{index + 1}</TableCell>
+				<TableCell>
+					<Avatar
+						className="mr-4 float-left"
+						src={player.avatarUrl}
+						alt={player.name}
+						fallback={<span aria-hidden="true">{player.name.charAt(0).toUpperCase()}</span>}
+					/>
 					<span className="leading-8">{player.name}</span>
-				</Cell>
-				<Cell>{player.tier.name}</Cell>
-				<Cell>{player.role}</Cell>
-				<Cell>
+				</TableCell>
+				<TableCell>{player.tier.name}</TableCell>
+				<TableCell>{player.role}</TableCell>
+				<TableCell>
 					{player.team?.franchise.prefix ?
 						<span className="flex flex-left">
 							<img
@@ -78,23 +84,42 @@ function PlayerRows({ index, player }: { index: number; player: Player }) {
 							"*IR"
 						:	""}
 					</div>
-				</Cell>
-				<Cell>
+				</TableCell>
+				<TableCell>
 					{player.stats?.rating.toFixed(2)}{" "}
 					<span className="text-xs text-slate-600">
 						{player.stats?.gameCount < 3 ? `(GP:${player.stats?.gameCount})` : ""}
 					</span>
-				</Cell>
-				<Cell>
+				</TableCell>
+				<TableCell>
 					<Mmr player={player} />
-				</Cell>
+				</TableCell>
 			</>
 		)
 }
 
-export function PlayerTable({ players }: Props) {
+const MemoizedPlayerRows = React.memo(PlayerRows);
+
+function SortableHeader({ children, className, onSortChange, sortDirection, sortValue, sortedBy }: SortableHeaderProps) {
+	const SortIcon =
+		sortedBy !== sortValue ? ArrowUpDown : sortDirection === "asc" ? ArrowUpNarrowWide : ArrowDownWideNarrow;
+
+	return (
+		<TableHead className={className}>
+			<button
+				type="button"
+				className="flex w-full items-center gap-2 text-left transition hover:text-white"
+				onClick={() => onSortChange(sortValue)}
+			>
+				<span>{children}</span>
+				<SortIcon className="size-4 text-muted-foreground" />
+			</button>
+		</TableHead>
+	);
+}
+
+export function PlayerTable({ players, onSortChange, sortBy, sortDirection }: Props) {
 	const [, setLocation] = useLocation();
-	const MemoizedPlayerRows = React.memo(PlayerRows);
 	return (
 		<div className="w-full pb-16 flex flex-col overflow-x-auto sm:-mx-6 lg:-mx-8 min-w-full py-2 sm:px-6 lg:px-8 overflow-hidden">					
 			<div className="overflow-hidden rounded-lg border border-slate-800">
@@ -103,32 +128,52 @@ export function PlayerTable({ players }: Props) {
 					overscan={100}
 					totalCount={players.length}
 					components={{
-						Table: (props) => <table className="w-full table-auto border-separate border-spacing-0 font-light text-sx md:text-sm" {...props} />,
-						TableHead: (props) => { return <thead className="border-b font-medium border-neutral-800" {...props} style={{zIndex: 1}} />; },
-						TableRow: (props) => {
-								return <tr className="w-full cursor-pointer border-b transition duration-300 ease-in-out border-slate-800 hover:bg-gray-800 hover:-translate-y-0.5 hover:translate-x-0.5" onClick={() => setLocation(`/players/${encodeURIComponent(props.item.name)}`)}  {...props} />},
+						Table: (props) => <Table className="table-auto border-separate border-spacing-0 font-light text-sx md:text-sm" {...props} />,
+						TableHead: (props) => <TableHeader className="border-b border-neutral-800" {...props} style={{ zIndex: 1 }} />,
+						TableRow: props => {
+							const { item, onClick, ...rowProps } = props as React.ComponentPropsWithoutRef<"tr"> & { item: Player };
+
+							return (
+								<TableRow
+									className="w-full cursor-pointer transition duration-300 ease-in-out hover:bg-gray-800 hover:-translate-y-0.5 hover:translate-x-0.5"
+									{...rowProps}
+									onClick={event => {
+										onClick?.(event);
+										setLocation(`/players/${encodeURIComponent(item.name)}`);
+									}}
+								/>
+							);
+						},
 					}}
 					fixedHeaderContent={() => (				
 						<tr className="text-left">
-							<TableHeader>#</TableHeader>
-							<TableHeader>Name</TableHeader>
-							<TableHeader>Tier</TableHeader>
-							<TableHeader>Role</TableHeader>
-							<TableHeader>Team</TableHeader>
-							<TableHeader>
+							<TableHead>#</TableHead>
+							<SortableHeader onSortChange={onSortChange} sortDirection={sortDirection} sortedBy={sortBy.value} sortValue="name">
+								Name
+							</SortableHeader>
+							<SortableHeader onSortChange={onSortChange} sortDirection={sortDirection} sortedBy={sortBy.value} sortValue="tier.name">
+								Tier
+							</SortableHeader>
+							<SortableHeader onSortChange={onSortChange} sortDirection={sortDirection} sortedBy={sortBy.value} sortValue="role">
+								Role
+							</SortableHeader>
+							<SortableHeader onSortChange={onSortChange} sortDirection={sortDirection} sortedBy={sortBy.value} sortValue="team.franchise.name">
+								Team
+							</SortableHeader>
+							<SortableHeader onSortChange={onSortChange} sortDirection={sortDirection} sortedBy={sortBy.value} sortValue="stats.rating">
 								<span className="flex flex-left">
 									<BiStats className="mr-2 text-orange-500" size="1.5em" /> Rating
 								</span>
-							</TableHeader>
-							<TableHeader>
+							</SortableHeader>
+							<SortableHeader onSortChange={onSortChange} sortDirection={sortDirection} sortedBy={sortBy.value} sortValue="mmr">
 								<span className="flex flex-left">
 									<GiMoneyStack className="mr-2 text-green-500" size="1.5em" /> MMR
 								</span>
-							</TableHeader>
+							</SortableHeader>
 						</tr>					
 					)}
 					data={players}
-					itemContent={index => <MemoizedPlayerRows index={index} player={players[index]} />}
+					itemContent={(index, player) => <MemoizedPlayerRows index={index} player={player} />}
 				/>
 			</div>
 		</div>

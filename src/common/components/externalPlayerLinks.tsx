@@ -18,7 +18,7 @@ export function ExternalPlayerLinks({ player }: Props) {
 			{player?.name && (
 				<div className="hover:cursor-pointer bg-slate-700 p-1 rounded w-6 float-left m-[1px]">
 					<a
-						href={`https://csconfederation.com/stats/profile/${player.name}`}
+						href={`https://playcsc.com/stats/profile/${player.name}`}
 						target="_blank"
 						rel="noreferrer"
 					>

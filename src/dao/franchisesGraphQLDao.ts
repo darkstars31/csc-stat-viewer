@@ -82,7 +82,7 @@ export type FranchiseManagement = {
 };
 
 export const fetchFranchiseManagementIds = async (): Promise<FranchiseManagement[]> =>
-    await fetch(`https://core.csconfederation.com/graphql`,
+    await fetch(`https://core.playcsc.com/graphql`,
     { method: "POST",
         body: JSON.stringify({
             "query": `query franchises {
