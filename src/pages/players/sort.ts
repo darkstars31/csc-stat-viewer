@@ -26,16 +26,23 @@ export function sortPlayers(players: Player[], sortBy: SortOption, sortDirection
 		const leftValue = normalizeSortValue(_get(leftPlayer, sortBy.value));
 		const rightValue = normalizeSortValue(_get(rightPlayer, sortBy.value));
 
-		if (leftValue === rightValue) {
+		const leftIsTrailingValue = isTrailingSortValue(leftValue);
+		const rightIsTrailingValue = isTrailingSortValue(rightValue);
+
+		if (leftIsTrailingValue && rightIsTrailingValue) {
 			return 0;
 		}
 
-		if (leftValue == null) {
-			return sortDirection === "asc" ? 1 : -1;
+		if (leftIsTrailingValue) {
+			return 1;
 		}
 
-		if (rightValue == null) {
-			return sortDirection === "asc" ? -1 : 1;
+		if (rightIsTrailingValue) {
+			return -1;
+		}
+
+		if (leftValue === rightValue) {
+			return 0;
 		}
 
 		if (typeof leftValue === "number" && typeof rightValue === "number") {
@@ -57,4 +64,8 @@ function normalizeSortValue(value: unknown) {
 	}
 
 	return value ?? null;
+}
+
+function isTrailingSortValue(value: unknown) {
+	return value == null || value === 0;
 }
