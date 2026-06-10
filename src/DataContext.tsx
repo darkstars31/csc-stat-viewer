@@ -73,11 +73,6 @@ const useDataContextProvider = () => {
 		if(playersMissingTier.length > 0) console.info("Players Missing Tier", playersMissingTier);
 	}, [playersMissingTier]);
 
-	const isOffSeason = React.useMemo(
-		() => cscPlayers.filter(player => player?.tier?.name === "Unrated").length > 50,
-		[cscPlayers],
-	);
-
 	const players = React.useMemo(() => {
 		if (isLoadingCscPlayersCache || isLoadingCachedStats || isLoadingCscSeasonAndTiers) {
 			return [] as Player[];
@@ -205,7 +200,6 @@ const useDataContextProvider = () => {
 		setEnableExperimentalHistorialFeature,
 		tiers,
 		setSeasonAndMatchType,
-		isOffSeason,
 		gmRTLCsv,
 		setGmRTLCsv,
 		errors,

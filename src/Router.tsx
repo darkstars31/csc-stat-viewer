@@ -42,7 +42,7 @@ import { TeamBuilder } from "./pages/teamBuilder";
 
 export function Router() {
 
-	const { isLoading, discordUser, setDiscordUser, loggedinUser, isOffSeason } = useDataContext();
+	const { isLoading, discordUser, setDiscordUser, loggedinUser } = useDataContext();
 	const [baselineCommitHash, setBaselineCommitHash] = React.useState<string | undefined>(undefined);
 	const { data: githubBranch, isLoading: isLoadingGithubBranch } = useFetchGithubRepoBranchJson();
 	const BASE_ROUTE = "";
@@ -143,9 +143,6 @@ export function Router() {
 		<>
 			{isLoading && <ProgressBar />}
 			<Wouter base={BASE_ROUTE}>
-				<FullWidthBanner show={isOffSeason}>
-					Looks like it's the off-season! Check back when the season starts for the latest stats and updates.
-				</FullWidthBanner>
 				<FullWidthBanner show={hasNewVersion} resetKey={githubBranch?.commit?.sha}>
 					A new version of AnalytiKill is available.
 					<button
