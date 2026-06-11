@@ -3,20 +3,22 @@ import ACA from "../../assets/images/franchise/ACA.png";
 import AG from "../../assets/images/franchise/AG.png";
 //import AP from "../../assets/images/franchise/AP.png";
 import ATL from "../../assets/images/franchise/ATL.png";
-import ATO from "../../assets/images/franchise/ATO.png";
+import ATO from "../../assets/images/franchise/ATO.webp";
 import AVI from "../../assets/images/franchise/AVI.png";
 import dB from "../../assets/images/franchise/dB.png";
-import BCH from "../../assets/images/franchise/WET.png";
+import BCH from "../../assets/images/franchise/BCH.webp";
 import BOA from "../../assets/images/franchise/BOA.png";
-import BOO from "../../assets/images/franchise/BOO.png";
+import BOO from "../../assets/images/franchise/BOO.webp";
 import BS from "../../assets/images/franchise/BS.png";
 import COW from "../../assets/images/franchise/COW.png";
 import DRG from "../../assets/images/franchise/DRG.png";
 import FNL from "../../assets/images/franchise/FNL.png";
 import FRG from "../../assets/images/franchise/FRG.png";
+import FLT from "../../assets/images/franchise/FTL.webp";
 import GAS from "../../assets/images/franchise/GAS.png";
 import GF from "../../assets/images/franchise/GF.png";
 import GRN from "../../assets/images/franchise/GRN.png";
+import JDM from "../../assets/images/franchise/JDM.webp";
 import H4K from "../../assets/images/franchise/H4K.png";
 import HG from "../../assets/images/franchise/HG.png";
 import HR from"../../assets/images/franchise/HR.png"
@@ -51,12 +53,14 @@ export const franchiseImages: FranchiseImages = {
 	DRG,
 	FNL,
 	FRG,
+	FLT,
 	GAS,
 	GF,
 	GRN,
 	H4K,
 	HG,
 	HR,
+	JDM,
 	LEC,
 	NAN,
 	OS,

@@ -20,6 +20,15 @@ type PlayersPickems =    {
   "season": number
 }
 
+const tierColors: Record<string, { bg: string; text: string; activeBg: string }> = {
+    Recruit:    { bg: "bg-red-950",    text: "text-red-400",    activeBg: "bg-red-700" },
+    Prospect:   { bg: "bg-orange-950", text: "text-orange-400", activeBg: "bg-orange-700" },
+    Contender:  { bg: "bg-yellow-950", text: "text-yellow-400", activeBg: "bg-yellow-700" },
+    Challenger: { bg: "bg-green-950",  text: "text-green-400",  activeBg: "bg-green-700" },
+    Elite:      { bg: "bg-blue-950",   text: "text-blue-400",   activeBg: "bg-blue-700" },
+    Premier:    { bg: "bg-purple-950", text: "text-purple-400", activeBg: "bg-purple-700" },
+};
+
 export const PickemsExplorer: React.FC = () => {
     const { seasonAndMatchType, players } = useDataContext();
     const { data: pickemsSearchData, isLoading: isLoadingPickemsSearch } = usePickemsSearch<PlayersPickems[]>(seasonAndMatchType.season, { enabled: true });
@@ -31,12 +40,22 @@ export const PickemsExplorer: React.FC = () => {
     const [ selectedTimeframe, setSelectedTimeframe ] = React.useState<string[]>(['past','current']);
     const { data: pickemsConcensusData, isLoading: isLoadingPickemsConsensus } = usePickemsMatchUpConsensus(seasonAndMatchType.season, { enabled: !!(player?.discordId && seasonAndMatchType.season > 0) });
     
+    const [ userTier, setUserTier ] = React.useState<string | undefined>(player?.tier.name);
+    
     const { data: pickemsData } = usePickems( player?.discordId, seasonAndMatchType.season, { enabled: !!player });
     const currentDate = dayjs()
 
+    React.useEffect(() => {
+        if (pickemsData?.tier) {
+            setUserTier(pickemsData.tier);
+        } else if (player?.tier?.name) {
+            setUserTier(player.tier.name);
+        }
+    }, [pickemsData, player]);
+
     const playersWithPickems = players.filter( p => pickemsSearchData?.find(pd => pd.discordId === p.discordId))
 
-    const matchesByMatchday = matchesByMatchDay(matches, pickemsData?.tier);
+    const matchesByMatchday = matchesByMatchDay(matches, userTier);
     
         const pastMatchWeeks = Object.keys(matchesByMatchday).filter((matchDate) => 
             dayjs(matchDate).isBefore(currentDate, 'week')
@@ -50,56 +69,92 @@ export const PickemsExplorer: React.FC = () => {
 
     return (
         <Container>
-            <div className="mt-8">
-                <div className="flex justify-between items-center mb-4 text-center">
-                    <h2 className="text-2xl font-bold flex items-center">
-                        <GiChoice size={"1.5rem"} className="inline mr-2" /> 
-                        Explore Players Pickems
-                    </h2>         
-                </div>            
+            <div className="h-fit">
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                        <h1 className="text-2xl font-bold mr-2 flex items-center">
+                            <GiChoice size={"1.5rem"} className="mr-2" />
+                            Explore Players Pickems
+                        </h1>
+                        {["Recruit", "Prospect", "Contender", "Challenger", "Elite", "Premier"].map((tier) => {
+                            const colors = tierColors[tier];
+                            const isActive = userTier === tier;
+                            return (
+                                <button
+                                    key={tier}
+                                    onClick={() => setUserTier(tier)}
+                                    className={`px-3 py-1 text-sm rounded-full font-semibold transition-colors ${
+                                        isActive
+                                            ? `${colors.activeBg} ${colors.text}`
+                                            : "bg-gray-700 text-gray-400 hover:bg-gray-600"
+                                    }`}
+                                >
+                                    {tier}
+                                </button>
+                            );
+                        })}
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div
+                            onClick={() => history.back()}
+                            className="cursor-pointer text-blue-500 hover:text-blue-700 flex items-center gap-1"
+                        >
+                            <FaArrowLeft size="1rem" />
+                            Back
+                        </div>
+                        <TimeframeToggle selectedTimeframe={selectedTimeframe} setSelectedTimeframe={setSelectedTimeframe} />
+                    </div>
+                </div>
                 { isLoadingPickemsSearch ? (
                     <div className="text-center flex justify-center items-center py-8">
                         <Loading />
                     </div>
                 ) : player && pickemsData ? (
                     <>
-                        <div className="h-fit">
-                            <h1 className="text-3xl font-bold mb-4">
-                                {player.name} {pickemsData.tier} Weekly Pickems
-                            </h1>
-                            <div className="flex flex-row gap-10">
-                                <div 
-                                    onClick={() => history.back()}
-                                    className="cursor-pointer text-blue-500 hover:text-blue-700">
-                                    <FaArrowLeft size="1.5rem" className="inline m-4" />
-                                    Back
-                                </div>      
-                                <TimeframeToggle selectedTimeframe={selectedTimeframe} setSelectedTimeframe={setSelectedTimeframe} />
-                            </div>
-                            {/* {submitError && <ErrorMessage error={submitError} />} */}
-                            <LastSaved dateUpdated={pickemsData?.dateUpdated} />  
-                            <div className="flex space-x-8">                                                      
-                                {matchesByMatchday &&
-                                    (Object.entries(matchesByMatchday) as [string, any[]][])
-                                        .filter(([matchDate]) => {
-                                            return (
-                                                (selectedTimeframe.includes("past") && pastMatchWeeks.includes(matchDate)) ||
-                                                (selectedTimeframe.includes("current") && currentMatchWeek.includes(matchDate)) ||
-                                                (selectedTimeframe.includes("future") && futrueMatchWeeks.includes(matchDate)) ||
-                                                selectedTimeframe.length === 0
-                                            );
-                                        })
-                                        .map(([matchDate, matches]: [string, Match[]]) => (
-                                        <WeeklyPickems                           
-                                            matchDate={matchDate}
-                                            matches={matches}
-                                            selectedMatches={pickemsData.pickems}
-                                            pickemsConcensusData={pickemsConcensusData}
-                                            handleSelection={() => {}}                         
-                                        />
-                                    ))
-                                }
-                            </div>                          
+                        <h1 className="text-3xl font-bold mb-4">
+                            {player.name}'s Weekly Pickems
+                        </h1>
+                        {/* {submitError && <ErrorMessage error={submitError} />} */}
+                        <LastSaved dateUpdated={pickemsData?.dateUpdated} />
+                        <div className="flex flex-col space-y-8">
+                            {(() => {
+                                const sorted = (Object.entries(matchesByMatchday) as [string, any[]][])
+                                    .sort(([a], [b]) => b.localeCompare(a))
+                                    .filter(([matchDate]) => {
+                                        const isFuture = futrueMatchWeeks.includes(matchDate);
+                                        if (isFuture) return selectedTimeframe.includes("future");
+                                        return true;
+                                    });
+
+                                const pastEntries = sorted.filter(([matchDate]) => pastMatchWeeks.includes(matchDate));
+                                const currentEntries = sorted.filter(([matchDate]) => currentMatchWeek.includes(matchDate));
+                                const futureEntries = sorted.filter(([matchDate]) => futrueMatchWeeks.includes(matchDate));
+
+                                const renderCard = ([matchDate, matches]: [string, Match[]]) => (
+                                    <WeeklyPickems
+                                        key={matchDate}
+                                        matchDate={matchDate}
+                                        matches={matches}
+                                        selectedMatches={pickemsData.pickems}
+                                        pickemsConcensusData={pickemsConcensusData}
+                                        handleSelection={() => {}}
+                                    />
+                                );
+
+                                return (
+                                    <>
+                                        {futureEntries.length > 0 && (
+                                            <div className="flex flex-nowrap items-start gap-8 overflow-x-auto">
+                                                {futureEntries.map(renderCard)}
+                                            </div>
+                                        )}
+                                        <div className="flex flex-nowrap items-start gap-8 overflow-x-auto">
+                                            {currentEntries.map(renderCard)}
+                                            {pastEntries.map(renderCard)}
+                                        </div>
+                                    </>
+                                );
+                            })()}
                         </div>
                     </>
                 ) : playersWithPickems ? (

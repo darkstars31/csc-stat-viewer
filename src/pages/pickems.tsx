@@ -265,18 +265,14 @@ export const Pickems = () => {
 
                             return (
                                 <>
-                                    {futureEntries.map(renderCard)}
-                                    <div className="flex items-start gap-8">
-                                        <div className="flex-none">
-                                            {currentEntries.map(renderCard)}
+                                    {futureEntries.length > 0 && (
+                                        <div className="flex flex-nowrap items-start gap-8 overflow-x-auto">
+                                            {futureEntries.map(renderCard)}
                                         </div>
-                                        {pastEntries.length > 0 && (
-                                            <div className="overflow-x-auto flex-1 min-w-0">
-                                                <div className="flex space-x-8 pb-2" style={{ minWidth: "max-content" }}>
-                                                    {pastEntries.map(renderCard)}
-                                                </div>
-                                            </div>
-                                        )}
+                                    )}
+                                    <div className="flex flex-nowrap items-start gap-8 overflow-x-auto">
+                                        {currentEntries.map(renderCard)}
+                                        {pastEntries.map(renderCard)}
                                     </div>
                                 </>
                             );
