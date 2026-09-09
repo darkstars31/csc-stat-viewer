@@ -8,7 +8,7 @@ import { AccoladeForm } from "./gmPanel/AccoladeForm";
 export const GMPanel = () => {
     const { loggedinUser, gmRTLCsv, setGmRTLCsv } = useDataContext();
     const { data: franchiseManagementIds } = useFetchFranchiseManagementIdsGraph({ enabled: !!loggedinUser });
-    const managementIds = franchiseManagementIds?.map(item => ([item.gm.id, item.agm.id, item.agms.map(agm => agm.id)]).flat()).filter(Boolean).flat() ?? [];
+    const managementIds = franchiseManagementIds?.map(item => ([item.gm.id, item.agms.map(agm => agm.id)]).flat()).filter(Boolean).flat() ?? [];
 
     const [selectedComponent, setSelectedComponent] = useState("RTLUploader");
 
