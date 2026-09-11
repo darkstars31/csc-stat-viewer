@@ -73,9 +73,6 @@ export type FranchiseManagement = {
     gm: {
         id: string;
     };
-    agm: {
-        id: string;
-    }
     agms: {
         id: string;
     }[];
@@ -89,9 +86,6 @@ export const fetchFranchiseManagementIds = async (): Promise<FranchiseManagement
                 franchises(active: true) {
                     prefix
                     gm {
-                        id
-                    }
-                    agm {
                         id
                     }
                     agms {

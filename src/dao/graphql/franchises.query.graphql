@@ -8,7 +8,7 @@ query franchises {
 		gm {
 			name
 		}
-		agm {
+		agms {
 			name
 		}
 		teams {
